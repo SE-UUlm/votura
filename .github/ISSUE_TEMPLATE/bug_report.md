@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+> Your bug may already be reported! Please search on the issue tracker before creating one.
+
 **Describe the bug**
 A clear and concise description of what the bug is.
 

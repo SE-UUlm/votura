@@ -7,6 +7,8 @@ assignees: ''
 
 ---
 
+> Your feature may already be requested! Please search on the issue tracker before creating one.
+
 **Is your feature request related to a problem? Please describe.**
 A clear and concise description of what the problem is. Ex. I'm always frustrated when [...]
 
