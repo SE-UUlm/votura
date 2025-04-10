@@ -34,7 +34,7 @@ body:
     attributes:
       label: Describe alternatives you've considered
       description: A clear and concise description of any alternative solutions you've considered.
-      placeholder: Tell us what are your alternatives!
+      placeholder: Tell us what your alternatives are!
       # value: ""
     validations:
       required: false

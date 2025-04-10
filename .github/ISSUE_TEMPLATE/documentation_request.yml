@@ -42,7 +42,7 @@ body:
     attributes:
       label: Describe alternatives you've considered
       description: A clear and concise description of any alternative solutions or features you've considered.
-      placeholder: Tell us what are your alternatives!
+      placeholder: Tell us what your alternatives are!
       # value: ""
     validations:
       required: false
