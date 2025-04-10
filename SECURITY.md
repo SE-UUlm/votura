@@ -8,4 +8,4 @@
 
 ## Reporting a Vulnerability
 
-If you want to report a vulnerability, please open an [issue](https://github.com/SE-UUlm/votura/issues) and add the "Security" label.
+If you want to report a vulnerability, please open a draft [security advisory](https://github.com/SE-UUlm/votura/security).
