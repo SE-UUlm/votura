@@ -29,4 +29,4 @@ Original text courtesy of the [Speak Up! project](http://web.archive.org/web/201
 
 ## Questions?
 
-If you have questions, please see our [developer guide](https://github.com/SE-UUlm/votura/wiki/Developer-Guidelines). If that doesn't answer your questions, feel free to [contact us](https://github.com/SE-UUlm/votura/discussions/categories/q-a).
+If you have questions, feel free to [contact us](https://github.com/SE-UUlm/votura/discussions/categories/q-a).
