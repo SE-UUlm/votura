@@ -4,7 +4,7 @@ This pr fixes/implements ... (Describe your changes)
 
 ## Checklist before requesting a review
 
-- [ ] Added my self as a assignee.
+- [ ] Added my self as an assignee.
 - [ ] Added the corresponding labels.
 - [ ] Added the votura project with priority, sprint, dates and REQ level (identical to issue).
 - [ ] Added the milestone.

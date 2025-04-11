@@ -34,7 +34,7 @@ body:
     attributes:
       label: To Reproduce
       description: A clear and concise description of how to reproduce the behavior.
-      placeholder: Tell us what you made!
+      placeholder: Tell us what to do to reproduce the bug!
       value: |
         1. Go to '...'
         2. Click on '....'
