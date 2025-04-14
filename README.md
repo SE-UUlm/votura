@@ -1,2 +1,2 @@
-# ![votura](Assets/VoturaLogo.png) votura
+# ![votura](Assets/VoturaLogo.png)
 Votura is a web based open source voting system.
