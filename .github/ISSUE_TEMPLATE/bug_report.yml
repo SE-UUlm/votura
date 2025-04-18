@@ -2,8 +2,8 @@ name: 🐞 Bug report
 description: Create a report to help us improve.
 # title: ""
 labels: ["Bug"]
-projects: ["votura"]
-# type: "Bug"
+projects: ["SE-UUlm/6"]
+type: "Bug"
 # assignees: []
 body:
   - type: markdown

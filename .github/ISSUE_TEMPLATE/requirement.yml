@@ -2,8 +2,8 @@ name: 📑 Requirement
 description: Describes a requirement that needs to be fulfilled.
 # title: ""
 # labels: []
-projects: ["votura"]
-# type: "Req"
+projects: ["SE-UUlm/6"]
+type: "Req"
 # assignees: []
 body:
   - type: input
