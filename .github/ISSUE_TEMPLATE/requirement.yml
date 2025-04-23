@@ -1,0 +1,41 @@
+name: 📑 Requirement
+description: Describes a requirement that needs to be fulfilled.
+# title: ""
+# labels: []
+projects: ["SE-UUlm/6"]
+type: "Req"
+# assignees: []
+body:
+  - type: input
+    id: contact
+    attributes:
+      label: Contact Details
+      description: How can we get in touch with you if we need more info? Leave empty if should contact you via GitHub.
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: description
+    attributes:
+      label: Describe the requirement that needs to be fulfilled
+      description: A clear and concise description of what you want to happen.
+      placeholder: Tell us what you want!
+      # value: ""
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance 
+    attributes:
+      label: Acceptance test
+      description: A clear and concise description how the stakeholder acceptance test should look like, so that the requirement is fulfilled.
+      placeholder: Tell us what you want to see! A presentation, test case, coverage, uptime, ...
+      # value: ""
+    validations:
+      required: true
+  - type: markdown
+    attributes:
+      value: |
+        - [ ] Add all labels that are relevant to this issue.
+        - [ ] Set the status of issue to "REQ: Draft".
+        - [ ] You need to set the REQ level to "MUST", "SHOULD", or "MAY".
+        - All other fields should be not filled out and will be added later by the dev team.
