@@ -21,7 +21,7 @@ body:
       label: Acceptance test
       description: A clear and concise description how the stakeholder acceptance test should look like, so that the requirement is fulfilled.
       placeholder: Tell us what you want to see! A presentation, test case, coverage, uptime, ...
-      # value: ""
+      value: "By a manual verification."
     validations:
       required: true
   - type: markdown
