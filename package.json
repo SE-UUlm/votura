@@ -13,7 +13,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "tsc",
-    "ci": "npm run build"
+    "ci": "npm run build",
+    "format": "prettier --write ."
   },
   "license": "MIT",
   "files": [
@@ -26,7 +27,9 @@
     "@typescript-eslint/eslint-plugin": "^8.31.0",
     "@typescript-eslint/parser": "^8.31.0",
     "eslint": "^9.25.1",
+    "eslint-config-prettier": "^10.1.2",
     "globals": "^16.0.0",
+    "prettier": "3.5.3",
     "typescript": "^5.8.3",
     "typescript-eslint": "^8.31.0"
   }
