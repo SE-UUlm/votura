@@ -1,0 +1,24 @@
+{
+  "name": "votura-crypto",
+  "version": "0.0.1",
+  "description": "A package containing the cryptographic algorithms used in the votura project.",
+  "homepage": "https://github.com/SE-UUlm/votura-crypto",
+  "bugs": {
+    "url": "https://github.com/SE-UUlm/votura-crypto/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SE-UUlm/votura-crypto.git"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^5.8.3"
+  }
+}
