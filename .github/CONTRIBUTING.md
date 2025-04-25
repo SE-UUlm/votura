@@ -19,9 +19,9 @@ The issue is the place to discuss the problem, feature request and possible solu
 - Please provide as much information as possible to help us understand the changes you made and follow the pull request template.
 - As long as a pull request is being worked on, it must be marked with as a Draft.
 - When an issue has been implemented and tested, move the issue **and** the pull request from "Under Development" to "To Review". Follow the pr template, and please remove the Draft status.
-- If you want to review a pull request, move the issue **and** the pull request from "To Review" to "In Review". At the same time, I add myself as a Reviewer to the pull request.
+- If you want to review a pull request, move the issue **and** the pull request from "To Review" to "In Review". At the same time, you add yourself as a Reviewer to the pull request.
 - The reviewer who opens a thread in the pull request is responsible for marking the thread as resolved.
-- If the pull request is approved and merged, I move the pull request **and** issue from "In Review" to "Finished" and close the issue.
+- If the pull request is approved and merged, you move the pull request **and** issue from "In Review" to "Finished" and close the issue.
 - The last person who approves the pull request is responsible for merging it.
 - Every developer is required to check pull requests and issues with the status "To Review", regardless of whether they are requested to check them or not.
 - Squash commits is disabled (to keep git blame if a different person merges the request)
