@@ -1,6 +1,6 @@
 {
-  "name": "votura-crypto",
-  "version": "0.0.1",
+  "name": "@votura/votura-crypto",
+  "version": "0.0.3",
   "description": "A package containing the cryptographic algorithms used in the votura project.",
   "homepage": "https://github.com/SE-UUlm/votura-crypto",
   "bugs": {
@@ -17,7 +17,9 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
-    "test": "vitest run"
+    "test": "vitest run",
+    "local-release": "changeset version && changeset publish",
+    "prepublishOnly": "npm run ci"
   },
   "license": "MIT",
   "files": [
@@ -26,6 +28,7 @@
   "type": "module",
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.17.4",
+    "@changesets/cli": "^2.29.2",
     "@eslint/js": "^9.25.1",
     "@eslint/json": "^0.12.0",
     "@typescript-eslint/eslint-plugin": "^8.31.0",
