@@ -1,8 +1,9 @@
 name: 📖 Documentation request
 description: Request for further documentation improvements.
 # title: ""
-labels: ["Documentation"]
-projects: ["votura"]
+labels: ["Documentation", "Feature"]
+projects: ["SE-UUlm/6"]
+type: "Feature"
 # assignees: []
 body:
   - type: markdown
@@ -59,7 +60,6 @@ body:
     attributes:
       value: |
         - [ ] Add all labels that are relevant to this issue.
-        - [ ] The type of this issue needs to be "Feature" or "Task".
         - [ ] Enter a priority.
         - [ ] If this issue is related to a requirement, add the same "REQ level" as the corresponding requirement and link the REQ-Issue as a parent to this issue, else use "NOT SET".
         - All other fields should be not filled out and will be added later by the dev team.
