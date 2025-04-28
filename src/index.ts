@@ -1,1 +1,5 @@
-export const add = (a: number, b: number) => a + b;
+export { getBitsOfBigInt, getRandomBigInt, getPrime } from './utils.js';
+
+export const PublicKey = class {
+  constructor(public key: string) {}
+};
