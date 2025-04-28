@@ -25,3 +25,55 @@ export const getPrime = async (bits: number = 2048) => {
 
   return probablePrime;
 };
+
+export const getRandomBigIntFromInterval = (
+  min: bigint,
+  max: bigint,
+): bigint => {
+  const range: bigint = max - min + 1n;
+  const byteLength = Math.ceil(range.toString(2).length / 8); // bytes needed
+
+  let rand;
+  do {
+    const randomBytes = new Uint8Array(byteLength);
+    crypto.getRandomValues(randomBytes);
+
+    // Convert bytes to BigInt
+    rand = randomBytes.reduce((acc, byte) => (acc << 8n) | BigInt(byte), 0n);
+  } while (rand >= range); // Reject if out of range (to keep uniform distribution)
+
+  return min + rand;
+};
+
+export const getCofactor = (p: bigint, q: bigint): bigint => {
+  // https://www.di-mgt.com.au/multiplicative-group-mod-p.html
+  const j = (p - 1n) / q;
+
+  if ((p - 1n) % q !== 0n) {
+    throw new Error('Invalid: (p - 1) is not divisible by q');
+  }
+  if (j % 2n !== 0n) {
+    throw new Error('Invalid: cofactor j is not even');
+  }
+
+  return j;
+};
+
+// TODO: write proper test
+export const getGeneratorForPrimeP = (
+  primeP: bigint,
+  primeQ: bigint,
+): bigint => {
+  //https://www.di-mgt.com.au/multiplicative-group-mod-p.html
+  let h = getRandomBigIntFromInterval(BigInt(1), primeP - BigInt(1));
+  const j = getCofactor(primeP, primeQ);
+
+  let g = (h ^ j) % primeP;
+
+  while (g <= BigInt(1)) {
+    h = getRandomBigIntFromInterval(BigInt(1), primeP - BigInt(1));
+    g = (h ^ j) % primeP;
+  }
+
+  return g;
+};
