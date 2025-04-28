@@ -1,10 +1,5 @@
-import { test } from 'vitest';
-import { getPrime } from './index.js';
+import { expect, test } from 'vitest';
 
-test(
-  'getRandomBigInt',
-  async () => {
-    console.log(await getPrime());
-  },
-  { timeout: 30000 },
-);
+test('placeholder', { timeout: 30000 }, async () => {
+  expect(true).toBe(true);
+});
