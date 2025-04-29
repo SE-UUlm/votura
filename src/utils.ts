@@ -60,7 +60,7 @@ export const getCofactor = (p: bigint, q: bigint): bigint => {
 };
 
 // TODO: write proper test
-export const getGeneratorForPrimeP = (
+export const getGeneratorForPrimes = (
   primeP: bigint,
   primeQ: bigint,
 ): bigint => {
