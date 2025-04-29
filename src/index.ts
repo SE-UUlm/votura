@@ -70,6 +70,8 @@ export const getKeyPair = async (bits?: number): Promise<KeyPair> => {
   let primeQ = await getPrime(bits);
   let probablePrimeP = 2n * primeQ + 1n;
 
+  // check for 2048 bits here by incrementing the factor???
+
   let result = await primalityTest(probablePrimeP);
 
   while (!result.probablePrime) {
