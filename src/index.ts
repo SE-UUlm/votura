@@ -65,6 +65,7 @@ export class KeyPair {
 }
 
 // TODO: I am not sure if I like this async await hell ...
+// TODO: The amount of bits for primeP need to be configurable!
 export const getKeyPair = async (bits?: number): Promise<KeyPair> => {
   let primeQ = await getPrime(bits);
   let probablePrimeP = 2n * primeQ + 1n;
