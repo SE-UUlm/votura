@@ -3,7 +3,8 @@ name: Build and deploy votura documentation
 on:
   push:
     branches:
-      - 33-setup-github-pages-docs
+      - main
+      #- 33-setup-github-pages-docs
     # Review gh actions docs if you want to further define triggers, paths, etc
     # https://docs.github.com/en/actions/using-workflows/workflow-syntax-for-github-actions#on
 
