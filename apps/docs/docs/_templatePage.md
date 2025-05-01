@@ -6,6 +6,8 @@ tags:
 hide_table_of_contents: false
 # sidebar_position: 1
 draft: true
+toc_min_heading_level: 2
+toc_max_heading_level: 3
 ---
 
 Use this file as a template for your new page.
