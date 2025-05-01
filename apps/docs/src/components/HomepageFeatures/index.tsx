@@ -11,29 +11,26 @@ type FeatureItem = {
 
 const FeatureList: FeatureItem[] = [
   {
-    title: 'Votes',
+    title: 'Create Votes.',
     Svg: require('@site/static/img/logo.svg').default,
     description: (
       <>
-        TODO
       </>
     ),
   },
   {
-    title: 'Polls',
+    title: 'Create Polls.',
     Svg: require('@site/static/img/logo.svg').default,
-    description: (
+    description: ( 
       <>
-        TODO
       </>
     ),
   },
   {
-    title: 'Trust the process',
+    title: 'Trust the process!',
     Svg: require('@site/static/img/logo.svg').default,
     description: (
       <>
-        TODO
       </>
     ),
   },

@@ -47,6 +47,7 @@ const config: Config = {
       items: [
         {
           type: 'docsVersionDropdown',
+          position: 'right',
         },
         {
           type: 'docSidebar',
@@ -59,6 +60,12 @@ const config: Config = {
           sidebarId: 'devGuideSidebar',
           position: 'left',
           label: 'Developer Guide',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'aboutSidebar',
+          position: 'left',
+          label: 'About',
         },
         {
           href: 'https://github.com/SE-UUlm/votura',
@@ -104,6 +111,14 @@ const config: Config = {
           title: 'More',
           items: [
             {
+              label: 'About',
+              to: '/docs/about/',
+            },
+            {
+              label: 'Imprint',
+              href: 'https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/',
+            },
+            {
               label: 'GitHub',
               href: 'https://github.com/SE-UUlm/votura',
             },
@@ -132,8 +147,3 @@ const config: Config = {
 };
 
 export default config;
-
-
-// TODO: drawio build, version on ci, ts api, devguide, userguide,
-
-// TODO: ISSUE: Main page, footer wrong layout, Impressum

@@ -21,10 +21,12 @@ yarn-error.log*
 
 # images
 /static/uml/*.svg
+/static/uml/*.pdf
 /static/uml/*.png
 /static/uml/*.jpg
 /static/uml/*.jpeg
 /static/drawio/*.svg
+/static/drawio/*.pdf
 /static/drawio/*.png
 /static/drawio/*.jpg
 /static/drawio/*.jpeg

@@ -1,11 +1,15 @@
-# Welcome to votura contributing guide
+# Contributing Guide
 
 Thank you for investing your time in contributing to our project!
-Read our Code of Conduct to keep our community approachable and respectable.
+Please read our Code of Conduct to keep our community approachable and respectable.
+
+## Security Issues
+
+If you discover a security vulnerability within votura, please create a [security advisory](https://github.com/SE-UUlm/votura/security/advisories)
 
 ## New Issue
 
-You have spotted a problem with votura, or you have an idea for a new feature?
+You have spotted any other problem with votura, or you have an idea for a new feature?
 Please check if the issue already exists in our [issue tracker](https://github.com/SE-UUlm/votura/issues).
 If not, please create a new issue following the relevant issue form.
 Please provide as much information as possible to help us understand the problem or feature request.
