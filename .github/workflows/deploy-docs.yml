@@ -60,6 +60,9 @@ jobs:
           cache-dependency-path: ./apps/docs/package-lock.json
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v4
+        with:
+          path: ./apps/docs/static/uml/
+      - run: ls -la ./apps/docs/static/uml/
       - name: Install dependencies
         run: |
           cd ./apps/docs/
