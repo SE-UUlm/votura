@@ -9,7 +9,7 @@ jobs:
     runs-on: 
       labels: ubuntu-latest
     container:
-      image: docker pull plantuml/plantuml
+      image: plantuml/plantuml
     continue-on-error: false
     timeout-minutes: 10
 
