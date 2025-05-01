@@ -34,11 +34,10 @@ jobs:
         run: |
           find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
       - name: Upload Build Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
-          path: ./apps/docs/static/uml 
-      - run: |
-          ls -la ./apps/docs/static/uml
+          name: UML SVG diagrams
+          path: ./apps/docs/static/uml/*.svg 
 
   build:
     name: Build documentation
@@ -59,10 +58,8 @@ jobs:
           node-version: 18
           cache: npm
           cache-dependency-path: ./apps/docs/package-lock.json
-      - name: Download UML Artifacts
-        uses: actions/download-pages-artifact@v3
-        with:
-          path: ./apps/docs/static/uml
+      - name: Download all workflow run artifacts
+        uses: actions/download-artifact@v4
       - name: Install dependencies
         run: |
           cd ./apps/docs/
