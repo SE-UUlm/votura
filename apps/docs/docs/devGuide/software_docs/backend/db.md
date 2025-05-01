@@ -14,3 +14,5 @@ draft: false
 This page is still under construction and will be updated soon.
 
 :::
+
+![The overall system architecture of votura.](../../../../static/uml/dataModel.svg)
