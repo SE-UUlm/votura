@@ -2,15 +2,12 @@ name: Build & deploy docs
 
 on:
   push:
-    branches:
-      - main
-      - 33-setup-github-pages-docs # TODO remove also in env
 
 jobs:
   build-puml:
     name: Build PlantUML diagrams
     runs-on: 
-      labels: linux-sp
+      labels: linux-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
