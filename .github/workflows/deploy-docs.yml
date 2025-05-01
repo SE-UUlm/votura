@@ -1,6 +1,7 @@
 name: Build & deploy docs
 
 on:
+  workflow_dispatch:
   push:
 
 jobs:
@@ -22,7 +23,7 @@ jobs:
         with:
           distribution: 'temurin'
           java-version: '17'
-      - name: Install curl
+      - name: Install dependencies
         run: 
           |
           apt-get update
@@ -39,9 +40,40 @@ jobs:
           name: uml_svg
           path: ./apps/docs/static/uml/*.svg 
 
+  build-drawio:
+    name: Build DrawIO diagrams
+    runs-on: 
+      labels: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+    continue-on-error: false
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install dependencies
+        run: 
+          |
+          apt-get update
+          apt-get install -y wget xvfb libasound2
+          wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
+          apt-get install -y ./drawio-amd64-24.7.17.deb
+      - name: Build PlantUML SVG files
+        run: |
+          xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
+          sleep 30
+      - name: Upload Build Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: drawio_svg
+          path: ./apps/docs/static/drawio/*.svg 
+        
+
   build:
     name: Build documentation
-    needs: build-puml
+    needs: ["build-puml", "build-drawio"]
     runs-on: 
       labels: ubuntu-latest
     container:
@@ -61,8 +93,9 @@ jobs:
       - name: Download all workflow run artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ./apps/docs/static/uml/
-      - run: cp -r ./apps/docs/static/uml/uml_svg/* ./apps/docs/static/uml/
+          path: ./apps/docs/static/
+      - run: cp -r ./apps/docs/static/uml_svg/* ./apps/docs/static/uml/
+      - run: cp -r ./apps/docs/static/drawio_svg/* ./apps/docs/static/drawio/
       - name: Install dependencies
         run: |
           cd ./apps/docs/

@@ -134,6 +134,6 @@ const config: Config = {
 export default config;
 
 
-// TODO: version on ci, ts api, uml, impressum, devguide, userguide,
+// TODO: drawio build, version on ci, ts api, devguide, userguide,
 
 // TODO: ISSUE: Main page, footer wrong layout, Impressum
