@@ -26,7 +26,7 @@ jobs:
         run: 
           |
           apt-get update
-          apt-get install -y curl libfreetype6 fontconfig
+          apt-get install -y curl graphviz libfreetype6 fontconfig
       - name: Download PlantUML
         run: |
           curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
