@@ -36,7 +36,7 @@ jobs:
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: UML SVG diagrams
+          name: uml_svg
           path: ./apps/docs/static/uml/*.svg 
 
   build:
@@ -62,6 +62,9 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./apps/docs/static/uml/
+      - run: ls -la ./apps/docs/static/uml/
+      - run: ls -la ./apps/docs/static/uml/uml_svg/
+      - run: cp -r ./apps/docs/static/uml/apps/docs/static/uml/* ./apps/docs/static/uml/
       - run: ls -la ./apps/docs/static/uml/
       - name: Install dependencies
         run: |
