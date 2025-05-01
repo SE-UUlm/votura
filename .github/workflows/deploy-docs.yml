@@ -8,7 +8,7 @@ jobs:
   build-puml:
     name: Build PlantUML diagrams
     runs-on: 
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -43,7 +43,7 @@ jobs:
   build-drawio:
     name: Build DrawIO diagrams
     runs-on: 
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -75,7 +75,7 @@ jobs:
     name: Build documentation
     needs: ["build-puml", "build-drawio"]
     runs-on: 
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -112,10 +112,7 @@ jobs:
   deploy:
     name: Deploy documentation
     needs: build
-    # TODO env & change to develop and main branches
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/33-setup-github-pages-docs')
-
-
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     permissions:
       pages: write
       id-token: write
@@ -123,7 +120,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: 
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
