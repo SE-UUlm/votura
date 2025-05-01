@@ -23,7 +23,7 @@ jobs:
           distribution: 'temurin'
           java-version: '17'
       - name: Install curl
-        run: sudo apt-get update && sudo apt-get install -y curl
+        run: apt-get update && apt-get install -y curl
       - name: Download PlantUML
         run: |
           curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
