@@ -57,7 +57,7 @@ jobs:
         run: 
           |
           apt-get update
-          apt-get install -y wget xvfb libasound2
+          apt-get install -y wget xvfb libasound2 libgbm1 libxshmfence1 libgtk-3-0 libx11-xcb1 libnss3 libxss1 libxcomposite1 libxrandr2 libxdamage1 libxfixes3 libxcb1
           wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
           apt-get install -y ./drawio-amd64-24.7.17.deb
       - name: Build PlantUML SVG files
