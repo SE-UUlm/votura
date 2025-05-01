@@ -62,9 +62,8 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           path: ./apps/docs/static/uml/
+      - run: cp -r ./apps/docs/static/uml/uml_svg/* ./apps/docs/static/uml/
       - run: ls -la ./apps/docs/static/uml/
-      - run: ls -la ./apps/docs/static/uml/uml_svg/
-      - run: cp -r ./apps/docs/static/uml/apps/docs/static/uml/* ./apps/docs/static/uml/
       - run: ls -la ./apps/docs/static/uml/
       - name: Install dependencies
         run: |
