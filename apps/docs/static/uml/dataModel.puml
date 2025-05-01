@@ -1,0 +1,105 @@
+@startuml dataModel
+
+entity "election" as election {
+    * id : INT <<PK>>
+    --
+    * name : VARCHAR(255)
+    description : TEXT
+    * votingStart : DATE
+    * votingEnd : DATE
+    * created : DATE
+    * modified : DATE
+    ' locked needs to be discussed
+    * locked : BOOLEAN
+    * votesCounted : BOOLEAN
+    validVotes : INT
+    invalidVotes : INT
+    --
+}
+
+entity "ballotPaper" as ballotPaper {
+    * id : INT <<PK>>
+    --
+    * name : VARCHAR(255)
+    description : TEXT
+    * maxVotes : INT
+    * allowInvalidVote : BOOLEAN
+    --
+    * election : election.id <<FK>>
+}
+
+entity "ballotPaperSection" as ballotPaperSection {
+    'A ballotPaper section 
+    * id : INT <<PK>>
+    name : VARCHAR(255)
+    description : TEXT
+    * maxVotes : INT
+    * maxVotesPerCandidate : INT
+    --
+    * ballotPaper : ballotPaper.id <<FK>>
+}
+note as C_2
+If at least two ballotPaper sections are created for one ballotPaper, 
+the name field of the ballotPaper section is mandatory.
+end note
+
+entity "ballotPaperSectionCandidate" as candidateRegister {
+    * ballotPaperSection : ballotPaperSection.id <<PK>> <<FK>>
+    * candidate : candidate.id <<PK>> <<FK>>
+    --
+    --
+}
+
+entity "candidate" as candidate {
+    * id : INT <<PK>>
+    --
+    * title : VARCHAR(255)
+    description : TEXT
+    votes : INT
+    --
+}
+
+note as C_1
+A candidate can be registered in multiple ballotPaper sections.
+But only once per ballotPaper.
+Not in two ballotPaper sections of the same ballotPaper.
+end note
+
+
+entity "vote " as vote {
+    * ballotPaper : ballotPaper.id <<PK>> <<FK>>
+    * voter : voter.id <<PK>> <<FK>>
+    --
+    '* hasVoted : BOOLEAN
+    votedAt : DATE
+    'under the assumption that an empty vote results in a hash value, if the voter has not voted the 'vote' is a empty string.
+    vote: VARCHAR(255)
+    --
+}
+
+entity "voter" as voter {
+    * id : INT <<PK>>
+    --
+    * tokenHash : VARCHAR(255)
+    --
+}
+
+entity "user" as user {
+    * id : INT <<PK>>
+    --
+    * eMail : VARCHAR(255)
+    * passwordHash : VARCHAR(255)
+    --
+}
+
+
+election ||--o{ ballotPaper
+ballotPaper ||--o{ vote
+vote }o--|| voter
+ballotPaper ||--o{ ballotPaperSection
+ballotPaperSection -- C_2
+ballotPaperSection ||--o{ candidateRegister
+candidateRegister }o--|| candidate
+candidate -- C_1
+
+@enduml

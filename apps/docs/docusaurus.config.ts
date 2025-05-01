@@ -1,32 +1,19 @@
-import {themes as prismThemes} from 'prism-react-renderer';
-import type {Config} from '@docusaurus/types';
+import { themes as prismThemes } from 'prism-react-renderer';
+import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 
-// This runs in Node.js - Don't use client-side code here (browser APIs, JSX...)
-
 const config: Config = {
-  title: 'My Site',
-  tagline: 'Dinosaurs are cool',
-  favicon: 'img/favicon.ico',
-
-  // Set the production url of your site here
+  title: 'votura',
+  tagline: 'Setup online votes and polls in that your users trust!',
+  favicon: 'img/logo.svg',
   url: 'https://SE-UUlm.github.io',
-  // Set the /<baseUrl>/ pathname under which your site is served
-  // For GitHub pages deployment, it is often '/<projectName>/'
   baseUrl: '/votura/',
-
-  // GitHub pages deployment config.
-  // If you aren't using GitHub pages, you don't need these.
-  organizationName: 'SE-UUlm', // Usually your GitHub org/user name.
-  projectName: 'votura', // Usually your repo name.
+  organizationName: 'SE-UUlm',
+  projectName: 'votura',
   trailingSlash: false,
-
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
 
-  // Even if you don't use internationalization, you can use this field to set
-  // useful metadata like html lang. For example, if your site is Chinese, you
-  // may want to replace "en" with "zh-Hans".
   i18n: {
     defaultLocale: 'en',
     locales: ['en'],
@@ -38,25 +25,8 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
           editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-        },
-        blog: {
-          showReadingTime: true,
-          feedOptions: {
-            type: ['rss', 'atom'],
-            xslt: true,
-          },
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
-          // Useful options to enforce blogging best practices
-          onInlineTags: 'warn',
-          onInlineAuthors: 'warn',
-          onUntruncatedBlogPosts: 'warn',
+            'https://github.com/SE-UUlm/votura',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -66,24 +36,32 @@ const config: Config = {
   ],
 
   themeConfig: {
-    // Replace with your project's social card
-    image: 'img/docusaurus-social-card.jpg',
+    image: 'img/votura_logo_3l.svg',
     navbar: {
-      title: 'My Site',
+      //title: 'votura',
       logo: {
-        alt: 'My Site Logo',
-        src: 'img/logo.svg',
+        alt: 'The votura logo, a blue box with ballot paper.',
+        src: 'img/logo_1l.svg',
+        srcDark: 'img/logo_1l_w.svg',
       },
       items: [
         {
-          type: 'docSidebar',
-          sidebarId: 'tutorialSidebar',
-          position: 'left',
-          label: 'Tutorial',
+          type: 'docsVersionDropdown',
         },
-        {to: '/blog', label: 'Blog', position: 'left'},
         {
-          href: 'https://github.com/facebook/docusaurus',
+          type: 'docSidebar',
+          sidebarId: 'userGuideSidebar',
+          position: 'left',
+          label: 'User Guide',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'devGuideSidebar',
+          position: 'left',
+          label: 'Developer Guide',
+        },
+        {
+          href: 'https://github.com/SE-UUlm/votura',
           label: 'GitHub',
           position: 'right',
         },
@@ -96,25 +74,29 @@ const config: Config = {
           title: 'Docs',
           items: [
             {
-              label: 'Tutorial',
-              to: '/docs/intro',
+              label: 'User Guide',
+              to: '/docs/userGuide/',
+            },
+            {
+              label: 'Developer Guide',
+              to: '/docs/devGuide/',
             },
           ],
         },
         {
-          title: 'Community',
+          title: 'Support',
           items: [
             {
-              label: 'Stack Overflow',
-              href: 'https://stackoverflow.com/questions/tagged/docusaurus',
+              label: 'Community Support', 
+              href: 'https://github.com/SE-UUlm/votura/discussions',
             },
             {
-              label: 'Discord',
-              href: 'https://discordapp.com/invite/docusaurus',
+              label: 'Issue Tracker',
+              href: 'https://github.com/SE-UUlm/votura/issues',
             },
             {
-              label: 'X',
-              href: 'https://x.com/docusaurus',
+              label: 'Security Issues', 
+              href: 'https://github.com/SE-UUlm/votura/security',
             },
           ],
         },
@@ -122,17 +104,25 @@ const config: Config = {
           title: 'More',
           items: [
             {
-              label: 'Blog',
-              to: '/blog',
-            },
-            {
               label: 'GitHub',
-              href: 'https://github.com/facebook/docusaurus',
+              href: 'https://github.com/SE-UUlm/votura',
+            },
+            // {
+            //   label: 'Docker Hub',
+            //   href: 'TODO',
+            // },
+            // {
+            //   label: 'NPM',
+            //   href: 'TODO',
+            // },
+            {
+              label: 'University of Ulm',
+              href: 'https://www.uni-ulm.de',
             },
           ],
         },
       ],
-      copyright: `Copyright © ${new Date().getFullYear()} My Project, Inc. Built with Docusaurus.`,
+      copyright: `Copyright © ${new Date().getFullYear()} votura`,
     },
     prism: {
       theme: prismThemes.github,
@@ -142,3 +132,8 @@ const config: Config = {
 };
 
 export default config;
+
+
+// TODO: version on ci, ts api, uml, impressum, devguide, userguide,
+
+// TODO: ISSUE: Main page, footer wrong layout, Impressum

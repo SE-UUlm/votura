@@ -4,13 +4,50 @@ on:
   push:
     branches:
       - main
-      - 33-setup-github-pages-docs
+      - 33-setup-github-pages-docs # TODO remove also in env
 
 jobs:
-  build:
-    name: Build documentation
+  build-puml:
+    name: Build PlantUML diagrams
     runs-on: 
       labels: linux-sp
+    container:
+      image: ubuntu:22.04
+    continue-on-error: false
+    timeout-minutes: 10
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Download PlantUML
+        run: |
+          curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
+      - name: Build PlantUML SVG files
+        run: |
+          find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
+      - name: Upload Build Artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: ./apps/docs/static/uml 
+      - run: |
+          ls -la ./apps/docs/static/uml
+
+  build:
+    name: Build documentation
+    needs: build-puml
+    runs-on: 
+      labels: linux-sp
+    container:
+      image: ubuntu:22.04
+    continue-on-error: false
+    timeout-minutes: 10
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -20,17 +57,14 @@ jobs:
           node-version: 18
           cache: npm
           cache-dependency-path: ./apps/docs/package-lock.json
-
       - name: Install dependencies
         run: |
           cd ./apps/docs/
           npm ci
-
       - name: Build website
         run: |
           cd ./apps/docs/
           npm run build
-
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
@@ -39,19 +73,20 @@ jobs:
   deploy:
     name: Deploy documentation
     needs: build
-
-    # Grant GITHUB_TOKEN the permissions required to make a Pages deployment
+    if: github.event_name == 'push' && github.ref == 'refs/heads/33-setup-github-pages-docs '
     permissions:
-      pages: write # to deploy to Pages
-      id-token: write # to verify the deployment originates from an appropriate source
-
-    # Deploy to the github-pages environment
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
-
     runs-on: 
       labels: linux-sp
+    container:
+      image: ubuntu:22.04
+    continue-on-error: false
+    timeout-minutes: 10
+
     steps:
       - name: Deploy to GitHub Pages
         id: deployment
