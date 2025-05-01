@@ -9,7 +9,7 @@ jobs:
     runs-on: 
       labels: ubuntu-latest
     container:
-      image: plantuml/plantuml
+      image: ubuntu:22.04
     continue-on-error: false
     timeout-minutes: 10
 
@@ -17,20 +17,22 @@ jobs:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      # - name: Set up Java
-      #   uses: actions/setup-java@v3
-      #   with:
-      #     distribution: 'temurin'
-      #     java-version: '17'
-      # - name: Install curl
-      #   run: apt-get update && apt-get install -y curl
-      # - name: Download PlantUML
-      #   run: |
-      #     curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
+      - name: Set up Java
+        uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: '17'
+      - name: Install curl
+        run: 
+          |
+          apt-get update
+          apt-get install -y curl libfreetype6 fontconfig
+      - name: Download PlantUML
+        run: |
+          curl -L -o plantuml.jar https://github.com/plantuml/plantuml/releases/latest/download/plantuml.jar
       - name: Build PlantUML SVG files
-        # run: |
-        #   find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
-        run: java -jar plantuml.jar -tsvg -o "./apps/docs/static/uml/" "./apps/docs/static/uml/*.puml"
+        run: |
+          find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
