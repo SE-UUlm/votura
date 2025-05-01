@@ -8,7 +8,7 @@ jobs:
   build-puml:
     name: Build PlantUML diagrams
     runs-on: 
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -43,7 +43,7 @@ jobs:
   build-drawio:
     name: Build DrawIO diagrams
     runs-on: 
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -75,7 +75,7 @@ jobs:
     name: Build documentation
     needs: ["build-puml", "build-drawio"]
     runs-on: 
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
@@ -120,7 +120,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: 
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
