@@ -7,7 +7,7 @@ jobs:
   build-puml:
     name: Build PlantUML diagrams
     runs-on: 
-      labels: linux-latest
+      labels: ubuntu-latest
     container:
       image: ubuntu:22.04
     continue-on-error: false
