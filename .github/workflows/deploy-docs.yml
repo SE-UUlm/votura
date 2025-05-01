@@ -63,8 +63,6 @@ jobs:
         with:
           path: ./apps/docs/static/uml/
       - run: cp -r ./apps/docs/static/uml/uml_svg/* ./apps/docs/static/uml/
-      - run: ls -la ./apps/docs/static/uml/
-      - run: ls -la ./apps/docs/static/uml/
       - name: Install dependencies
         run: |
           cd ./apps/docs/
@@ -81,7 +79,10 @@ jobs:
   deploy:
     name: Deploy documentation
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/33-setup-github-pages-docs '
+    # TODO env & change to develop and main branches
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/33-setup-github-pages-docs')
+
+
     permissions:
       pages: write
       id-token: write
