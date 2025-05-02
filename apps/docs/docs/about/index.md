@@ -16,6 +16,6 @@ Votura is currently maintained by:
 - [@JKortmann Johannes Kortmann](https://github.com/JKortmann)
 - [@ThorbenCarl Thorben Carl](https://github.com/ThorbenCarl)
 - [@shoffma Sören S. Hoffmann](https://github.com/shoffma)
-- [@dsiev](https://github.com/dsiev)
+- [@dsiev David Sievers](https://github.com/dsiev)
 
 [Imprint University of Ulm](https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/)
