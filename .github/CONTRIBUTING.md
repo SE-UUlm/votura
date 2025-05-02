@@ -44,22 +44,21 @@ The issue is the place to discuss the problem, feature request and possible solu
   - Merging from a `(feature|fix|doc|test)/*` branch into the `develop` branch is only allowed, not from any other branch.
   - Merging into the `develop` branch needs 3 approvals (authors/committers can not approve).
   - Only signed commits are allowed.
-- `feature/*` branch
-  - The `feature/*` branch is always created from an issue.
-  - The `feature/*` branch is named as follows: `feature/<Issue ID>-<Issue title>`
-  - Alternative names are `fix/*`, `doc/*` or `test/*`.
+- feature branch
+  - The feature branch is always created from an issue.
+  - The feature branch is named as follows: `<Issue ID>-<Issue title>`
   - Only signed commits are allowed.
 
-Regex: `main$|develop$|(feature|fix|doc|test)\/\d+(-\w+)+$`
+Regex: `^main$|^develop$|\d+(-\w+)+$`
 
 ### Commit message convention
 
 Every commit message has to follow the following pattern:
 
-Regex: `((feat|fix|debug|test|doc) #\d+: .{5,})|(Merge pull request #\d+ from .{5,})|Merge branch .*|Merge remote-tracking branch .*`
+Regex: `^#\d+: .{5,}$|^Merge pull request #\d+.*$|^Merge branch .*$|^Merge remote-tracking branch .*$`
 
 ```txt
-<type> #<Issue ID>: <description>
+#<Issue ID>: <description>
 
 [optional body]
 
@@ -71,7 +70,7 @@ See also [www.conventionalcommits.org](https://www.conventionalcommits.org/en/v1
 Example commit message with multi-paragraph body:
 
 ```txt
-fix #42: prevent racing of requests
+#42: prevent racing of requests
 
 Introduce a request id and a reference to latest request. Dismiss
 incoming responses other than from latest request.
