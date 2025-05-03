@@ -1,4 +1,4 @@
-import { primalityTest } from 'miller-rabin-primality';
+import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
 
 export const getBitsOfBigInt = (x: bigint) => {
   // https://stackoverflow.com/questions/54758130/how-to-obtain-the-amount-of-bits-of-a-bigint
@@ -12,37 +12,6 @@ export const getRandomBigInt = (bits: number = 2048): bigint => {
     rand += Math.random() < 0.5 ? '0' : '1';
   }
   return BigInt('0b' + rand);
-};
-
-export const getPrime = async (bits: number = 2048) => {
-  let probablePrime = getRandomBigInt(bits);
-  let result = await primalityTest(probablePrime);
-
-  while (!result.probablePrime) {
-    probablePrime = getRandomBigInt(bits);
-    result = await primalityTest(probablePrime);
-  }
-
-  return probablePrime;
-};
-
-export const getRandomBigIntFromInterval = (
-  min: bigint,
-  max: bigint,
-): bigint => {
-  const range: bigint = max - min + 1n;
-  const byteLength = Math.ceil(range.toString(2).length / 8); // bytes needed
-
-  let rand;
-  do {
-    const randomBytes = new Uint8Array(byteLength);
-    crypto.getRandomValues(randomBytes);
-
-    // Convert bytes to BigInt
-    rand = randomBytes.reduce((acc, byte) => (acc << 8n) | BigInt(byte), 0n);
-  } while (rand >= range); // Reject if out of range (to keep uniform distribution)
-
-  return min + rand;
 };
 
 export const getCofactor = (p: bigint, q: bigint): bigint => {
@@ -59,20 +28,19 @@ export const getCofactor = (p: bigint, q: bigint): bigint => {
   return j;
 };
 
-// TODO: write proper test
 export const getGeneratorForPrimes = (
   primeP: bigint,
   primeQ: bigint,
 ): bigint => {
   //https://www.di-mgt.com.au/multiplicative-group-mod-p.html
-  let h = getRandomBigIntFromInterval(BigInt(1), primeP - BigInt(1));
+  let h = randBetween(modAdd([primeP, -1n], primeP), BigInt(1));
   const j = getCofactor(primeP, primeQ);
 
-  let g = (h ^ j) % primeP;
+  let g = modPow(j, j, primeP);
 
   while (g <= BigInt(1)) {
-    h = getRandomBigIntFromInterval(BigInt(1), primeP - BigInt(1));
-    g = (h ^ j) % primeP;
+    h = randBetween(modAdd([primeP, -1n], primeP), BigInt(1));
+    g = modPow(h, j, primeP);
   }
 
   return g;

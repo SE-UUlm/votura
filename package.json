@@ -42,6 +42,6 @@
     "vitest": "^3.1.2"
   },
   "dependencies": {
-    "miller-rabin-primality": "^5.0.1"
+    "bigint-crypto-utils": "^3.3.0"
   }
 }

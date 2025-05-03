@@ -2,11 +2,10 @@ import { expect, test } from 'vitest';
 import {
   getBitsOfBigInt,
   getCofactor,
-  getPrime,
+  getGeneratorForPrimes,
   getRandomBigInt,
-  getRandomBigIntFromInterval,
 } from './utils.js';
-import { primalityTest } from 'miller-rabin-primality';
+import { gcd, modPow } from 'bigint-crypto-utils';
 
 test('getBitsOfBigInt', () => {
   expect(getBitsOfBigInt(BigInt(1))).toBe(1);
@@ -20,31 +19,6 @@ test('getRandomBigInt', () => {
   expect(getBitsOfBigInt(getRandomBigInt(100))).toBe(100);
 });
 
-test(
-  'getPrime',
-  { timeout: 60000 }, // prime generation can take a while
-  async () => {
-    const prime = await getPrime();
-    expect(getBitsOfBigInt(prime)).toBe(2048);
-    const result = await primalityTest(prime);
-    expect(result.probablePrime).toBe(true);
-  },
-);
-
-test('getRandomBigIntFromInterval', { timeout: 60000 }, () => {
-  const values: [bigint, bigint][] = [
-    [1n, 5n],
-    [1000n, 50000n],
-    [getRandomBigInt(1), getRandomBigInt()],
-  ];
-
-  values.forEach(([min, max]) => {
-    const random = getRandomBigIntFromInterval(min, max);
-    expect(random).toBeLessThanOrEqual(max);
-    expect(random).toBeGreaterThanOrEqual(min);
-  });
-});
-
 test('getCofactor', () => {
   expect(getCofactor(23n, 11n)).toBe((23n - 1n) / 11n);
   expect(() => getCofactor(23n, 7n)).toThrowError(
@@ -54,4 +28,12 @@ test('getCofactor', () => {
   expect(() => getCofactor(13n, 4n)).toThrowError(
     'Invalid: cofactor j is not even',
   );
+});
+
+test('getGeneratorForPrimes', () => {
+  const generator = getGeneratorForPrimes(23n, 11n);
+  expect(generator).toBeLessThan(23n);
+  expect(generator).toBeGreaterThan(1n);
+  expect(gcd(generator, 23n)).toBe(1n);
+  expect(modPow(generator, 2, 23n)).not.toBe(1n);
 });

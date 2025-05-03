@@ -1,9 +1,13 @@
+import { getGeneratorForPrimes } from './utils.js';
 import {
-  getGeneratorForPrimes,
-  getPrime,
-  getRandomBigIntFromInterval,
-} from './utils.js';
-import { primalityTest } from 'miller-rabin-primality';
+  isProbablyPrime,
+  modAdd,
+  modInv,
+  modMultiply,
+  modPow,
+  prime,
+  randBetween,
+} from 'bigint-crypto-utils';
 
 export * from './utils.js';
 
@@ -51,8 +55,8 @@ export class KeyPair {
     }
 
     const generator = getGeneratorForPrimes(primeP, primeQ);
-    const privateKey = getRandomBigIntFromInterval(1n, primeP);
-    const publicKey = (generator ^ privateKey) % primeP;
+    const privateKey = randBetween(primeP, 1n);
+    const publicKey = modPow(generator, privateKey, primeP);
     this.privateKey = new PrivateKey(
       primeP,
       primeQ,
@@ -64,21 +68,25 @@ export class KeyPair {
   }
 }
 
-// TODO: I am not sure if I like this async await hell ...
-// TODO: The amount of bits for primeP need to be configurable!
-export const getKeyPair = async (bits?: number): Promise<KeyPair> => {
-  let primeQ = await getPrime(bits);
-  let probablePrimeP = 2n * primeQ + 1n;
+export const getKeyPair = async (
+  bitsPrimeP: number = 2048,
+): Promise<KeyPair> => {
+  let primeP = await prime(bitsPrimeP);
+  let probablePrimeQ = modMultiply(
+    [modAdd([primeP, -1n], primeP), modInv(2n, primeP)],
+    primeP,
+  );
 
-  // check for 2048 bits here by incrementing the factor???
+  let result = await isProbablyPrime(probablePrimeQ);
 
-  let result = await primalityTest(probablePrimeP);
-
-  while (!result.probablePrime) {
-    primeQ = await getPrime(bits);
-    probablePrimeP = 2n * primeQ + 1n;
-    result = await primalityTest(probablePrimeP);
+  while (!result) {
+    primeP = await prime(bitsPrimeP);
+    probablePrimeQ = modMultiply(
+      [modAdd([primeP, -1n], primeP), modInv(2n, primeP)],
+      primeP,
+    );
+    result = await isProbablyPrime(probablePrimeQ);
   }
 
-  return new KeyPair(probablePrimeP, primeQ);
+  return new KeyPair(primeP, probablePrimeQ);
 };

@@ -1,11 +1,10 @@
 import { expect, test } from 'vitest';
 import { getKeyPair } from './index.js';
+import { modAdd, modMultiply } from 'bigint-crypto-utils';
 
-test('placeholder', { timeout: 30000 }, async () => {
-  expect(true).toBe(true);
+test('getKeyPair', { timeout: 60000 }, async () => {
+  const bitsPrimeP = 128;
+  const { privateKey } = await getKeyPair(bitsPrimeP);
+  const { primeP, primeQ } = privateKey;
+  expect(modAdd([modMultiply([primeQ, 2n], primeP), 1n], primeP)).toBe(0n);
 });
-
-test('getKeyPair', {timeout: 60000}, async () => {
-  const keyPair = await getKeyPair(2048);
-  console.log(keyPair);
-})
