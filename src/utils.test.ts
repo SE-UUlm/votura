@@ -1,4 +1,4 @@
-import { expect, test } from 'vitest';
+import { expect } from 'vitest';
 import {
   getBitsOfBigInt,
   getCofactor,
@@ -6,20 +6,21 @@ import {
   getRandomBigInt,
 } from './utils.js';
 import { gcd, modPow } from 'bigint-crypto-utils';
+import { voturaTest } from './voturaTest.js';
 
-test('getBitsOfBigInt', () => {
+voturaTest('getBitsOfBigInt', () => {
   expect(getBitsOfBigInt(BigInt(1))).toBe(1);
   expect(getBitsOfBigInt(BigInt(100))).toBe(7);
   expect(getBitsOfBigInt(BigInt(10000))).toBe(14);
 });
 
-test('getRandomBigInt', () => {
+voturaTest('getRandomBigInt', () => {
   expect(getBitsOfBigInt(getRandomBigInt())).toBe(2048);
   expect(getBitsOfBigInt(getRandomBigInt(1))).toBe(1);
   expect(getBitsOfBigInt(getRandomBigInt(100))).toBe(100);
 });
 
-test('getCofactor', () => {
+voturaTest('getCofactor', () => {
   expect(getCofactor(23n, 11n)).toBe((23n - 1n) / 11n);
   expect(() => getCofactor(23n, 7n)).toThrowError(
     'Invalid: (p - 1) is not divisible by q',
@@ -30,7 +31,7 @@ test('getCofactor', () => {
   );
 });
 
-test('getGeneratorForPrimes', () => {
+voturaTest('getGeneratorForPrimes', () => {
   const generator = getGeneratorForPrimes(23n, 11n);
   expect(generator).toBeLessThan(23n);
   expect(generator).toBeGreaterThan(1n);

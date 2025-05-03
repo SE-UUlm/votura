@@ -1,10 +1,32 @@
-import { expect, test } from 'vitest';
+import { describe, expect } from 'vitest';
 import { getKeyPair } from './index.js';
-import { modAdd, modMultiply } from 'bigint-crypto-utils';
+import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
+import { voturaTest } from './voturaTest.js';
 
-test('getKeyPair', { timeout: 60000 }, async () => {
+voturaTest('getKeyPair', { timeout: 60000 }, async () => {
   const bitsPrimeP = 128;
   const { privateKey } = await getKeyPair(bitsPrimeP);
   const { primeP, primeQ } = privateKey;
   expect(modAdd([modMultiply([primeQ, 2n], primeP), 1n], primeP)).toBe(0n);
+});
+
+describe('PublicKey', { timeout: 60000 }, async () => {
+  voturaTest('encrypt', ({ keyPair }) => {
+    const { publicKey } = keyPair;
+    const randomness = 10n;
+    const plaintext = 123456789n;
+
+    const cyphertext = publicKey.encrypt(plaintext, randomness);
+
+    expect(cyphertext[0][0]).toBe(
+      modPow(publicKey.generator, randomness, publicKey.primeP),
+    );
+    expect(cyphertext[0][1]).toBe(
+      modMultiply(
+        [plaintext, modPow(publicKey.publicKey, randomness, publicKey.primeP)],
+        publicKey.primeP,
+      ),
+    );
+    expect(cyphertext[1]).toBe(randomness);
+  });
 });

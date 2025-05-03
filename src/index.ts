@@ -11,6 +11,8 @@ import {
 
 export * from './utils.js';
 
+export type Ciphertext = [bigint, bigint];
+
 export class PublicKey {
   primeP: bigint;
   primeQ: bigint;
@@ -27,6 +29,26 @@ export class PublicKey {
     this.primeQ = primeQ;
     this.generator = generator;
     this.publicKey = publicKey;
+  }
+
+  encrypt(
+    plaintext: bigint,
+    randomness: bigint = randBetween(
+      modAdd([this.primeP, -1n], this.primeP),
+      1n,
+    ),
+  ): [Ciphertext, bigint] {
+    if (plaintext === 0n) {
+      throw Error('Can not encrupt 0 with El Gamal!');
+    }
+
+    const alpha = modPow(this.generator, randomness, this.primeP);
+    const beta = modMultiply(
+      [plaintext, modPow(this.publicKey, randomness, this.primeP)],
+      this.primeP,
+    );
+
+    return [[alpha, beta], randomness];
   }
 }
 
@@ -49,14 +71,17 @@ export class KeyPair {
   publicKey: PublicKey;
   privateKey: PrivateKey;
 
-  constructor(primeP: bigint, primeQ: bigint) {
+  constructor(
+    primeP: bigint,
+    primeQ: bigint,
+    generator: bigint,
+    publicKey: bigint,
+    privateKey: bigint,
+  ) {
     if ((primeP - 1n) % primeQ !== 0n) {
       throw new Error('Invalid: (p - 1) is not divisible by q');
     }
 
-    const generator = getGeneratorForPrimes(primeP, primeQ);
-    const privateKey = randBetween(primeP, 1n);
-    const publicKey = modPow(generator, privateKey, primeP);
     this.privateKey = new PrivateKey(
       primeP,
       primeQ,
@@ -88,5 +113,9 @@ export const getKeyPair = async (
     result = await isProbablyPrime(probablePrimeQ);
   }
 
-  return new KeyPair(primeP, probablePrimeQ);
+  const generator = getGeneratorForPrimes(primeP, probablePrimeQ);
+  const privateKey = randBetween(primeP, 1n);
+  const publicKey = modPow(generator, privateKey, primeP);
+
+  return new KeyPair(primeP, probablePrimeQ, generator, publicKey, privateKey);
 };
