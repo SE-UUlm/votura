@@ -1,5 +1,5 @@
 import { describe, expect } from 'vitest';
-import { getKeyPair } from './index.js';
+import { type Ciphertext, getKeyPair } from './index.js';
 import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
@@ -10,7 +10,7 @@ voturaTest('getKeyPair', { timeout: 60000 }, async () => {
   expect(modAdd([modMultiply([primeQ, 2n], primeP), 1n], primeP)).toBe(0n);
 });
 
-describe('PublicKey', { timeout: 60000 }, async () => {
+describe('PublicKey', () => {
   voturaTest('encrypt', ({ keyPair }) => {
     const { publicKey } = keyPair;
     const randomness = 10n;
@@ -28,5 +28,17 @@ describe('PublicKey', { timeout: 60000 }, async () => {
       ),
     );
     expect(cyphertext[1]).toBe(randomness);
+  });
+});
+
+describe('PrivateKey', () => {
+  voturaTest('decrypt', ({ keyPair }) => {
+    const ciphertext: Ciphertext = [
+      1048576n,
+      74111364892091862126244320048683329486n,
+    ];
+    const plaintext = keyPair.privateKey.decrypt(ciphertext);
+
+    expect(plaintext).toBe(123456789n);
   });
 });

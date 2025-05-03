@@ -65,6 +65,20 @@ export class PrivateKey extends PublicKey {
     super(primeP, primeQ, generator, publicKey);
     this.privateKey = privateKey;
   }
+
+  decrypt(ciphertext: Ciphertext): bigint {
+    return modMultiply(
+      [
+        modPow(
+          ciphertext[0],
+          modAdd([this.primeQ, -this.privateKey], this.primeP),
+          this.primeP,
+        ),
+        ciphertext[1],
+      ],
+      this.primeP,
+    );
+  }
 }
 
 export class KeyPair {
