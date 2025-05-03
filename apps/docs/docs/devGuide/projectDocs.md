@@ -21,8 +21,9 @@ If you have made changes to the documentation, you can preview them locally befo
 Therefore, you need to install the dependencies and start the development server:
 
 ```bash
-$ cd apps/docs
-$ npm run start
+cd apps/docs
+npm install
+npm run start
 ```
 
 This will start a local server on `http://localhost:3000` where you can preview your changes.
@@ -65,7 +66,7 @@ For every new votura version release, we create also a new version of the docume
 Therefore, the responsible person for the release runs the following command:
 
 ```bash
-$ npm run docusaurus docs:version <version>
+npm run docusaurus docs:version <version>
 ```
 
 This will create a new version of the documentation in the `versioned_docs` folder.
