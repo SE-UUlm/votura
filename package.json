@@ -60,7 +60,7 @@
   },
   "packageManager": "npm@11.3.0",
   "engines": {
-    "node": ">=22.9.0"
+    "node": ">=22"
   },
   "os": [
     "darwin",
