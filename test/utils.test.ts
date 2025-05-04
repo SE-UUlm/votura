@@ -4,9 +4,9 @@ import {
   getCofactor,
   getGeneratorForPrimes,
   getRandomBigInt,
-} from './utils.js';
+} from '../src/utils.js';
 import { gcd, modPow } from 'bigint-crypto-utils';
-import { voturaTest } from './voturaTest.js';
+import { voturaTest } from '../src/voturaTest.js';
 
 voturaTest('getBitsOfBigInt', () => {
   expect(getBitsOfBigInt(BigInt(1))).toBe(1);

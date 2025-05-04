@@ -1,7 +1,7 @@
 import { describe, expect } from 'vitest';
-import { type Ciphertext, getKeyPair } from './index.js';
+import { type Ciphertext, getKeyPair } from '../src/index.js';
 import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
-import { voturaTest } from './voturaTest.js';
+import { voturaTest } from '../src/voturaTest.js';
 
 voturaTest('getKeyPair', { timeout: 60000 }, async () => {
   const bitsPrimeP = 128;
