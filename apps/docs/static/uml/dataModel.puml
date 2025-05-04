@@ -1,0 +1,127 @@
+@startuml dataModel
+
+note as N1
+TODO: add correct POSTGRESQL types
+end note
+
+entity "elections" as elections {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * name : VARCHAR(255)
+    description : TEXT
+    * votingStart : DATE
+    * votingEnd : DATE
+    * freezeConfig : BOOLEAN
+    * votesCounted : BOOLEAN
+    ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
+    validVotes : INT | NULL
+    invalidVotes : INT | NULL
+    * pubKey: INT(2048)
+    * privKey: INT(2048)
+    * prime_p: INT(2048) 
+    * prime_q: INT(512)
+    * generator: INT(2048)
+    --
+}
+
+entity "ballotPapers" as ballotPapers {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * name : VARCHAR(255)
+    description : TEXT | NULL
+    * maxVotes : INT
+    * maxVotesPerCandidate : INT
+    * allowInvalidVote : BOOLEAN
+    --
+    * elections : elections.id <<FK>>
+}
+
+entity "ballotPaperSections" as ballotPaperSections {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * name : VARCHAR(255)
+    description : TEXT | NULL
+    * maxVotes : INT
+    * maxVotesPerCandidate : INT
+    --
+    * ballotPapers : ballotPapers.id <<FK>>
+}
+' note as C_2
+' If at least two ballotPapers sections are created for one ballotPapers, 
+' the name field of the ballotPapers section is mandatory.
+' end note
+
+entity "ballotPaperSectionCandidates" as ballotPaperSectionCandidates {
+    * ballotPaperSection : ballotPaperSection.id <<PK>> <<FK>>
+    * candidate : candidate.id <<PK>> <<FK>>
+    --
+    * created : DATE
+    * modified : DATE
+    --
+}
+
+entity "candidates" as candidates {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * title : VARCHAR(255)
+    description : TEXT | NULL
+    votes : INT | NULL
+    --
+}
+
+entity "votes" as votes {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * alpha: INT(2048) | NULL
+    * beta: INT(2048) | NULL
+    * commitment_part1: INT(2048) | NULL
+    * commitment_part2: INT(2048) | NULL
+    * challenge: INT(512) | NULL
+    * response: INT(512) | NULL
+    --
+    * elections : elections.id <<FK>>
+    ' if the vote isn't secret voter can be saved
+    voter: voters.id <<FK>>
+}
+
+entity "voterRegisters" as voterRegisters {
+    * ballotPaper : ballotPaper.id <<PK>> <<FK>>
+    * voter : voter.id <<PK>> <<FK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * voted: BOOLEAN
+}
+
+entity "voters" as voters {
+    * id : INT <<PK>>
+    --
+    * created : DATE
+    * modified : DATE
+    * tokenHash : VARCHAR(255)
+    --
+}
+
+
+elections ||--o{ ballotPapers
+ballotPapers ||--o{ voterRegisters
+voterRegisters }o--|| voters
+ballotPapers ||--o{ ballotPaperSections
+' ballotPaperSections -- C_2
+ballotPaperSections ||--o{ ballotPaperSectionCandidates
+ballotPaperSectionCandidates }o--|| candidates
+votes }o--|| elections
+voters |o--o{ votes
+
+
+@enduml
