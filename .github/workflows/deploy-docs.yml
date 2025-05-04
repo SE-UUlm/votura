@@ -61,9 +61,10 @@ jobs:
           wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
           apt-get install -y ./drawio-amd64-24.7.17.deb
       - name: Build DrawIO SVG files
+        # DrawIO returns immediately even when the image is not finished rendered, so there for the sleep guess.
         run: |
           xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
-          sleep 30
+          sleep 15
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -97,17 +98,11 @@ jobs:
       - run: cp -r ./apps/docs/static/uml_svg/* ./apps/docs/static/uml/
       - run: cp -r ./apps/docs/static/drawio_svg/* ./apps/docs/static/drawio/
       - name: Install dependencies
-        run: |
-          cd ./apps/docs/
-          npm ci
+        run: npm ci
       - name: Check types
-        run: |
-          cd ./apps/docs/
-          turbo docs#check-types
+        run: turbo docs#check-types
       - name: Build website
-        run: |
-          cd ./apps/docs/
-          turbo docs#build
+        run: turbo docs#build
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
