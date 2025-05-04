@@ -12,10 +12,10 @@ Votura is a project that was born in 2025 as a student software engineering proj
 
 Votura is currently maintained by:
 
-- [@araschke Alexander Raschke](https://github.com/araschke)
-- [@JKortmann Johannes Kortmann](https://github.com/JKortmann)
 - [@ThorbenCarl Thorben Carl](https://github.com/ThorbenCarl)
 - [@shoffma Sören S. Hoffmann](https://github.com/shoffma)
+- [@JKortmann Johannes Kortmann](https://github.com/JKortmann)
 - [@dsiev David Sievers](https://github.com/dsiev)
+- [@araschke Alexander Raschke](https://github.com/araschke)
 
 [Imprint University of Ulm](https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/)

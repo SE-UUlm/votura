@@ -1,0 +1,18 @@
+@startuml repoStructure
+
+package "votura (Repository)" {
+    package "apps" {
+        package "docs" {
+        }
+        package "frontend" {
+        }
+        package "backend" {
+        }
+    }
+    package "packages" {
+        package "votura-crypto" {
+        }
+    }
+}
+
+@enduml
