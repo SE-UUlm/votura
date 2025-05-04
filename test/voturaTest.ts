@@ -1,8 +1,11 @@
-import { KeyPair } from './index.js';
+import { type Ciphertext, KeyPair } from '../src/index.js';
 import { test } from 'vitest';
 
 interface VoturaFixtures {
   keyPair: KeyPair;
+  randomness: bigint;
+  plaintext: bigint;
+  ciphertext: Ciphertext;
 }
 
 const keyPair: KeyPair = new KeyPair(
@@ -15,4 +18,7 @@ const keyPair: KeyPair = new KeyPair(
 
 export const voturaTest = test.extend<VoturaFixtures>({
   keyPair,
+  randomness: 10n,
+  plaintext: 123456789n,
+  ciphertext: [1048576n, 74111364892091862126244320048683329486n],
 });
