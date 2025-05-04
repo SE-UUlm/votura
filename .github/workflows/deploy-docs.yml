@@ -100,9 +100,13 @@ jobs:
       - name: Install dependencies
         run: npm ci
       - name: Check types
-        run: turbo docs#check-types
+        run: |
+          cd ./apps/docs/
+          npm run check-types
       - name: Build website
-        run: turbo docs#build
+        run: |
+           cd ./apps/docs/
+           npm run build
       - name: Upload Build Artifact
         uses: actions/upload-pages-artifact@v3
         with:
