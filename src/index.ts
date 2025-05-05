@@ -39,7 +39,7 @@ export class PublicKey {
     ),
   ): [Ciphertext, bigint] {
     if (plaintext === 0n) {
-      throw Error('Can not encrupt 0 with El Gamal!');
+      throw Error('Can not encrypt 0 with El Gamal!');
     }
 
     const alpha = modPow(this.generator, randomness, this.primeP);
