@@ -42,16 +42,6 @@ export class PublicKey {
       throw Error('Can not encrypt 0 with El Gamal!');
     }
 
-    if (plaintext > this.primeP) {
-      const encodedPlaintext = plaintext + 1n
-
-      if(modPow(encodedPlaintext, this.primeQ, this.primeP) === 1n) {
-        plaintext = encodedPlaintext;
-      } else {
-        plaintext = -encodedPlaintext % this.primeP
-      }
-    }
-
     const alpha = modPow(this.generator, randomness, this.primeP);
     const beta = modMultiply(
       [plaintext, modPow(this.publicKey, randomness, this.primeP)],
