@@ -38,8 +38,12 @@ export class PublicKey {
       1n,
     ),
   ): [Ciphertext, bigint] {
-    if (plaintext === 0n || plaintext >= this.primeP) {
+    if (plaintext === 0n) {
       throw Error('Can not encrypt 0 with El Gamal!');
+    }
+
+    if (plaintext <= 0n || plaintext >= this.primeP) {
+      throw Error('Message out of range for El Gamal encoding!');
     }
 
     const alpha = modPow(this.generator, randomness, this.primeP);
