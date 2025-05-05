@@ -3,7 +3,6 @@ import {
   getBitsOfBigInt,
   getCofactor,
   getGeneratorForPrimes,
-  getRandomBigInt,
 } from '../src/utils.js';
 import { gcd, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
@@ -13,12 +12,6 @@ describe('Utility Functions', () => {
     expect(getBitsOfBigInt(BigInt(1))).toBe(1);
     expect(getBitsOfBigInt(BigInt(100))).toBe(7);
     expect(getBitsOfBigInt(BigInt(10000))).toBe(14);
-  });
-
-  voturaTest('getRandomBigInt', () => {
-    expect(getBitsOfBigInt(getRandomBigInt())).toBe(2048);
-    expect(getBitsOfBigInt(getRandomBigInt(1))).toBe(1);
-    expect(getBitsOfBigInt(getRandomBigInt(100))).toBe(100);
   });
 
   voturaTest('getCofactor', () => {

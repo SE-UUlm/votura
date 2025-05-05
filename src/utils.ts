@@ -6,14 +6,6 @@ export const getBitsOfBigInt = (x: bigint) => {
   return i + 32 - Math.clz32(Number(x >> BigInt(i)));
 };
 
-export const getRandomBigInt = (bits: number = 2048): bigint => {
-  let rand = '1';
-  for (let i = 1; i < bits; i++) {
-    rand += Math.random() < 0.5 ? '0' : '1';
-  }
-  return BigInt('0b' + rand);
-};
-
 export const getCofactor = (p: bigint, q: bigint): bigint => {
   // https://www.di-mgt.com.au/multiplicative-group-mod-p.html
   const j = (p - 1n) / q;
