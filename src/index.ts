@@ -43,12 +43,12 @@ export class PublicKey {
     }
 
     if (plaintext > this.primeP) {
-      const encodedPlaintext = plaintext + 1n;
+      const encodedPlaintext = plaintext + 1n
 
-      if (modPow(encodedPlaintext, this.primeQ, this.primeP) === 1n) {
+      if(modPow(encodedPlaintext, this.primeQ, this.primeP) === 1n) {
         plaintext = encodedPlaintext;
       } else {
-        plaintext = -encodedPlaintext % this.primeP;
+        plaintext = -encodedPlaintext % this.primeP
       }
     }
 
@@ -77,7 +77,7 @@ export class PrivateKey extends PublicKey {
   }
 
   decrypt(ciphertext: Ciphertext): bigint {
-    const plaintext = modMultiply(
+    return modMultiply(
       [
         modPow(
           ciphertext[0],
@@ -88,12 +88,6 @@ export class PrivateKey extends PublicKey {
       ],
       this.primeP,
     );
-
-    if (plaintext >= this.primeQ) {
-      return modAdd([-plaintext % this.primeP, -1n], this.primeP);
-    }
-
-    return modAdd([plaintext, -1n], this.primeP);
   }
 }
 
