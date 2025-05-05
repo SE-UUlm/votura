@@ -102,10 +102,14 @@ The same applies to all other following commands.
 turbo typecheck
 ```
 
+#### Format votura
+
+```bash
+turbo format
+```
+
 #### Start all development servers
 
 ```bash
 turbo start
 ```
-
-TODO: linter, test

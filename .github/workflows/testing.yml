@@ -29,3 +29,5 @@ jobs:
         run: npm run check-types
       - name: Check types
         run: npm run check-format
+
+        # TODO: run tests & build
