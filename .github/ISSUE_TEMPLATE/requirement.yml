@@ -16,7 +16,7 @@ body:
     validations:
       required: true
   - type: textarea
-    id: acceptance 
+    id: acceptance
     attributes:
       label: Acceptance test
       description: A clear and concise description how the stakeholder acceptance test should look like, so that the requirement is fulfilled.
