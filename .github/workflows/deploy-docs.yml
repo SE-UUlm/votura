@@ -62,7 +62,7 @@ jobs:
         # DrawIO returns immediately even when the image is not finished rendered, so there for the sleep guess.
         run: |
           xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
-          sleep 15
+          timeout=300
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
