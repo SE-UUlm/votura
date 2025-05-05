@@ -38,7 +38,7 @@ export class PublicKey {
       1n,
     ),
   ): [Ciphertext, bigint] {
-    if (plaintext === 0n) {
+    if (plaintext === 0n || plaintext >= this.primeP) {
       throw Error('Can not encrypt 0 with El Gamal!');
     }
 
