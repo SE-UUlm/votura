@@ -36,7 +36,7 @@ export const getGeneratorForPrimes = (
   let h = randBetween(modAdd([primeP, -1n], primeP), BigInt(1));
   const j = getCofactor(primeP, primeQ);
 
-  let g = modPow(j, j, primeP);
+  let g = modPow(h, j, primeP);
 
   while (g <= BigInt(1)) {
     h = randBetween(modAdd([primeP, -1n], primeP), BigInt(1));
