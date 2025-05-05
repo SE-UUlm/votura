@@ -15,9 +15,24 @@
       "interactive": false,
       "outputs": ["build/**"]
     },
-
     "check-types": {
       "dependsOn": ["^check-types"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false
+    },
+    "format": {
+      "dependsOn": ["^format"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false
+    },
+    "check-format": {
+      "dependsOn": ["^check-format"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
@@ -29,7 +44,8 @@
       "cache": false,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
-      "persistent": true
+      "persistent": true,
+      "interactive": false
     }
   }
 }
