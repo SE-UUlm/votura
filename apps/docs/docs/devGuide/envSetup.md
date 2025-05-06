@@ -16,21 +16,9 @@ Before you can start developing with votura, you need to install some global dep
 We need:
 
 - [git](https://git-scm.com/)
-- [node.js](https://nodejs.org/en/)
+- [node.js](https://nodejs.org/en/) (we recommend using [nvm](https://github.com/nvm-sh/nvm))
 
 For the installation we refer to the official documentation of the tools.
-
-Now we can install turborepo globally:
-
-```bash
-npm install turbo --global
-```
-
-When you don't want to send telemetry data to the turborepo team, you can disable it with the following command:
-
-```bash
-turbo telemetry disable
-```
 
 Please run the following commands to check if you have installed the tools correctly:
 
@@ -38,7 +26,6 @@ Please run the following commands to check if you have installed the tools corre
 git -v
 node -v
 npm -v
-npm turbo -v
 ```
 
 ## Starting with the votura repository
