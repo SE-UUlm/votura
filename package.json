@@ -53,7 +53,7 @@
     "build": "turbo run build",
     "test": "echo 'No tests defined'",
     "start": "turbo run start",
-    "ci": "turbo run build && turbo run check-format && turbo run check-types"
+    "ci": "turbo run check-format && turbo run check-types && turbo run build"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
@@ -87,5 +87,5 @@
     "./apps/*",
     "./packages/*"
   ],
-  "type": "commonjs"
+  "type": "module"
 }
