@@ -1,0 +1,46 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "description": "This workspace contains the backend for votura.",
+  "keywords": ["voting"],
+  "homepage": "https://se-uulm.github.io/votura/",
+  "bugs": {
+    "url": "https://github.com/SE-UUlm/votura/issues"
+  },
+  "contributors": [
+    {
+      "name": "Thorben Carl",
+      "email": "thorben.carl@uni-ulm.decom",
+      "url": "https://github.com/ThorbenCarl"
+    },
+    {
+      "name": "Sören S. Hoffmann",
+      "email": "soeren.hoffmann@uni-ulm.decom",
+      "url": "https://github.com/shoffma"
+    },
+    {
+      "name": "Johannes Kortmann",
+      "email": "Johannes.kortmann@uni-ulm.decom",
+      "url": "https://github.com/JKortmann"
+    },
+    {
+      "name": "David Sievers",
+      "email": "david.sievers@uni-ulm.decom",
+      "url": "https://github.com/dsiev"
+    },
+    {
+      "name": "Alexander Raschke",
+      "email": "alexander.raschke@uni-ulm.de",
+      "url": "https://github.com/araschke"
+    }
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "University of Ulm",
+    "url": "https://www.uni-ulm.de"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "type": "module"
+}
