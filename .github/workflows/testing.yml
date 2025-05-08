@@ -30,6 +30,8 @@ jobs:
       - name: Check formats
         run: npm run check-format
       - name: Run build
-        run: npm run build
+        run: | # TODO; currently only build votura-crypto, docs need SVGs...
+          cd packages/votura-crypto
+          npm run build
       - name: Run tests
         run: npm run test
