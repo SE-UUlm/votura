@@ -42,7 +42,20 @@
     "url": "https://www.uni-ulm.de"
   },
   "scripts": {
+    "build": "tsc",
+    "start": "npm run postgres-up && tsx src/main.ts",
+    "postgres-up": "docker compose up -d",
+    "postgres-down": "docker compose down",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@tsconfig/node22": "^22.0.1",
+    "@types/node": "^22.15.16",
+    "prisma": "^6.7.0",
+    "tsx": "^4.19.4"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  }
 }
