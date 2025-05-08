@@ -1,0 +1,91 @@
+{
+  "name": "votura",
+  "version": "0.0.0",
+  "description": "Votura is a web based open source voting system.",
+  "keywords": [
+    "voting"
+  ],
+  "homepage": "https://se-uulm.github.io/votura/",
+  "bugs": {
+    "url": "https://github.com/SE-UUlm/votura/issues"
+  },
+  "license": "MIT",
+  "author": {
+    "name": "University of Ulm",
+    "url": "https://www.uni-ulm.de"
+  },
+  "contributors": [
+    {
+      "name": "Thorben Carl",
+      "email": "thorben.carl@uni-ulm.decom",
+      "url": "https://github.com/ThorbenCarl"
+    },
+    {
+      "name": "Sören S. Hoffmann",
+      "email": "soeren.hoffmann@uni-ulm.decom",
+      "url": "https://github.com/shoffma"
+    },
+    {
+      "name": "Johannes Kortmann",
+      "email": "Johannes.kortmann@uni-ulm.decom",
+      "url": "https://github.com/JKortmann"
+    },
+    {
+      "name": "David Sievers",
+      "email": "david.sievers@uni-ulm.decom",
+      "url": "https://github.com/dsiev"
+    },
+    {
+      "name": "Alexander Raschke",
+      "email": "alexander.raschke@uni-ulm.de",
+      "url": "https://github.com/araschke"
+    }
+  ],
+  "main": "index.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SE-UUlm/votura.git"
+  },
+  "scripts": {
+    "format": "turbo run format",
+    "check-format": "turbo run check-format",
+    "check-types": "turbo run check-types",
+    "build": "turbo run build",
+    "test": "echo 'No tests defined'",
+    "start": "turbo run start",
+    "ci": "turbo run check-format && turbo run check-types && turbo run build"
+  },
+  "devDependencies": {
+    "prettier": "^3.5.3",
+    "turbo": "^2.5.2",
+    "typescript": "5.8.2"
+  },
+  "packageManager": "npm@11.3.0",
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win64"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "onFail": "error"
+    }
+  },
+  "workspaces": [
+    "./apps/*",
+    "./packages/*"
+  ],
+  "type": "module"
+}

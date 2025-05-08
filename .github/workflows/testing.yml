@@ -1,0 +1,33 @@
+name: Testing
+
+on:
+  workflow_dispatch:
+  push:
+
+jobs:
+  test:
+    name: Test and Lint
+    runs-on:
+      labels: ubuntu-latest
+    container:
+      image: ubuntu:22.04
+    continue-on-error: false
+    timeout-minutes: 15
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install dependencies
+        run: npm ci
+      - name: Check types
+        run: npm run check-types
+      - name: Check types
+        run: npm run check-format
+
+        # TODO: run tests & build
