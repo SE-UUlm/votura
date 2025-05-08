@@ -51,6 +51,12 @@ The votura repository is a npm project (sometimes also called as workspace).
 In the `apps` folder you can find all the applications of votura that can run independently, like the documentation, frontend or backend server.
 In the `packages` folder you can find all the shared packages that are used in the applications, like the votura-crypto package or the typescript and eslint configuration.
 
+Now you can run in the root folder the following command to install all dependencies of the repository:
+
+```bash
+npm install
+```
+
 ### Turborepo
 
 All these sub-projects are independent npm projects, but they some dependencies and configuration to each other.

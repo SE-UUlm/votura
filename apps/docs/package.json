@@ -1,20 +1,20 @@
 {
-  "name": "docs",
+  "name": "@votura/docs",
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "docusaurus": "docusaurus",
-    "start": "docusaurus start",
-    "build": "docusaurus build",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit",
+    "build": "docusaurus build",
+    "start": "docusaurus start",
+    "docusaurus": "docusaurus",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",
     "clear": "docusaurus clear",
     "serve": "docusaurus serve",
     "write-translations": "docusaurus write-translations",
-    "write-heading-ids": "docusaurus write-heading-ids",
-    "check-types": "tsc"
+    "write-heading-ids": "docusaurus write-heading-ids"
   },
   "dependencies": {
     "@docusaurus/core": "3.7.0",
@@ -28,8 +28,7 @@
   "devDependencies": {
     "@docusaurus/module-type-aliases": "3.7.0",
     "@docusaurus/tsconfig": "3.7.0",
-    "@docusaurus/types": "3.7.0",
-    "typescript": "~5.6.2"
+    "@docusaurus/types": "3.7.0"
   },
   "browserslist": {
     "production": [

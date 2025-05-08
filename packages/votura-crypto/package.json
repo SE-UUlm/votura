@@ -2,46 +2,74 @@
   "name": "@votura/votura-crypto",
   "version": "0.0.3",
   "description": "A package containing the cryptographic algorithms used in the votura project.",
-  "homepage": "https://github.com/SE-UUlm/votura-crypto",
+  "keywords": [
+    "cryptographic"
+  ],
+  "homepage": "https://se-uulm.github.io/votura/",
   "bugs": {
-    "url": "https://github.com/SE-UUlm/votura-crypto/issues"
+    "url": "https://github.com/SE-UUlm/votura/issues"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/SE-UUlm/votura-crypto.git"
+  "license": "MIT",
+  "author": {
+    "name": "University of Ulm",
+    "url": "https://www.uni-ulm.de"
   },
   "main": "dist/index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/SE-UUlm/votura.git"
+  },
   "scripts": {
-    "build": "tsc",
-    "ci": "npm run build && npm run check-format && npm run check-exports && npm run test",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
+    "build": "tsc",
+    "check-types": "tsc --noEmit",
     "test": "vitest --config tsconfig.vitest.json run",
+    "ci": "npm run build && npm run check-format && npm run check-exports && npm run test",
+    "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
     "local-release": "changeset version && changeset publish",
     "prepublishOnly": "npm run ci"
   },
-  "license": "MIT",
-  "files": [
-    "dist"
-  ],
-  "type": "module",
   "devDependencies": {
+    "@repo/typescript-config": "*",
     "@arethetypeswrong/cli": "^0.17.4",
     "@changesets/cli": "^2.29.2",
-    "@eslint/js": "^9.25.1",
-    "@eslint/json": "^0.12.0",
-    "@typescript-eslint/eslint-plugin": "^8.31.0",
-    "@typescript-eslint/parser": "^8.31.0",
-    "eslint": "^9.25.1",
-    "eslint-config-prettier": "^10.1.2",
-    "globals": "^16.0.0",
-    "prettier": "3.5.3",
-    "typescript": "^5.8.3",
-    "typescript-eslint": "^8.31.0",
     "vitest": "^3.1.2"
   },
   "dependencies": {
     "bigint-crypto-utils": "^3.3.0"
+  },
+  "packageManager": "npm@11.3.0",
+  "engines": {
+    "node": ">=22.15.0"
+  },
+  "os": [
+    "darwin",
+    "linux",
+    "win64"
+  ],
+  "cpu": [
+    "x64",
+    "arm64"
+  ],
+  "devEngines": {
+    "runtime": {
+      "name": "node",
+      "onFail": "error"
+    },
+    "packageManager": {
+      "name": "npm",
+      "onFail": "error"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "exports": {
+    "./*": {
+      "types": "./src/*.ts",
+      "default": "./dist/*.js"
+    }
   }
 }

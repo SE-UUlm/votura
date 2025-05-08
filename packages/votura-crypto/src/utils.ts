@@ -20,10 +20,7 @@ export const getCofactor = (p: bigint, q: bigint): bigint => {
   return j;
 };
 
-export const getGeneratorForPrimes = (
-  primeP: bigint,
-  primeQ: bigint,
-): bigint => {
+export const getGeneratorForPrimes = (primeP: bigint, primeQ: bigint): bigint => {
   //https://www.di-mgt.com.au/multiplicative-group-mod-p.html
   let h = randBetween(modAdd([primeP, -1n], primeP), BigInt(1));
   const j = getCofactor(primeP, primeQ);

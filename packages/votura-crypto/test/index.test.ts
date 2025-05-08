@@ -16,9 +16,7 @@ describe('PublicKey', () => {
 
     const encryptedText = publicKey.encrypt(plaintext, randomness);
 
-    expect(encryptedText[0][0]).toBe(
-      modPow(publicKey.generator, randomness, publicKey.primeP),
-    );
+    expect(encryptedText[0][0]).toBe(modPow(publicKey.generator, randomness, publicKey.primeP));
     expect(encryptedText[0][1]).toBe(
       modMultiply(
         [plaintext, modPow(publicKey.publicKey, randomness, publicKey.primeP)],
@@ -31,10 +29,7 @@ describe('PublicKey', () => {
 
 describe('PrivateKey', () => {
   voturaTest('decrypt', ({ keyPair, plaintext }) => {
-    const ciphertext: Ciphertext = [
-      1048576n,
-      74111364892091862126244320048683329486n,
-    ];
+    const ciphertext: Ciphertext = [1048576n, 74111364892091862126244320048683329486n];
     const decryptedText = keyPair.privateKey.decrypt(ciphertext);
 
     expect(decryptedText).toBe(plaintext);
