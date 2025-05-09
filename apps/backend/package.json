@@ -46,10 +46,16 @@
     "start": "npm run postgres-up && tsx src/main.ts",
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
   },
   "type": "module",
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@repo/eslint-config": "workspace:*",
+    "eslint": "^9.25.1",
+    "prettier": "^3.5.3",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.15.16",
     "prisma": "^6.7.0",
