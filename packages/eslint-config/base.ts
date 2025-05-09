@@ -43,6 +43,6 @@ export const config = [
     },
   },
   {
-    ignores: ["dist/**", "build/**"],
+    ignores: ["dist/**", "build/**", "coverage/**"],
   },
 ];

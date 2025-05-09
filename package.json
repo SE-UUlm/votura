@@ -51,13 +51,13 @@
     "check-format": "turbo run check-format",
     "check-types": "turbo run check-types",
     "build": "turbo run build",
-    "test": "echo 'No tests defined'",
+    "test": "turbo run test",
     "start": "turbo run start",
     "ci": "turbo run check-format && turbo run check-types && turbo run build"
   },
   "devDependencies": {
     "prettier": "^3.5.3",
-    "turbo": "^2.5.2",
+    "turbo": "^2.5.3",
     "typescript": "5.8.2"
   },
   "packageManager": "npm@11.3.0",

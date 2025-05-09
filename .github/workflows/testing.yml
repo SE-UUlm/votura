@@ -27,7 +27,11 @@ jobs:
         run: npm ci
       - name: Check types
         run: npm run check-types
-      - name: Check types
+      - name: Check formats
         run: npm run check-format
-
-        # TODO: run tests & build
+      - name: Run build
+        run: | # TODO; currently only build votura-crypto, docs need SVGs...
+          cd packages/votura-crypto
+          npm run build
+      - name: Run tests
+        run: npm run test
