@@ -51,14 +51,15 @@
   },
   "type": "module",
   "devDependencies": {
-    "@repo/typescript-config": "*",
     "@repo/eslint-config": "*",
-    "eslint": "^9.25.1",
-    "prettier": "^3.5.3",
+    "@repo/typescript-config": "*",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.15.16",
+    "eslint": "^9.25.1",
+    "prettier": "^3.5.3",
     "prisma": "^6.7.0",
-    "tsx": "^4.19.4"
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.2"
   },
   "dependencies": {
     "@prisma/client": "^6.7.0"

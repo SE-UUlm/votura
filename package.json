@@ -58,7 +58,7 @@
   "devDependencies": {
     "prettier": "^3.5.3",
     "turbo": "^2.5.3",
-    "typescript": "5.8.2"
+    "typescript": "^5.8.2"
   },
   "packageManager": "npm@11.3.0",
   "engines": {
