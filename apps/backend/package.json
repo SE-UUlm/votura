@@ -52,8 +52,8 @@
   },
   "type": "module",
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
-    "@repo/eslint-config": "workspace:*",
+    "@repo/typescript-config": "*",
+    "@repo/eslint-config": "*",
     "eslint": "^9.25.1",
     "prettier": "^3.5.3",
     "@tsconfig/node22": "^22.0.1",

@@ -8,6 +8,6 @@
   },
   "type": "module",
   "devDependencies": {
-    "@repo/eslint-config": "workspace:*"
+    "@repo/eslint-config": "*"
   }
 }
