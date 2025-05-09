@@ -6,23 +6,6 @@
   "cacheDir": ".turbo/cache",
   "envMode": "strict",
   "tasks": {
-    "build": {
-      "dependsOn": ["^build"],
-      "cache": true,
-      "inputs": ["$TURBO_DEFAULT$"],
-      "outputLogs": "full",
-      "persistent": false,
-      "interactive": false,
-      "outputs": ["build/**"]
-    },
-    "check-types": {
-      "dependsOn": ["^check-types"],
-      "cache": true,
-      "inputs": ["$TURBO_DEFAULT$"],
-      "outputLogs": "full",
-      "persistent": false,
-      "interactive": false
-    },
     "format": {
       "dependsOn": ["^format"],
       "cache": true,
@@ -33,6 +16,31 @@
     },
     "check-format": {
       "dependsOn": ["^check-format"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false
+    },
+    "check-types": {
+      "dependsOn": ["^check-types"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": ["build/**","dist/**"]
+    },
+    "test": {
+      "dependsOn": ["^test"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
