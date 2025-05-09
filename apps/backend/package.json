@@ -46,7 +46,6 @@
     "start": "npm run postgres-up && tsx src/main.ts",
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
-    "test": "echo \"Error: no test specified\" && exit 1",
     "format": "prettier --write .",
     "check-format": "prettier --check ."
   },

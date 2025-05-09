@@ -15,7 +15,6 @@
     "check-format": "prettier --check ."
   },
   "devDependencies": {
-    "@repo/typescript-config": "*",
     "eslint": "^9.25.1",
     "prettier": "^3.5.3",
     "eslint-config-prettier": "^10.1.2",
