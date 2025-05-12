@@ -1,0 +1,67 @@
+{
+  "name": "backend",
+  "version": "0.0.0",
+  "description": "This workspace contains the backend for votura.",
+  "keywords": [
+    "voting"
+  ],
+  "homepage": "https://se-uulm.github.io/votura/",
+  "bugs": {
+    "url": "https://github.com/SE-UUlm/votura/issues"
+  },
+  "contributors": [
+    {
+      "name": "Thorben Carl",
+      "email": "thorben.carl@uni-ulm.decom",
+      "url": "https://github.com/ThorbenCarl"
+    },
+    {
+      "name": "Sören S. Hoffmann",
+      "email": "soeren.hoffmann@uni-ulm.decom",
+      "url": "https://github.com/shoffma"
+    },
+    {
+      "name": "Johannes Kortmann",
+      "email": "Johannes.kortmann@uni-ulm.decom",
+      "url": "https://github.com/JKortmann"
+    },
+    {
+      "name": "David Sievers",
+      "email": "david.sievers@uni-ulm.decom",
+      "url": "https://github.com/dsiev"
+    },
+    {
+      "name": "Alexander Raschke",
+      "email": "alexander.raschke@uni-ulm.de",
+      "url": "https://github.com/araschke"
+    }
+  ],
+  "license": "MIT",
+  "author": {
+    "name": "University of Ulm",
+    "url": "https://www.uni-ulm.de"
+  },
+  "scripts": {
+    "build": "tsc",
+    "start": "npm run postgres-up && tsx src/main.ts",
+    "postgres-up": "docker compose up -d",
+    "postgres-down": "docker compose down",
+    "format": "prettier --write .",
+    "check-format": "prettier --check ."
+  },
+  "type": "module",
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@tsconfig/node22": "^22.0.1",
+    "@types/node": "^22.15.16",
+    "eslint": "^9.25.1",
+    "prettier": "^3.5.3",
+    "prisma": "^6.7.0",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.2"
+  },
+  "dependencies": {
+    "@prisma/client": "^6.7.0"
+  }
+}
