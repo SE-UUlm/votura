@@ -48,8 +48,10 @@ The following image gives a brief overview of the structure of the repository:
 ![the cryptographic workflow of votura](../../static/uml/repoStructure.svg)
 
 The votura repository is a npm project (sometimes also called as workspace).
-In the `apps` folder you can find all the applications of votura that can run independently, like the documentation, frontend or backend server.
-In the `packages` folder you can find all the shared packages that are used in the applications, like the votura-crypto package or the typescript and eslint configuration.
+In the `apps` folder you can find all the applications of votura that can run independently, like the documentation,
+frontend or backend server.
+In the `packages` folder you can find all the shared packages that are used in the applications, like the votura-crypto
+package or the typescript and eslint configuration.
 
 Now you can run in the root folder the following command to install all dependencies of the repository:
 
@@ -61,7 +63,20 @@ npm install
 
 All these sub-projects are independent npm projects, but they some dependencies and configuration to each other.
 You can navigate to the sub-projects and test, build or run them on their own.
-But the main advantage of turborepo is that you can run all the commands in the root folder, and you can run, test or build all the sub-projects at once.
+But the main advantage of turborepo is that you can run all the commands in the root folder, and you can run, test or
+build all the sub-projects at once.
+
+#### Installing Workspace-Scoped Dependencies in a Turborepo Monorepo
+
+In a monorepo using [Turborepo](https://turborepo.com/), dependencies can be shared across packages using workspace
+protocols defined in `package.json`. This allows you to install internal packages as dependencies using workspace
+scoping.
+
+To add a workspace-scoped dependency to an app, run:
+
+```bash
+npm install <package-name> -w <workspace-name>
+```
 
 #### Building the project
 
