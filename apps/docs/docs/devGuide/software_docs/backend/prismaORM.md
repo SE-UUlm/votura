@@ -78,7 +78,7 @@ Edit prisma/schema.prisma to define your database models. Example:
 model User {
   id        Int      @id @default(autoincrement())
   email     String   @unique
-  name      String?  
+  name      String?
   createdAt DateTime @default(now())
 }
 ```
