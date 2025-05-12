@@ -1,11 +1,11 @@
 import useSWR from 'swr';
 import { fetcher } from './fetcher.ts';
 
-type UseVoturaGithubRepoResponse = {
+interface UseVoturaGithubRepoResponse {
   subscribers_count: number;
   stargazers_count: number;
   forks_count: number;
-};
+}
 
 export const useVoturaGithubRepo = () => {
   return useSWR(
