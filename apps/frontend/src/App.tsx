@@ -2,10 +2,15 @@ import { useState } from 'react';
 import reactLogo from './assets/react.svg';
 import viteLogo from '/vite.svg';
 import './App.css';
-import { Button } from '@mantine/core';
+import { Badge, Button, Loader, Space, Text } from '@mantine/core';
+import { useVoturaGithubRepo } from './swr/useVoturaGithubRepo.ts';
 
 function App() {
+  const { data, error, isLoading } = useVoturaGithubRepo();
   const [count, setCount] = useState(0);
+
+  if (isLoading) return <Loader type={'dots'} />;
+  if (error || !data) return <Badge color="red">error while fetching</Badge>;
 
   return (
     <>
@@ -19,6 +24,10 @@ function App() {
       </div>
       <h1>Vite + React</h1>
       <div className="card">
+        <Text>Votura Github stars: {data.stargazers_count}</Text>
+        <Text>Votura Github subscriber: {data.subscribers_count}</Text>
+        <Text>Votura Github forks: {data.forks_count}</Text>
+        <Space h={'md'} />
         <Button onClick={() => setCount((count) => count + 1)}>count is {count}</Button>
         <p>
           Edit <code>src/App.tsx</code> and save to test HMR
