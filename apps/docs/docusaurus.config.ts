@@ -1,6 +1,8 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type * as Plugin from '@docusaurus/types/src/plugin';
+import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
 
 const config: Config = {
   title: 'votura',
@@ -26,6 +28,7 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/SE-UUlm/votura',
+          docItemComponent: '@theme/ApiItem',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -33,6 +36,27 @@ const config: Config = {
       } satisfies Preset.Options,
     ],
   ],
+
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api', // plugin id
+        docsPluginId: 'classic', // configured for preset-classic
+        config: {
+          backend: {
+            specPath: '../backend/api/openapi.yaml',
+            outputDir: 'docs/devGuide/software_docs/backend/api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+            },
+          } satisfies OpenApiPlugin.Options,
+        },
+      },
+    ],
+  ],
+
+  themes: ['docusaurus-theme-openapi-docs'], // export theme components
 
   themeConfig: {
     image: 'img/votura_logo_3l.svg',
