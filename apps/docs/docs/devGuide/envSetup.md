@@ -69,7 +69,7 @@ build all the sub-projects at once.
 #### Installing Workspace-Scoped Dependencies in a Turborepo Monorepo
 
 In a monorepo using [Turborepo](https://turborepo.com/), dependencies can be shared across packages using workspace
-protocols defined in `package.json`. This allows you to install internal packages as dependencies using workspace
+protocols defined in `package.json`. This also allows you to install internal packages as dependencies using workspace
 scoping.
 
 To add a workspace-scoped dependency to an app, run:
