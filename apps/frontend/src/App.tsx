@@ -42,8 +42,14 @@ function App() {
         <Divider my="md" />
         <Stack>
           <Text>This is global app state:</Text>
-          <NumberInput value={numberInputValue} onChange={setNumberValue} label={'Increase votes by:'} />
-          <Button onClick={() => addVotes(Number(numberInputValue))}>Add {numberInputValue} votes</Button>
+          <NumberInput
+            value={numberInputValue}
+            onChange={setNumberValue}
+            label={'Increase votes by:'}
+          />
+          <Button onClick={() => addVotes(Number(numberInputValue))}>
+            Add {numberInputValue} votes
+          </Button>
           <Text>Current votes: {votes}</Text>
         </Stack>
         <p>
