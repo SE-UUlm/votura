@@ -43,7 +43,7 @@
   },
   "scripts": {
     "build": "tsc",
-    "start": "npm run postgres-up && tsx src/main.ts",
+    "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
     "format": "prettier --write .",
