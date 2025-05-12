@@ -1,10 +1,11 @@
+import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
 import eslintConfigPrettier from 'eslint-config-prettier';
 import turboPlugin from 'eslint-plugin-turbo';
 import tseslint from 'typescript-eslint';
 import json from '@eslint/json';
 
-export const config = [
+export const config = defineConfig([
   js.configs.recommended,
   tseslint.configs.recommended,
   eslintConfigPrettier,
@@ -31,4 +32,4 @@ export const config = [
   {
     ignores: ['dist/**', 'build/**', 'coverage/**'],
   },
-];
+]);
