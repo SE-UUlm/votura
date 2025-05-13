@@ -29,6 +29,12 @@ For example:
 DATABASE_URL="postgresql://<user>:<password>@<address>:<port>/<db-name>?schema=<schema-name>"
 ```
 
+Create a `.env` file in the root of your backend workspace and add the connection URL there:
+
+```dotenv
+DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
+```
+
 ## Using the provided docker development database
 
 With the included `docker-compose.yml` file in the backend project, you can easily spin up a local development database
