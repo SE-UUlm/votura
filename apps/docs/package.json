@@ -5,7 +5,6 @@
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-types": "tsc --noEmit",
     "build": "docusaurus gen-api-docs all && docusaurus build",
     "start": "docusaurus start",
     "docusaurus": "docusaurus",
