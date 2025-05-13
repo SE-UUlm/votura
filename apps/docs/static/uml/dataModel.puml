@@ -1,9 +1,5 @@
 @startuml dataModel
 
-note as N1
-TODO: add correct POSTGRESQL types
-end note
-
 entity "elections" as elections {
     * id : uuid <<PK>>
     --
@@ -84,7 +80,6 @@ entity "candidates" as candidates {
     * modified : timestamp
     * title : bpchar(255)
     description : bpchar | NULL
-    votes : integer | NULL
     --
     * election : election.id <<FK>>
 }
@@ -105,6 +100,9 @@ entity "votes" as votes {
     ' if the vote isn't secret, voter can be saved
     voter : voter.id <<FK>> | NULL
 }
+note as N4
+A vote is an encoded json object containing the entire filled in ballot paper.
+end note
 
 entity "voterRegisters" as voterRegisters {
     * ballotPaper : ballotPaper.id <<PK>> <<FK>>
@@ -140,6 +138,7 @@ ballotPaperSectionCandidates }o--|| candidates
 votes }o--|| elections
 voters |o--o{ votes
 voters -- N3
+votes -- N4
 
 
 
