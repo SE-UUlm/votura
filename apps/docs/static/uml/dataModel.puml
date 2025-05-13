@@ -7,6 +7,7 @@ entity "elections" as elections {
     * modified : timestamp
     * name : bpchar(255)
     description : bpchar | NULL
+    * private : boolean
     * votingStart : date
     * votingEnd : date
     * freezeConfig : boolean
@@ -20,9 +21,6 @@ entity "elections" as elections {
     * prime_p : NUMERIC 
     * prime_q : NUMERIC
     * generator : NUMERIC
-    * pubKeyRS256 : NUMERIC
-    * privKeyRS256 : NUMERIC
-    * moduloRS256 : NUMERIC
     --
 }
 
@@ -119,11 +117,25 @@ entity "voters" as voters {
     * created : timestamp
     * modified : timestamp
     --
+    voterGroup: voterGroup.id <<FK>>
 }
 note as N3
 A voter can only get one ballot paper,
 and with this one vote per election.
 end note
+
+entity "voterGroups" as voterGroups {
+    * id : uuid <<PK>>
+    --
+    * created : timestamp
+    * modified : timestamp
+    * name : bpchar(255)
+    description : bpchar | NULL
+    * pubKeyRS256 : NUMERIC
+    * privKeyRS256 : NUMERIC
+    * moduloRS256 : NUMERIC
+    --
+}
 
 
 elections ||--o{ ballotPapers
@@ -137,9 +149,9 @@ ballotPaperSections ||--o{ ballotPaperSectionCandidates
 ballotPaperSectionCandidates }o--|| candidates
 votes }o--|| elections
 voters |o--o{ votes
+voterGroups ||--o{ voters
 voters -- N3
 votes -- N4
-
 
 
 @enduml
