@@ -15,7 +15,7 @@ info:
   version: '1.0.0'
 paths:
   /elections:
-    summary: 'Mange elections.'
+    summary: 'Manage elections.'
     description: 'The endpoint for CRUD operations on elections.'
     get:
       tags:
@@ -36,7 +36,7 @@ paths:
                   type: 'object'
                   properties:
                     id:
-                      type: 'int'
+                      type: 'integer'
                       description: 'The internal unique identifier of the election.'
                     name:
                       type: 'string'
