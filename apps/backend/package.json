@@ -42,12 +42,13 @@
     "url": "https://www.uni-ulm.de"
   },
   "scripts": {
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit",
     "build": "prisma generate && tsc",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
-    "postgres-down": "docker compose down",
-    "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "postgres-down": "docker compose down"
   },
   "type": "module",
   "devDependencies": {
