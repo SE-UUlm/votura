@@ -1,5 +1,20 @@
 @startuml dataModel
 
+entity "user" as user {
+    * id : uuid <<PK>>
+    --
+    * created : timestamp
+    * modified : timestamp
+    * email : bpchar(255) <<UK>>
+    * pwHash : bpchar(255)
+    * verified : boolean
+    lastLoginAt : timestamp | NULL
+    loginFailedCount : smallint | NULL
+    * isAdmin : boolean
+    --
+}
+
+
 entity "elections" as elections {
     * id : uuid <<PK>>
     --
@@ -22,6 +37,7 @@ entity "elections" as elections {
     * prime_q : NUMERIC
     * generator : NUMERIC
     --
+    * electionCreator : user.email <<FK>>
 }
 
 note as N2
@@ -137,7 +153,7 @@ entity "voterGroups" as voterGroups {
     --
 }
 
-
+user ||--o{ elections
 elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
