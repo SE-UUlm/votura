@@ -1,4 +1,4 @@
-import type {ReactNode} from 'react';
+import type { ReactNode } from 'react';
 import clsx from 'clsx';
 import Heading from '@theme/Heading';
 import styles from './styles.module.css';
@@ -13,30 +13,21 @@ const FeatureList: FeatureItem[] = [
   {
     title: 'Create Votes.',
     Svg: require('@site/static/img/logo.svg').default,
-    description: (
-      <>
-      </>
-    ),
+    description: <></>,
   },
   {
     title: 'Create Polls.',
     Svg: require('@site/static/img/logo.svg').default,
-    description: ( 
-      <>
-      </>
-    ),
+    description: <></>,
   },
   {
     title: 'Trust the process!',
     Svg: require('@site/static/img/logo.svg').default,
-    description: (
-      <>
-      </>
-    ),
+    description: <></>,
   },
 ];
 
-function Feature({title, Svg, description}: FeatureItem) {
+function Feature({ title, Svg, description }: FeatureItem) {
   return (
     <div className={clsx('col col--4')}>
       <div className="text--center">

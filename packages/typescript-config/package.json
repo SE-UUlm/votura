@@ -1,0 +1,14 @@
+{
+  "name": "@repo/typescript-config",
+  "version": "0.0.0",
+  "private": true,
+  "license": "MIT",
+  "publishConfig": {
+    "access": "public"
+  },
+  "type": "module",
+  "devDependencies": {
+    "@repo/eslint-config": "*",
+    "typescript": "^5.8.2"
+  }
+}

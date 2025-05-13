@@ -25,8 +25,7 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl:
-            'https://github.com/SE-UUlm/votura',
+          editUrl: 'https://github.com/SE-UUlm/votura',
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -94,7 +93,7 @@ const config: Config = {
           title: 'Support',
           items: [
             {
-              label: 'Community Support', 
+              label: 'Community Support',
               href: 'https://github.com/SE-UUlm/votura/discussions',
             },
             {
@@ -102,7 +101,7 @@ const config: Config = {
               href: 'https://github.com/SE-UUlm/votura/issues',
             },
             {
-              label: 'Security Issues', 
+              label: 'Security Issues',
               href: 'https://github.com/SE-UUlm/votura/security',
             },
           ],
