@@ -33,5 +33,9 @@ jobs:
         run: | # TODO; currently only build votura-crypto, docs need SVGs...
           cd packages/votura-crypto
           npm run build
+      - name: Build frontend
+        run: |
+          cd apps/frontend
+          npm run build
       - name: Run tests
         run: npm run test

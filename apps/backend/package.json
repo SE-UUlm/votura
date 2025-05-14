@@ -47,7 +47,8 @@
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
   },
   "type": "module",
   "devDependencies": {
