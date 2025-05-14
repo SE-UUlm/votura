@@ -48,7 +48,7 @@
     "postgres-down": "docker compose down",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-types": "tsc --noEmit"
+    "check-types": "prisma generate && tsc --noEmit"
   },
   "type": "module",
   "devDependencies": {
