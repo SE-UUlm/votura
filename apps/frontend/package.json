@@ -8,7 +8,8 @@
     "build": "tsc -b && vite build",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "@mantine/core": "^8.0.0",
