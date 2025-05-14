@@ -30,6 +30,15 @@ This will start a local server on `http://localhost:3000` where you can preview 
 
 If you want to create a new page, please use the template file `apps/docs/docs/_templatePage.md` as a starting point.
 
+## API documentation
+
+The API documentation of the backend is generated from the openapi.yaml file in the `apps/backend` folder.
+To generate the API documentation, you need to run the following command in the `apps/backend` folder:
+
+```bash
+npm run docusaurus gen-api-docs all
+```
+
 ## Include PlantUML or DrawIO diagrams
 
 You visualize your documentation with diagrams you can use [PlantUML](https://plantuml.com/) or [DrawIO](https://app.diagrams.net/).

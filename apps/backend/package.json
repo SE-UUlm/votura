@@ -42,13 +42,13 @@
     "url": "https://www.uni-ulm.de"
   },
   "scripts": {
-    "build": "tsc",
-    "start": "tsx src/main.ts",
-    "postgres-up": "docker compose up -d",
-    "postgres-down": "docker compose down",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-types": "prisma generate && tsc --noEmit"
+    "check-types": "prisma generate && tsc --noEmit",
+    "build": "prisma generate && tsc",
+    "start": "tsx src/main.ts",
+    "postgres-up": "docker compose up -d",
+    "postgres-down": "docker compose down"
   },
   "type": "module",
   "devDependencies": {
@@ -63,6 +63,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0"
+    "@prisma/client": "^6.7.0",
+    "express": "^5.1.0"
   }
 }
