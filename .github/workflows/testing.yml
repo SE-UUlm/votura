@@ -29,13 +29,17 @@ jobs:
         run: npm run check-types
       - name: Check formats
         run: npm run check-format
-      - name: Run build
-        run: | # TODO; currently only build votura-crypto, docs need SVGs...
+      - name: Build votura-crypto
+        run: |
           cd packages/votura-crypto
           npm run build
       - name: Build frontend
         run: |
           cd apps/frontend
+          npm run build
+      - name: Build backend
+        run: |
+          cd apps/backend
           npm run build
       - name: Run tests
         run: npm run test
