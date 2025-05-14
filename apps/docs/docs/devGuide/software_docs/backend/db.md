@@ -15,4 +15,5 @@ This page is still under construction and will be updated soon.
 
 :::
 
-![The overall system architecture of votura.](../../../../static/uml/dataModel.svg)
+![The database architecture of votura.](../../../../static/uml/dataModel.svg)
+![Example of elections in Database](../../../../static/drawio/electionLayout.svg)
