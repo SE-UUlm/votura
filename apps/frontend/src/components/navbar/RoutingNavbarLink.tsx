@@ -12,6 +12,7 @@ export const RoutingNavbarLink = ({ to, icon, label }: RoutingNavLinkProps) => {
     <RouterNavLink to={to} style={{ textDecoration: 'none' }}>
       {({ isActive }) => (
         <NavLink
+          component="button"
           active={isActive}
           variant="light"
           leftSection={icon}
