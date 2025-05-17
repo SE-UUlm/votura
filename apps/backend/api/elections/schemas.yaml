@@ -1,0 +1,124 @@
+components:
+  schemas:
+    electionBaseObject:
+      type: 'object'
+      properties:
+        name:
+          description: |
+            The name of the election.
+          type: 'string'
+          example: 'A very important election'
+        description:
+          description: |
+            The description text of the election.
+            The description is optional.
+          oneOf:
+            - type: 'string'
+              example: 'This is a super important description.'
+            - type: 'null'
+              example: null
+        private:
+          description: |
+            If `private` is set to `false` votura will store a link between the voter and his vote.
+            So every vote can be traced back to the voter. 
+            If `private` is set to `true` votura will not store a link between the voter and his vote.
+            So the vote is anonymous and cannot be traced back to the voter.
+          type: 'boolean'
+          example: false
+        votingStart:
+          description: |
+            The start date of the voting process of the election.
+            This date needs to be in the future.
+          type: 'string'
+          format: 'date-time'
+          maxLength: 20
+          example: '2042-10-01T00:00:00Z'
+        votingEnd:
+          description: |
+            The end date of the voting process of the election.
+            This date needs to be in the future and greater than the `votingStart` date.
+          type: 'string'
+          format: 'date-time'
+          maxLength: 20
+          example: '2042-10-02T00:00:00Z'
+        allowInvalidVote:
+          description: |
+            Define if a voter is allowed to submit a invalid Vote. 
+            There will always a warning message shown to the voter that his vote will be invalid.
+          type: 'boolean'
+          example: true
+    electionCreateObject:
+      allOf:
+        - $ref: '#/components/schemas/electionBaseObject'
+    electionReadObject:
+      allOf:
+        - $ref: '#/components/schemas/electionBaseObject'
+        - type: 'object'
+          properties:
+            id:
+              description: |
+                This is the unique identifier for the election.
+              type: 'string'
+              format: 'uuid'
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '123e4567-e89b-12d3-a456-426614174000'
+            created:
+              description: |
+                The created date of the election.
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            modified:
+              description: |
+                The last modified date of the election.
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            configFrozen:
+              description: |
+                Indicates if the configuration of the election is frozen.
+              type: 'boolean'
+              example: false
+            pubKeyVotes:
+              description: |
+                The public key to encrypt the vote of the voter. 
+                `pubKeyVotes = generator ^ privKeyVotes mod primeP`
+                This key will only be generated if the election configuration is frozen.
+                If `configFrozen` is set to `false`, the key will be `null`.
+              oneOf:
+                - type: 'string'
+                  pattern: '^[0-9]+$'
+                - type: 'null'
+                  example: null
+            primeP:
+              description: |
+                A large prime number (2048 bits or more) that defines the group.
+                This key will only be generated if the election configuration is frozen.
+                If `configFrozen` is set to `false`, the key will be `null`.
+              oneOf:
+                - type: 'string'
+                  pattern: '^[0-9]+$'
+                - type: 'null'
+                  example: null
+            primeQ:
+              description: |
+                A prime number that divides `(primeP-1)`, often chosen as `primeQ=(primeP-1)/2`.
+                This key will only be generated if the election configuration is frozen.
+                If `configFrozen` is set to `false`, the key will be `null`.
+              oneOf:
+                - type: 'string'
+                  pattern: '^[0-9]+$'
+                - type: 'null'
+                  example: null
+            generator:
+              description: |
+                The generator of the multiplicative group modulo `primeP`.
+                This key will only be generated if the election configuration is frozen.
+                If `configFrozen` is set to `false`, the key will be `null`.
+              oneOf:
+                - type: 'string'
+                  pattern: '^[0-9]+$'
+                - type: 'null'
+                  example: null

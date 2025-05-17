@@ -25,17 +25,18 @@ entity "elections" as elections {
     * private : boolean
     * votingStart : date
     * votingEnd : date
-    * freezeConfig : boolean
+    * configFrozen : boolean
     * allowInvalidVote : boolean
-    * votesCounted : boolean
+    ' Is there a use case for `votesCounted`?
+    ' * votesCounted : boolean
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
-    validVotes : integer | NULL
-    invalidVotes : integer | NULL
-    * pubKeyVotes : NUMERIC
-    * privKeyVotes : NUMERIC
-    * prime_p : NUMERIC 
-    * prime_q : NUMERIC
-    * generator : NUMERIC
+    ' validVotes : integer | NULL
+    ' invalidVotes : integer | NULL
+    pubKeyVotes : NUMERIC | NULL
+    privKeyVotes : NUMERIC | NULL
+    primeP : NUMERIC | NULL
+    primeQ : NUMERIC | NULL
+    generator : NUMERIC | NULL
     --
     * electionCreator : user.email <<FK>>
 }

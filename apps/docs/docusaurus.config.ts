@@ -48,6 +48,9 @@ const config: Config = {
             outputDir: 'docs/devGuide/software_docs/backend/api',
             sidebarOptions: {
               groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsible: true,
+              sidebarCollapsed: true,
             },
           } satisfies OpenApiPlugin.Options,
         },
