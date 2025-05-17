@@ -1,0 +1,25 @@
+components:
+  schemas:
+    userLoginObject:
+      type: 'object'
+      properties:
+        email:
+          description: |
+            The users email address.
+            This is the unique identifier for the user.
+          type: 'string'
+          format: 'email'
+          example: 'my.name@email.com'
+        password:
+          description: |
+            The password of the user.
+          type: 'string'
+          format: 'password'
+          example: 'SuperSecretPassword123'
+    apiTokenObject:
+      type: 'object'
+      properties:
+        apiToken:
+          description: |
+            The new generated API access token of the user.
+          type: 'string'

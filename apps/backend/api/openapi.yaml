@@ -1,44 +1,57 @@
 openapi: '3.1.0'
 info:
-  title: 'Votura API Specification'
-  summary: 'TODO'
-  description: 'This is the OpenAPI specification for communication to the votura backend via the REST-API.'
+  title: 'Votura backend HTTP-API definition'
+  summary: 'Votura backend HTTP-API definition'
+  description: |
+    This is the OpenAPI specification for the communication to the votura backend via the REST-API.
+    The votura fronted and backend communicate via this API.
   termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file'
   contact:
     name: 'Votura Dev-Team'
     url: 'https://github.com/SE-UUlm/votura/https://github.com/SE-UUlm/votura/discussions/categories/q-a'
-    # email: 'info@votura.com'
+    # email: ''
   license:
     name: 'MIT'
-    # identifier: ''
     url: 'https://github.com/SE-UUlm/votura?tab=MIT-1-ov-file'
   version: '1.0.0'
+servers:
+  - url: 'http://localhost:{port}/api/v1'
+    description: 'The default local development server.'
+    variables:
+      port:
+        default: '5000'
+        description: 'The port of the local development server, the votura backend.'
+  # - url: 'https://votura.informatik.uni-ulm.de/api/v1'
+  #   description: 'The live bwCloud testing votura backend server'
+  # - url: 'https://votura.com/api/v1'
+  #   description: 'The live production votura backend server'
+components:
+  securitySchemes:
+    voturaBackendAuth:
+      type: apiKey
+      in: header
+      name: Authentication
+      description: |
+        With this API access token the user can authenticate and authorize himself against the votura backend.
+
 paths:
   /elections:
-    summary: 'Manage elections.'
-    description: 'The endpoint for CRUD operations on elections.'
-    get:
-      tags:
-        - election
-      summary: 'Get elections'
-      description: 'TODO'
-      operationId: 'getElections'
-      #parameters:
-      responses:
-        '200':
-          description: 'Successful response. OK.'
-          # headers:
-          content:
-            application/json:
-              schema:
-                type: 'array'
-                items:
-                  type: 'object'
-                  properties:
-                    id:
-                      type: 'integer'
-                      description: 'The internal unique identifier of the election.'
-                    name:
-                      type: 'string'
-                      description: 'The name of the election.'
-          # links:
+    $ref: './elections/paths.yaml#/components/pathItems/elections'
+  /elections/{electionId}:
+    $ref: './elections/paths.yaml#/components/pathItems/specificElection'
+  /tokens:
+    $ref: './user/paths.yaml#/components/pathItems/tokens'
+# TODO:
+# was sind links in den responses?
+# froze election
+# get specific election
+# swagger hub?
+# documentation explanation, delete api folder
+# BOLA, BFLA & BOPLA login?
+# authentication
+# turbo input folder
+
+# get token by user and password
+# bei neue anfrage neuen token generieren
+# token weiß backend wer ich bin
+

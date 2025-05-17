@@ -1,0 +1,120 @@
+components:
+  pathItems:
+    elections:
+      summary: 'Create and read elections'
+      description: |
+        A election is always at least linked to one user.
+        You can create a new one ore read the existing ones.
+      get:
+        tags:
+          - elections
+        # TODO: paging & paging size
+        summary: 'Get elections'
+        description: |
+          Returns all elections with the public information fields, that are linked to the requested user.
+          If a large number of elections are linked to a user, the response will only return the first 100 elections.
+        security:
+          - voturaBackendAuth: []
+        operationId: 'getElections'
+        parameters:
+          - name: 'startIndex'
+            in: 'query'
+            description: |
+              If the `startIndex` is not set, the first 100 elections are returned.
+              If the `userId` has more than 100 linked elections, the `startIndex` can be adjusted.
+              By default the start index is 0, so the first 100 elections (index 0 to 99) are returned.
+              In the next request the `startIndex` can be set to 100, so the next 100 elections (index 100 to 199) are returned.
+              If the user has no more elections, the response array will only be empty.
+            required: false
+            schema:
+              type: 'integer'
+              minimum: 0
+              example: 0
+              default: 0
+        responses:
+          '200':
+            description: |
+              OK.
+              The request was successful executed.
+              Returns 0 or up to 100 elections for the requested user.
+            content:
+              application/json:
+                schema:
+                  type: 'array'
+                  items:
+                    $ref: './schemas.yaml#/components/schemas/electionReadObject'
+          '400':
+            $ref: './../globals/responses.yaml#/components/responses/400'
+          '401':
+            $ref: './../globals/responses.yaml#/components/responses/401'
+      put:
+        tags:
+          - elections
+        summary: 'Create a new election'
+        description: |
+          Creates a new election for the requesting user.
+        security:
+          - voturaBackendAuth: []
+        operationId: 'createElection'
+        requestBody:
+          required: true
+          content:
+            application/json:
+              schema:
+                $ref: './schemas.yaml#/components/schemas/electionCreateObject'
+        responses:
+          '201':
+            description: |
+              Created.
+              Successfully created a new election.
+            content:
+              application/json:
+                schema:
+                  $ref: './schemas.yaml#/components/schemas/electionReadObject'
+          '400':
+            $ref: './../globals/responses.yaml#/components/responses/400'
+          '401':
+            $ref: './../globals/responses.yaml#/components/responses/401'
+    specificElection:
+      summary: 'Manage a specific election'
+      description: |
+        Read, update or delete a specific election.
+      parameters:
+        - name: 'electionId'
+          in: 'path'
+          description: |
+            The unique identifier for the election.
+          required: true
+          schema:
+            type: 'string'
+            format: 'uuid'
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+            example: '123e4567-e89b-12d3-a456-426614174000'
+      get:
+        tags:
+          - elections
+        summary: 'Get a specific election'
+        description: |
+          Returns the requested election with all public information fields.
+        security:
+          - voturaBackendAuth: []
+        operationId: 'getElectionById'
+        responses:
+          '200':
+            description: |
+              OK.
+              The request was successful executed.
+            content:
+              application/json:
+                schema:
+                  $ref: './schemas.yaml#/components/schemas/electionReadObject'
+          '400':
+            $ref: './../globals/responses.yaml#/components/responses/400'
+          '401':
+            $ref: './../globals/responses.yaml#/components/responses/401'
+          '403':
+            $ref: './../globals/responses.yaml#/components/responses/403'
+          '404':
+            $ref: './../globals/responses.yaml#/components/responses/404'
+  #   TODO: update
+  #   TODO: delete
