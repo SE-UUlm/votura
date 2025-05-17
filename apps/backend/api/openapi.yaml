@@ -39,19 +39,25 @@ paths:
     $ref: './elections/paths.yaml#/components/pathItems/elections'
   /elections/{electionId}:
     $ref: './elections/paths.yaml#/components/pathItems/specificElection'
+  /freezeElection/{electionId}:
+    $ref: './elections/paths.yaml#/components/pathItems/freezeElection'
+  /unfreezeElection/{electionId}:
+    $ref: './elections/paths.yaml#/components/pathItems/unfreezeElection'
   /tokens:
     $ref: './user/paths.yaml#/components/pathItems/tokens'
+tags:
+  - name: 'elections'
+    description: |
+      It contains all information about the election.
+  - name: 'users'
+    description: |
+      The user can manage there own elections.
+externalDocs:
+  url: 'https://se-uulm.github.io/votura/'
 # TODO:
+# paging & paging size for all elections
+# Linting: BOLA, BFLA & BOPLA login?
+# Swagger hub, release, Pipeline
 # was sind links in den responses?
-# froze election
-# get specific election
-# swagger hub?
-# documentation explanation, delete api folder
-# BOLA, BFLA & BOPLA login?
-# authentication
-# turbo input folder
-
-# get token by user and password
-# bei neue anfrage neuen token generieren
-# token weiß backend wer ich bin
-
+# documentation explanation, delete api folder, VSC extension
+# turbo input folder for docs build
