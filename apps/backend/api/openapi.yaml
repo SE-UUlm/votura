@@ -31,11 +31,11 @@ servers:
 components:
   securitySchemes:
     voturaBackendAuth:
-      type: apiKey
-      in: header
-      name: Authentication
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
       description: |
-        With this API access token the user can authenticate and authorize himself against the votura backend.
+        With this JWT access token the user can authenticate and authorize himself against the votura backend.
 tags:
   - name: 'Elections'
     description: |
@@ -52,14 +52,25 @@ paths:
     $ref: './elections/freeze.yaml'
   /elections/{electionId}/unfreeze:
     $ref: './elections/unfreeze.yaml'
-  /users/signUp:
-    $ref: './user/signUp.yaml'
+  /users/user:
+    $ref: './user/user.yaml'
   /users/verifyEmail:
     $ref: './user/verifyEmail.yaml'
   /users/login:
     $ref: './user/login.yaml'
+  /users/refreshTokens:
+    $ref: './user/refreshTokens.yaml'
+  /users/requestPasswordReset:
+    $ref: './user/requestPasswordReset.yaml'
+  /users/resetPassword:
+    $ref: './user/resetPassword.yaml'
+  /users/logout:
+    $ref: './user/logout.yaml'
 # TODO:
 # change post and put in elections
-# linter new account
+# duplicate email
+# duplicate password
+# linting
+# duplicate apiTokenObject
 # was sind links in den responses?
 # turbo input folder for docs build

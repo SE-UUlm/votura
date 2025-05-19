@@ -21,7 +21,7 @@ get:
       schema:
         type: 'integer'
         format: 'int8'
-        minimum: 1
+        minimum: 0
         maximum: 50
         example: 42
         default: 20
@@ -57,11 +57,13 @@ get:
       description: |
         OK.
         The request was successful executed.
-        Returns 0 or up to 100 elections for the requested user.
+        Returns elections for the requested user.
       content:
         application/json:
           schema:
             type: 'array'
+            minItems: 0
+            maxItems: 100
             items:
               $ref: './schemas.yaml#/components/schemas/electionReadObject'
     '400':
