@@ -1,12 +1,25 @@
-import { Badge, Table } from '@mantine/core';
-import { ElectionsTableMenu } from './ElectionTableMenu.tsx';
-import type { MockElection } from '../../../store/useStore.ts';
+import { ActionIcon, Badge, Table } from '@mantine/core';
+import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
+import { type MockElection, useStore } from '../../../store/useStore.ts';
+import { useNavigate } from 'react-router';
+import { IconArrowRight, IconDots } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
+import { getDeleteSuccessElectionConfig } from '../../../utils/notifications.ts';
 
 export interface ElectionsTableProps {
   data: MockElection[];
 }
 
 export const ElectionsTable = ({ data }: ElectionsTableProps) => {
+  const navigate = useNavigate();
+  const deleteElection = useStore((state) => state.deleteElection);
+
+  const onDelete = (election: MockElection) => () => {
+    // add loading state for remote call
+    deleteElection(election.id);
+    notifications.show(getDeleteSuccessElectionConfig(election.name));
+  };
+
   const rows = data.map((election) => (
     <Table.Tr key={election.id}>
       <Table.Td>{election.name}</Table.Td>
@@ -23,8 +36,23 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
           </Badge>
         )}
       </Table.Td>
-      <Table.Td>
-        <ElectionsTableMenu electionId={election.id} />
+      <Table.Td style={{ textAlign: 'right' }}>
+        <ElectionsSettingsMenu
+          electionId={election.id}
+          targetElement={
+            <ActionIcon variant="subtle" aria-label="Settings">
+              <IconDots size={14} />
+            </ActionIcon>
+          }
+          onDelete={onDelete(election)}
+        />
+        <ActionIcon
+          variant="subtle"
+          aria-label="Settings"
+          onClick={() => navigate(`/elections/${election.id}`)}
+        >
+          <IconArrowRight size={14} />
+        </ActionIcon>
       </Table.Td>
     </Table.Tr>
   ));

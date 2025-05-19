@@ -4,6 +4,7 @@ import { IconNotes } from '@tabler/icons-react';
 import { NavbarHeader } from './components/navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './components/navbar/RoutingNavbarLink.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
+import { ElectionView } from './components/views/election/ElectionView.tsx';
 
 function App() {
   return (
@@ -23,6 +24,7 @@ function App() {
         <Routes>
           <Route path={'/'} element={<Navigate to={'/elections'} replace />} />
           <Route path={'/elections'} element={<ElectionsView />} />
+          <Route path={'/elections/:id'} element={<ElectionView />} />
         </Routes>
       </AppShell.Main>
     </AppShell>
