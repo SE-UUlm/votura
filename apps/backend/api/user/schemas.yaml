@@ -1,12 +1,36 @@
 components:
   schemas:
+    userSignUpObject:
+      type: 'object'
+      additionalProperties: false
+      properties:
+        email:
+          description: |
+            The users email address (represents the username).
+            This is the unique identifier for the user.
+          type: 'string'
+          format: 'email'
+          minLength: 5
+          maxLength: 256
+          pattern: '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+          example: 'my.name@email.com'
+        password:
+          description: |
+            The strong password set by the user.
+            The password must be at least 12 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+          type: 'string'
+          format: 'password'
+          minLength: 12
+          maxLength: 128
+          pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/'
+          example: 'MyP@ssw0rd!1!'
     userLoginObject:
       type: 'object'
       additionalProperties: false
       properties:
         email:
           description: |
-            The users email address.
+            The users email address (represents the username).
             This is the unique identifier for the user.
           type: 'string'
           format: 'email'
@@ -19,16 +43,26 @@ components:
             The password of the user.
           type: 'string'
           format: 'password'
-          minLength: 12
-          maxLength: 128
-          pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/'
           example: 'MyP@ssw0rd!1!'
     apiTokenObject:
       type: 'object'
       additionalProperties: false
       properties:
-        apiToken:
+        refreshToken:
           description: |
-            The new generated API access token of the user.
+            The refresh token of the user.
+            This token is used to generate a new access token.
+            The refresh token is valid for 7 days.
           type: 'string'
-          # TODO Layout
+          size: 256 # TODO: Update after the implementation
+          pattern: '^[a-zA-Z0-9.-_]{256,256}$'
+          example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer'
+        accessToken:
+          description: |
+            The access token of the user.
+            This token is used to authenticate the user.
+            The access token is valid for 15 minutes.
+          type: 'string'
+          size: 256 # TODO: Update after the implementation
+          pattern: '^[a-zA-Z0-9.-_]{256,256}$'
+          example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer'

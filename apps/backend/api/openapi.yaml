@@ -42,7 +42,7 @@ tags:
       It contains all information about the election.
   - name: 'Users'
     description: |
-      The user can manage there own elections.
+      Managing user accounts and sessions.
 paths:
   /elections:
     $ref: './elections/elections.yaml'
@@ -52,9 +52,14 @@ paths:
     $ref: './elections/freeze.yaml'
   /elections/{electionId}/unfreeze:
     $ref: './elections/unfreeze.yaml'
-  /tokens:
-    $ref: './user/tokens.yaml'
+  /users/signUp:
+    $ref: './user/signUp.yaml'
+  /users/verifyEmail:
+    $ref: './user/verifyEmail.yaml'
+  /users/login:
+    $ref: './user/login.yaml'
 # TODO:
+# change post and put in elections
 # linter new account
 # was sind links in den responses?
 # turbo input folder for docs build
