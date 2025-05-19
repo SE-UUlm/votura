@@ -7,7 +7,7 @@ components:
         You can create a new one ore read the existing ones.
       get:
         tags:
-          - elections
+          - Elections
         summary: 'Get all elections'
         description: |
           Returns all elections with the public information fields, that are linked to user of the API access token.
@@ -48,7 +48,7 @@ components:
             $ref: './../globals/responses.yaml#/components/responses/401'
       put:
         tags:
-          - elections
+          - Elections
         summary: 'Create a new election'
         description: |
           Creates a new election with a link to the user of the API access token.
@@ -83,7 +83,7 @@ components:
         - $ref: './parameters.yaml#/components/parameters/electionId'
       get:
         tags:
-          - elections
+          - Elections
         summary: 'Get a specific election'
         description: |
           Returns the requested election with all public information fields.
@@ -110,7 +110,7 @@ components:
             $ref: './../globals/responses.yaml#/components/responses/404'
       post:
         tags:
-          - elections
+          - Elections
         summary: 'Update a specific election'
         description: |
           Updates the configuration of the requested election with the provided information.
@@ -144,7 +144,7 @@ components:
             $ref: './../globals/responses.yaml#/components/responses/404'
       delete:
         tags:
-          - elections
+          - Elections
         summary: 'Delete a specific election'
         description: |
           Deletes the requested election.
@@ -175,7 +175,7 @@ components:
         - $ref: './parameters.yaml#/components/parameters/electionId'
       post:
         tags:
-          - elections
+          - Elections
         summary: 'Freeze a specific election'
         description: |
           Freezes the requested election.
@@ -216,7 +216,7 @@ components:
         - $ref: './parameters.yaml#/components/parameters/electionId'
       post:
         tags:
-          - elections
+          - Elections
         summary: 'Unfreeze a specific election'
         description: |
           Unfreezes the requested election.

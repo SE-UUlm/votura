@@ -10,7 +10,7 @@ components:
         By authenticate the user by email and password, the user gets a token.
       post:
         tags:
-          - users
+          - Users
         summary: 'Create new user API token'
         description: |
           Returns the new generated access token for the user.
@@ -38,7 +38,7 @@ components:
             $ref: './../globals/responses.yaml#/components/responses/401'
       delete:
         tags:
-          - users
+          - Users
         summary: 'Revoke user API token'
         description: |
           Revokes and deletes the current API access token for the user.

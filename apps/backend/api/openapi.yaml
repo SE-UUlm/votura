@@ -3,17 +3,21 @@ info:
   title: 'Votura backend HTTP-API definition'
   summary: 'Votura backend HTTP-API definition'
   description: |
+    ---
     This is the OpenAPI specification for the communication to the votura backend via the REST-API.
     The votura fronted and backend communicate via this API.
   termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file'
   contact:
     name: 'Votura Dev-Team'
-    url: 'https://github.com/SE-UUlm/votura/https://github.com/SE-UUlm/votura/discussions/categories/q-a'
     # email: ''
+    url: 'https://github.com/SE-UUlm/votura/https://github.com/SE-UUlm/votura/discussions/categories/q-a'
   license:
     name: 'MIT'
     url: 'https://github.com/SE-UUlm/votura?tab=MIT-1-ov-file'
-  version: '1.0.0'
+  version: '0.0.0'
+externalDocs:
+  url: 'https://se-uulm.github.io/votura/'
+  description: 'The votura documentation'
 servers:
   - url: 'http://localhost:{port}/api/v1'
     description: 'The default local development server.'
@@ -33,28 +37,28 @@ components:
       name: Authentication
       description: |
         With this API access token the user can authenticate and authorize himself against the votura backend.
-
+tags:
+  - name: 'Elections'
+    description: |
+      It contains all information about the election.
+  - name: 'Users'
+    description: |
+      The user can manage there own elections.
 paths:
   /elections:
     $ref: './elections/paths.yaml#/components/pathItems/elections'
   /elections/{electionId}:
     $ref: './elections/paths.yaml#/components/pathItems/specificElection'
-  /freezeElection/{electionId}:
+  /elections/{electionId}/freeze:
     $ref: './elections/paths.yaml#/components/pathItems/freezeElection'
-  /unfreezeElection/{electionId}:
+  /elections/{electionId}/unfreeze:
     $ref: './elections/paths.yaml#/components/pathItems/unfreezeElection'
   /tokens:
     $ref: './user/paths.yaml#/components/pathItems/tokens'
-tags:
-  - name: 'elections'
-    description: |
-      It contains all information about the election.
-  - name: 'users'
-    description: |
-      The user can manage there own elections.
-externalDocs:
-  url: 'https://se-uulm.github.io/votura/'
+
+
 # TODO:
+# group tags # Layout docusaurus
 # paging & paging size for all elections
 # Linting: BOLA, BFLA & BOPLA login?
 # Swagger hub, release, Pipeline
