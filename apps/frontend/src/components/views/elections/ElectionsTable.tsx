@@ -4,7 +4,7 @@ import { type MockElection, useStore } from '../../../store/useStore.ts';
 import { useNavigate } from 'react-router';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import { getDeleteSuccessElectionConfig } from '../../../utils/notifications.ts';
+import {getDeleteSuccessElectionConfig, getMutateSuccessElectionConfig} from '../../../utils/notifications.ts';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 
 export interface ElectionsTableProps {
@@ -23,9 +23,10 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   };
 
   const onMutate =
-    (electionId: MockElection['id']): MutateElectionModalProps['onMutate'] =>
+    (election: MockElection): MutateElectionModalProps['onMutate'] =>
     (mutatedElection) => {
-      updateElection(electionId, mutatedElection);
+      updateElection(election.id, mutatedElection);
+      notifications.show(getMutateSuccessElectionConfig(election.name))
     };
 
   const rows = data.map((election) => (
@@ -53,7 +54,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
             </ActionIcon>
           }
           onDelete={onDelete(election)}
-          onMutate={onMutate(election.id)}
+          onMutate={onMutate(election)}
         />
         <ActionIcon
           variant="subtle"

@@ -4,7 +4,10 @@ import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
-import { getDeleteSuccessElectionConfig } from '../../../utils/notifications.ts';
+import {
+  getDeleteSuccessElectionConfig,
+  getMutateSuccessElectionConfig,
+} from '../../../utils/notifications.ts';
 import { type MockElection, useStore } from '../../../store/useStore.ts';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 
@@ -25,6 +28,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
 
   const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
     updateElection(election.id, mutatedElection);
+    notifications.show(getMutateSuccessElectionConfig(election.name));
   };
 
   return (
