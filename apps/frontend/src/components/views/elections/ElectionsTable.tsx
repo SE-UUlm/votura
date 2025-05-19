@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Table } from '@mantine/core';
+import { ActionIcon, Badge, Group, Table, Text } from '@mantine/core';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import { type MockElection, useStore } from '../../../store/useStore.ts';
 import { useNavigate } from 'react-router';
@@ -11,10 +11,17 @@ import {
 } from '../../../utils/notifications.ts';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
+import type { PropsWithChildren } from 'react';
 
 export interface ElectionsTableProps {
   data: MockElection[];
 }
+
+const TableText = ({ children }: PropsWithChildren) => (
+  <Text lineClamp={1} size={'sm'}>
+    {children}
+  </Text>
+);
 
 export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const navigate = useNavigate();
@@ -44,9 +51,15 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
 
   const rows = data.map((election) => (
     <Table.Tr key={election.id}>
-      <Table.Td>{election.name}</Table.Td>
-      <Table.Td>{election.description}</Table.Td>
-      <Table.Td>{election.createdAt.toLocaleString('en-US')}</Table.Td>
+      <Table.Td>
+        <TableText>{election.name}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{election.description}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{election.createdAt.toLocaleString('en-US')}</TableText>
+      </Table.Td>
       <Table.Td>
         {election.immutableConfig ? (
           <Badge variant="dot" color="red">
@@ -58,25 +71,27 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
           </Badge>
         )}
       </Table.Td>
-      <Table.Td style={{ textAlign: 'right' }}>
-        <ElectionsSettingsMenu
-          election={election}
-          targetElement={
-            <ActionIcon variant="subtle" aria-label="Settings">
-              <IconDots size={14} />
-            </ActionIcon>
-          }
-          onDelete={onDelete(election)}
-          onMutate={onMutate(election)}
-          onToggleFreeze={onToggleFreeze(election)}
-        />
-        <ActionIcon
-          variant="subtle"
-          aria-label="Settings"
-          onClick={() => navigate(`/elections/${election.id}`)}
-        >
-          <IconArrowRight size={14} />
-        </ActionIcon>
+      <Table.Td>
+        <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
+          <ElectionsSettingsMenu
+            election={election}
+            targetElement={
+              <ActionIcon variant="subtle" aria-label="Settings">
+                <IconDots size={14} />
+              </ActionIcon>
+            }
+            onDelete={onDelete(election)}
+            onMutate={onMutate(election)}
+            onToggleFreeze={onToggleFreeze(election)}
+          />
+          <ActionIcon
+            variant="subtle"
+            aria-label="Settings"
+            onClick={() => navigate(`/elections/${election.id}`)}
+          >
+            <IconArrowRight size={14} />
+          </ActionIcon>
+        </Group>
       </Table.Td>
     </Table.Tr>
   ));
