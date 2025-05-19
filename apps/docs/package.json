@@ -5,7 +5,7 @@
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "build": "docusaurus gen-api-docs all && docusaurus build",
+    "build": "docusaurus clean-api-docs all && docusaurus gen-api-docs all && docusaurus build",
     "start": "docusaurus start",
     "docusaurus": "docusaurus",
     "swizzle": "docusaurus swizzle",

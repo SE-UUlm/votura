@@ -40,18 +40,19 @@ const config: Config = {
     [
       'docusaurus-plugin-openapi-docs',
       {
-        id: 'api', // plugin id
-        docsPluginId: 'classic', // configured for preset-classic
+        id: 'api',
+        docsPluginId: 'classic',
         config: {
           backend: {
             specPath: '../backend/api/openapi.yaml',
-            outputDir: 'docs/devGuide/software_docs/backend/api',
+            outputDir: 'docs/api',
             sidebarOptions: {
               groupPathsBy: 'tag',
               categoryLinkSource: 'tag',
               sidebarCollapsible: true,
               sidebarCollapsed: true,
             },
+            showSchemas: true,
           } satisfies OpenApiPlugin.Options,
         },
       },
@@ -85,6 +86,12 @@ const config: Config = {
           sidebarId: 'devGuideSidebar',
           position: 'left',
           label: 'Developer Guide',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API',
         },
         {
           type: 'docSidebar',

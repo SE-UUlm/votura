@@ -55,13 +55,10 @@ paths:
     $ref: './elections/paths.yaml#/components/pathItems/unfreezeElection'
   /tokens:
     $ref: './user/paths.yaml#/components/pathItems/tokens'
-
-
 # TODO:
-# group tags # Layout docusaurus
 # paging & paging size for all elections
 # Linting: BOLA, BFLA & BOPLA login?
-# Swagger hub, release, Pipeline
 # was sind links in den responses?
 # documentation explanation, delete api folder, VSC extension
 # turbo input folder for docs build
+# Swagger Hub
