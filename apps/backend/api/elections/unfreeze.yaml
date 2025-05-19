@@ -3,7 +3,7 @@ description: |
   Unfreezes the requested election.
 parameters:
   - $ref: './parameters.yaml#/components/parameters/electionId'
-post:
+put:
   tags:
     - Elections
   summary: 'Unfreeze a specific election'

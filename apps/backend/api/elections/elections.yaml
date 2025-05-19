@@ -76,7 +76,7 @@ get:
       $ref: './../globals/responses.yaml#/components/responses/429'
     default:
       $ref: './../globals/responses.yaml#/components/responses/500'
-put:
+post:
   tags:
     - Elections
   summary: 'Create a new election'

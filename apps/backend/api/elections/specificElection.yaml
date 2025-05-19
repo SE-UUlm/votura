@@ -36,7 +36,7 @@ get:
       $ref: './../globals/responses.yaml#/components/responses/429'
     default:
       $ref: './../globals/responses.yaml#/components/responses/500'
-post:
+put:
   tags:
     - Elections
   summary: 'Update a specific election'

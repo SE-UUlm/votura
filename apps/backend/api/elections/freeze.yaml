@@ -3,7 +3,7 @@ description: |
   Freezes the requested election.
 parameters:
   - $ref: './parameters.yaml#/components/parameters/electionId'
-post:
+put:
   tags:
     - Elections
   summary: 'Freeze a specific election'

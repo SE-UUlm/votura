@@ -67,7 +67,6 @@ paths:
   /users/logout:
     $ref: './user/logout.yaml'
 # TODO:
-# change post and put in elections
 # duplicate email
 # duplicate password
 # linting
