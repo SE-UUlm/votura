@@ -8,16 +8,19 @@ import { useDisclosure } from '@mantine/hooks';
 import { getDefaultMockElection } from '../../../utils/defaults.ts';
 import { notifications } from '@mantine/notifications';
 import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
+import {useNavigate} from 'react-router';
 
 export const ElectionsView = () => {
   const elections = useStore((state) => state.elections);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const addElection = useStore((state) => state.addElection);
+  const navigate = useNavigate();
 
   const onMutate: MutateElectionModalProps['onMutate'] = (partial) => {
     const election: MockElection = getDefaultMockElection(partial);
     addElection(election);
     notifications.show(getAddSuccessElectionConfig(election.name));
+    navigate(`/elections/${election.id}`);
   };
 
   return (
