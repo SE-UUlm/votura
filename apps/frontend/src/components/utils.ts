@@ -1,1 +1,1 @@
-export const HEADER_HEIGHT = 16 * 4 // Mantine declares 16 to be 1rem
+export const HEADER_HEIGHT = 16 * 4; // Mantine declares 16 to be 1rem

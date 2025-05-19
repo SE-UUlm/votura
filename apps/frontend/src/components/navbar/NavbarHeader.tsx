@@ -1,5 +1,5 @@
 import { Code, Group, Text } from '@mantine/core';
-import {HEADER_HEIGHT} from '../utils.ts';
+import { HEADER_HEIGHT } from '../utils.ts';
 
 export const NavbarHeader = () => {
   return (

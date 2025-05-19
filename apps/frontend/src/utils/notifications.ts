@@ -25,9 +25,9 @@ export const getToggleFreezeSuccessElectionConfig = (
   };
 };
 
-export const getAddSuccessElectionConfig = (name: MockElection['name']) : NotificationData => {
+export const getAddSuccessElectionConfig = (name: MockElection['name']): NotificationData => {
   return {
     title: 'Success',
     message: `The election "${name}" has been created.`,
-  }
-}
+  };
+};

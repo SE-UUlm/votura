@@ -8,7 +8,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { getDefaultMockElection } from '../../../utils/defaults.ts';
 import { notifications } from '@mantine/notifications';
 import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
-import {useNavigate} from 'react-router';
+import { useNavigate } from 'react-router';
 
 export const ElectionsView = () => {
   const elections = useStore((state) => state.elections);
