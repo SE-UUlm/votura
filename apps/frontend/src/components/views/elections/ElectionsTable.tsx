@@ -30,7 +30,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
     (election: MockElection): MutateElectionModalProps['onMutate'] =>
     (mutatedElection) => {
       updateElection(election.id, mutatedElection);
-      notifications.show(getMutateSuccessElectionConfig(election.name));
+      notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
     };
 
   const onToggleFreeze =

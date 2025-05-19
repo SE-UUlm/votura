@@ -6,7 +6,8 @@ import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
 import {
   getDeleteSuccessElectionConfig,
-  getMutateSuccessElectionConfig, getToggleFreezeSuccessElectionConfig,
+  getMutateSuccessElectionConfig,
+  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { type MockElection, useStore } from '../../../store/useStore.ts';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
@@ -29,13 +30,15 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
 
   const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
     updateElection(election.id, mutatedElection);
-    notifications.show(getMutateSuccessElectionConfig(election.name));
+    notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    updateElection(election.id, {immutableConfig: !election.immutableConfig});
-    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig));
-  }
+    updateElection(election.id, { immutableConfig: !election.immutableConfig });
+    notifications.show(
+      getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig),
+    );
+  };
 
   return (
     <>

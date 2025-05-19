@@ -24,3 +24,10 @@ export const getToggleFreezeSuccessElectionConfig = (
     message: `The election "${name}" has been ${gotFrozen ? 'frozen' : 'unfrozen'}.`,
   };
 };
+
+export const getAddSuccessElectionConfig = (name: MockElection['name']) : NotificationData => {
+  return {
+    title: 'Success',
+    message: `The election "${name}" has been created.`,
+  }
+}

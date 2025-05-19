@@ -14,7 +14,7 @@ import { useForm } from '@mantine/form';
 import { DateTimePicker } from '@mantine/dates';
 
 export interface MutateElectionModalProps {
-  election: MockElection;
+  election?: MockElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
@@ -40,8 +40,12 @@ export const MutateElectionModal = ({
   });
 
   useEffect(() => {
-    if (opened) {
+    if (!opened) return;
+
+    if (election) {
       form.setValues(election);
+    } else {
+      form.reset();
     }
     // to prevent infinite render loops
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -80,7 +84,7 @@ export const MutateElectionModal = ({
         <Switch
           label={'Allow invalid votes'}
           key={form.key('allowInvalidVotes')}
-          {...form.getInputProps('allowInvalidVotes', {type: 'checkbox'})}
+          {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
         />
         <Group justify="flex-end">
           <Button variant="outline" onClick={onClose}>
