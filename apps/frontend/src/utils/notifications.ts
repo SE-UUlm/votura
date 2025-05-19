@@ -14,3 +14,13 @@ export const getMutateSuccessElectionConfig = (name: MockElection['name']): Noti
     message: `The changes to the election "${name}" have been saved.`,
   };
 };
+
+export const getToggleFreezeSuccessElectionConfig = (
+  name: MockElection['name'],
+  gotFrozen: boolean,
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The election "${name}" has been ${gotFrozen ? 'frozen' : 'unfrozen'}.`,
+  };
+};

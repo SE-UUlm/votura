@@ -88,7 +88,7 @@ export const createMockElectionSlice: StateCreator<
         ),
       }),
       undefined,
-      'mockElectionSlice/updateElectionElection',
+      'mockElectionSlice/updateElection',
     ),
 });
 

@@ -4,8 +4,13 @@ import { type MockElection, useStore } from '../../../store/useStore.ts';
 import { useNavigate } from 'react-router';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
-import {getDeleteSuccessElectionConfig, getMutateSuccessElectionConfig} from '../../../utils/notifications.ts';
+import {
+  getDeleteSuccessElectionConfig,
+  getMutateSuccessElectionConfig,
+  getToggleFreezeSuccessElectionConfig,
+} from '../../../utils/notifications.ts';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 
 export interface ElectionsTableProps {
   data: MockElection[];
@@ -17,7 +22,6 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const updateElection = useStore((state) => state.updateElection);
 
   const onDelete = (election: MockElection) => () => {
-    // add loading state for remote call
     deleteElection(election.id);
     notifications.show(getDeleteSuccessElectionConfig(election.name));
   };
@@ -26,7 +30,16 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
     (election: MockElection): MutateElectionModalProps['onMutate'] =>
     (mutatedElection) => {
       updateElection(election.id, mutatedElection);
-      notifications.show(getMutateSuccessElectionConfig(election.name))
+      notifications.show(getMutateSuccessElectionConfig(election.name));
+    };
+
+  const onToggleFreeze =
+    (election: MockElection): ToggleFreezeElectionModalProps['onToggleFreeze'] =>
+    () => {
+      updateElection(election.id, { immutableConfig: !election.immutableConfig });
+      notifications.show(
+        getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig),
+      );
     };
 
   const rows = data.map((election) => (
@@ -55,6 +68,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
           }
           onDelete={onDelete(election)}
           onMutate={onMutate(election)}
+          onToggleFreeze={onToggleFreeze(election)}
         />
         <ActionIcon
           variant="subtle"
