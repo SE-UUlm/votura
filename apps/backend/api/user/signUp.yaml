@@ -33,7 +33,7 @@ post:
                 minLength: 1
                 maxLength: 256
                 pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
-                example: Please check your email to verify your account.   
+                example: Please check your email to verify your account.
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '406':
@@ -54,7 +54,7 @@ post:
                 minLength: 1
                 maxLength: 256
                 pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
-                example: The user already exists.  
+                example: The user already exists.
     '415':
       $ref: './../globals/responses.yaml#/components/responses/415'
     '429':

@@ -10,16 +10,16 @@ get:
   security: []
   operationId: 'verifyUser'
   parameters:
-  - name: 'verificationToken'
-    in: 'query'
-    description: |
-      The verification token that was sent to the users email address.
-    required: true
-    schema:
-      type: string
-      size: 32
-      pattern: '^[a-fA-F0-9]{32,32}$'
-      example: ABCDEF123456ABCDEF12345612345678
+    - name: 'verificationToken'
+      in: 'query'
+      description: |
+        The verification token that was sent to the users email address.
+      required: true
+      schema:
+        type: string
+        size: 32
+        pattern: '^[a-fA-F0-9]{32,32}$'
+        example: ABCDEF123456ABCDEF12345612345678
   responses:
     '200':
       description: |
@@ -41,7 +41,7 @@ get:
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '406':
-      $ref: './../globals/responses.yaml#/components/responses/406' 
+      $ref: './../globals/responses.yaml#/components/responses/406'
     '415':
       $ref: './../globals/responses.yaml#/components/responses/415'
     '429':

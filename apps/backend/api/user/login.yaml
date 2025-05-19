@@ -32,7 +32,7 @@ post:
     '403':
       $ref: './../globals/responses.yaml#/components/responses/403'
     '406':
-      $ref: './../globals/responses.yaml#/components/responses/406' 
+      $ref: './../globals/responses.yaml#/components/responses/406'
     '415':
       $ref: './../globals/responses.yaml#/components/responses/415'
     '429':
