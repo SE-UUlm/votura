@@ -2,6 +2,7 @@ components:
   schemas:
     userLoginObject:
       type: 'object'
+      additionalProperties: false
       properties:
         email:
           description: |
@@ -9,17 +10,25 @@ components:
             This is the unique identifier for the user.
           type: 'string'
           format: 'email'
+          minLength: 5
+          maxLength: 256
+          pattern: '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
           example: 'my.name@email.com'
         password:
           description: |
             The password of the user.
           type: 'string'
           format: 'password'
-          example: 'SuperSecretPassword123'
+          minLength: 12
+          maxLength: 128
+          pattern: '/^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/'
+          example: 'MyP@ssw0rd!1!'
     apiTokenObject:
       type: 'object'
+      additionalProperties: false
       properties:
         apiToken:
           description: |
             The new generated API access token of the user.
           type: 'string'
+          # TODO Layout

@@ -1,7 +1,6 @@
 openapi: '3.1.0'
 info:
   title: 'Votura backend HTTP-API definition'
-  summary: 'Votura backend HTTP-API definition'
   description: |
     ---
     This is the OpenAPI specification for the communication to the votura backend via the REST-API.
@@ -25,8 +24,8 @@ servers:
       port:
         default: '5000'
         description: 'The port of the local development server, the votura backend.'
-  # - url: 'https://votura.informatik.uni-ulm.de/api/v1'
-  #   description: 'The live bwCloud testing votura backend server'
+  - url: 'https://votura.informatik.uni-ulm.de/api/v1'
+    description: 'The live bwCloud testing votura backend server'
   # - url: 'https://votura.com/api/v1'
   #   description: 'The live production votura backend server'
 components:
@@ -46,19 +45,16 @@ tags:
       The user can manage there own elections.
 paths:
   /elections:
-    $ref: './elections/paths.yaml#/components/pathItems/elections'
+    $ref: './elections/elections.yaml'
   /elections/{electionId}:
-    $ref: './elections/paths.yaml#/components/pathItems/specificElection'
+    $ref: './elections/specificElection.yaml'
   /elections/{electionId}/freeze:
-    $ref: './elections/paths.yaml#/components/pathItems/freezeElection'
+    $ref: './elections/freeze.yaml'
   /elections/{electionId}/unfreeze:
-    $ref: './elections/paths.yaml#/components/pathItems/unfreezeElection'
+    $ref: './elections/unfreeze.yaml'
   /tokens:
-    $ref: './user/paths.yaml#/components/pathItems/tokens'
+    $ref: './user/tokens.yaml'
 # TODO:
-# paging & paging size for all elections
-# Linting: BOLA, BFLA & BOPLA login?
+# linter new account
 # was sind links in den responses?
-# documentation explanation, delete api folder, VSC extension
 # turbo input folder for docs build
-# Swagger Hub

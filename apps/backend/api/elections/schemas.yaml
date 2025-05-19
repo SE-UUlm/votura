@@ -7,6 +7,9 @@ components:
           description: |
             The name of the election.
           type: 'string'
+          minLength: 1
+          maxLength: 256
+          pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
           example: 'A very important election'
         description:
           description: |
@@ -14,6 +17,9 @@ components:
             The description is optional.
           oneOf:
             - type: 'string'
+              minLength: 1
+              maxLength: 256
+              pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
               example: 'This is a super important description.'
             - type: 'null'
               example: null
@@ -54,6 +60,7 @@ components:
       allOf:
         - $ref: '#/components/schemas/electionBaseObject'
         - type: 'object'
+          additionalProperties: false
           properties:
             id:
               description: |

@@ -1,0 +1,44 @@
+summary: 'Unfreeze a specific election'
+description: |
+  Unfreezes the requested election.
+parameters:
+  - $ref: './parameters.yaml#/components/parameters/electionId'
+post:
+  tags:
+    - Elections
+  summary: 'Unfreeze a specific election'
+  description: |
+    Unfreezes the requested election.
+    You can only unfreeze a election if no votes was casted yet, otherwise you will get a 403 error.
+
+    Note that unfreezing a election is a kind of irreversible and destructive action.
+    All generated voting tokens will be revoked and the election key pair will be revoked.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'unfreezeElectionById'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successful executed.
+        The election was unfrozen.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/electionReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'

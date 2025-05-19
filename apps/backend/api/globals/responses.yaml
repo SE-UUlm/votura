@@ -9,9 +9,13 @@ components:
         application/json:
           schema:
             type: object
+            additionalProperties: false
             properties:
               message:
                 type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
                 example: The request was invalid, the server cannot process it.
     '401':
       description: |
@@ -22,9 +26,13 @@ components:
         application/json:
           schema:
             type: object
+            additionalProperties: false
             properties:
               message:
                 type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
                 example: Invalid authentication, please check your credentials.
     '403':
       description: |
@@ -37,9 +45,13 @@ components:
         application/json:
           schema:
             type: object
+            additionalProperties: false
             properties:
               message:
                 type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
                 example: The user is not authorized to do this action, please check your permissions.
     '404':
       description: |
@@ -51,7 +63,79 @@ components:
         application/json:
           schema:
             type: object
+            additionalProperties: false
             properties:
               message:
                 type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
                 example: The requested resource was not found.
+    '406':
+      description: |
+        Not Acceptable.
+        The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              message:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                example: The server is not able to generate a response that is acceptable by the client.
+    '415':
+      description: |
+        Unsupported Media Type.
+        The request entity has a media type which the server or resource does not support. 
+        For example, the client uses the content type: text/plain, but the server requires application/json.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              message:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                example: Content-Type is not supported. Please provide only supported content types.
+    '429':
+      description: |
+        Too Many Requests.
+        The user has sent too many requests in a given amount of time.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              message:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                example: Too many requests, please try again later.
+    '500':
+      description: |
+        Internal Server Error.
+        A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.
+      content:
+        application/json:
+          schema:
+            type: object
+            additionalProperties: false
+            properties:
+              message:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                example: Internal Server Error. This should not happen, please report the issue.
+
+
+                

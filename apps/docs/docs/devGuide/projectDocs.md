@@ -48,6 +48,8 @@ The easy way is to use `npm run build` in the `docs` workspace, this command wil
 
 :::
 
+If you want to update or create new API specification I highly recommend you to use a live Swagger UI render (or something similar) in your IDE.
+
 ## Include PlantUML or DrawIO diagrams
 
 You visualize your documentation with diagrams you can use [PlantUML](https://plantuml.com/) or [DrawIO](https://app.diagrams.net/).
