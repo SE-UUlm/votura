@@ -1,26 +1,20 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
-import { type MockElection, useStore } from '../store/useStore.ts';
+import { type MockElection } from '../store/useStore.ts';
 import type { MouseEventHandler } from 'react';
 
 export interface DeleteElectionModalProps {
-  electionId: MockElection['id'];
+  election: MockElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   onDelete: MouseEventHandler<HTMLButtonElement>;
 }
 
 export const DeleteElectionModal = ({
-  electionId,
+  election,
   opened,
   onClose,
   onDelete,
 }: DeleteElectionModalProps) => {
-  const election = useStore((state) => state.elections.find((e) => e.id === electionId));
-
-  if (!election) {
-    return null;
-  }
-
   return (
     <Modal opened={opened} onClose={onClose} title={'Deleting election'}>
       <Text>You are about to delete the election:</Text>

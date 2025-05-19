@@ -6,6 +6,7 @@ import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
 import { getDeleteSuccessElectionConfig } from '../../../utils/notifications.ts';
 import { type MockElection, useStore } from '../../../store/useStore.ts';
+import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 
 export interface ElectionViewHeaderProps {
   election: MockElection;
@@ -14,12 +15,18 @@ export interface ElectionViewHeaderProps {
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
   const deleteElection = useStore((state) => state.deleteElection);
+  const updateElection = useStore((state) => state.updateElection);
 
   const onDelete = () => {
     deleteElection(election.id);
     notifications.show(getDeleteSuccessElectionConfig(election.name));
     navigate('/elections');
   };
+
+  const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
+    updateElection(election.id, mutatedElection);
+  };
+
   return (
     <>
       <Group justify="space-between" h={HEADER_HEIGHT}>
@@ -34,13 +41,14 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           <Title order={3}>{election.name}</Title>
         </Group>
         <ElectionsSettingsMenu
-          electionId={election.id}
+          election={election}
           targetElement={
             <ActionIcon size="lg" variant="light" aria-label="Settings">
               <IconDots size={16} />
             </ActionIcon>
           }
           onDelete={onDelete}
+          onMutate={onMutate}
         />
       </Group>
     </>

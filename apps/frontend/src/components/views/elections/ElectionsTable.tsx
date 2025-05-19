@@ -5,6 +5,7 @@ import { useNavigate } from 'react-router';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
 import { getDeleteSuccessElectionConfig } from '../../../utils/notifications.ts';
+import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 
 export interface ElectionsTableProps {
   data: MockElection[];
@@ -13,12 +14,19 @@ export interface ElectionsTableProps {
 export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const navigate = useNavigate();
   const deleteElection = useStore((state) => state.deleteElection);
+  const updateElection = useStore((state) => state.updateElection);
 
   const onDelete = (election: MockElection) => () => {
     // add loading state for remote call
     deleteElection(election.id);
     notifications.show(getDeleteSuccessElectionConfig(election.name));
   };
+
+  const onMutate =
+    (electionId: MockElection['id']): MutateElectionModalProps['onMutate'] =>
+    (mutatedElection) => {
+      updateElection(electionId, mutatedElection);
+    };
 
   const rows = data.map((election) => (
     <Table.Tr key={election.id}>
@@ -38,13 +46,14 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
       </Table.Td>
       <Table.Td style={{ textAlign: 'right' }}>
         <ElectionsSettingsMenu
-          electionId={election.id}
+          election={election}
           targetElement={
             <ActionIcon variant="subtle" aria-label="Settings">
               <IconDots size={14} />
             </ActionIcon>
           }
           onDelete={onDelete(election)}
+          onMutate={onMutate(election.id)}
         />
         <ActionIcon
           variant="subtle"

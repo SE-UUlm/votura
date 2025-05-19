@@ -1,4 +1,5 @@
 import { create } from 'zustand/react';
+import { devtools } from 'zustand/middleware';
 import type { StateCreator } from 'zustand/vanilla';
 
 export interface MockElection {
@@ -50,22 +51,49 @@ const mockElections: MockElection[] = [
 ];
 
 interface MockElectionSlice {
+  // We may want to refactor this with an object using the election ids
+  // as keys so we do not need to iterate over all elections so much
   elections: MockElection[];
   addElection: (election: MockElection) => void;
   deleteElection: (id: MockElection['id']) => void;
+  updateElection: (id: MockElection['id'], partial: Partial<MockElection>) => void;
 }
-
-export const createMockElectionSlice: StateCreator<MockElectionSlice, [], [], MockElectionSlice> = (
-  set,
-) => ({
-  elections: mockElections,
-  addElection: (election) => set((state) => ({ elections: [...state.elections, election] })),
-  deleteElection: (id) =>
-    set((state) => ({ elections: state.elections.filter((e) => e.id !== id) })),
-});
 
 type StoreState = MockElectionSlice;
 
-export const useStore = create<StoreState>()((...args) => ({
-  ...createMockElectionSlice(...args),
-}));
+export const createMockElectionSlice: StateCreator<
+  StoreState,
+  [['zustand/devtools', never]], //https://zustand.docs.pmnd.rs/middlewares/devtools
+  [],
+  MockElectionSlice
+> = (set) => ({
+  elections: mockElections,
+  addElection: (election) =>
+    set(
+      (state) => ({ elections: [...state.elections, election] }),
+      undefined,
+      'mockElectionSlice/addElection',
+    ),
+  deleteElection: (id) =>
+    set(
+      (state) => ({ elections: state.elections.filter((e) => e.id !== id) }),
+      undefined,
+      'mockElectionSlice/deleteElection',
+    ),
+  updateElection: (id, partial) =>
+    set(
+      (state) => ({
+        elections: state.elections.map((election) =>
+          election.id === id ? { ...election, ...partial } : election,
+        ),
+      }),
+      undefined,
+      'mockElectionSlice/updateElectionElection',
+    ),
+});
+
+export const useStore = create<StoreState>()(
+  devtools((...args) => ({
+    ...createMockElectionSlice(...args),
+  })),
+);
