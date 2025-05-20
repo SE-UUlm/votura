@@ -197,8 +197,8 @@ entity "voterGroups" as voterGroups {
 }
 
 user ||--o{ elections
-user ||--o{ emailVerification
-user ||--o{ passwordResetToken
+user ||--|| emailVerification
+user ||--|| passwordResetToken
 user ||--o{ refreshToken
 elections ||--o{ ballotPapers
 elections -- N2
