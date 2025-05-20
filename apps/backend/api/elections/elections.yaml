@@ -28,7 +28,7 @@ get:
     - name: 'sortBy'
       in: 'query'
       description: |
-        You can sort your response items by providing the key name to your field witch you want to sort.
+        You can sort your response items by providing the key name to your field which you want to sort.
       required: false
       schema:
         type: 'string'
@@ -42,7 +42,7 @@ get:
     - name: 'orderBy'
       in: 'query'
       description: |
-        You can specify in witch order you want to get your items.
+        You can specify in which order you want to get your items.
         By default in `asc` (ascending) or when you wish `desc`(descending).
       # Currently I see no need for supporting multi-field sorting. If the is one we need to update it.
       required: false

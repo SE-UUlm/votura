@@ -85,7 +85,7 @@ delete:
   description: |
     Deletes the requested election.
     The election will be deleted from the database.
-    Not that also all linked data (like votes) will be removed.
+    Note that also all linked data (like votes) will be removed.
   security:
     - voturaBackendAuth: []
   operationId: 'deleteElectionById'

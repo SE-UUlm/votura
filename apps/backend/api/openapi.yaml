@@ -4,7 +4,7 @@ info:
   description: |
     ---
     This is the OpenAPI specification for the communication to the votura backend via the REST-API.
-    The votura fronted and backend communicate via this API.
+    The votura frontend and backend communicate via this API.
   termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file'
   contact:
     name: 'Votura Dev-Team'
