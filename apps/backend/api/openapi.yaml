@@ -9,7 +9,7 @@ info:
   contact:
     name: 'Votura Dev-Team'
     # email: ''
-    url: 'https://github.com/SE-UUlm/votura/https://github.com/SE-UUlm/votura/discussions/categories/q-a'
+    url: 'https://github.com/SE-UUlm/votura/discussions/categories/q-a'
   license:
     name: 'MIT'
     url: 'https://github.com/SE-UUlm/votura?tab=MIT-1-ov-file'
@@ -53,16 +53,16 @@ paths:
   /elections/{electionId}/unfreeze:
     $ref: './elections/unfreeze.yaml'
   /users/user:
-    $ref: './user/user.yaml'
+    $ref: './users/user.yaml'
   /users/verifyEmail:
-    $ref: './user/verifyEmail.yaml'
+    $ref: './users/verifyEmail.yaml'
   /users/login:
-    $ref: './user/login.yaml'
+    $ref: './users/login.yaml'
   /users/refreshTokens:
-    $ref: './user/refreshTokens.yaml'
+    $ref: './users/refreshTokens.yaml'
   /users/requestPasswordReset:
-    $ref: './user/requestPasswordReset.yaml'
+    $ref: './users/requestPasswordReset.yaml'
   /users/resetPassword:
-    $ref: './user/resetPassword.yaml'
+    $ref: './users/resetPassword.yaml'
   /users/logout:
-    $ref: './user/logout.yaml'
+    $ref: './users/logout.yaml'

@@ -25,7 +25,7 @@ get:
     '200':
       description: |
         OK.
-        The request was successful executed.
+        The request was successfully executed.
         User was verified.
       content:
         application/json:

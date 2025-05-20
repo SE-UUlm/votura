@@ -44,7 +44,7 @@ npm run docusaurus gen-api-docs all
 If you only change the `openapi.yaml` files this will not trigger a new build of the docs.
 You need to delete the `api` folder in the docs or run `npm run docusaurus clean-api-docs all` in the `docs` workspace and need to build them again.
 
-The easy way is to use `npm run build` in the `docs` workspace, this command will clean regenerate the api docs automatically.
+The easy way is to use `npm run build` in the `docs` workspace, this command will cleanly regenerate the api docs automatically.
 
 :::
 

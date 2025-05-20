@@ -16,7 +16,6 @@ get:
       in: 'query'
       description: |
         You can limit the number of returned items in the response array.
-        By default you will get 20 items.
       required: false
       schema:
         type: 'integer'
@@ -56,7 +55,7 @@ get:
     '200':
       description: |
         OK.
-        The request was successful executed.
+        The request was successfully executed.
         Returns elections for the requested user.
       content:
         application/json:
@@ -96,7 +95,7 @@ post:
     '201':
       description: |
         Created.
-        The request was successful executed.
+        The request was successfully executed.
         Successfully created a new election.
       content:
         application/json:

@@ -20,7 +20,7 @@ put:
     '200':
       description: |
         OK.
-        The request was successful executed.
+        The request was successfully executed.
         The election was unfrozen.
       content:
         application/json:
