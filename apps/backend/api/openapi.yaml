@@ -66,10 +66,3 @@ paths:
     $ref: './user/resetPassword.yaml'
   /users/logout:
     $ref: './user/logout.yaml'
-# TODO:
-# duplicate email
-# duplicate password
-# linting
-# duplicate apiTokenObject
-# was sind links in den responses?
-# turbo input folder for docs build

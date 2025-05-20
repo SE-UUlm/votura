@@ -64,6 +64,7 @@ get:
             type: 'array'
             minItems: 0
             maxItems: 100
+            uniqueItems: true
             items:
               $ref: './schemas.yaml#/components/schemas/electionReadObject'
     '400':

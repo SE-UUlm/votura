@@ -15,7 +15,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: The request was invalid, the server cannot process it.
     '401':
       description: |
@@ -32,7 +32,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: Invalid authentication, please check your credentials.
     '403':
       description: |
@@ -51,7 +51,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: The user is not authorized to do this action, please check your permissions.
     '404':
       description: |
@@ -69,7 +69,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: The requested resource was not found.
     '406':
       description: |
@@ -85,7 +85,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: The server is not able to generate a response that is acceptable by the client.
     '415':
       description: |
@@ -102,7 +102,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: Content-Type is not supported. Please provide only supported content types.
     '429':
       description: |
@@ -118,7 +118,7 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: Too many requests, please try again later.
     '500':
       description: |
@@ -134,5 +134,5 @@ components:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: Internal Server Error. This should not happen, please report the issue.

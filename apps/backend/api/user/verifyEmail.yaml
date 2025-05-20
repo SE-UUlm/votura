@@ -37,7 +37,7 @@ get:
                 type: string
                 minLength: 1
                 maxLength: 256
-                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\]{1,256}$'
+                pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
                 example: The user was verified.
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
