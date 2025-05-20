@@ -9,10 +9,53 @@ entity "user" as user {
     * pwHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamp | NULL
-    loginFailedCount : smallint | NULL
+    failedLoginAttempts : smallint | NULL
     * isAdmin : boolean
     --
 }
+
+entity "emailVerification" as emailVerification {
+    * id : uuid <<PK>>
+    --
+    * tokenHash : bpchar(64) <<UK>>
+    * expiresAt : timestamp
+    * createdAt : timestamp
+    --
+    * userId : uuid <<FK>>
+}
+
+entity "passwordResetToken" as passwordResetToken {
+    * id : uuid <<PK>>
+    --
+    * tokenHash : bpchar(64) <<UK>>
+    * expiresAt : timestamp
+    usedAt : timestamp | NULL
+    * createdAt : timestamp
+    --
+    * userId : uuid <<FK>>
+}
+
+entity "refreshToken" as refreshToken {
+    * id : uuid <<PK>>
+    --
+    * tokenHash : bpchar(64) <<UK>>
+    * expiresAt : timestamp
+    revokedAt : timestamp | NULL
+    * createdAt : timestamp
+    --
+    * userId : uuid <<FK>>
+}
+
+entity "jwtBlacklist" as jwtBlacklist {
+    ' this table is used to store blacklisted access tokens
+    ' The jti is 36 characters long if we use UUIDv4
+    * jti : varchar(36) <<PK>>
+    --
+    * expiresAt : timestamp
+    * blacklistedAt : timestamp
+    --
+}
+
 
 
 entity "elections" as elections {
@@ -154,6 +197,9 @@ entity "voterGroups" as voterGroups {
 }
 
 user ||--o{ elections
+user ||--o{ emailVerification
+user ||--o{ passwordResetToken
+user ||--o{ refreshToken
 elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
