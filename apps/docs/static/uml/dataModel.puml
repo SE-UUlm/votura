@@ -11,39 +11,15 @@ entity "user" as user {
     lastLoginAt : timestamp | NULL
     failedLoginAttempts : smallint | NULL
     * isAdmin : boolean
+    emailVerificationTokenHash : bpchar(64) | NULL
+    emailVerificationTokenExpiresAt : timestamp | NULL
+    passwordResetTokenHash : bpchar(64) | NULL
+    passwordResetTokenExpiresAt : timestamp | NULL
+    passwordResetTokenUsedAt : timestamp | NULL
+    refreshTokenHash : bpchar(64) | NULL
+    refreshTokenExpiresAt : timestamp | NULL
+    refreshTokenRevokedAt : timestamp | NULL
     --
-}
-
-entity "emailVerification" as emailVerification {
-    * id : uuid <<PK>>
-    --
-    * tokenHash : bpchar(64) <<UK>>
-    * expiresAt : timestamp
-    * createdAt : timestamp
-    --
-    * userId : uuid <<FK>>
-}
-
-entity "passwordResetToken" as passwordResetToken {
-    * id : uuid <<PK>>
-    --
-    * tokenHash : bpchar(64) <<UK>>
-    * expiresAt : timestamp
-    usedAt : timestamp | NULL
-    * createdAt : timestamp
-    --
-    * userId : uuid <<FK>>
-}
-
-entity "refreshToken" as refreshToken {
-    * id : uuid <<PK>>
-    --
-    * tokenHash : bpchar(64) <<UK>>
-    * expiresAt : timestamp
-    revokedAt : timestamp | NULL
-    * createdAt : timestamp
-    --
-    * userId : uuid <<FK>>
 }
 
 entity "jwtBlacklist" as jwtBlacklist {
@@ -146,12 +122,12 @@ entity "votes" as votes {
     --
     * created : timestamp
     * modified : timestamp
-    * alpha : NUMERIC | NULL
-    * beta : NUMERIC | NULL
-    * commitment_part1 : NUMERIC | NULL
-    * commitment_part2 : NUMERIC | NULL
-    * challenge : NUMERIC | NULL
-    * response : NUMERIC | NULL
+    alpha : NUMERIC | NULL
+    beta : NUMERIC | NULL
+    commitment_part1 : NUMERIC | NULL
+    commitment_part2 : NUMERIC | NULL
+    challenge : NUMERIC | NULL
+    response : NUMERIC | NULL
     --
     * election : election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
@@ -190,16 +166,13 @@ entity "voterGroups" as voterGroups {
     * modified : timestamp
     * name : bpchar(255)
     description : bpchar | NULL
-    * pubKeyRS256 : NUMERIC
-    * privKeyRS256 : NUMERIC
-    * moduloRS256 : NUMERIC
+    pubKeyRS256 : NUMERIC | NULL
+    privKeyRS256 : NUMERIC | NULL
+    moduloRS256 : NUMERIC | NULL
     --
 }
 
 user ||--o{ elections
-user ||--|| emailVerification
-user ||--|| passwordResetToken
-user ||--o{ refreshToken
 elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
