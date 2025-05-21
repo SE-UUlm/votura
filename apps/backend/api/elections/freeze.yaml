@@ -9,14 +9,13 @@ put:
   summary: 'Freeze a specific election'
   description: |
     Freezes the requested election.
-    Note that freezing a election is a kind of irreversible action.
-    After a election is frozen, the configuration of the election cannot be changed anymore.
-    You can not create new voting tokens for your voters.
+    Note that freezing an election is an irreversible action.
+    After an election is frozen, the configuration of the election cannot be changed anymore.
+    You can not change the number of allowed voters.
 
-    After the election is frozen, the key pair for the election will be generated and the election is ready for voting.
+    After the election is frozen, the key pair for the election will be generated, and the access tokens for your voters will be generated.
     Note that it will take some time until the generated keys are available.
-
-    Your generated voting tokens for your voters are now active and you can distribute them.
+    After that, you can distribute the generated voting tokens to your voters.
   security:
     - voturaBackendAuth: []
   operationId: 'freezeElectionById'
