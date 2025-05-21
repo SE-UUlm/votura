@@ -132,7 +132,7 @@ group Optional
     frontend -> backend : unfreeze election (election id)
     activate backend
     backend -> backend : validate
-    backend -> db : process unfreeze election (unset configFrozen, delte votes, voter registers, voter token keys, electiion keys, ...)
+    backend -> db : process unfreeze election (unset configFrozen, delete votes, voter registers, voter token keys, election keys, ...)
     activate db
     db --> backend : election unfrozen
     deactivate db
