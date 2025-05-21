@@ -225,11 +225,13 @@ export class DisjunctiveEncryptionZKP {
     const disjunctiveZKPs: ZKProof[] = [];
   
     for (let i = 0; i < choices.length; i++) {
-      if (choices[i] === undefined || ciphertexts[i] === undefined) {
+      const choice = choices[i];
+      const ciphertext = ciphertexts[i];
+      if (choice === undefined || ciphertext === undefined) {
         throw new Error(`Invalid input: choices[${i}] or ciphertexts[${i}] is undefined`);
       }
       if (i !== realIndex) {
-        const simulatedProof = this.createSimulatedEncryptionProof(choices[i], ciphertexts[i]);
+        const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
       }
     }
@@ -296,13 +298,16 @@ export class DisjunctiveEncryptionZKP {
     }
 
     for (let i = 0; i < ciphertexts.length; i++) {
-      if (choices[i] === undefined || ciphertexts[i] === undefined || zkProofs[i] === undefined) {
+      const choice = choices[i];
+      const ciphertext = ciphertexts[i];
+      const zkProof = zkProofs[i];
+      if (choice === undefined || ciphertext === undefined || zkProof === undefined) {
         console.warn(`Invalid input: choices[${i}], ciphertexts[${i}] or ciphertexts[${i}] is undefined`);
         return false;
       }
-      const isValid = this.verifyEncryptionProof(choices[i], ciphertexts[i], zkProofs[i]);
+      const isValid = this.verifyEncryptionProof(choice, ciphertext, zkProof);
       if (!isValid) {
-        console.warn(`Bad proof at index ${i}: ${ciphertexts[i]} with proof ${zkProofs[i]}`);
+        console.warn(`Bad proof at index ${i}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
     }
