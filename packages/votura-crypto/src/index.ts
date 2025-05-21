@@ -7,7 +7,7 @@ import {
   modMultiply,
   modPow,
   prime,
-  randBetween
+  randBetween,
 } from 'bigint-crypto-utils';
 
 export * from './utils.js';
@@ -34,7 +34,7 @@ export class PublicKey {
 
   encrypt(
     plaintext: bigint,
-    randomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n)
+    randomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
   ): [Ciphertext, bigint] {
     if (plaintext === 0n) {
       throw Error('Cannot encrypt 0 with El Gamal!');
@@ -52,10 +52,10 @@ export class PublicKey {
 
     return [[alpha, beta], randomness];
   }
-  
+
   reEncrypt(
     ciphertext: Ciphertext,
-    newRandomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n)
+    newRandomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
   ): [Ciphertext, bigint] {
     const newAlpha = modMultiply(
       [ciphertext[0], modPow(this.generator, newRandomness, this.primeP)],
@@ -79,7 +79,7 @@ export class PrivateKey extends PublicKey {
     primeQ: bigint,
     generator: bigint,
     publicKey: bigint,
-    privateKey: bigint
+    privateKey: bigint,
   ) {
     super(primeP, primeQ, generator, publicKey);
     this.privateKey = privateKey;
@@ -105,7 +105,7 @@ export class KeyPair {
     primeQ: bigint,
     generator: bigint,
     publicKey: bigint,
-    privateKey: bigint
+    privateKey: bigint,
   ) {
     if ((primeP - 1n) % primeQ !== 0n) {
       throw new Error('Invalid: (p - 1) is not divisible by q');
@@ -138,39 +138,39 @@ export const getKeyPair = async (bitsPrimeP: number = 2048): Promise<KeyPair> =>
 export class DisjunctiveEncryptionZKP {
   constructor(private readonly pk: PublicKey) {}
 
-  createSimulatedEncryptionProof(
-    plaintext: bigint,
-    ciphertext: Ciphertext
-  ): ZKProof {
+  createSimulatedEncryptionProof(plaintext: bigint, ciphertext: Ciphertext): ZKProof {
     const challenge = randBetween(0n, this.pk.primeQ - 1n);
     const response = randBetween(0n, this.pk.primeQ - 1n);
 
     const inversePlaintext = modInv(plaintext, this.pk.primeP);
-    const betaOverPlaintext = modMultiply(
-      [ciphertext[1], inversePlaintext],
-      this.pk.primeP
-    );
+    const betaOverPlaintext = modMultiply([ciphertext[1], inversePlaintext], this.pk.primeP);
 
     const commitmentA = modMultiply(
-      [modPow(ciphertext[0], -challenge, this.pk.primeP), modPow(this.pk.generator, response, this.pk.primeP)],
-      this.pk.primeP
+      [
+        modPow(ciphertext[0], -challenge, this.pk.primeP),
+        modPow(this.pk.generator, response, this.pk.primeP),
+      ],
+      this.pk.primeP,
     );
     const commitmentB = modMultiply(
-      [modPow(betaOverPlaintext, -challenge, this.pk.primeP), modPow(this.pk.publicKey, response, this.pk.primeP)],
-      this.pk.primeP
+      [
+        modPow(betaOverPlaintext, -challenge, this.pk.primeP),
+        modPow(this.pk.publicKey, response, this.pk.primeP),
+      ],
+      this.pk.primeP,
     );
 
     return {
       commitment: [commitmentA, commitmentB],
       challenge: challenge,
-      response: response
+      response: response,
     };
   }
 
   createRealEncryptionProof(
     simulatedZKPs: ZKProof[],
     realIndex: number,
-    randomness: bigint
+    randomness: bigint,
   ): ZKProof {
     const w = randBetween(0n, this.pk.primeQ - 1n);
 
@@ -203,12 +203,13 @@ export class DisjunctiveEncryptionZKP {
       }
     });
 
-    const response = (w + modMultiply([randomness, realChallenge], this.pk.primeQ)) % this.pk.primeQ;
+    const response =
+      (w + modMultiply([randomness, realChallenge], this.pk.primeQ)) % this.pk.primeQ;
 
     return {
       commitment: [commitmentA, commitmentB],
       challenge: realChallenge,
-      response: response
+      response: response,
     };
   }
 
@@ -216,14 +217,14 @@ export class DisjunctiveEncryptionZKP {
     choices: bigint[],
     ciphertexts: Ciphertext[],
     realIndex: number,
-    randomness: bigint
+    randomness: bigint,
   ): ZKProof[] {
     if (realIndex < 0 || realIndex >= choices.length) {
       throw new Error('realIndex is out of bounds');
     }
-  
+
     const disjunctiveZKPs: ZKProof[] = [];
-  
+
     for (let i = 0; i < choices.length; i++) {
       const choice = choices[i];
       const ciphertext = ciphertexts[i];
@@ -235,18 +236,14 @@ export class DisjunctiveEncryptionZKP {
         disjunctiveZKPs.push(simulatedProof);
       }
     }
-  
+
     const realProof = this.createRealEncryptionProof(disjunctiveZKPs, realIndex, randomness);
     disjunctiveZKPs.splice(realIndex, 0, realProof);
-  
+
     return disjunctiveZKPs;
   }
 
-  verifyEncryptionProof(
-    plaintext: bigint,
-    ciphertext: Ciphertext,
-    zkProof: ZKProof
-  ): boolean {
+  verifyEncryptionProof(plaintext: bigint, ciphertext: Ciphertext, zkProof: ZKProof): boolean {
     if (
       modPow(zkProof.commitment[0], this.pk.primeQ, this.pk.primeP) !== 1n ||
       modPow(zkProof.commitment[1], this.pk.primeQ, this.pk.primeP) !== 1n
@@ -258,7 +255,7 @@ export class DisjunctiveEncryptionZKP {
     const check1a = modPow(this.pk.generator, zkProof.response, this.pk.primeP);
     const check1b = modMultiply(
       [modPow(ciphertext[0], zkProof.challenge, this.pk.primeP), zkProof.commitment[0]],
-      this.pk.primeP
+      this.pk.primeP,
     );
 
     if (check1a !== check1b) {
@@ -272,11 +269,13 @@ export class DisjunctiveEncryptionZKP {
     const check2a = modPow(this.pk.publicKey, zkProof.response, this.pk.primeP);
     const check2b = modMultiply(
       [modPow(betaOverPlaintext, zkProof.challenge, this.pk.primeP), zkProof.commitment[1]],
-      this.pk.primeP
+      this.pk.primeP,
     );
 
     if (check2a !== check2b) {
-      console.warn(`Second verification check failed: y^response != commitmentB * (beta/m)^challenge!`);
+      console.warn(
+        `Second verification check failed: y^response != commitmentB * (beta/m)^challenge!`,
+      );
       return false;
     }
 
@@ -286,10 +285,12 @@ export class DisjunctiveEncryptionZKP {
   verifyDisjunctiveEncryptionProof(
     choices: bigint[],
     ciphertexts: Ciphertext[],
-    zkProofs: ZKProof[]
+    zkProofs: ZKProof[],
   ): boolean {
     if (choices.length !== ciphertexts.length) {
-      console.warn(`Bad number of ciphertexts (expected ${choices.length}, found ${ciphertexts.length})`);
+      console.warn(
+        `Bad number of ciphertexts (expected ${choices.length}, found ${ciphertexts.length})`,
+      );
       return false;
     }
     if (choices.length !== zkProofs.length) {
@@ -302,7 +303,9 @@ export class DisjunctiveEncryptionZKP {
       const ciphertext = ciphertexts[i];
       const zkProof = zkProofs[i];
       if (choice === undefined || ciphertext === undefined || zkProof === undefined) {
-        console.warn(`Invalid input: choices[${i}], ciphertexts[${i}] or ciphertexts[${i}] is undefined`);
+        console.warn(
+          `Invalid input: choices[${i}], ciphertexts[${i}] or ciphertexts[${i}] is undefined`,
+        );
         return false;
       }
       const isValid = this.verifyEncryptionProof(choice, ciphertext, zkProof);
@@ -311,14 +314,14 @@ export class DisjunctiveEncryptionZKP {
         return false;
       }
     }
-  
+
     const partsToHash: string[] = [];
 
-    zkProofs.forEach(proof => {
+    zkProofs.forEach((proof) => {
       partsToHash.push(proof.commitment[0].toString());
       partsToHash.push(proof.commitment[1].toString());
     });
-  
+
     const stringToHash = partsToHash.join(',');
     const hash = createHash('sha256');
     hash.update(stringToHash);
@@ -328,14 +331,14 @@ export class DisjunctiveEncryptionZKP {
 
     const actualChallenge = zkProofs.reduce(
       (sum, proof) => (sum + proof.challenge) % this.pk.primeQ,
-      0n
+      0n,
     );
 
     if (expectedChallenge !== actualChallenge) {
       console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
       return false;
     }
-  
+
     return true;
   }
 }
