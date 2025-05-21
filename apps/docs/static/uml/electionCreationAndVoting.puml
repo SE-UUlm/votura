@@ -123,24 +123,22 @@ frontend --> electionCreator : download JWTs for voter group
 deactivate frontend
 
 group Optional
-    electionCreator -> frontend : Regenerate JWTs for voter group
+    electionCreator -> frontend : Unfreeze election
     note left
-        The election creator can generate new JWTs for a voter group
-        even after associated elections have been frozen.
-        This for when they misplaced the previous JWTs (or similar).
+        The election creator can unfreeze an election at any time.
+        With this, all voter tokens and votes are invalidated.
     end note
     activate frontend
-    frontend -> backend : regenerate JWTs (voter group id)
+    frontend -> backend : unfreeze election (election id)
     activate backend
-    backend -> backend : validate + process regenerate JWTs (calculate new RS256 keys)
-    backend -> db : replace old RS256 keys, get voter ids
+    backend -> backend : validate
+    backend -> db : process unfreeze election (unset configFrozen, delte votes, voter registers, voter token keys, electiion keys, ...)
     activate db
-    db --> backend : voter ids
+    db --> backend : election unfrozen
     deactivate db
-    backend -> backend : generate JWTs for each voter using new RS256 keys
-    backend --> frontend : JWTs
+    backend --> frontend : election unfrozen
     deactivate backend
-    frontend --> electionCreator : download JWTs for voter group
+    frontend --> electionCreator : election unfrozen
     deactivate frontend
 end
 
