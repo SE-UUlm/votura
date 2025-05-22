@@ -9,10 +9,30 @@ entity "user" as user {
     * pwHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamp | NULL
-    loginFailedCount : smallint | NULL
-    * isAdmin : boolean
+    ' failed login attemtps get reset on successful login
+    * failedLoginAttempts : smallint
+    '* isAdmin : boolean
+    emailVerificationTokenHash : bpchar(64) | NULL
+    emailVerificationTokenExpiresAt : timestamp | NULL
+    passwordResetTokenHash : bpchar(64) | NULL
+    passwordResetTokenExpiresAt : timestamp | NULL
+    passwordResetTokenUsedAt : timestamp | NULL
+    refreshTokenHash : bpchar(64) | NULL
+    refreshTokenExpiresAt : timestamp | NULL
+    refreshTokenRevokedAt : timestamp | NULL
     --
 }
+
+entity "jwtBlacklist" as jwtBlacklist {
+    ' this table is used to store blacklisted access tokens
+    ' The jti is 36 characters long if we use UUIDv4
+    * jti : varchar(36) <<PK>>
+    --
+    * expiresAt : timestamp
+    * blacklistedAt : timestamp
+    --
+}
+
 
 
 entity "elections" as elections {
@@ -104,12 +124,12 @@ entity "votes" as votes {
     --
     * created : timestamp
     * modified : timestamp
-    * alpha : NUMERIC | NULL
-    * beta : NUMERIC | NULL
-    * commitment_part1 : NUMERIC | NULL
-    * commitment_part2 : NUMERIC | NULL
-    * challenge : NUMERIC | NULL
-    * response : NUMERIC | NULL
+    alpha : NUMERIC | NULL
+    beta : NUMERIC | NULL
+    commitmentPart1 : NUMERIC | NULL
+    commitmentPart2 : NUMERIC | NULL
+    challenge : NUMERIC | NULL
+    response : NUMERIC | NULL
     --
     * election : election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
@@ -148,9 +168,9 @@ entity "voterGroups" as voterGroups {
     * modified : timestamp
     * name : bpchar(255)
     description : bpchar | NULL
-    * pubKeyRS256 : NUMERIC
-    * privKeyRS256 : NUMERIC
-    * moduloRS256 : NUMERIC
+    pubKeyRS256 : NUMERIC | NULL
+    privKeyRS256 : NUMERIC | NULL
+    moduloRS256 : NUMERIC | NULL
     --
 }
 
