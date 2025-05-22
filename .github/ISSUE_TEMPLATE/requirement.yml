@@ -16,12 +16,12 @@ body:
     validations:
       required: true
   - type: textarea
-    id: acceptance 
+    id: acceptance
     attributes:
       label: Acceptance test
       description: A clear and concise description how the stakeholder acceptance test should look like, so that the requirement is fulfilled.
       placeholder: Tell us what you want to see! A presentation, test case, coverage, uptime, ...
-      value: "By a manual verification."
+      value: "By manual verification. By an end-to-end test. By a unit test. By a performance test."
     validations:
       required: true
   - type: markdown
