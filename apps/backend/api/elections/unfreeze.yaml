@@ -13,7 +13,7 @@ put:
 
     After an election is unfrozen, the configuration of the election can be changed again.
     But all generated voting tokens will be revoked, and the election key pair will be revoked.
-    Also, every vote that was casted will be deleted.
+    Also, every vote that was cast will be deleted.
   security:
     - voturaBackendAuth: []
   operationId: 'unfreezeElectionById'
