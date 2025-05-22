@@ -20,7 +20,7 @@ yarn-debug.log*
 yarn-error.log*
 
 # api
-/docs/devGuide/software_docs/backend/api/*
+/docs/api/*
 
 # images
 /static/uml/*.svg
