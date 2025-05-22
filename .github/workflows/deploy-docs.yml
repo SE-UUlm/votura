@@ -48,7 +48,9 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: uml_svg
-          path: ./apps/docs/static/uml/*.{svg,md}
+          path: |
+            ./apps/docs/static/uml/*.svg
+            ./apps/docs/static/uml/*.md
           retention-days: 5
 
   build-drawio:
