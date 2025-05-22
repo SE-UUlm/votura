@@ -126,7 +126,8 @@ group Optional
     electionCreator -> frontend : Unfreeze election
     note left
         The election creator can unfreeze an election at any time.
-        With this, all voter tokens and votes are invalidated.
+        With this, all voter tokens, election keys, and votes 
+        are invalidated and removed.
     end note
     activate frontend
     frontend -> backend : unfreeze election (election id)

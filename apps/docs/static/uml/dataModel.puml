@@ -9,8 +9,9 @@ entity "user" as user {
     * pwHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamp | NULL
+    ' failed login attemtps get reset on successful login
     failedLoginAttempts : smallint | NULL
-    * isAdmin : boolean
+    '* isAdmin : boolean
     emailVerificationTokenHash : bpchar(64) | NULL
     emailVerificationTokenExpiresAt : timestamp | NULL
     passwordResetTokenHash : bpchar(64) | NULL
@@ -124,8 +125,8 @@ entity "votes" as votes {
     * modified : timestamp
     alpha : NUMERIC | NULL
     beta : NUMERIC | NULL
-    commitment_part1 : NUMERIC | NULL
-    commitment_part2 : NUMERIC | NULL
+    commitmentPart1 : NUMERIC | NULL
+    commitmentPart2 : NUMERIC | NULL
     challenge : NUMERIC | NULL
     response : NUMERIC | NULL
     --
