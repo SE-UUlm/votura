@@ -9,7 +9,7 @@ generator client {
 // This generator is used to generate an ERD (Entity Relationship Diagram) from the Prisma schema for the documentation.
 generator erd {
   provider                  = "prisma-erd-generator"
-  output                    = "../../docs/static/uml/dataModel_live.svg"
+  output                    = "../../docs/static/uml/dataModel_live.md"
   theme                     = "neutral"
   tableOnly                 = false
   ignoreEnums               = false
