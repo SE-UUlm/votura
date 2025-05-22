@@ -59,12 +59,12 @@
     "@types/node": "^22.15.16",
     "eslint": "^9.25.1",
     "prettier": "^3.5.3",
-    "prisma": "^6.7.0",
+    "prisma": "^6.8.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.7.0",
+    "@prisma/client": "^6.8.2",
     "express": "^5.1.0"
   }
 }

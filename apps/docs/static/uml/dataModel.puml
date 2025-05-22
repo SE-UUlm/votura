@@ -1,25 +1,25 @@
 @startuml dataModel
 
-entity "user" as user {
+entity "User" as user {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * email : bpchar(255) <<UK>>
     * pwHash : bpchar(255)
     * verified : boolean
-    lastLoginAt : timestamp | NULL
+    lastLoginAt : timestamptz(6) | NULL
     loginFailedCount : smallint | NULL
     * isAdmin : boolean
     --
 }
 
 
-entity "elections" as elections {
+entity "Election" as elections {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * private : boolean
@@ -38,7 +38,7 @@ entity "elections" as elections {
     primeQ : NUMERIC | NULL
     generator : NUMERIC | NULL
     --
-    * electionCreator : user.email <<FK>>
+    * electionCreator : User.email <<FK>>
 }
 
 note as N2
@@ -49,61 +49,61 @@ do not support multiple questions
 in one election.
 end note
 
-entity "ballotPapers" as ballotPapers {
+entity "BallotPaper" as ballotPapers {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * maxVotes : smallint
     * maxVotesPerCandidate : smallint
     --
-    * election : election.id <<FK>>
+    * election : Election.id <<FK>>
 }
 
-entity "ballotPaperSections" as ballotPaperSections {
+entity "BallotPaperSection" as ballotPaperSections {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * maxVotes : smallint
     * maxVotesPerCandidate : smallint
     --
-    * ballotPaper : ballotPaper.id <<FK>>
+    * ballotPaper : BallotPaper.id <<FK>>
 }
 ' note as C_2
 ' If at least two ballotPaperSections are created for one ballotPaper, 
 ' the name field of the ballotPaperSections is mandatory.
 ' end note
 
-entity "ballotPaperSectionCandidates" as ballotPaperSectionCandidates {
-    * ballotPaperSection : ballotPaperSection.id <<PK>> <<FK>>
-    * candidate : candidate.id <<PK>> <<FK>>
+entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
+    * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
+    * candidate : Candidate.id <<PK>> <<FK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     --
 }
 
-entity "candidates" as candidates {
+entity "Candidate" as candidates {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * title : bpchar(255)
     description : bpchar | NULL
     --
-    * election : election.id <<FK>>
+    * election : Election.id <<FK>>
 }
 
-entity "votes" as votes {
+entity "Vote" as votes {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * alpha : NUMERIC | NULL
     * beta : NUMERIC | NULL
     * commitment_part1 : NUMERIC | NULL
@@ -111,7 +111,7 @@ entity "votes" as votes {
     * challenge : NUMERIC | NULL
     * response : NUMERIC | NULL
     --
-    * election : election.id <<FK>>
+    * election : Election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
     voter : voter.id <<FK>> | NULL
 }
@@ -119,33 +119,33 @@ note as N4
 A vote is an encoded json object containing the entire filled in ballot paper.
 end note
 
-entity "voterRegisters" as voterRegisters {
-    * ballotPaper : ballotPaper.id <<PK>> <<FK>>
-    * voter : voter.id <<PK>> <<FK>>
+entity "VoterRegister" as voterRegisters {
+    * ballotPaper : BallotPaper.id <<PK>> <<FK>>
+    * voter : Voter.id <<PK>> <<FK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * voted : boolean
 }
 
-entity "voters" as voters {
+entity "Voter" as voters {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     --
-    voterGroup: voterGroup.id <<FK>>
+    voterGroup: VoterGroup.id <<FK>>
 }
 note as N3
 A voter can only get one ballot paper,
 and with this one vote per election.
 end note
 
-entity "voterGroups" as voterGroups {
+entity "VoterGroup" as voterGroups {
     * id : uuid <<PK>>
     --
-    * created : timestamp
-    * modified : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * pubKeyRS256 : NUMERIC
@@ -153,6 +153,10 @@ entity "voterGroups" as voterGroups {
     * moduloRS256 : NUMERIC
     --
 }
+
+note as N1
+Timestamps are stored in UTC.
+end note
 
 user ||--o{ elections
 elections ||--o{ ballotPapers

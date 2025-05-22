@@ -12,5 +12,42 @@ datasource db {
 }
 
 model User {
-  id String @id @default(uuid())
+  id                              String     @id @default(uuid())
+  created                         DateTime   @default(now()) @db.Timestamptz(6) // UTC
+  modified                        DateTime   @updatedAt @db.Timestamptz(6)
+  email                           String     @unique
+  pwHash                          String
+  verified                        Boolean    @default(false)
+  lastLoginAt                     DateTime?  @db.Timestamptz(6)
+  failedLoginAttempts             Int?       @default(0)
+  emailVerificationTokenHash      String?
+  emailVerificationTokenExpiresAt DateTime?  @db.Timestamptz(6)
+  passwordResetTokenHash          String?
+  passwordResetTokenExpiresAt     DateTime?  @db.Timestamptz(6)
+  passwordResetTokenUsedAt        DateTime?  @db.Timestamptz(6)
+  refreshTokenHash                String?
+  refreshTokenExpiresAt           DateTime?  @db.Timestamptz(6)
+  refreshTokenRevokedAt           DateTime?  @db.Timestamptz(6)
+  elections                       Election[]
+
+  @@index([email], name: "user_email_index")
+}
+
+model Election {
+  id                String   @id @default(uuid())
+  created           DateTime @default(now()) @db.Timestamptz(6)
+  modified          DateTime @updatedAt @db.Timestamptz(6)
+  name              String
+  description       String?
+  votingStart       DateTime @db.Timestamptz(6)
+  votingEnd         DateTime @db.Timestamptz(6)
+  configFrozen      Boolean  @default(false)
+  allowInvalidVotes Boolean  @default(false)
+  pubKeyVotes       BigInt?
+  privKeyVotes      BigInt?
+  primeP            BigInt?
+  primeQ            BigInt?
+  generator         BigInt?
+  electionCreator   User     @relation(fields: [electionCreatorId], references: [id])
+  electionCreatorId String
 }
