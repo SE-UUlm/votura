@@ -6,11 +6,68 @@ generator client {
   output   = "../generated/prisma"
 }
 
+// This generator is used to generate an ERD (Entity Relationship Diagram) from the Prisma schema for the documentation.
+generator erd {
+  provider                  = "prisma-erd-generator"
+  output                    = "../../docs/static/uml/dataModel_live.md"
+  theme                     = "neutral"
+  tableOnly                 = false
+  ignoreEnums               = false
+  includeRelationFromFields = true
+  disableEmoji              = false
+  disabled                  = false // Set to true to disable the generator
+}
+
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
 model User {
-  id String @id @default(uuid())
+  id                              String     @id @default(uuid())
+  created                         DateTime   @default(now()) @db.Timestamptz(6) // UTC
+  modified                        DateTime   @updatedAt @db.Timestamptz(6)
+  email                           String     @unique
+  pwHash                          String
+  verified                        Boolean    @default(false)
+  lastLoginAt                     DateTime?  @db.Timestamptz(6)
+  failedLoginAttempts             Int?       @default(0)
+  emailVerificationTokenHash      String?
+  emailVerificationTokenExpiresAt DateTime?  @db.Timestamptz(6)
+  passwordResetTokenHash          String?
+  passwordResetTokenExpiresAt     DateTime?  @db.Timestamptz(6)
+  passwordResetTokenUsedAt        DateTime?  @db.Timestamptz(6)
+  refreshTokenHash                String?
+  refreshTokenExpiresAt           DateTime?  @db.Timestamptz(6)
+  refreshTokenRevokedAt           DateTime?  @db.Timestamptz(6)
+  elections                       Election[]
+
+  @@index([email], name: "user_email_index")
+}
+
+model JwtBlacklist {
+  jti           String   @id
+  created       DateTime @default(now()) @db.Timestamptz(6)
+  modified      DateTime @updatedAt @db.Timestamptz(6)
+  expiresAt     DateTime @db.Timestamptz(6)
+  blacklistedAt DateTime @db.Timestamptz(6)
+}
+
+model Election {
+  id                String   @id @default(uuid())
+  created           DateTime @default(now()) @db.Timestamptz(6)
+  modified          DateTime @updatedAt @db.Timestamptz(6)
+  name              String
+  description       String?
+  votingStart       DateTime @db.Timestamptz(6)
+  votingEnd         DateTime @db.Timestamptz(6)
+  configFrozen      Boolean  @default(false)
+  allowInvalidVotes Boolean  @default(false)
+  pubKeyVotes       BigInt?
+  privKeyVotes      BigInt?
+  primeP            BigInt?
+  primeQ            BigInt?
+  generator         BigInt?
+  electionCreator   User     @relation(fields: [electionCreatorId], references: [id])
+  electionCreatorId String
 }

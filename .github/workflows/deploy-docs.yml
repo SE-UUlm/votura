@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-puml:
-    name: Build PlantUML diagrams
+    name: Build UML diagrams
     runs-on:
       labels: ubuntu-latest
     container:
@@ -21,8 +21,8 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: 'temurin'
+          java-version: '17'
       - name: Install dependencies
         run: |
           apt-get update
@@ -33,11 +33,25 @@ jobs:
       - name: Build PlantUML SVG files
         run: |
           find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install node dependencies
+        run: npm ci
+      - name: Build Prisma ERD
+        run: |
+          cd ./apps/backend/
+          npx prisma generate
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: uml_svg
-          path: ./apps/docs/static/uml/*.svg
+          path: |
+            ./apps/docs/static/uml/*.svg
+            ./apps/docs/static/uml/*.md
+          retention-days: 5
 
   build-drawio:
     name: Build DrawIO diagrams
@@ -68,10 +82,11 @@ jobs:
         with:
           name: drawio_svg
           path: ./apps/docs/static/drawio/*.svg
+          retention-days: 5
 
   build:
     name: Build documentation
-    needs: ["build-puml", "build-drawio"]
+    needs: ['build-puml', 'build-drawio']
     runs-on:
       labels: ubuntu-latest
     container:
