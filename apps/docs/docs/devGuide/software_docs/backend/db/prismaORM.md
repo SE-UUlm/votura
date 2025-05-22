@@ -107,7 +107,7 @@ The corresponding migration will be generated and saved in the `prisma/migration
 
 You can also use `npx prisma db push` for non-production environments to sync the database without migrations.
 
-![Evolve with Prisma](../../../../static/img/prisma_evolve_application.png)
+![Evolve with Prisma](../../../../../static/img/prisma_evolve_application.png)
 
 ### Further readings
 
