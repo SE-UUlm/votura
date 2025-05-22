@@ -52,6 +52,7 @@
   },
   "type": "module",
   "devDependencies": {
+    "@mermaid-js/mermaid-cli": "^11.4.2",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@stoplight/spectral-cli": "^6.15.0",
@@ -60,6 +61,7 @@
     "eslint": "^9.25.1",
     "prettier": "^3.5.3",
     "prisma": "^6.8.2",
+    "prisma-erd-generator": "^2.0.4",
     "tsx": "^4.19.4",
     "typescript": "^5.8.2"
   },

@@ -9,11 +9,18 @@ hide_table_of_contents: false
 draft: false
 ---
 
-:::warning
+## Database Design Draft
 
-This page is still under construction and will be updated soon.
+The following diagram shows the database design of votura.
+After this diagram the database was designed.
 
-:::
+![The database design architecture of votura.](../../../../../static/uml/dataModel.svg)
 
-![The database architecture of votura.](../../../../../static/uml/dataModel.svg)
 ![Example of elections in Database](../../../../../static/drawio/electionLayout.svg)
+
+## Database implementation
+
+Because we are using Prisma as an ORM, the actual implementation can differ from the diagram above in some parts.
+The following diagram shows the current implementation of the database.
+
+![The current database architecture implementation of votura.](../../../../../static/uml/dataModel_live.svg)
