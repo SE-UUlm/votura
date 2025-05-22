@@ -10,7 +10,7 @@ entity "user" as user {
     * verified : boolean
     lastLoginAt : timestamp | NULL
     ' failed login attemtps get reset on successful login
-    failedLoginAttempts : smallint | NULL
+    * failedLoginAttempts : smallint
     '* isAdmin : boolean
     emailVerificationTokenHash : bpchar(64) | NULL
     emailVerificationTokenExpiresAt : timestamp | NULL
