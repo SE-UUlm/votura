@@ -13,7 +13,7 @@ entity "User" as user {
     * failedLoginAttempts : smallint
     '* isAdmin : boolean
     emailVerificationTokenHash : bpchar(64) | NULL
-    emailVerificationTokenExpiresAt : timestamp | NULL
+    emailVerificationTokenExpiresAt : timestamptz(6) | NULL
     passwordResetTokenHash : bpchar(64) | NULL
     passwordResetTokenExpiresAt : timestamptz(6) | NULL
     passwordResetTokenUsedAt : timestamptz(6) | NULL
@@ -23,13 +23,15 @@ entity "User" as user {
     --
 }
 
-entity "jwtBlacklist" as jwtBlacklist {
+entity "JwtBlacklist" as jwtBlacklist {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
     * jti : varchar(36) <<PK>>
     --
-    * expiresAt : timestamp
-    * blacklistedAt : timestamp
+    * created : timestamptz(6)
+    * modified : timestamptz(6)
+    * expiresAt : timestamptz(6)
+    * blacklistedAt : timestamptz(6)
     --
 }
 

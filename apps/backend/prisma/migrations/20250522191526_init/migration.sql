@@ -21,6 +21,17 @@ CREATE TABLE "User" (
 );
 
 -- CreateTable
+CREATE TABLE "JwtBlacklist" (
+    "jti" TEXT NOT NULL,
+    "created" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modified" TIMESTAMPTZ(6) NOT NULL,
+    "expiresAt" TIMESTAMPTZ(6) NOT NULL,
+    "blacklistedAt" TIMESTAMPTZ(6) NOT NULL,
+
+    CONSTRAINT "JwtBlacklist_pkey" PRIMARY KEY ("jti")
+);
+
+-- CreateTable
 CREATE TABLE "Election" (
     "id" TEXT NOT NULL,
     "created" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,

@@ -45,6 +45,14 @@ model User {
   @@index([email], name: "user_email_index")
 }
 
+model JwtBlacklist {
+  jti           String   @id
+  created       DateTime @default(now()) @db.Timestamptz(6)
+  modified      DateTime @updatedAt @db.Timestamptz(6)
+  expiresAt     DateTime @db.Timestamptz(6)
+  blacklistedAt DateTime @db.Timestamptz(6)
+}
+
 model Election {
   id                String   @id @default(uuid())
   created           DateTime @default(now()) @db.Timestamptz(6)
