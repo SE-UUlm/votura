@@ -33,7 +33,7 @@ export class PublicKey {
 
   encrypt(
     plaintext: bigint,
-    randomness: bigint = randBetween(1n, modAdd([this.primeP, -1n], this.primeP)),
+    randomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
   ): [Ciphertext, bigint] {
     if (plaintext === 0n) {
       throw Error('Cannot encrypt 0 with El Gamal!');
@@ -78,7 +78,7 @@ export class PrivateKey extends PublicKey {
   }
 
   createDecryptionProof(ciphertext: Ciphertext): ZKProof {
-    const w = randBetween(0n, modAdd([this.primeQ, -1n], this.primeQ));
+    const w = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 0n);
 
     const commitmentA = modPow(this.generator, w, this.primeP);
     const commitmentB = modPow(ciphertext[0], w, this.primeP);
@@ -202,8 +202,8 @@ export class ZeroKnowledgeProof {
   constructor(private readonly pk: PublicKey) {}
 
   createSimulatedEncryptionProof(plaintext: bigint, ciphertext: Ciphertext): ZKProof {
-    const challenge = randBetween(0n, modAdd([this.pk.primeQ, -1n], this.pk.primeQ));
-    const response = randBetween(0n, modAdd([this.pk.primeQ, -1n], this.pk.primeQ));
+    const challenge = randBetween(modAdd([this.pk.primeQ, -1n], this.pk.primeQ), 0n);
+    const response = randBetween(modAdd([this.pk.primeQ, -1n], this.pk.primeQ), 0n);
 
     const inversePlaintext = modInv(plaintext, this.pk.primeP);
     const betaOverPlaintext = modMultiply([ciphertext[1], inversePlaintext], this.pk.primeP);
@@ -235,7 +235,7 @@ export class ZeroKnowledgeProof {
     realIndex: number,
     randomness: bigint,
   ): ZKProof {
-    const w = randBetween(0n, modAdd([this.pk.primeQ, -1n], this.pk.primeQ));
+    const w = randBetween(modAdd([this.pk.primeQ, -1n], this.pk.primeQ), 0n);
 
     const commitmentA = modPow(this.pk.generator, w, this.pk.primeP);
     const commitmentB = modPow(this.pk.publicKey, w, this.pk.primeP);
