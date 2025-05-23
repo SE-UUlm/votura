@@ -43,7 +43,7 @@ get:
       description: |
         You can specify in which order you want to get your items.
         By default in `asc` (ascending) or when you wish `desc`(descending).
-      # Currently I see no need for supporting multi-field sorting. If the is one we need to update it.
+      # Currently I see no need for supporting multi-field sorting. If there is one, we need to update it.
       required: false
       schema:
         type: 'string'

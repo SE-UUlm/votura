@@ -21,8 +21,8 @@ jobs:
       - name: Set up Java
         uses: actions/setup-java@v3
         with:
-          distribution: "temurin"
-          java-version: "17"
+          distribution: 'temurin'
+          java-version: '17'
       - name: Install dependencies
         run: |
           apt-get update
@@ -59,7 +59,7 @@ jobs:
           wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
           apt-get install -y ./drawio-amd64-24.7.17.deb
       - name: Build DrawIO SVG files
-        # DrawIO returns immediately even when the image is not finished rendered, so there for the sleep guess.
+        # DrawIO returns immediately even when the image is not finished rendered, so therefor the sleep guess.
         run: |
           xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
           timeout=300
@@ -71,7 +71,7 @@ jobs:
 
   build:
     name: Build documentation
-    needs: ["build-puml", "build-drawio"]
+    needs: ['build-puml', 'build-drawio']
     runs-on:
       labels: ubuntu-latest
     container:
