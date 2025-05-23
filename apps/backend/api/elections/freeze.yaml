@@ -10,7 +10,7 @@ put:
   description: |
     Freezes the requested election.
     Note that freezing an election is an action that should be done with caution and after a careful review of the election configuration.
-    After an election is frozen, the configuration of the election cannot be changed anymore.
+    After an election is frozen, the configuration of the election can not be changed anymore.
     You can not change the number of allowed voters.
 
     After the election is frozen, the key pair for the election will be generated.

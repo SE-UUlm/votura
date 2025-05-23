@@ -9,7 +9,7 @@ entity "user" as user {
     * pwHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamp | NULL
-    ' failed login attemtps get reset on successful login
+    ' failed login attempts get reset on successful login
     * failedLoginAttempts : smallint
     '* isAdmin : boolean
     emailVerificationTokenHash : bpchar(64) | NULL

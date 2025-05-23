@@ -56,7 +56,7 @@ put:
     '200':
       description: |
         OK.
-        The request was successly executed.
+        The request was successfully executed.
         The election was updated.
       content:
         application/json:
