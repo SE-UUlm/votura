@@ -11,21 +11,22 @@ import {
 } from '@mantine/core';
 import { type ReactNode, useEffect } from 'react';
 import { useForm } from '@mantine/form';
-import { DateTimePicker } from '@mantine/dates';
+import { DatePickerInput } from '@mantine/dates';
+import dayjs from 'dayjs';
 
 export interface MutateElectionModalProps {
   election?: MockElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
-  onMutate: (mutatedElection: MutateElectionFormValues) => void;
+  onMutate: (mutatedElection: Partial<MockElection>) => void;
   title: ModalProps['title'];
 }
 
-export type MutateElectionFormValues = Pick<
-  MockElection,
-  'name' | 'description' | 'votingStart' | 'votingEnd' | 'allowInvalidVotes'
->;
+export interface MutateElectionFormValues
+  extends Pick<MockElection, 'name' | 'description' | 'allowInvalidVotes'> {
+  dateRange: [Date, Date];
+}
 
 export const MutateElectionModal = ({
   election,
@@ -43,13 +44,33 @@ export const MutateElectionModal = ({
     if (!opened) return;
 
     if (election) {
-      form.setValues(election);
+      form.setValues({
+        name: election.name,
+        description: election.description,
+        allowInvalidVotes: election.allowInvalidVotes,
+        dateRange:
+          election.votingStart && election.votingEnd
+            ? [election.votingStart, election.votingEnd]
+            : [dayjs().toDate(), dayjs().add(1, 'day').toDate()],
+      });
     } else {
       form.reset();
     }
     // to prevent infinite render loops
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [election, opened]);
+
+  const onMutateTransform = () => {
+    const formValues = form.getValues();
+    onMutate({
+      name: formValues.name,
+      description: formValues.description,
+      allowInvalidVotes: formValues.allowInvalidVotes,
+      votingStart: formValues.dateRange[0],
+      votingEnd: formValues.dateRange[1],
+    });
+    onClose();
+  };
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>
@@ -69,17 +90,12 @@ export const MutateElectionModal = ({
           key={form.key('description')}
           {...form.getInputProps('description')}
         />
-        <DateTimePicker
-          label={'Start of voting'}
-          placeholder={'Pick date and time'}
-          key={form.key('votingStart')}
-          {...form.getInputProps('votingStart')}
-        />
-        <DateTimePicker
-          label={'End of voting'}
-          placeholder={'Pick date and time'}
-          key={form.key('votingEnd')}
-          {...form.getInputProps('votingEnd')}
+        <DatePickerInput
+          type={'range'}
+          label={'Voting period'}
+          placeholder={'Pick a start and end date'}
+          key={form.key('dateRange')}
+          {...form.getInputProps('dateRange')}
         />
         <Switch
           label={'Allow invalid votes'}
@@ -90,13 +106,7 @@ export const MutateElectionModal = ({
           <Button variant="outline" onClick={onClose}>
             Cancel
           </Button>
-          <Button
-            variant="filled"
-            onClick={() => {
-              onMutate(form.getValues());
-              onClose();
-            }}
-          >
+          <Button variant="filled" onClick={onMutateTransform}>
             {mutateButtonText}
           </Button>
         </Group>
