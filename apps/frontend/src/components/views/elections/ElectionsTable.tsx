@@ -59,7 +59,9 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
         <TableText>{election.description}</TableText>
       </Table.Td>
       <Table.Td>
-        <TableText>{election.createdAt.toLocaleString('en-US')}</TableText>
+        <TableText>
+          {election.createdAt.toLocaleString('en-US', { timeZone: '+02:00' })} (GMT+2)
+        </TableText>
       </Table.Td>
       <Table.Td>
         <BooleanBadge isTrue={election.immutableConfig} />
