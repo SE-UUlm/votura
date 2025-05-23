@@ -1,0 +1,40 @@
+{
+    "language": "en",
+    "ignorePaths": [
+        "./**/node_modules/**",
+        "./**/dist/**",
+        "./**/build/**",
+        "./**/coverage/**",
+        "./**/generated/**",
+        "**/prisma/migrations/**",
+        "**/package.json",
+        "*.svg",
+        "*.drawio"
+    ],
+    "words": [
+        "Avenir",
+        "Gamal",
+        "Gamals",
+        "Hoffmann",
+        "Infima",
+        "Kortmann",
+        "Raschke",
+        "Sievers",
+        "Sören",
+        "Thorben",
+        "apisidebar",
+        "araschke",
+        "autoincrement",
+        "bpchar",
+        "ciphertext",
+        "cofactor",
+        "dsiev",
+        "enduml",
+        "shoffma",
+        "smallint",
+        "startuml",
+        "turborepo",
+        "varchar",
+        "votura"
+    ]
+}
