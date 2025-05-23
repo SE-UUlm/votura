@@ -1,6 +1,7 @@
 import type { MockElection } from '../../../store/useStore.ts';
-import { Badge, Grid, Text } from '@mantine/core';
+import { Grid, Text } from '@mantine/core';
 import { ElectionStatField } from './ElectionStatField.tsx';
+import { BooleanBadge } from '../BooleanBadge.tsx';
 
 export interface ElectionStatsProps {
   election: MockElection;
@@ -22,17 +23,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps) => {
       <Grid.Col span={1}>
         <ElectionStatField
           title={'Frozen'}
-          content={
-            election.immutableConfig ? (
-              <Badge variant="dot" color="red">
-                Yes
-              </Badge>
-            ) : (
-              <Badge variant="dot" color="green">
-                No
-              </Badge>
-            )
-          }
+          content={<BooleanBadge isTrue={election.immutableConfig} />}
         />
       </Grid.Col>
       <Grid.Col span={3}>

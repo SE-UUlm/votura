@@ -1,4 +1,4 @@
-import { ActionIcon, Badge, Group, Table, Text } from '@mantine/core';
+import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import { type MockElection, useStore } from '../../../store/useStore.ts';
 import { useNavigate } from 'react-router';
@@ -12,6 +12,7 @@ import {
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import type { PropsWithChildren } from 'react';
+import { BooleanBadge } from '../BooleanBadge.tsx';
 
 export interface ElectionsTableProps {
   data: MockElection[];
@@ -61,15 +62,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
         <TableText>{election.createdAt.toLocaleString('en-US')}</TableText>
       </Table.Td>
       <Table.Td>
-        {election.immutableConfig ? (
-          <Badge variant="dot" color="red">
-            Yes
-          </Badge>
-        ) : (
-          <Badge variant="dot" color="green">
-            No
-          </Badge>
-        )}
+        <BooleanBadge isTrue={election.immutableConfig} />
       </Table.Td>
       <Table.Td>
         <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
