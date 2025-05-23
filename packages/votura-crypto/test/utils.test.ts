@@ -1,5 +1,10 @@
 import { describe, expect } from 'vitest';
-import { getBitsOfBigInt, getCofactor, getFiatShamirChallenge, getGeneratorForPrimes } from '../src/utils.js';
+import {
+  getBitsOfBigInt,
+  getCofactor,
+  getFiatShamirChallenge,
+  getGeneratorForPrimes,
+} from '../src/utils.js';
 import { gcd, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 

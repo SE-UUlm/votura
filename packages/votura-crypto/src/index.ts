@@ -177,7 +177,9 @@ export class Tallying {
           return [];
         }
         if (vote.length !== choiceCount) {
-          console.warn(`Invalid vote (index ${j}): expected ${choiceCount} choices, found ${vote.length}`);
+          console.warn(
+            `Invalid vote (index ${j}): expected ${choiceCount} choices, found ${vote.length}`,
+          );
           return [];
         }
 
@@ -393,11 +395,7 @@ export class ZeroKnowledgeProof {
     return true;
   }
 
-  verifyDecryptionProof(
-    plaintext: bigint,
-    ciphertext: Ciphertext,
-    zkProof: ZKProof,
-  ): boolean {
+  verifyDecryptionProof(plaintext: bigint, ciphertext: Ciphertext, zkProof: ZKProof): boolean {
     const partsToHash: string[] = [];
     partsToHash.push(zkProof.commitment[0].toString());
     partsToHash.push(zkProof.commitment[1].toString());
@@ -429,7 +427,9 @@ export class ZeroKnowledgeProof {
     );
 
     if (check2a !== check2b) {
-      console.warn(`Second verification check failed: alpha^response != commitmentB * (beta/m)^challenge!`);
+      console.warn(
+        `Second verification check failed: alpha^response != commitmentB * (beta/m)^challenge!`,
+      );
       return false;
     }
 

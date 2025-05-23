@@ -1,5 +1,11 @@
 import { describe, expect } from 'vitest';
-import { type Ciphertext, getKeyPair, Tallying, ZeroKnowledgeProof, type ZKProof } from '../src/index.js';
+import {
+  type Ciphertext,
+  getKeyPair,
+  Tallying,
+  ZeroKnowledgeProof,
+  type ZKProof,
+} from '../src/index.js';
 import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
@@ -56,7 +62,7 @@ describe('Tallying', () => {
   voturaTest('aggregateCiphertexts', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map(p => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
 
     let expectedAlpha = 1n;
     let expectedBeta = 1n;
@@ -105,7 +111,7 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('createRealEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map(p => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
@@ -137,16 +143,26 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('createDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map(p => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
-    const proofs = zkp.createDisjunctiveEncryptionProof(plaintexts, ciphertexts, realIndex, randomness);
-    const proofs2 = zkp.createDisjunctiveEncryptionProof(plaintexts, ciphertexts, realIndex, randomness);
+    const proofs = zkp.createDisjunctiveEncryptionProof(
+      plaintexts,
+      ciphertexts,
+      realIndex,
+      randomness,
+    );
+    const proofs2 = zkp.createDisjunctiveEncryptionProof(
+      plaintexts,
+      ciphertexts,
+      realIndex,
+      randomness,
+    );
 
     expect(proofs.length).toBe(plaintexts.length);
 
-    proofs.forEach(proof => {
+    proofs.forEach((proof) => {
       expect(proof.commitment.length).toBe(2);
       expect(typeof proof.challenge).toBe('bigint');
       expect(typeof proof.response).toBe('bigint');
@@ -204,19 +220,25 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map(p => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
-    const validProofs = zkp.createDisjunctiveEncryptionProof(plaintexts, ciphertexts, realIndex, randomness);
+    const validProofs = zkp.createDisjunctiveEncryptionProof(
+      plaintexts,
+      ciphertexts,
+      realIndex,
+      randomness,
+    );
 
     const isValid = zkp.verifyDisjunctiveEncryptionProof(plaintexts, ciphertexts, validProofs);
     expect(isValid).toBe(true);
 
     const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: index === 0
-        ? [(proof.commitment[0] + 1n) % publicKey.primeP, proof.commitment[1]]
-        : [proof.commitment[0], proof.commitment[1]],
+      commitment:
+        index === 0
+          ? [(proof.commitment[0] + 1n) % publicKey.primeP, proof.commitment[1]]
+          : [proof.commitment[0], proof.commitment[1]],
       challenge: proof.challenge,
       response: proof.response,
     }));
@@ -224,9 +246,10 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid1).toBe(false);
 
     const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: index === 1
-        ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.primeP]
-        : [proof.commitment[0], proof.commitment[1]],
+      commitment:
+        index === 1
+          ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.primeP]
+          : [proof.commitment[0], proof.commitment[1]],
       challenge: proof.challenge,
       response: proof.response,
     }));
@@ -235,9 +258,7 @@ describe('ZeroKnowledgeProof', () => {
 
     const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
       commitment: [proof.commitment[0], proof.commitment[1]],
-      challenge: index === 2
-        ? (proof.challenge + 1n) % publicKey.primeQ
-        : proof.challenge,
+      challenge: index === 2 ? (proof.challenge + 1n) % publicKey.primeQ : proof.challenge,
       response: proof.response,
     }));
     const isValid3 = zkp.verifyDisjunctiveEncryptionProof(plaintexts, ciphertexts, invalidProofs3);
@@ -246,9 +267,7 @@ describe('ZeroKnowledgeProof', () => {
     const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
       commitment: [proof.commitment[0], proof.commitment[1]],
       challenge: proof.challenge,
-      response: index === 3
-        ? (proof.response + 1n) % publicKey.primeQ
-        : proof.response,
+      response: index === 3 ? (proof.response + 1n) % publicKey.primeQ : proof.response,
     }));
     const isValid4 = zkp.verifyDisjunctiveEncryptionProof(plaintexts, ciphertexts, invalidProofs4);
     expect(isValid4).toBe(false);
