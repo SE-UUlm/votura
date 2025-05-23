@@ -65,7 +65,7 @@ export const ElectionsSettingsMenu = ({
           <Menu.Item leftSection={freezeIcon} onClick={toggleFreezeModalActions.open}>
             {toggleFreezeText}
           </Menu.Item>
-          <Menu.Item leftSection={<IconEdit size={14} />} onClick={mutateModalActions.open}>
+          <Menu.Item disabled={election.immutableConfig} leftSection={<IconEdit size={14} />} onClick={mutateModalActions.open}>
             Edit election
           </Menu.Item>
           <Menu.Item
