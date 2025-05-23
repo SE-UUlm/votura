@@ -103,7 +103,7 @@ components:
               readOnly: false
               writeOnly: false
               minLength: 256
-              maxLength: 256 # TODO: Updade after the implementation
+              maxLength: 256 # TODO: Update after the implementation
               pattern: '^[a-zA-Z0-9.-_]{256,256}$'
               example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer' # cspell:disable-line
     refreshRequestObject:
