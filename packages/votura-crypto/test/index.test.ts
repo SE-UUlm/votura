@@ -59,10 +59,10 @@ describe('PrivateKey', () => {
 });
 
 describe('Tallying', () => {
-  voturaTest('aggregateCiphertexts', ({ keyPair, plaintext, ciphertext }) => {
+  voturaTest('aggregateCiphertexts', ({ keyPair, plaintext, ciphertext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
 
     let expectedAlpha = 1n;
     let expectedBeta = 1n;
@@ -111,7 +111,7 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('createRealEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
@@ -143,7 +143,7 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('createDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
@@ -220,7 +220,7 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p)[0]);
+    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
