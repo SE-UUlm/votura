@@ -1,44 +1,68 @@
 openapi: '3.1.0'
 info:
-  title: 'Votura API Specification'
-  summary: 'TODO'
-  description: 'This is the OpenAPI specification for communication to the votura backend via the REST-API.'
+  title: 'Votura backend HTTP-API definition'
+  description: |
+    ---
+    This is the OpenAPI specification for the communication to the votura backend via the REST-API.
+    The votura frontend and backend communicate via this API.
   termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file'
   contact:
     name: 'Votura Dev-Team'
-    url: 'https://github.com/SE-UUlm/votura/https://github.com/SE-UUlm/votura/discussions/categories/q-a'
-    # email: 'info@votura.com'
+    # email: ''
+    url: 'https://github.com/SE-UUlm/votura/discussions/categories/q-a'
   license:
     name: 'MIT'
-    # identifier: ''
     url: 'https://github.com/SE-UUlm/votura?tab=MIT-1-ov-file'
-  version: '1.0.0'
+  version: '0.0.0'
+externalDocs:
+  url: 'https://se-uulm.github.io/votura/'
+  description: 'The votura documentation'
+servers:
+  - url: 'http://localhost:{port}/api/v1'
+    description: 'The default local development server.'
+    variables:
+      port:
+        default: '5000'
+        description: 'The port of the local development server, the votura backend.'
+  - url: 'https://votura.informatik.uni-ulm.de/api/v1'
+    description: 'The live bwCloud testing votura backend server'
+  # - url: 'https://votura.com/api/v1'
+  #   description: 'The live production votura backend server'
+components:
+  securitySchemes:
+    voturaBackendAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: |
+        With this JWT access token the user can authenticate and authorize himself against the votura backend.
+tags:
+  - name: 'Elections'
+    description: |
+      It contains all information about the election.
+  - name: 'Users'
+    description: |
+      Managing user accounts and sessions.
 paths:
   /elections:
-    summary: 'Manage elections.'
-    description: 'The endpoint for CRUD operations on elections.'
-    get:
-      tags:
-        - election
-      summary: 'Get elections'
-      description: 'TODO'
-      operationId: 'getElections'
-      #parameters:
-      responses:
-        '200':
-          description: 'Successful response. OK.'
-          # headers:
-          content:
-            application/json:
-              schema:
-                type: 'array'
-                items:
-                  type: 'object'
-                  properties:
-                    id:
-                      type: 'integer'
-                      description: 'The internal unique identifier of the election.'
-                    name:
-                      type: 'string'
-                      description: 'The name of the election.'
-          # links:
+    $ref: './elections/elections.yaml'
+  /elections/{electionId}:
+    $ref: './elections/specificElection.yaml'
+  /elections/{electionId}/freeze:
+    $ref: './elections/freeze.yaml'
+  /elections/{electionId}/unfreeze:
+    $ref: './elections/unfreeze.yaml'
+  /users/user:
+    $ref: './users/user.yaml'
+  /users/verifyEmail:
+    $ref: './users/verifyEmail.yaml'
+  /users/login:
+    $ref: './users/login.yaml'
+  /users/refreshTokens:
+    $ref: './users/refreshTokens.yaml'
+  /users/requestPasswordReset:
+    $ref: './users/requestPasswordReset.yaml'
+  /users/resetPassword:
+    $ref: './users/resetPassword.yaml'
+  /users/logout:
+    $ref: './users/logout.yaml'
