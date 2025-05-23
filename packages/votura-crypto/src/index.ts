@@ -1,5 +1,4 @@
-import { getGeneratorForPrimes } from './utils.js';
-import { createHash } from 'crypto';
+import { getFiatShamirChallenge, getGeneratorForPrimes } from './utils.js';
 import {
   isProbablyPrime,
   modAdd,
@@ -52,23 +51,6 @@ export class PublicKey {
 
     return [[alpha, beta], randomness];
   }
-
-  reEncrypt(
-    ciphertext: Ciphertext,
-    newRandomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
-  ): [Ciphertext, bigint] {
-    const newAlpha = modMultiply(
-      [ciphertext[0], modPow(this.generator, newRandomness, this.primeP)],
-      this.primeP,
-    );
-
-    const newBeta = modMultiply(
-      [ciphertext[1], modPow(this.publicKey, newRandomness, this.primeP)],
-      this.primeP,
-    );
-
-    return [[newAlpha, newBeta], newRandomness];
-  }
 }
 
 export class PrivateKey extends PublicKey {
@@ -93,6 +75,27 @@ export class PrivateKey extends PublicKey {
       ],
       this.primeP,
     );
+  }
+
+  createDecryptionProof(ciphertext: Ciphertext): ZKProof {
+    const w = randBetween(0n, this.primeQ - 1n);
+
+    const commitmentA = modPow(this.generator, w, this.primeP);
+    const commitmentB = modPow(ciphertext[0], w, this.primeP);
+
+    const partsToHash: string[] = [];
+    partsToHash.push(commitmentA.toString());
+    partsToHash.push(commitmentB.toString());
+
+    const challenge = getFiatShamirChallenge(partsToHash, this.primeQ);
+
+    const response = (w + modMultiply([challenge, this.privateKey], this.primeQ)) % this.primeQ;
+
+    return {
+      commitment: [commitmentA, commitmentB],
+      challenge: challenge,
+      response: response,
+    };
   }
 }
 
@@ -135,7 +138,65 @@ export const getKeyPair = async (bitsPrimeP: number = 2048): Promise<KeyPair> =>
   return new KeyPair(primeP, probablePrimeQ, generator, publicKey, privateKey);
 };
 
-export class DisjunctiveEncryptionZKP {
+export class Tallying {
+  constructor(private readonly pk: PublicKey) {}
+
+  aggregateCiphertexts(ciphertexts: Ciphertext[]): Ciphertext {
+    let alpha = 1n;
+    let beta = 1n;
+
+    for (const [a, b] of ciphertexts) {
+      alpha = modMultiply([alpha, a], this.pk.primeP);
+      beta = modMultiply([beta, b], this.pk.primeP);
+    }
+
+    return [alpha, beta];
+  }
+
+  aggregateVotes(votes: Ciphertext[][]): Ciphertext[] {
+    const aggregated: Ciphertext[] = [];
+
+    const voteCount = votes.length;
+    if (voteCount === 0) {
+      console.warn(`Aggregating zero votes.`);
+      return aggregated;
+    }
+    if (votes[0] === undefined) {
+      console.warn(`Invalid vote (index 0): is undefined.`);
+      return aggregated;
+    }
+
+    const choiceCount = votes[0].length;
+    for (let i = 0; i < choiceCount; i++) {
+      const ciphertextsForChoiceI: Ciphertext[] = [];
+
+      for (let j = 0; j < voteCount; j++) {
+        const vote = votes[j];
+        if (vote === undefined) {
+          console.warn(`Invalid vote (index ${j}): is undefined.`);
+          return [];
+        }
+        if (vote.length !== choiceCount) {
+          console.warn(`Invalid vote (index ${j}): expected ${choiceCount} choices, found ${vote.length}`);
+          return [];
+        }
+
+        const ciphertext = vote[i];
+        if (ciphertext === undefined) {
+          console.warn(`Invalid vote (index ${j}): ciphertext of choice ${i} is undefined.`);
+          return [];
+        }
+
+        ciphertextsForChoiceI.push(ciphertext);
+      }
+      aggregated.push(this.aggregateCiphertexts(ciphertextsForChoiceI));
+    }
+
+    return aggregated;
+  }
+}
+
+export class ZeroKnowledgeProof {
   constructor(private readonly pk: PublicKey) {}
 
   createSimulatedEncryptionProof(plaintext: bigint, ciphertext: Ciphertext): ZKProof {
@@ -189,12 +250,7 @@ export class DisjunctiveEncryptionZKP {
       }
     });
 
-    const stringToHash = partsToHash.join(',');
-    const hash = createHash('sha256');
-    hash.update(stringToHash);
-    const hashHex = hash.digest('hex');
-
-    const disjunctiveChallenge = BigInt('0x' + hashHex) % this.pk.primeQ;
+    const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.primeQ);
 
     let realChallenge = disjunctiveChallenge;
     simulatedZKPs.forEach((proof, index) => {
@@ -304,7 +360,7 @@ export class DisjunctiveEncryptionZKP {
       const zkProof = zkProofs[i];
       if (choice === undefined || ciphertext === undefined || zkProof === undefined) {
         console.warn(
-          `Invalid input: choices[${i}], ciphertexts[${i}] or ciphertexts[${i}] is undefined`,
+          `Invalid input: choices[${i}], ciphertexts[${i}] or zkProof[${i}] is undefined`,
         );
         return false;
       }
@@ -322,12 +378,7 @@ export class DisjunctiveEncryptionZKP {
       partsToHash.push(proof.commitment[1].toString());
     });
 
-    const stringToHash = partsToHash.join(',');
-    const hash = createHash('sha256');
-    hash.update(stringToHash);
-    const hashHex = hash.digest('hex');
-
-    const expectedChallenge = BigInt('0x' + hashHex) % this.pk.primeQ;
+    const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.primeQ);
 
     const actualChallenge = zkProofs.reduce(
       (sum, proof) => (sum + proof.challenge) % this.pk.primeQ,
@@ -336,6 +387,49 @@ export class DisjunctiveEncryptionZKP {
 
     if (expectedChallenge !== actualChallenge) {
       console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
+      return false;
+    }
+
+    return true;
+  }
+
+  verifyDecryptionProof(
+    plaintext: bigint,
+    ciphertext: Ciphertext,
+    zkProof: ZKProof,
+  ): boolean {
+    const partsToHash: string[] = [];
+    partsToHash.push(zkProof.commitment[0].toString());
+    partsToHash.push(zkProof.commitment[1].toString());
+    const recomputedChallenge = getFiatShamirChallenge(partsToHash, this.pk.primeQ);
+
+    if (recomputedChallenge !== zkProof.challenge) {
+      console.warn(`Bad challenge (expected ${recomputedChallenge}, found ${zkProof.challenge})`);
+      return false;
+    }
+
+    const check1a = modPow(this.pk.generator, zkProof.response, this.pk.primeP);
+    const check1b = modMultiply(
+      [modPow(this.pk.publicKey, zkProof.challenge, this.pk.primeP), zkProof.commitment[0]],
+      this.pk.primeP,
+    );
+
+    if (check1a !== check1b) {
+      console.warn(`First verification check failed: g^response != commitmentA * y^challenge!`);
+      return false;
+    }
+
+    const inversePlaintext = modInv(plaintext, this.pk.primeP);
+    const betaOverPlaintext = modMultiply([ciphertext[1], inversePlaintext], this.pk.primeP);
+
+    const check2a = modPow(ciphertext[0], zkProof.response, this.pk.primeP);
+    const check2b = modMultiply(
+      [modPow(betaOverPlaintext, zkProof.challenge, this.pk.primeP), zkProof.commitment[1]],
+      this.pk.primeP,
+    );
+
+    if (check2a !== check2b) {
+      console.warn(`Second verification check failed: alpha^response != commitmentB * (beta/m)^challenge!`);
       return false;
     }
 

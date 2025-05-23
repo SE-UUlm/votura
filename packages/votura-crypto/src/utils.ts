@@ -1,9 +1,19 @@
 import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
+import { createHash } from 'crypto';
 
 export const getBitsOfBigInt = (x: bigint) => {
   // https://stackoverflow.com/questions/54758130/how-to-obtain-the-amount-of-bits-of-a-bigint
   const i = (x.toString(16).length - 1) * 4;
   return i + 32 - Math.clz32(Number(x >> BigInt(i)));
+};
+
+export const getFiatShamirChallenge = (partsToHash: string[], q: bigint): bigint => {
+  const stringToHash = partsToHash.join(',');
+  const hash = createHash('sha256');
+  hash.update(stringToHash);
+  const hashHex = hash.digest('hex');
+
+  return BigInt('0x' + hashHex) % q;
 };
 
 export const getCofactor = (p: bigint, q: bigint): bigint => {
