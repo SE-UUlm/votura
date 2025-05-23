@@ -35,21 +35,13 @@ export const ElectionStats = ({ election }: ElectionStatsProps) => {
       <Grid.Col span={6}>
         <ElectionStatField
           title={'Start of voting'}
-          content={
-            <Text size={'sm'}>
-              {election.votingStart.toLocaleString('en-US', { timeZone: '+02:00' })} (GMT+2)
-            </Text>
-          }
+          content={<Text size={'sm'}>{election.votingStart.toLocaleString('en-US')}</Text>}
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <ElectionStatField
           title={'End of voting'}
-          content={
-            <Text size={'sm'}>
-              {election.votingEnd.toLocaleString('en-US', { timeZone: '+02:00' })} (GMT+2)
-            </Text>
-          }
+          content={<Text size={'sm'}>{election.votingEnd.toLocaleString('en-US')}</Text>}
         />
       </Grid.Col>
     </Grid>
