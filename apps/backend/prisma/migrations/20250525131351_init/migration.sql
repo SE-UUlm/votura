@@ -17,7 +17,8 @@ CREATE TABLE "User" (
     "refreshTokenExpiresAt" TIMESTAMPTZ(6),
     "refreshTokenRevokedAt" TIMESTAMPTZ(6),
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modified" >= "created") -- manually added
 );
 
 -- CreateTable
@@ -28,7 +29,8 @@ CREATE TABLE "JwtBlacklist" (
     "expiresAt" TIMESTAMPTZ(6) NOT NULL,
     "blacklistedAt" TIMESTAMPTZ(6) NOT NULL,
 
-    CONSTRAINT "JwtBlacklist_pkey" PRIMARY KEY ("jti")
+    CONSTRAINT "JwtBlacklist_pkey" PRIMARY KEY ("jti"),
+    CONSTRAINT "modified_after_created" CHECK ("modified" >= "created") -- manually added
 );
 
 -- CreateTable
@@ -49,14 +51,13 @@ CREATE TABLE "Election" (
     "generator" BIGINT,
     "electionCreatorId" TEXT NOT NULL,
 
-    CONSTRAINT "Election_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Election_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "votingEnd_after_votingStart" CHECK ("votingEnd" > "votingStart"), -- manually added
+    CONSTRAINT "modified_after_created" CHECK ("modified" >= "created") -- manually added
 );
 
 -- CreateIndex
 CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
-
--- CreateIndex
-CREATE INDEX "user_email_index" ON "User"("email");
 
 -- AddForeignKey
 ALTER TABLE "Election" ADD CONSTRAINT "Election_electionCreatorId_fkey" FOREIGN KEY ("electionCreatorId") REFERENCES "User"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

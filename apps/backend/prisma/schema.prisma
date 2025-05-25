@@ -41,8 +41,6 @@ model User {
   refreshTokenExpiresAt           DateTime?  @db.Timestamptz(6)
   refreshTokenRevokedAt           DateTime?  @db.Timestamptz(6)
   elections                       Election[]
-
-  @@index([email], name: "user_email_index")
 }
 
 model JwtBlacklist {
