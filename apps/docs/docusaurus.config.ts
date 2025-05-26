@@ -2,6 +2,7 @@ import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
+import remarkDefList from 'remark-deflist';
 
 const config: Config = {
   title: 'votura',
@@ -28,6 +29,7 @@ const config: Config = {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/SE-UUlm/votura',
           docItemComponent: '@theme/ApiItem',
+          remarkPlugins: [remarkDefList],
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -59,9 +61,16 @@ const config: Config = {
     ],
   ],
 
-  themes: ['docusaurus-theme-openapi-docs'], // export theme components
+  markdown: {
+    mermaid: true,
+  },
+
+  themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
 
   themeConfig: {
+    mermaid: {
+      theme: { light: 'neutral', dark: 'forest' },
+    },
     image: 'img/votura_logo_3l.svg',
     navbar: {
       //title: 'votura',

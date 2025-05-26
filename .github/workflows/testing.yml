@@ -29,6 +29,8 @@ jobs:
         run: npm run check-types
       - name: Check formats
         run: npm run check-format
+      - name: Check code spell
+        run: npx cspell lint **
       - name: Build votura-crypto
         run: |
           cd packages/votura-crypto

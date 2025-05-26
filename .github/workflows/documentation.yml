@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-puml:
-    name: Build PlantUML diagrams
+    name: Build UML diagrams
     runs-on:
       labels: ubuntu-latest
     container:
@@ -33,11 +33,25 @@ jobs:
       - name: Build PlantUML SVG files
         run: |
           find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install node dependencies
+        run: npm ci
+      - name: Build Prisma ERD
+        run: |
+          cd ./apps/backend/
+          npx prisma generate
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: uml_svg
-          path: ./apps/docs/static/uml/*.svg
+          path: |
+            ./apps/docs/static/uml/*.svg
+            ./apps/docs/static/uml/*.md
+          retention-days: 5
 
   build-drawio:
     name: Build DrawIO diagrams
@@ -59,7 +73,7 @@ jobs:
           wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
           apt-get install -y ./drawio-amd64-24.7.17.deb
       - name: Build DrawIO SVG files
-        # DrawIO returns immediately even when the image is not finished rendered, so there for the sleep guess.
+        # DrawIO returns immediately even when the image is not finished rendered, so therefore the sleep guess.
         run: |
           xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
           timeout=300
@@ -68,6 +82,7 @@ jobs:
         with:
           name: drawio_svg
           path: ./apps/docs/static/drawio/*.svg
+          retention-days: 5
 
   build:
     name: Build documentation
