@@ -103,6 +103,7 @@ export const MutateElectionModal = ({
         />
         <DatePickerInput
           withAsterisk
+          allowSingleDateInRange
           type={'range'}
           label={'Voting period'}
           placeholder={'Pick a start and end date'}
