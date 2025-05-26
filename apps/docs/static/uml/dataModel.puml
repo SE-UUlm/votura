@@ -1,0 +1,195 @@
+@startuml dataModel
+
+entity "User" as user {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * email : bpchar(255) <<UK>>
+    * passwordHash : bpchar(255)
+    * verified : boolean
+    lastLoginAt : timestamptz(6) | NULL
+    ' failed login attempts get reset on successful login
+    * failedLoginAttempts : smallint
+    emailVerificationTokenHash : bpchar(64) | NULL
+    emailVerificationTokenExpiresAt : timestamptz(6) | NULL
+    passwordResetTokenHash : bpchar(64) | NULL
+    passwordResetTokenExpiresAt : timestamptz(6) | NULL
+    refreshTokenHash : bpchar(64) | NULL
+    refreshTokenExpiresAt : timestamptz(6) | NULL
+    --
+}
+
+entity "AccessTokenBlacklist" as jwtBlacklist {
+    ' this table is used to store blacklisted access tokens
+    ' The jti is 36 characters long if we use UUIDv4
+    * id : uuid <<PK>>
+    --
+    * accessTokenId : uuid <<UK>>
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * expiresAt : timestamptz(6)
+    --
+}
+
+entity "Election" as elections {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * name : bpchar(255)
+    description : bpchar | NULL
+    * private : boolean
+    * votingStartAt : date
+    * votingEndAt : date
+    * configFrozen : boolean
+    * allowInvalidVote : boolean
+    ' Is there a use case for `votesCounted`?
+    ' * votesCounted : boolean
+    ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
+    ' validVotes : integer | NULL
+    ' invalidVotes : integer | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
+    primeP : NUMERIC | NULL
+    primeQ : NUMERIC | NULL
+    generator : NUMERIC | NULL
+    --
+    * electionCreator : User.id <<FK>>
+}
+
+note as N2
+The result of one election is intended 
+to be a singular decision, we 
+do not support multiple questions 
+(e.g. Vote for Admin and Vote for Treasurer) 
+in one election.
+end note
+
+entity "BallotPaper" as ballotPapers {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * name : bpchar(255)
+    description : bpchar | NULL
+    * maxVotes : smallint
+    * maxVotesPerCandidate : smallint
+    --
+    * election : Election.id <<FK>>
+}
+
+entity "BallotPaperSection" as ballotPaperSections {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * name : bpchar(255)
+    description : bpchar | NULL
+    * maxVotes : smallint
+    * maxVotesPerCandidate : smallint
+    --
+    * ballotPaper : BallotPaper.id <<FK>>
+}
+' note as C_2
+' If at least two ballotPaperSections are created for one ballotPaper, 
+' the name field of the ballotPaperSections is mandatory.
+' end note
+
+entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
+    * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
+    * candidate : Candidate.id <<PK>> <<FK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    --
+}
+
+entity "Candidate" as candidates {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * title : bpchar(255)
+    description : bpchar | NULL
+    --
+    * election : Election.id <<FK>>
+}
+
+entity "Vote" as votes {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    alpha : NUMERIC | NULL
+    beta : NUMERIC | NULL
+    commitmentPart1 : NUMERIC | NULL
+    commitmentPart2 : NUMERIC | NULL
+    challenge : NUMERIC | NULL
+    response : NUMERIC | NULL
+    --
+    * election : Election.id <<FK>>
+    ' if the vote isn't secret, voter can be saved
+    voter : voter.id <<FK>> | NULL
+}
+note as N4
+A vote is an encoded json object containing the entire filled in ballot paper.
+end note
+
+entity "VoterRegister" as voterRegisters {
+    * ballotPaper : BallotPaper.id <<PK>> <<FK>>
+    * voter : Voter.id <<PK>> <<FK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * voted : boolean
+}
+
+entity "Voter" as voters {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    --
+    voterGroup: VoterGroup.id <<FK>>
+}
+note as N3
+A voter can only get one ballot paper,
+and with this one vote per election.
+end note
+
+entity "VoterGroup" as voterGroups {
+    * id : uuid <<PK>>
+    --
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
+    * name : bpchar(255)
+    description : bpchar | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
+    moduloRS256 : NUMERIC | NULL
+    --
+}
+
+note as N1
+Timestamps are stored in UTC.
+end note
+
+user ||--o{ elections
+elections ||--o{ ballotPapers
+elections -- N2
+elections ||--o{ candidates
+ballotPapers ||--o{ voterRegisters
+voterRegisters }o--|| voters
+ballotPapers ||--o{ ballotPaperSections
+' ballotPaperSections -- C_2
+ballotPaperSections ||--o{ ballotPaperSectionCandidates
+ballotPaperSectionCandidates }o--|| candidates
+votes }o--|| elections
+voters |o--o{ votes
+voterGroups ||--o{ voters
+voters -- N3
+votes -- N4
+
+
+@enduml
