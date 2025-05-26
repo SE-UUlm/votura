@@ -73,7 +73,7 @@ jobs:
           wget https://github.com/jgraph/drawio-desktop/releases/download/v24.7.17/drawio-amd64-24.7.17.deb
           apt-get install -y ./drawio-amd64-24.7.17.deb
       - name: Build DrawIO SVG files
-        # DrawIO returns immediately even when the image is not finished rendered, so there for the sleep guess.
+        # DrawIO returns immediately even when the image is not finished rendered, so therefore the sleep guess.
         run: |
           xvfb-run drawio ./apps/docs/static/drawio/  --no-sandbox -x -r -o ./apps/docs/static/drawio/ -f svg -t --crop -a
           timeout=300

@@ -49,6 +49,7 @@
   "scripts": {
     "format": "turbo run format",
     "check-format": "turbo run check-format",
+    "check-spell": "cspell lint **",
     "check-types": "turbo run check-types",
     "build": "turbo run build",
     "test": "turbo run test",
@@ -56,6 +57,7 @@
     "ci": "turbo run check-format && turbo run check-types && turbo run build"
   },
   "devDependencies": {
+    "cspell": "^9.0.2",
     "prettier": "^3.5.3",
     "turbo": "^2.5.3",
     "typescript": "^5.8.2"
