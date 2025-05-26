@@ -3,48 +3,45 @@
 entity "User" as user {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * email : bpchar(255) <<UK>>
     * pwHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamptz(6) | NULL
-    ' failed login attemtps get reset on successful login
+    ' failed login attempts get reset on successful login
     * failedLoginAttempts : smallint
-    '* isAdmin : boolean
     emailVerificationTokenHash : bpchar(64) | NULL
     emailVerificationTokenExpiresAt : timestamptz(6) | NULL
     passwordResetTokenHash : bpchar(64) | NULL
     passwordResetTokenExpiresAt : timestamptz(6) | NULL
-    passwordResetTokenUsedAt : timestamptz(6) | NULL
     refreshTokenHash : bpchar(64) | NULL
     refreshTokenExpiresAt : timestamptz(6) | NULL
-    refreshTokenRevokedAt : timestamptz(6) | NULL
     --
 }
 
-entity "JwtBlacklist" as jwtBlacklist {
+entity "AccessTokenBlacklist" as jwtBlacklist {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
-    * jti : varchar(36) <<PK>>
+    * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * accessTokenId : uuid <<UK>>
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * expiresAt : timestamptz(6)
-    * blacklistedAt : timestamptz(6)
     --
 }
 
 entity "Election" as elections {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * private : boolean
-    * votingStart : date
-    * votingEnd : date
+    * votingStartAt : date
+    * votingEndAt : date
     * configFrozen : boolean
     * allowInvalidVote : boolean
     ' Is there a use case for `votesCounted`?
@@ -52,8 +49,8 @@ entity "Election" as elections {
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
     ' validVotes : integer | NULL
     ' invalidVotes : integer | NULL
-    pubKeyVotes : NUMERIC | NULL
-    privKeyVotes : NUMERIC | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
     primeP : NUMERIC | NULL
     primeQ : NUMERIC | NULL
     generator : NUMERIC | NULL
@@ -72,8 +69,8 @@ end note
 entity "BallotPaper" as ballotPapers {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * maxVotes : smallint
@@ -85,8 +82,8 @@ entity "BallotPaper" as ballotPapers {
 entity "BallotPaperSection" as ballotPaperSections {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
     * maxVotes : smallint
@@ -103,16 +100,16 @@ entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
     * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
     * candidate : Candidate.id <<PK>> <<FK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     --
 }
 
 entity "Candidate" as candidates {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * title : bpchar(255)
     description : bpchar | NULL
     --
@@ -122,8 +119,8 @@ entity "Candidate" as candidates {
 entity "Vote" as votes {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     alpha : NUMERIC | NULL
     beta : NUMERIC | NULL
     commitmentPart1 : NUMERIC | NULL
@@ -143,16 +140,16 @@ entity "VoterRegister" as voterRegisters {
     * ballotPaper : BallotPaper.id <<PK>> <<FK>>
     * voter : Voter.id <<PK>> <<FK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * voted : boolean
 }
 
 entity "Voter" as voters {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     --
     voterGroup: VoterGroup.id <<FK>>
 }
@@ -164,12 +161,12 @@ end note
 entity "VoterGroup" as voterGroups {
     * id : uuid <<PK>>
     --
-    * created : timestamptz(6)
-    * modified : timestamptz(6)
+    * createdAt : timestamptz(6)
+    * modifiedAt : timestamptz(6)
     * name : bpchar(255)
     description : bpchar | NULL
-    pubKeyRS256 : NUMERIC | NULL
-    privKeyRS256 : NUMERIC | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
     --
 }
