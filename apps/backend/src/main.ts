@@ -1,44 +1,25 @@
-import { PrismaClient, type Election, type User } from '../generated/prisma/index.js';
 import express from 'express';
+import dotenv from 'dotenv';
+import { prisma } from './client.js';
+import { usersRouter } from './routes/users.routes.js';
 
-const prisma = new PrismaClient();
+dotenv.config();
 
 async function main() {
-  // Only for a prisma demo, remove in production
-  await prisma.election.deleteMany();
-  await prisma.user.deleteMany();
-
-  await prisma.user.create({
-    data: { email: 'my@mail.com', pwHash: 'xx' },
-  });
-  const demoUser: User | null = await prisma.user.findUnique({
-    where: { email: 'my@mail.com' },
-  });
-  if (demoUser) {
-    await prisma.election.create({
-      data: {
-        name: 'Demo Election',
-        votingStart: new Date(),
-        votingEnd: new Date(Date.now() + 1000 * 60 * 60 * 24),
-        electionCreator: { connect: { id: demoUser.id } },
-      },
-    });
-  }
-
-  const allUsers: User[] = await prisma.user.findMany();
-  console.log(allUsers);
-  const allElections: Election[] = await prisma.election.findMany();
-  console.log(allElections);
-
   const app = express();
-  const port = 5000;
+  const PORT = process.env.PORT ?? 3000;
 
-  app.get('/', (req, res) => {
-    res.send('Hello World!');
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json()); // parse JSON bodies
+
+  app.use('/users', usersRouter);
+  // Fallback for unhandled routes
+  app.use((_, res) => {
+    res.sendStatus(400);
   });
 
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}`);
+  app.listen(PORT, () => {
+    console.log(`Server is running.`);
   });
 }
 
