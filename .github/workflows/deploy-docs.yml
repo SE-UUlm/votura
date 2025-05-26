@@ -6,7 +6,7 @@ on:
 
 jobs:
   build-puml:
-    name: Build PlantUML diagrams
+    name: Build UML diagrams
     runs-on:
       labels: ubuntu-latest
     container:
@@ -33,11 +33,25 @@ jobs:
       - name: Build PlantUML SVG files
         run: |
           find ./apps/docs/static/uml -name "*.puml" -exec java -jar plantuml.jar -tsvg {} \;
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: package.json
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install node dependencies
+        run: npm ci
+      - name: Build Prisma ERD
+        run: |
+          cd ./apps/backend/
+          npx prisma generate
       - name: Upload Build Artifact
         uses: actions/upload-artifact@v4
         with:
           name: uml_svg
-          path: ./apps/docs/static/uml/*.svg
+          path: |
+            ./apps/docs/static/uml/*.svg
+            ./apps/docs/static/uml/*.md
+          retention-days: 5
 
   build-drawio:
     name: Build DrawIO diagrams
@@ -68,6 +82,7 @@ jobs:
         with:
           name: drawio_svg
           path: ./apps/docs/static/drawio/*.svg
+          retention-days: 5
 
   build:
     name: Build documentation
