@@ -6,7 +6,7 @@ entity "User" as user {
     * createdAt : timestamptz(6)
     * modifiedAt : timestamptz(6)
     * email : bpchar(255) <<UK>>
-    * pwHash : bpchar(255)
+    * passwordHash : bpchar(255)
     * verified : boolean
     lastLoginAt : timestamptz(6) | NULL
     ' failed login attempts get reset on successful login
@@ -55,7 +55,7 @@ entity "Election" as elections {
     primeQ : NUMERIC | NULL
     generator : NUMERIC | NULL
     --
-    * electionCreator : User.email <<FK>>
+    * electionCreator : User.id <<FK>>
 }
 
 note as N2
