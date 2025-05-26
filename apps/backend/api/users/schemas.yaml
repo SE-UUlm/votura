@@ -1,0 +1,112 @@
+components:
+  schemas:
+    #### base objects #################################################################################
+    passwordBaseObject:
+      type: 'object'
+      required:
+        - password
+      properties:
+        password:
+          description: |
+            The strong password set by the user.
+            The password must be at least 12 characters long and contain at least one uppercase letter, one lowercase letter, one number, and one special character.
+          readOnly: false
+          # writeOnly: true # not supported by docusaurus
+          type: 'string'
+          format: 'password'
+          minLength: 12
+          maxLength: 128
+          pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$'
+          example: 'MyP@ssw0rd!1!'
+    emailBaseObject:
+      type: 'object'
+      required:
+        - email
+      properties:
+        email:
+          description: |
+            The users email address (represents the username).
+            This is the unique identifier for the user.
+          readOnly: false
+          # writeOnly: true # not supported by docusaurus
+          type: 'string'
+          format: 'email'
+          minLength: 5
+          maxLength: 256
+          pattern: '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$'
+          example: 'my.name@email.com'
+    refreshTokenBaseObject:
+      type: 'object'
+      required:
+        - refreshToken
+      properties:
+        refreshToken:
+          description: |
+            The refresh token of the user.
+            This token is used to generate a new access and refresh token.
+            The refresh token is valid for 7 days.
+          type: 'string'
+          readOnly: false
+          writeOnly: false
+          minLength: 256
+          maxLength: 256 # TODO: Update after the implementation
+          pattern: '^[a-zA-Z0-9.-_]{256,256}$'
+          example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer'
+    ###################################################################################################
+    userSignUpObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/emailBaseObject'
+        - $ref: '#/components/schemas/passwordBaseObject'
+    userLoginObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/emailBaseObject'
+        - $ref: '#/components/schemas/passwordBaseObject'
+    requestPasswordResetObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/emailBaseObject'
+    passwordResetObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/passwordBaseObject'
+        - type: 'object'
+          required:
+            - token
+          properties:
+            token:
+              description: |
+                The token provided to the user via email.
+                This token is used to authenticate and authorize the user.
+              type: 'string'
+              readOnly: false
+              writeOnly: false
+              minLength: 64
+              maxLength: 64
+              pattern: '^[a-fA-F0-9]{64,64}$'
+              example: ABCDEF123456ABCDEF12345612345678
+    apiTokenObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/refreshTokenBaseObject'
+        - type: 'object'
+          required:
+            - accessToken
+          properties:
+            accessToken:
+              description: |
+                The access token of the user.
+                This token is used to authenticate the user.
+                The access token is valid for 15 minutes.
+              type: 'string'
+              readOnly: false
+              writeOnly: false
+              minLength: 256
+              maxLength: 256 # TODO: Update after the implementation
+              pattern: '^[a-zA-Z0-9.-_]{256,256}$'
+              example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer'
+    refreshRequestObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/refreshTokenBaseObject'

@@ -32,12 +32,23 @@ If you want to create a new page, please use the template file `apps/docs/docs/_
 
 ## API documentation
 
-The API documentation of the backend is generated from the openapi.yaml file in the `apps/backend` folder.
+The API documentation of the backend is generated from the `openapi.yaml` file in the `apps/backend` folder.
 To generate the API documentation, you need to run the following command in the `apps/backend` folder:
 
 ```bash
 npm run docusaurus gen-api-docs all
 ```
+
+:::note
+
+If you only change the `openapi.yaml` files this will not trigger a new build of the docs.
+You need to delete the `api` folder in the docs or run `npm run docusaurus clean-api-docs all` in the `docs` workspace and need to build them again.
+
+The easy way is to use `npm run build` in the `docs` workspace, this command will cleanly regenerate the api docs automatically.
+
+:::
+
+If you want to update or create new API specification I highly recommend you to use a live Swagger UI render (or something similar) in your IDE.
 
 ## Include PlantUML or DrawIO diagrams
 
