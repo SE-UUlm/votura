@@ -50,6 +50,7 @@
       "inputs": [
         "$TURBO_DEFAULT$"
       ],
+      "env": ["PORT"],
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
