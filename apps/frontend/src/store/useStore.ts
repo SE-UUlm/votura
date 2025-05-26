@@ -5,7 +5,7 @@ import type { StateCreator } from 'zustand/vanilla';
 export interface MockElection {
   id: string;
   name: string;
-  description: string;
+  description?: string;
   votingStart: Date;
   votingEnd: Date;
   immutableConfig: boolean;

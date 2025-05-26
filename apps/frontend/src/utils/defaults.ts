@@ -4,7 +4,6 @@ export const getDefaultMockElection = (partial: Partial<MockElection>): MockElec
   return {
     id: crypto.randomUUID(),
     name: 'Default Election Name',
-    description: 'Default Election Description',
     votingStart: new Date(),
     votingEnd: new Date(),
     immutableConfig: false,

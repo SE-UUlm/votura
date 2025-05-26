@@ -10,7 +10,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { type ReactNode, useEffect } from 'react';
-import { useForm } from '@mantine/form';
+import { isNotEmpty, useForm } from '@mantine/form';
 import { DatePickerInput } from '@mantine/dates';
 import dayjs from 'dayjs';
 
@@ -38,6 +38,10 @@ export const MutateElectionModal = ({
 }: MutateElectionModalProps) => {
   const form = useForm<MutateElectionFormValues>({
     mode: 'uncontrolled',
+    validate: {
+      name: isNotEmpty('Name cannot be empty'),
+      dateRange: isNotEmpty('Start and end date are required'),
+    },
   });
 
   useEffect(() => {
@@ -46,7 +50,7 @@ export const MutateElectionModal = ({
     if (election) {
       form.setValues({
         name: election.name,
-        description: election.description,
+        ...(election.description ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
         dateRange:
           election.votingStart && election.votingEnd
@@ -61,10 +65,16 @@ export const MutateElectionModal = ({
   }, [election, opened]);
 
   const onMutateTransform = () => {
+    const validationResult = form.validate();
+
+    if (validationResult.hasErrors) {
+      return;
+    }
+
     const formValues = form.getValues();
     onMutate({
       name: formValues.name,
-      description: formValues.description,
+      ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
       votingStart: formValues.dateRange[0],
       votingEnd: formValues.dateRange[1],
@@ -76,6 +86,7 @@ export const MutateElectionModal = ({
     <Modal opened={opened} onClose={onClose} title={title}>
       <Stack>
         <TextInput
+          withAsterisk
           label={'Name'}
           placeholder={'e.g. Student Council Election 2025'}
           key={form.key('name')}
@@ -91,6 +102,7 @@ export const MutateElectionModal = ({
           {...form.getInputProps('description')}
         />
         <DatePickerInput
+          withAsterisk
           type={'range'}
           label={'Voting period'}
           placeholder={'Pick a start and end date'}
