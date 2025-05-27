@@ -1,10 +1,26 @@
-import { PrismaClient, type User } from '../generated/prisma/index.js';
+import express from 'express';
+import dotenv from 'dotenv';
+import { prisma } from './client.js';
+import { usersRouter } from './routes/users.routes.js';
 
-const prisma = new PrismaClient();
+dotenv.config();
 
 async function main() {
-  const allUsers: User[] = await prisma.user.findMany();
-  console.log(allUsers);
+  const app = express();
+  const PORT = process.env.PORT ?? 3000;
+
+  app.use(express.urlencoded({ extended: true }));
+  app.use(express.json()); // parse JSON bodies
+
+  app.use('/users', usersRouter);
+  // Fallback for unhandled routes
+  app.use((_, res) => {
+    res.sendStatus(400);
+  });
+
+  app.listen(PORT, () => {
+    console.log(`Server is running.`);
+  });
 }
 
 main()

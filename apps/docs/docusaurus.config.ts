@@ -1,6 +1,8 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
+import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
+import remarkDefList from 'remark-deflist';
 
 const config: Config = {
   title: 'votura',
@@ -26,6 +28,8 @@ const config: Config = {
         docs: {
           sidebarPath: './sidebars.ts',
           editUrl: 'https://github.com/SE-UUlm/votura',
+          docItemComponent: '@theme/ApiItem',
+          remarkPlugins: [remarkDefList],
         },
         theme: {
           customCss: './src/css/custom.css',
@@ -34,7 +38,39 @@ const config: Config = {
     ],
   ],
 
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'classic',
+        config: {
+          backend: {
+            specPath: '../backend/api/openapi.yaml',
+            outputDir: 'docs/api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsible: true,
+              sidebarCollapsed: true,
+            },
+            showSchemas: true,
+          } satisfies OpenApiPlugin.Options,
+        },
+      },
+    ],
+  ],
+
+  markdown: {
+    mermaid: true,
+  },
+
+  themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
+
   themeConfig: {
+    mermaid: {
+      theme: { light: 'neutral', dark: 'forest' },
+    },
     image: 'img/votura_logo_3l.svg',
     navbar: {
       //title: 'votura',
@@ -59,6 +95,12 @@ const config: Config = {
           sidebarId: 'devGuideSidebar',
           position: 'left',
           label: 'Developer Guide',
+        },
+        {
+          type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API',
         },
         {
           type: 'docSidebar',

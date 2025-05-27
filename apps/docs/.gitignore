@@ -19,6 +19,9 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 
+# api
+/docs/api/*
+
 # images
 /static/uml/*.svg
 /static/uml/*.pdf

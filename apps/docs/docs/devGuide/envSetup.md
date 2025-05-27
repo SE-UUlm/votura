@@ -45,7 +45,7 @@ We are using one monorepo (with the help of [turborepo](https://turborepo.com)) 
 
 The following image gives a brief overview of the structure of the repository:
 
-![the cryptographic workflow of votura](../../static/uml/repoStructure.svg)
+![folder structure of the repository](../../static/uml/repoStructure.svg)
 
 The votura repository is a npm project (sometimes also called as workspace).
 In the `apps` folder you can find all the applications of votura that can run independently, like the documentation,
