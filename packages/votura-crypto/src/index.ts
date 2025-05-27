@@ -272,22 +272,21 @@ export class ZeroKnowledgeProof {
   }
 
   createDisjunctiveEncryptionProof(
-    choices: bigint[],
     ciphertexts: Ciphertext[],
     realIndex: number,
     randomness: bigint,
   ): ZKProof[] {
-    if (realIndex < 0 || realIndex >= choices.length) {
+    if (realIndex < 0 || realIndex >= ciphertexts.length) {
       throw new Error('realIndex is out of bounds');
     }
 
     const disjunctiveZKPs: ZKProof[] = [];
 
-    for (let i = 0; i < choices.length; i++) {
-      const choice = choices[i];
+    for (let i = 0; i < ciphertexts.length; i++) {
+      const choice = 1n; // = modPow(this.pk.generator, 0);
       const ciphertext = ciphertexts[i];
-      if (choice === undefined || ciphertext === undefined) {
-        throw new Error(`Invalid input: choices[${i}] or ciphertexts[${i}] is undefined`);
+      if (ciphertext === undefined) {
+        throw new Error(`Invalid input: ciphertexts[${i}] is undefined`);
       }
       if (i !== realIndex) {
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
@@ -340,34 +339,26 @@ export class ZeroKnowledgeProof {
     return true;
   }
 
-  verifyDisjunctiveEncryptionProof(
-    choices: bigint[],
-    ciphertexts: Ciphertext[],
-    zkProofs: ZKProof[],
-  ): boolean {
-    if (choices.length !== ciphertexts.length) {
+  verifyDisjunctiveEncryptionProof(ciphertexts: Ciphertext[], zkProofs: ZKProof[]): boolean {
+    if (ciphertexts.length !== zkProofs.length) {
       console.warn(
-        `Bad number of ciphertexts (expected ${choices.length}, found ${ciphertexts.length})`,
+        `Bad number of proofs (expected ${ciphertexts.length}, found ${zkProofs.length})`,
       );
-      return false;
-    }
-    if (choices.length !== zkProofs.length) {
-      console.warn(`Bad number of proofs (expected ${choices.length}, found ${zkProofs.length})`);
       return false;
     }
 
     for (let i = 0; i < ciphertexts.length; i++) {
-      const choice = choices[i];
+      const choice0 = 1n; // = modPow(this.pk.generator, 0);
+      const choice1 = this.pk.generator; // = modPow(this.pk.generator, 1);
       const ciphertext = ciphertexts[i];
       const zkProof = zkProofs[i];
-      if (choice === undefined || ciphertext === undefined || zkProof === undefined) {
-        console.warn(
-          `Invalid input: choices[${i}], ciphertexts[${i}] or zkProof[${i}] is undefined`,
-        );
+      if (ciphertext === undefined || zkProof === undefined) {
+        console.warn(`Invalid input: ciphertexts[${i}] or zkProof[${i}] is undefined`);
         return false;
       }
-      const isValid = this.verifyEncryptionProof(choice, ciphertext, zkProof);
-      if (!isValid) {
+      const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
+      const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
+      if (!isValid0 && !isValid1) {
         console.warn(`Bad proof at index ${i}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
