@@ -1,6 +1,6 @@
 @startuml dataModel
 
-entity "User" as user {
+entity "User" as user #006b75 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -20,7 +20,7 @@ entity "User" as user {
     --
 }
 
-entity "AccessTokenBlacklist" as jwtBlacklist {
+entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
     * id : uuid <<PK>>
@@ -32,7 +32,7 @@ entity "AccessTokenBlacklist" as jwtBlacklist {
     --
 }
 
-entity "Election" as elections {
+entity "Election" as elections #b60205 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -66,7 +66,7 @@ do not support multiple questions
 in one election.
 end note
 
-entity "BallotPaper" as ballotPapers {
+entity "BallotPaper" as ballotPapers #fbca04 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -79,7 +79,7 @@ entity "BallotPaper" as ballotPapers {
     * election : Election.id <<FK>>
 }
 
-entity "BallotPaperSection" as ballotPaperSections {
+entity "BallotPaperSection" as ballotPaperSections #fbca04 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -96,7 +96,7 @@ entity "BallotPaperSection" as ballotPaperSections {
 ' the name field of the ballotPaperSections is mandatory.
 ' end note
 
-entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
+entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
     * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
     * candidate : Candidate.id <<PK>> <<FK>>
     --
@@ -105,7 +105,7 @@ entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
     --
 }
 
-entity "Candidate" as candidates {
+entity "Candidate" as candidates #fbca04 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -116,7 +116,7 @@ entity "Candidate" as candidates {
     * election : Election.id <<FK>>
 }
 
-entity "Vote" as votes {
+entity "Vote" as votes #05DFA3 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -136,7 +136,7 @@ note as N4
 A vote is an encoded json object containing the entire filled in ballot paper.
 end note
 
-entity "VoterRegister" as voterRegisters {
+entity "VoterRegister" as voterRegisters #05DFA3 {
     * ballotPaper : BallotPaper.id <<PK>> <<FK>>
     * voter : Voter.id <<PK>> <<FK>>
     --
@@ -145,7 +145,7 @@ entity "VoterRegister" as voterRegisters {
     * voted : boolean
 }
 
-entity "Voter" as voters {
+entity "Voter" as voters #05DFA3 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
@@ -158,7 +158,7 @@ A voter can only get one ballot paper,
 and with this one vote per election.
 end note
 
-entity "VoterGroup" as voterGroups {
+entity "VoterGroup" as voterGroups #05DFA3 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
