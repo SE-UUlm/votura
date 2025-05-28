@@ -1,9 +1,9 @@
 name: 📑 Requirement
 description: Describes a requirement that needs to be fulfilled.
-title: "[REQ] "
+title: '[REQ] '
 # labels: []
-projects: ["SE-UUlm/6"]
-type: "Req"
+projects: ['SE-UUlm/6']
+type: 'Req'
 # assignees: []
 body:
   - type: textarea
@@ -21,7 +21,7 @@ body:
       label: Acceptance test
       description: A clear and concise description how the stakeholder acceptance test should look like, so that the requirement is fulfilled.
       placeholder: Tell us what you want to see! A presentation, test case, coverage, uptime, ...
-      value: "By manual verification. By an end-to-end test. By a unit test. By a performance test."
+      value: 'By manual verification. By an end-to-end test. By a unit test. By a performance test.'
     validations:
       required: true
   - type: markdown
