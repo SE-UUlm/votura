@@ -1,5 +1,8 @@
 @startuml dataModel
 
+' The color codes are representing the different epics in GitHub.
+' Same color codes as the used GitHub labels.
+
 entity "User" as user #006b75 {
     * id : uuid <<PK>>
     --
