@@ -28,7 +28,7 @@ When an administrative user "freezes" an election (i.e. when the election config
 
 ### 1a El Gamal encryption
 
-Encryption starts when the voter confirms their choices and *before* any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not. With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
+Encryption starts when the voter confirms their choices and _before_ any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not. With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
 
 - `alpha = g^r mod p`
 - `beta = m * y^r mod p`.
@@ -133,6 +133,8 @@ To verify the proof of decryption the following statements have to be true for t
 
 If both equations hold the verifier can be convinced that the prover knows the secret `x`. Hence, the decryption is correct.
 
+## Cryptographic Workflow
+
 The following diagram shows the cryptographic workflow of votura:
 
-![the cryptographic workflow of votura](../../../static/img/logo.svg)
+![the cryptographic workflow of votura](../../../static/img/cryptoWorkflow.png)
