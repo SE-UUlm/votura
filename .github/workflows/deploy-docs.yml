@@ -8,7 +8,7 @@ jobs:
   build-puml:
     name: Build UML diagrams
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
