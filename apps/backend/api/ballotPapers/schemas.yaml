@@ -1,0 +1,117 @@
+components:
+  schemas:
+    #### base objects #################################################################################
+    ballotPaperBaseObject:
+      type: 'object'
+      required:
+        - name
+        - description
+        - maxVotes
+        - maxVotesPerCandidate
+        - election
+      properties:
+        name:
+          description: |
+            The name of the ballot paper.
+          readOnly: false
+          writeOnly: false
+          type: 'string'
+          minLength: 1
+          maxLength: 256
+          pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+          example: 'A very important ballot paper'
+        description:
+          description: |
+            The description text of the ballot paper.
+            The description can be null.
+          readOnly: false
+          writeOnly: false
+          oneOf:
+            - type: 'string'
+              minLength: 1
+              maxLength: 256
+              pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+              example: 'This is a super important description.'
+            - type: 'null'
+              default: null
+              example: null
+          additionalProperties: false
+        maxVotes:
+          description: |
+            The user can limit the votes per ballot paper.
+            This is the maximum number of votes a voter can cast on this ballot paper over all ballot paper sections.
+            If the ballot paper contains more votes than the `maxVotes` value over all ballot paper sections, the vote / ballot paper will be invalid.
+          readOnly: false
+          writeOnly: false
+          type: 'integer'
+          format: 'uint16'
+          minimum: 1
+          maximum: 65535
+          example: 42
+        maxVotesPerCandidate:
+          description: |
+            The user can limit the allowed number of votes per candidate.
+            This is the maximum number of votes a voter can cast on one candidate over all ballot paper sections.
+            If the ballot paper contains more votes on one candidate than the `maxVotesPerCandidate` value, the vote / ballot paper will be invalid.
+          readOnly: false
+          writeOnly: false
+          type: 'integer'
+          format: 'uint16'
+          minimum: 1
+          maximum: 65535
+          example: 42
+        election:
+          description: |
+            The ID of the election to which this ballot paper belongs.
+          readOnly: false
+          writeOnly: false
+          type: 'string'
+          format: 'uuid'
+          minLength: 36
+          maxLength: 36
+          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+          example: '123e4567-e89b-12d3-a456-426614174000'
+    ###################################################################################################
+    ballotPaperCreateObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/ballotPaperBaseObject'
+    ballotPaperReadObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/ballotPaperBaseObject'
+        - type: 'object'
+          required:
+            - id
+            - createdAt
+            - modifiedAt
+          properties:
+            id:
+              description: |
+                This is the unique identifier for the ballot paper.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '123e4567-e89b-12d3-a456-426614174000'
+            createdAt:
+              description: |
+                The created date of the ballot paper.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            modifiedAt:
+              description: |
+                The last modified date of the ballot paper.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
