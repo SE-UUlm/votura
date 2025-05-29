@@ -1,0 +1,122 @@
+summary: 'Manage a specific ballot paper section'
+description: |
+  Read, update or delete a specific ballot paper section.
+parameters:
+  - $ref: './parameters.yaml#/components/parameters/ballotPaperSectionId'
+put:
+  tags:
+    - BallotPapersSections
+  summary: 'Update a specific ballot paper section'
+  description: |
+    Updates the configuration of the requested ballot paper section with the provided information.
+    The user of the API access token needs access to the linked ballot paper / election.
+    The ballot paper section can only be updated if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'updateBallotPaperSectionById'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schemas.yaml#/components/schemas/ballotPaperSectionCreateObject'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        The ballot paper section was updated.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/ballotPaperSectionReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
+get:
+  tags:
+    - BallotPapersSections
+  summary: 'Get a specific ballot paper section'
+  description: |
+    Returns the requested ballot paper section with all public information fields.
+    The user of the API access token needs access to the linked ballot paper / election.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'getBallotPaperSectionById'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        Returns the requested ballot paper section with all public information fields.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/ballotPaperSectionReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
+delete:
+  tags:
+    - BallotPapersSections
+  summary: 'Delete a specific ballot paper section'
+  description: |
+    Deletes the requested ballot paper section.
+    The user of the API access token needs access to the linked ballot paper / election.
+    The ballot paper section can only be deleted if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'deleteBallotPaperSectionById'
+  responses:
+    '204':
+      description: |
+        No Content.
+        The request was successfully executed.
+        The ballot paper section was deleted.
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
