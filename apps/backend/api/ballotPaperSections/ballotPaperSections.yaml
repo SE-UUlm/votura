@@ -115,7 +115,7 @@ get:
       description: |
         OK.
         The request was successfully executed.
-        Returns ballot papers for the requested election.
+        Returns ballot paper sections for the requested election.
       content:
         application/json:
           schema:
