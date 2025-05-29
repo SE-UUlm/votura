@@ -5,7 +5,6 @@ components:
       type: 'object'
       required:
         - name
-        - description
         - private
         - votingStart
         - votingEnd
@@ -27,15 +26,11 @@ components:
             The description is optional.
           readOnly: false
           writeOnly: false
-          oneOf:
-            - type: 'string'
-              minLength: 1
-              maxLength: 256
-              pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
-              example: 'This is a super important description.'
-            - type: 'null'
-              default: null
-              example: null
+          type: 'string'
+          minLength: 1
+          maxLength: 256
+          pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+          example: 'This is a super important description.'
           additionalProperties: false
         private:
           description: |
