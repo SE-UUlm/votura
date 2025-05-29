@@ -83,4 +83,8 @@ paths:
   /ballotPaperSections:
     $ref: './ballotPaperSections/ballotPaperSections.yaml'
   /ballotPaperSections/{ballotPaperSectionId}:
-    $ref: './ballotPaperSections/specificBallotPaperSections.yaml'
+    $ref: './ballotPaperSections/specificBallotPaperSection.yaml'
+  /candidates:
+    $ref: './candidates/candidates.yaml'
+  /candidates/{candidateId}:
+    $ref: './candidates/specificCandidate.yaml'
