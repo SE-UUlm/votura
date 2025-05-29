@@ -35,7 +35,6 @@ components:
             - type: 'null'
               default: null
               example: null
-          additionalProperties: false
         maxVotes:
           description: |
             The user can limit the votes per ballot paper section.

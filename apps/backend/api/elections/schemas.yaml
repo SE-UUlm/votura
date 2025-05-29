@@ -36,7 +36,6 @@ components:
             - type: 'null'
               default: null
               example: null
-          additionalProperties: false
         private:
           description: |
             If `private` is set to `false` votura will store a link between the voter and his vote.
@@ -146,7 +145,6 @@ components:
                   pattern: '^[0-9]+$'
                 - type: 'null'
                   example: null
-              additionalProperties: false
             primeP:
               description: |
                 A large prime number that defines the group.
@@ -161,7 +159,6 @@ components:
                   pattern: '^[0-9]+$'
                 - type: 'null'
                   example: null
-              additionalProperties: false
             primeQ:
               description: |
                 A prime number that divides `(primeP-1)`, often chosen as `primeQ=(primeP-1)/2`.
@@ -176,7 +173,6 @@ components:
                   pattern: '^[0-9]+$'
                 - type: 'null'
                   example: null
-              additionalProperties: false
             generator:
               description: |
                 The generator of the multiplicative group modulo `primeP`.
@@ -191,4 +187,3 @@ components:
                   pattern: '^[0-9]+$'
                 - type: 'null'
                   example: null
-              additionalProperties: false
