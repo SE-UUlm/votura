@@ -3,7 +3,7 @@ info:
   title: 'Votura backend HTTP-API definition'
   description: |
     ---
-    This is the OpenAPI specification for the communication to the votura backend via the REST-API.
+    This is the OpenAPI specification for the communication to the votura backend via the RESTful-API.
     The votura frontend and backend communicate via this API.
   termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file'
   contact:
@@ -39,10 +39,20 @@ components:
 tags:
   - name: 'Elections'
     description: |
-      It contains all information about the election.
+      Managing CRUD operations for elections.
   - name: 'Users'
     description: |
-      Managing user accounts and sessions.
+      Managing CRUD operations for user accounts and sessions.
+  - name: 'BallotPapers'
+    description: |
+      Managing CRUD operations for ballot papers.
+  - name: 'BallotPapersSections'
+    description: |
+      Managing CRUD operations for ballot paper sections.
+  - name: 'Candidates'
+    description: |
+      Managing CRUD operations for candidates.
+
 paths:
   /elections:
     $ref: './elections/elections.yaml'
@@ -66,3 +76,15 @@ paths:
     $ref: './users/resetPassword.yaml'
   /users/logout:
     $ref: './users/logout.yaml'
+  /ballotPapers:
+    $ref: './ballotPapers/ballotPapers.yaml'
+  /ballotPapers/{ballotPaperId}:
+    $ref: './ballotPapers/specificBallotPaper.yaml'
+  /ballotPaperSections:
+    $ref: './ballotPaperSections/ballotPaperSections.yaml'
+  /ballotPaperSections/{ballotPaperSectionId}:
+    $ref: './ballotPaperSections/specificBallotPaperSection.yaml'
+  /candidates:
+    $ref: './candidates/candidates.yaml'
+  /candidates/{candidateId}:
+    $ref: './candidates/specificCandidate.yaml'
