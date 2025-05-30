@@ -1,0 +1,58 @@
+summary: 'Create voter tokens for the voter group'
+description: |
+  Create voter tokens for a specific voter group.
+parameters:
+  - $ref: './parameters.yaml#/components/parameters/voterGroupId'
+get:
+  tags:
+    - VoterGroups
+  summary: 'Create voter tokens for a specific voter group'
+  description: |
+    Creates and returns voter tokens for every voter in the requested voter group.
+    The user of the API access token needs access to the voter group and the  linked ballot papers / elections.
+    The voter tokens can only be created if the linked ballot papers / elections are frozen.
+    The voter tokens can only be created once if the linked ballot papers / elections are frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'getVoterTokensForId'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        Returns the requested voter tokens for the requested voter group.
+      content:
+        application/json:
+          schema:
+            type: 'array'
+            minItems: 0
+            maxItems: 50
+            uniqueItems: true
+            items:
+              description: |
+                The voter token for a voter.
+                This token is used to authenticate the voter for the ballot papers.
+              type: 'string'
+              readOnly: false
+              writeOnly: false
+              minLength: 256
+              maxLength: 256 # TODO: Update after the implementation
+              pattern: '^[a-zA-Z0-9.-_]{256,256}$'
+              example: 'Ab234.sadf243-awfgsdf_234sdfg...qawer' # cspell:disable-line
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
