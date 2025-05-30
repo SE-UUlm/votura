@@ -89,7 +89,7 @@ components:
             - createdAt
             - modifiedAt
             - configFrozen
-            - pubKeyVotes
+            - pubKey
             - primeP
             - primeQ
             - generator
@@ -130,10 +130,10 @@ components:
               writeOnly: false
               type: 'boolean'
               example: false
-            pubKeyVotes:
+            pubKey:
               description: |
                 The public key to encrypt the vote of the voter. 
-                `pubKeyVotes = generator ^ privKeyVotes mod primeP`
+                `pubKey = generator ^ privKey mod primeP`
                 This key will only be generated if the election configuration is frozen.
                 If `configFrozen` is set to `false`, the key will be `null`.
               readOnly: true
