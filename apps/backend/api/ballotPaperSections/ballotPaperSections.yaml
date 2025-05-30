@@ -1,7 +1,7 @@
 summary: 'Create and read ballot paper sections'
 description: |
   A ballot paper section is always linked to one ballot paper.
-  You can create a new one ore read all the existing ones for an ballot paper.
+  You can create a new one ore read all the existing ones for a ballot paper.
 post:
   tags:
     - BallotPapersSections

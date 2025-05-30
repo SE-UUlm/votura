@@ -42,7 +42,7 @@ post:
 get:
   tags:
     - Elections
-  summary: 'Get all elections'
+  summary: 'Get all elections for the user'
   description: |
     Returns all elections with the public information fields, that are linked to user of the API access token.
   security:
