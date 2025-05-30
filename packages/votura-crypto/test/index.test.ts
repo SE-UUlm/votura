@@ -128,16 +128,16 @@ describe('Tallying', () => {
     const votesA = votesA1.concat(votesA2);
     const aggVotesA = tally.aggregateVotes(votesA); // section A of all voters
 
-    const resultA1 = aggVotesA1.map(ciphertext => {
+    const resultA1 = aggVotesA1.map((ciphertext) => {
       return keyPair.privateKey.decrypt(ciphertext);
     });
-    const resultB1 = aggVotesB1.map(ciphertext => {
+    const resultB1 = aggVotesB1.map((ciphertext) => {
       return keyPair.privateKey.decrypt(ciphertext);
     });
-    const resultA2 = aggVotesA2.map(ciphertext => {
+    const resultA2 = aggVotesA2.map((ciphertext) => {
       return keyPair.privateKey.decrypt(ciphertext);
     });
-    const resultA = aggVotesA.map(ciphertext => {
+    const resultA = aggVotesA.map((ciphertext) => {
       return keyPair.privateKey.decrypt(ciphertext);
     });
 
@@ -179,7 +179,7 @@ describe('Tallying', () => {
     });
     const aggVotes1 = tally.aggregateVotes(votes1); // all sections of voter 1
 
-    const result1 = aggVotes1.map(ciphertext => {
+    const result1 = aggVotes1.map((ciphertext) => {
       return keyPair.privateKey.decrypt(ciphertext);
     });
     const sum1: bigint[] = [2n, 1n, 1n, 1n, 0n, 1n]; // sum tallied manually
