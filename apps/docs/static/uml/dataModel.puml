@@ -55,7 +55,7 @@ entity "Election" as elections {
     primeQ : NUMERIC | NULL
     generator : NUMERIC | NULL
     --
-    * electionCreator : User.id <<FK>>
+    * electionCreatorId : User.id <<FK>>
 }
 
 note as N2
@@ -76,7 +76,7 @@ entity "BallotPaper" as ballotPapers {
     * maxVotes : smallint
     * maxVotesPerCandidate : smallint
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
 }
 
 entity "BallotPaperSection" as ballotPaperSections {
@@ -97,12 +97,13 @@ entity "BallotPaperSection" as ballotPaperSections {
 ' end note
 
 entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
-    * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
-    * candidate : Candidate.id <<PK>> <<FK>>
+    * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
     * modifiedAt : timestamptz(6)
     --
+    * ballotPaperSection : BallotPaperSection.id <<FK>>
+    * candidate : Candidate.id <<FK>>
 }
 
 entity "Candidate" as candidates {
@@ -137,12 +138,14 @@ A vote is an encoded json object containing the entire filled in ballot paper.
 end note
 
 entity "VoterRegister" as voterRegisters {
-    * ballotPaper : BallotPaper.id <<PK>> <<FK>>
-    * voter : Voter.id <<PK>> <<FK>>
+    * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
     * modifiedAt : timestamptz(6)
     * voted : boolean
+    --
+    * ballotPaper : BallotPaper.id <<FK>>
+    * voter : Voter.id <<FK>>
 }
 
 entity "Voter" as voters {
