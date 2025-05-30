@@ -1,34 +1,38 @@
-summary: 'Manage a specific election'
+summary: 'Manage a specific ballot paper'
 description: |
   Read, update or delete a specific election.
 parameters:
-  - $ref: './parameters.yaml#/components/parameters/electionId'
+  - $ref: './parameters.yaml#/components/parameters/ballotPaperId'
 put:
   tags:
-    - Elections
-  summary: 'Update a specific election'
+    - BallotPapers
+  summary: 'Update a specific ballot paper'
   description: |
-    Updates the configuration of the requested election with the provided information.
-    The election can only be updated if the election is not frozen.
+    Updates the configuration of the requested ballot paper with the provided information.
+    The user of the API access token needs access to the linked election.
+    The ballot paper can only be updated if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
-  operationId: 'updateElectionById'
+  operationId: 'updateBallotPaperById'
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './schemas.yaml#/components/schemas/electionCreateObject'
+          $ref: './schemas.yaml#/components/schemas/ballotPaperCreateObject'
   responses:
     '200':
       description: |
         OK.
         The request was successfully executed.
-        The election was updated.
+        The ballot paper was updated.
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#/components/schemas/electionReadObject'
+            $ref: './schemas.yaml#/components/schemas/ballotPaperReadObject'
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '401':
@@ -47,23 +51,27 @@ put:
       $ref: './../globals/responses.yaml#/components/responses/500'
 get:
   tags:
-    - Elections
-  summary: 'Get a specific election'
+    - BallotPapers
+  summary: 'Get a specific ballot paper'
   description: |
-    Returns the requested election with all public information fields.
+    Returns the requested ballot paper with all public information fields.
+    The user of the API access token needs access to the linked election.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
-  operationId: 'getElectionById'
+  operationId: 'getBallotPaperById'
   responses:
     '200':
       description: |
         OK.
         The request was successfully executed.
-        Returns the requested election with all public information fields.
+        Returns the requested ballot paper with all public information fields.
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#/components/schemas/electionReadObject'
+            $ref: './schemas.yaml#/components/schemas/ballotPaperReadObject'
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '401':
@@ -80,21 +88,24 @@ get:
       $ref: './../globals/responses.yaml#/components/responses/500'
 delete:
   tags:
-    - Elections
-  summary: 'Delete a specific election'
+    - BallotPapers
+  summary: 'Delete a specific ballot paper'
   description: |
-    Deletes the requested election.
-    The election will be deleted from the database.
-    Note that also all linked data (like votes) will be removed.
+    Deletes the requested ballot paper.
+    The user of the API access token needs access to the linked election.
+    The ballot paper can only be deleted if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
-  operationId: 'deleteElectionById'
+  operationId: 'deleteBallotPaperById'
   responses:
     '204':
       description: |
         No Content.
         The request was successfully executed.
-        The election was deleted.
+        The ballot paper was deleted.
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '401':
