@@ -1,54 +1,54 @@
 @startuml dataModel
 
 entity "User" as user #006b75 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * email : bpchar(255) <<UK>>
-    * passwordHash : bpchar(255)
-    * verified : boolean
-    lastLoginAt : timestamptz(6) | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * email : TEXT <<UK>>
+    * passwordHash : TEXT
+    * verified : BOOLEAN
+    lastLoginAt : TIMESTAMPTZ(6) | NULL
     ' failed login attempts get reset on successful login
-    * failedLoginAttempts : smallint
-    emailVerificationTokenHash : bpchar(64) | NULL
-    emailVerificationTokenExpiresAt : timestamptz(6) | NULL
-    passwordResetTokenHash : bpchar(64) | NULL
-    passwordResetTokenExpiresAt : timestamptz(6) | NULL
-    refreshTokenHash : bpchar(64) | NULL
-    refreshTokenExpiresAt : timestamptz(6) | NULL
+    * failedLoginAttempts : INTEGER
+    emailVerificationTokenHash : TEXT | NULL
+    emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    passwordResetTokenHash : TEXT | NULL
+    passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    refreshTokenHash : TEXT | NULL
+    refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     --
 }
 
 entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * accessTokenId : uuid <<UK>>
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * expiresAt : timestamptz(6)
+    * accessTokenId : UUID <<UK>>
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * expiresAt : TIMESTAMPTZ(6)
     --
 }
 
 entity "Election" as elections #b60205 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * private : boolean
-    * votingStartAt : date
-    * votingEndAt : date
-    * configFrozen : boolean
-    * allowInvalidVote : boolean
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : TEXT
+    description : TEXT | NULL
+    * private : BOOLEAN
+    * votingStartAt : TIMESTAMPTZ(6)
+    * votingEndAt : TIMESTAMPTZ(6)
+    * configFrozen : BOOLEAN
+    * allowInvalidVote : BOOLEAN
     ' Is there a use case for `votesCounted`?
-    ' * votesCounted : boolean
+    ' * votesCounted : BOOLEAN
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
-    ' validVotes : integer | NULL
-    ' invalidVotes : integer | NULL
+    ' validVotes : NUMERIC | NULL
+    ' invalidVotes : NUMERIC | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     primeP : NUMERIC | NULL
@@ -67,27 +67,27 @@ in one election.
 end note
 
 entity "BallotPaper" as ballotPapers #fbca04 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * maxVotes : smallint
-    * maxVotesPerCandidate : smallint
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : TEXT
+    description : TEXT | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
     --
     * electionId : Election.id <<FK>>
 }
 
 entity "BallotPaperSection" as ballotPaperSections #fbca04 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * maxVotes : smallint
-    * maxVotesPerCandidate : smallint
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : TEXT
+    description : TEXT | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
     --
     * ballotPaperId : BallotPaper.id <<FK>>
 }
@@ -97,31 +97,31 @@ entity "BallotPaperSection" as ballotPaperSections #fbca04 {
 ' end note
 
 entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     --
     * ballotPaperSectionId : BallotPaperSection.id <<FK>>
     * candidateId : Candidate.id <<FK>>
 }
 
 entity "Candidate" as candidates #fbca04 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * title : bpchar(255)
-    description : bpchar | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * title : TEXT
+    description : TEXT | NULL
     --
     * electionId : Election.id <<FK>>
 }
 
 entity "Vote" as votes #05DFA3 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     alpha : NUMERIC | NULL
     beta : NUMERIC | NULL
     commitmentPart1 : NUMERIC | NULL
@@ -138,21 +138,21 @@ A vote is an encoded json object containing the entire filled in ballot paper.
 end note
 
 entity "VoterRegister" as voterRegisters #05DFA3 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * voted : boolean
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * voted : BOOLEAN
     --
     * ballotPaper : BallotPaper.id <<FK>>
     * voter : Voter.id <<FK>>
 }
 
 entity "Voter" as voters #05DFA3 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     --
     voterGroup: VoterGroup.id <<FK>>
 }
@@ -162,12 +162,12 @@ and with this one vote per election.
 end note
 
 entity "VoterGroup" as voterGroups #05DFA3 {
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : TEXT
+    description : TEXT | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
