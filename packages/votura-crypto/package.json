@@ -1,6 +1,6 @@
 {
   "name": "@votura/votura-crypto",
-  "version": "0.0.4",
+  "version": "0.0.3",
   "description": "A package containing the cryptographic algorithms used in the votura project.",
   "keywords": [
     "cryptographic"

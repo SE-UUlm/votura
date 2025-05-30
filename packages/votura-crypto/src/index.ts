@@ -89,7 +89,10 @@ export class PrivateKey extends PublicKey {
 
     const challenge = getFiatShamirChallenge(partsToHash, this.primeQ);
 
-    const response = (w + modMultiply([challenge, this.privateKey], this.primeQ)) % this.primeQ;
+    const response = modAdd(
+      [w, modMultiply([challenge, this.privateKey], this.primeQ)],
+      this.primeQ,
+    );
 
     return {
       commitment: [commitmentA, commitmentB],
@@ -142,15 +145,13 @@ export class Tallying {
   constructor(private readonly pk: PublicKey) {}
 
   aggregateCiphertexts(ciphertexts: Ciphertext[]): Ciphertext {
-    let alpha = 1n;
-    let beta = 1n;
-
-    for (const [a, b] of ciphertexts) {
-      alpha = modMultiply([alpha, a], this.pk.primeP);
-      beta = modMultiply([beta, b], this.pk.primeP);
-    }
-
-    return [alpha, beta];
+    return ciphertexts.reduce(
+      ([alpha, beta], [a, b]) => [
+        modMultiply([alpha, a], this.pk.primeP),
+        modMultiply([beta, b], this.pk.primeP),
+      ],
+      [1n, 1n],
+    );
   }
 
   aggregateVotes(votes: Ciphertext[][]): Ciphertext[] {
@@ -158,12 +159,10 @@ export class Tallying {
 
     const voteCount = votes.length;
     if (voteCount === 0) {
-      console.warn(`Aggregating zero votes.`);
-      return aggregated;
+      throw new Error(`Aggregating zero votes.`);
     }
     if (votes[0] === undefined) {
-      console.warn(`Invalid vote (index 0): is undefined.`);
-      return aggregated;
+      throw new Error(`Invalid vote (index 0): is undefined.`);
     }
 
     const choiceCount = votes[0].length;
@@ -173,20 +172,17 @@ export class Tallying {
       for (let j = 0; j < voteCount; j++) {
         const vote = votes[j];
         if (vote === undefined) {
-          console.warn(`Invalid vote (index ${j}): is undefined.`);
-          return [];
+          throw new Error(`Invalid vote (index ${j}): is undefined.`);
         }
         if (vote.length !== choiceCount) {
-          console.warn(
+          throw new Error(
             `Invalid vote (index ${j}): expected ${choiceCount} choices, found ${vote.length}`,
           );
-          return [];
         }
 
         const ciphertext = vote[i];
         if (ciphertext === undefined) {
-          console.warn(`Invalid vote (index ${j}): ciphertext of choice ${i} is undefined.`);
-          return [];
+          throw new Error(`Invalid vote (index ${j}): ciphertext of choice ${i} is undefined.`);
         }
 
         ciphertextsForChoiceI.push(ciphertext);
@@ -210,14 +206,14 @@ export class ZeroKnowledgeProof {
 
     const commitmentA = modMultiply(
       [
-        modPow(ciphertext[0], -challenge, this.pk.primeP),
+        modInv(modPow(ciphertext[0], challenge, this.pk.primeP), this.pk.primeP),
         modPow(this.pk.generator, response, this.pk.primeP),
       ],
       this.pk.primeP,
     );
     const commitmentB = modMultiply(
       [
-        modPow(betaOverPlaintext, -challenge, this.pk.primeP),
+        modInv(modPow(betaOverPlaintext, challenge, this.pk.primeP), this.pk.primeP),
         modPow(this.pk.publicKey, response, this.pk.primeP),
       ],
       this.pk.primeP,
@@ -257,12 +253,14 @@ export class ZeroKnowledgeProof {
     let realChallenge = disjunctiveChallenge;
     simulatedZKPs.forEach((proof, index) => {
       if (index !== realIndex) {
-        realChallenge = (realChallenge - proof.challenge + this.pk.primeQ) % this.pk.primeQ;
+        realChallenge = modAdd([realChallenge, -proof.challenge], this.pk.primeQ) % this.pk.primeQ;
       }
     });
 
-    const response =
-      (w + modMultiply([randomness, realChallenge], this.pk.primeQ)) % this.pk.primeQ;
+    const response = modAdd(
+      [w, modMultiply([randomness, realChallenge], this.pk.primeQ)],
+      this.pk.primeQ,
+    );
 
     return {
       commitment: [commitmentA, commitmentB],
@@ -282,17 +280,13 @@ export class ZeroKnowledgeProof {
 
     const disjunctiveZKPs: ZKProof[] = [];
 
-    for (let i = 0; i < ciphertexts.length; i++) {
+    ciphertexts.forEach((ciphertext, index) => {
       const choice = 1n; // = modPow(this.pk.generator, 0);
-      const ciphertext = ciphertexts[i];
-      if (ciphertext === undefined) {
-        throw new Error(`Invalid input: ciphertexts[${i}] is undefined`);
-      }
-      if (i !== realIndex) {
+      if (index !== realIndex) {
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
       }
-    }
+    });
 
     const realProof = this.createRealEncryptionProof(disjunctiveZKPs, realIndex, randomness);
     disjunctiveZKPs.splice(realIndex, 0, realProof);
@@ -347,22 +341,21 @@ export class ZeroKnowledgeProof {
       return false;
     }
 
-    for (let i = 0; i < ciphertexts.length; i++) {
+    ciphertexts.forEach((ciphertext, index) => {
       const choice0 = 1n; // = modPow(this.pk.generator, 0);
       const choice1 = this.pk.generator; // = modPow(this.pk.generator, 1);
-      const ciphertext = ciphertexts[i];
-      const zkProof = zkProofs[i];
-      if (ciphertext === undefined || zkProof === undefined) {
-        console.warn(`Invalid input: ciphertexts[${i}] or zkProof[${i}] is undefined`);
+      const zkProof = zkProofs[index];
+      if (zkProof === undefined) {
+        console.warn(`Invalid input: zkProof[${index}] is undefined`);
         return false;
       }
       const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
       const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
       if (!isValid0 && !isValid1) {
-        console.warn(`Bad proof at index ${i}: ${ciphertext} with proof ${zkProof}`);
+        console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
-    }
+    });
 
     const partsToHash: string[] = [];
 
@@ -374,7 +367,7 @@ export class ZeroKnowledgeProof {
     const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.primeQ);
 
     const actualChallenge = zkProofs.reduce(
-      (sum, proof) => (sum + proof.challenge) % this.pk.primeQ,
+      (sum, proof) => modAdd([sum, proof.challenge], this.pk.primeQ),
       0n,
     );
 

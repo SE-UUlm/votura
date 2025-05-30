@@ -7,13 +7,13 @@ export const getBitsOfBigInt = (x: bigint) => {
   return i + 32 - Math.clz32(Number(x >> BigInt(i)));
 };
 
-export const getFiatShamirChallenge = (partsToHash: string[], q: bigint): bigint => {
+export const getFiatShamirChallenge = (partsToHash: string[], primeQ: bigint): bigint => {
   const stringToHash = partsToHash.join(',');
   const hash = createHash('sha256');
-  hash.update(stringToHash);
+  hash.update(stringToHash, 'utf8');
   const hashHex = hash.digest('hex');
 
-  return BigInt('0x' + hashHex) % q;
+  return BigInt('0x' + hashHex) % primeQ;
 };
 
 export const getCofactor = (p: bigint, q: bigint): bigint => {

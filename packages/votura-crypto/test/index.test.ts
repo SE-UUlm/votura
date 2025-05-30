@@ -86,6 +86,108 @@ describe('Tallying', () => {
     expect(emptyAlpha).toBe(1n);
     expect(emptyBeta).toBe(1n);
   });
+
+  voturaTest('aggregateVotes', ({ keyPair, randomness }) => {
+    const { publicKey } = keyPair;
+    const plainNo = 1n; // = modPow(this.pk.generator, 0);
+    const plainYes = publicKey.generator; // = modPow(this.pk.generator, 1);
+
+    const ballotSectionA1: bigint[][] = [
+      // section A: max. 4 votes, 4 choices
+      [plainNo, plainYes, plainNo, plainNo], // voter 1: choice 2
+      [plainYes, plainNo, plainNo, plainNo], // voter 1: choice 1
+      [plainYes, plainNo, plainNo, plainNo], // voter 1: choice 1
+      [plainNo, plainNo, plainYes, plainNo], // voter 1: choice 3
+    ];
+    const ballotSectionB1: bigint[][] = [
+      // section B: max. 2 votes, 3 choices
+      [plainNo, plainNo, plainYes], // voter 1: choice 3
+      [plainNo, plainYes, plainNo], // voter 1: choice 2 (=section A choice 4)
+    ];
+    const ballotSectionA2: bigint[][] = [
+      // section A: max. 4 votes, 4 choices
+      [plainNo, plainNo, plainYes, plainNo], // voter 2: choice 3
+      [plainNo, plainYes, plainNo, plainNo], // voter 2: choice 2
+      [plainNo, plainNo, plainYes, plainNo], // voter 2: choice 3
+      [plainYes, plainNo, plainNo, plainNo], // voter 2: choice 1
+    ];
+    const votesA1: Ciphertext[][] = ballotSectionA1.map((vote) =>
+      vote.map((choice) => publicKey.encrypt(choice, randomness)[0]),
+    );
+    const votesB1: Ciphertext[][] = ballotSectionB1.map((vote) =>
+      vote.map((choice) => publicKey.encrypt(choice, randomness)[0]),
+    );
+    const votesA2: Ciphertext[][] = ballotSectionA2.map((vote) =>
+      vote.map((choice) => publicKey.encrypt(choice, randomness + 1n)[0]),
+    );
+
+    const tally = new Tallying(publicKey);
+    const aggVotesA1 = tally.aggregateVotes(votesA1); // section A of voter 1
+    const aggVotesB1 = tally.aggregateVotes(votesB1); // section B of voter 1
+    const aggVotesA2 = tally.aggregateVotes(votesA2); // section A of voter 2
+    const votesA = votesA1.concat(votesA2);
+    const aggVotesA = tally.aggregateVotes(votesA); // section A of all voters
+
+    const resultA1 = aggVotesA1.map(ciphertext => {
+      return keyPair.privateKey.decrypt(ciphertext);
+    });
+    const resultB1 = aggVotesB1.map(ciphertext => {
+      return keyPair.privateKey.decrypt(ciphertext);
+    });
+    const resultA2 = aggVotesA2.map(ciphertext => {
+      return keyPair.privateKey.decrypt(ciphertext);
+    });
+    const resultA = aggVotesA.map(ciphertext => {
+      return keyPair.privateKey.decrypt(ciphertext);
+    });
+
+    const sumA1: bigint[] = [2n, 1n, 1n, 0n]; // sum tallied manually
+    const sumB1: bigint[] = [0n, 1n, 1n]; // sum tallied manually
+    const sumA2: bigint[] = [1n, 1n, 2n, 0n]; // sum tallied manually
+    const sumA: bigint[] = [3n, 2n, 3n, 0n]; // sum tallied manually
+    resultA1.forEach((sum, index) => {
+      const encodedSum = modPow(publicKey.generator, sumA1[index]!, publicKey.primeP);
+      expect(sum).toBe(encodedSum);
+    });
+    resultB1.forEach((sum, index) => {
+      const encodedSum = modPow(publicKey.generator, sumB1[index]!, publicKey.primeP);
+      expect(sum).toBe(encodedSum);
+    });
+    resultA2.forEach((sum, index) => {
+      const encodedSum = modPow(publicKey.generator, sumA2[index]!, publicKey.primeP);
+      expect(sum).toBe(encodedSum);
+    });
+    resultA.forEach((sum, index) => {
+      const encodedSum = modPow(publicKey.generator, sumA[index]!, publicKey.primeP);
+      expect(sum).toBe(encodedSum);
+    });
+
+    const zero = publicKey.encrypt(plainNo)[0];
+    const zeroRow = (cols: number) => Array(cols).fill(zero);
+    const lenA = votesA1[0]!.length;
+    const lenB = votesB1[0]!.length;
+    const votesA1_0 = votesA1.map((row) => [...row, ...zeroRow(lenB)]);
+    const votes0_B1 = votesB1.map((row) => [...zeroRow(lenA), ...row]);
+
+    const votesTemp = votesA1_0.concat(votes0_B1); // only different choices
+    const votes1 = votesTemp.map((row, index) => {
+      const newRow: Ciphertext[] = []; // sec A choice 4 = sec B choice 2
+      newRow.push(row[0], row[1], row[2]);
+      index < votesA1_0.length ? newRow.push(row[3]) : newRow.push(row[5]);
+      newRow.push(row[4], row[6]);
+      return newRow;
+    });
+    const aggVotes1 = tally.aggregateVotes(votes1); // all sections of voter 1
+
+    const result1 = aggVotes1.map(ciphertext => {
+      return keyPair.privateKey.decrypt(ciphertext);
+    });
+    const sum1: bigint[] = [2n, 1n, 1n, 1n, 0n, 1n]; // sum tallied manually
+    result1.forEach((sum, index) => {
+      const encodedSum = modPow(publicKey.generator, sum1[index]!, publicKey.primeP);
+      expect(sum).toBe(encodedSum);
+    });
+  });
 });
 
 describe('ZeroKnowledgeProof', () => {
