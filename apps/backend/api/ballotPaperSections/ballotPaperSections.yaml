@@ -54,7 +54,7 @@ get:
   summary: 'Get all ballot paper section for an ballot paper'
   description: |
     Returns all ballot paper sections with the public information fields, that are linked to the specified ballot paper. 
-    The user of the API access token need the access rights to the ballot paper / election to read the ballot paper section.
+    The user of the API access token needs the access rights to the ballot paper / election to read the ballot paper section.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.

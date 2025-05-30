@@ -54,7 +54,7 @@ get:
   summary: 'Get all candidates for an election'
   description: |
     Returns all candidates with the public information fields, that are linked to the specified election. 
-    The user of the API access token need the access rights to the election to read the candidate.
+    The user of the API access token needs the access rights to the election to read the candidate.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.

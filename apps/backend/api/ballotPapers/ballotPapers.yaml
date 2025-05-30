@@ -54,7 +54,7 @@ get:
   summary: 'Get all ballot papers for an election'
   description: |
     Returns all ballot papers with the public information fields, that are linked to the specified election. 
-    The user of the API access token need the access rights to the election to read the ballot papers.
+    The user of the API access token needs the access rights to the election to read the ballot papers.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
