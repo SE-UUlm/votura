@@ -89,7 +89,7 @@ entity "BallotPaperSection" as ballotPaperSections {
     * maxVotes : smallint
     * maxVotesPerCandidate : smallint
     --
-    * ballotPaper : BallotPaper.id <<FK>>
+    * ballotPaperId : BallotPaper.id <<FK>>
 }
 ' note as C_2
 ' If at least two ballotPaperSections are created for one ballotPaper, 
@@ -102,8 +102,8 @@ entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
     * createdAt : timestamptz(6)
     * modifiedAt : timestamptz(6)
     --
-    * ballotPaperSection : BallotPaperSection.id <<FK>>
-    * candidate : Candidate.id <<FK>>
+    * ballotPaperSectionId : BallotPaperSection.id <<FK>>
+    * candidateId : Candidate.id <<FK>>
 }
 
 entity "Candidate" as candidates {
@@ -114,7 +114,7 @@ entity "Candidate" as candidates {
     * title : bpchar(255)
     description : bpchar | NULL
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
 }
 
 entity "Vote" as votes {
