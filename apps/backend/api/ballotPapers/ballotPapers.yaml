@@ -7,7 +7,7 @@ post:
     - BallotPapers
   summary: 'Create a ballot paper'
   description: |
-    Creates a ballot papers with a link to an election.
+    Creates a ballot paper with a link to an election.
     The user of the API access token needs access to the linked election.
     The ballot paper can only be created if the linked election is not frozen.
 
