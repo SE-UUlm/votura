@@ -50,20 +50,69 @@ model AccessTokenBlacklist {
 }
 
 model Election {
-  id                      String   @id @default(uuid()) @db.Uuid
-  createdAt               DateTime @default(now()) @db.Timestamptz(6)
-  modifiedAt              DateTime @updatedAt @db.Timestamptz(6)
+  id                      String        @id @default(uuid()) @db.Uuid
+  createdAt               DateTime      @default(now()) @db.Timestamptz(6)
+  modifiedAt              DateTime      @updatedAt @db.Timestamptz(6)
   name                    String
   description             String?
-  votingStartAt           DateTime @db.Timestamptz(6)
-  votingEndAt             DateTime @db.Timestamptz(6)
-  configFrozen            Boolean  @default(false)
-  allowInvalidVotes       Boolean  @default(false)
+  votingStartAt           DateTime      @db.Timestamptz(6)
+  votingEndAt             DateTime      @db.Timestamptz(6)
+  configFrozen            Boolean       @default(false)
+  allowInvalidVotes       Boolean       @default(false)
   pubKey                  BigInt?
   privKey                 BigInt?
   primeP                  BigInt?
   primeQ                  BigInt?
   generator               BigInt?
-  electionCreatorId       String   @db.Uuid
-  electionCreatorRelation User     @relation(fields: [electionCreatorId], references: [id])
+  electionCreatorId       String        @db.Uuid
+  electionCreatorRelation User          @relation(fields: [electionCreatorId], references: [id])
+  ballotPapers            BallotPaper[]
+  Candidates              Candidate[]
+}
+
+model BallotPaper {
+  id                   String               @id @default(uuid()) @db.Uuid
+  createdAt            DateTime             @default(now()) @db.Timestamptz(6)
+  modifiedAt           DateTime             @updatedAt @db.Timestamptz(6)
+  name                 String
+  description          String?
+  maxVotes             Int
+  maxVotesPerCandidate Int
+  electionId           String               @db.Uuid
+  electionRelation     Election             @relation(fields: [electionId], references: [id])
+  BallotPaperSection   BallotPaperSection[]
+}
+
+model BallotPaperSection {
+  id                           String                        @id @default(uuid()) @db.Uuid
+  createdAt                    DateTime                      @default(now()) @db.Timestamptz(6)
+  modifiedAt                   DateTime                      @updatedAt @db.Timestamptz(6)
+  name                         String
+  description                  String?
+  maxVotes                     Int
+  maxVotesPerCandidate         Int
+  ballotPaperId                String                        @db.Uuid
+  ballotPaperRelation          BallotPaper                   @relation(fields: [ballotPaperId], references: [id])
+  BallotPaperSectionCandidates BallotPaperSectionCandidate[]
+}
+
+model BallotPaperSectionCandidate {
+  id                         String             @id @default(uuid()) @db.Uuid
+  ballotPaperSectionId       String             @db.Uuid
+  ballotPaperSectionRelation BallotPaperSection @relation(fields: [ballotPaperSectionId], references: [id])
+  candidateId                String             @db.Uuid
+  candidateRelation          Candidate          @relation(fields: [candidateId], references: [id])
+  createdAt                  DateTime           @default(now()) @db.Timestamptz(6)
+  modifiedAt                 DateTime           @updatedAt @db.Timestamptz(6)
+}
+
+model Candidate {
+  id                           String                        @id @default(uuid()) @db.Uuid
+  createdAt                    DateTime                      @default(now()) @db.Timestamptz(6)
+  modifiedAt                   DateTime                      @updatedAt @db.Timestamptz(6)
+  title                        String
+  description                  String?
+  electionId                   String                        @db.Uuid
+  electionRelation             Election                      @relation(fields: [electionId], references: [id])
+  BallotPaperSectionCandidates BallotPaperSectionCandidate[]
 }
