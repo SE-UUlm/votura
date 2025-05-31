@@ -16,7 +16,7 @@ export default defineConfig({
         },
       ],
       'json',
-      'html'
+      'html',
     ],
     outputFile: {
       junit: './results/junit-report.xml',
