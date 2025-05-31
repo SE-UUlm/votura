@@ -67,6 +67,9 @@ delete:
   summary: 'Delete a user'
   description: |
     Deletes a user in the votura backend.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
   operationId: 'deleteUser'
