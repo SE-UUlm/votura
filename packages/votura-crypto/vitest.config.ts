@@ -25,7 +25,7 @@ export default defineConfig({
     },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'html', 'clover', 'json'],
       include: ['src/**'],
       thresholds: {
         lines: 85,

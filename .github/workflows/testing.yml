@@ -45,3 +45,14 @@ jobs:
           npm run build
       - name: Run tests
         run: npm run test
+      - name: Teamscale Upload
+        uses: cqse/teamscale-upload-action@v2.9.6
+        with:
+          server: 'https://exia.informatik.uni-ulm.de/teamscale'
+          project: 'b3ef710d-5a48-4918-9383-7381b21e45e2'
+          user: 'thorbencarl'
+          accesskey: ${{ secrets.TEAMSCALE_ACCESS_KEY }}
+          partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
+          format: CLOVER
+          message: 'Code coverage from GitHub Actions'
+          files: './packages/votura-crypto/coverage/clover.xml'
