@@ -3,7 +3,7 @@ import type { Config } from '@docusaurus/types';
 import type * as Preset from '@docusaurus/preset-classic';
 import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
 import remarkDefList from 'remark-deflist';
-// TODO trigger Teamscale
+
 const CONFIG: Config = {
   title: 'votura',
   tagline: 'Setup online votes and polls in that your users trust!',
@@ -163,14 +163,6 @@ const CONFIG: Config = {
               label: 'GitHub',
               href: 'https://github.com/SE-UUlm/votura',
             },
-            // {
-            //   label: 'Docker Hub',
-            //   href: 'TODO',
-            // },
-            // {
-            //   label: 'NPM',
-            //   href: 'TODO',
-            // },
             {
               label: 'University of Ulm',
               href: 'https://www.uni-ulm.de',
