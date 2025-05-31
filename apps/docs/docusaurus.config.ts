@@ -1,8 +1,13 @@
 import { themes as prismThemes } from 'prism-react-renderer';
 import type { Config } from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
-import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
+import {
+  Options as PresetOptions,
+  ThemeConfig as PresetThemeConfig,
+} from '@docusaurus/preset-classic';
+import { Options as OpenApiPluginOptions } from 'docusaurus-plugin-openapi-docs';
 import remarkDefList from 'remark-deflist';
+
+const GITHUB_URL = 'https://github.com/SE-UUlm/votura';
 
 const CONFIG: Config = {
   title: 'votura',
@@ -27,14 +32,14 @@ const CONFIG: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/SE-UUlm/votura',
+          editUrl: GITHUB_URL,
           docItemComponent: '@theme/ApiItem',
           remarkPlugins: [remarkDefList],
         },
         theme: {
           customCss: './src/css/custom.css',
         },
-      } satisfies Preset.Options,
+      } satisfies PresetOptions,
     ],
   ],
 
@@ -55,7 +60,7 @@ const CONFIG: Config = {
               sidebarCollapsed: true,
             },
             showSchemas: true,
-          } satisfies OpenApiPlugin.Options,
+          } satisfies OpenApiPluginOptions,
         },
       },
     ],
@@ -109,7 +114,7 @@ const CONFIG: Config = {
           label: 'About',
         },
         {
-          href: 'https://github.com/SE-UUlm/votura',
+          href: GITHUB_URL,
           label: 'GitHub',
           position: 'right',
         },
@@ -136,15 +141,15 @@ const CONFIG: Config = {
           items: [
             {
               label: 'Community Support',
-              href: 'https://github.com/SE-UUlm/votura/discussions',
+              href: `${GITHUB_URL}/discussions`,
             },
             {
               label: 'Issue Tracker',
-              href: 'https://github.com/SE-UUlm/votura/issues',
+              href: `${GITHUB_URL}/issues`,
             },
             {
               label: 'Security Issues',
-              href: 'https://github.com/SE-UUlm/votura/security',
+              href: `${GITHUB_URL}/security`,
             },
           ],
         },
@@ -161,7 +166,7 @@ const CONFIG: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/SE-UUlm/votura',
+              href: GITHUB_URL,
             },
             {
               label: 'University of Ulm',
@@ -176,7 +181,7 @@ const CONFIG: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-  } satisfies Preset.ThemeConfig,
+  } satisfies PresetThemeConfig,
 };
 
 export default CONFIG;
