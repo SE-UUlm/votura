@@ -140,8 +140,8 @@ entity "VoterRegister" as voterRegisters #05DFA3 {
     * modifiedAt : TIMESTAMPTZ(6)
     * voted : BOOLEAN
     --
-    * ballotPaper : BallotPaper.id <<FK>>
-    * voter : Voter.id <<FK>>
+    * ballotPaperId : BallotPaper.id <<FK>>
+    * voterId : Voter.id <<FK>>
 }
 
 entity "Voter" as voters #05DFA3 {
@@ -150,7 +150,7 @@ entity "Voter" as voters #05DFA3 {
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     --
-    voterGroup: VoterGroup.id <<FK>>
+    voterGroupId: VoterGroup.id <<FK>>
 }
 note as N3
 A voter can only get one ballot paper,

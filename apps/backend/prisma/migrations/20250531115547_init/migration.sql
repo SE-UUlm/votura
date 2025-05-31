@@ -13,7 +13,7 @@ CREATE TABLE "User" (
     "refreshTokenHash" TEXT,
     "refreshTokenExpiresAt" TIMESTAMPTZ(6),
 
-    CONSTRAINT "User_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -25,7 +25,7 @@ CREATE TABLE "AccessTokenBlacklist" (
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
     "expiresAt" TIMESTAMPTZ(6) NOT NULL,
 
-    CONSTRAINT "AccessTokenBlacklist_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "AccessTokenBlacklist_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -47,8 +47,8 @@ CREATE TABLE "Election" (
     "generator" BIGINT,
     "electionCreatorId" UUID NOT NULL,
 
-    CONSTRAINT "Election_pkey" PRIMARY KEY ("id")
-    CONSTRAINT "votingEnd_after_votingStart" CHECK ("votingEnd" > "votingStart"), -- manually added
+    CONSTRAINT "Election_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "votingEnd_after_votingStart" CHECK ("votingEndAt" > "votingStartAt"), -- manually added
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -63,8 +63,8 @@ CREATE TABLE "BallotPaper" (
     "maxVotesPerCandidate" INTEGER NOT NULL,
     "electionId" UUID NOT NULL,
 
-    CONSTRAINT "BallotPaper_pkey" PRIMARY KEY ("id")
-    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+    CONSTRAINT "BallotPaper_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
     CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate") -- manually added
 );
 
@@ -79,8 +79,8 @@ CREATE TABLE "BallotPaperSection" (
     "maxVotesPerCandidate" INTEGER NOT NULL,
     "ballotPaperId" UUID NOT NULL,
 
-    CONSTRAINT "BallotPaperSection_pkey" PRIMARY KEY ("id")
-    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+    CONSTRAINT "BallotPaperSection_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
     CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate") -- manually added
 );
 
@@ -92,7 +92,7 @@ CREATE TABLE "BallotPaperSectionCandidate" (
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
 
-    CONSTRAINT "BallotPaperSectionCandidate_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "BallotPaperSectionCandidate_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -105,7 +105,47 @@ CREATE TABLE "Candidate" (
     "description" TEXT,
     "electionId" UUID NOT NULL,
 
-    CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id")
+    CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "VoterGroup" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "name" TEXT NOT NULL,
+    "description" TEXT,
+    "pubKey" BIGINT,
+    "privKey" BIGINT,
+    "moduloRS256" BIGINT,
+    "voterGroupGenerated" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "VoterGroup_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "Voter" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "voterGroupId" UUID NOT NULL,
+
+    CONSTRAINT "Voter_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "VoterRegister" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "voted" BOOLEAN NOT NULL DEFAULT false,
+    "ballotPaperId" UUID NOT NULL,
+    "voterId" UUID NOT NULL,
+
+    CONSTRAINT "VoterRegister_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -132,3 +172,12 @@ ALTER TABLE "BallotPaperSectionCandidate" ADD CONSTRAINT "BallotPaperSectionCand
 
 -- AddForeignKey
 ALTER TABLE "Candidate" ADD CONSTRAINT "Candidate_electionId_fkey" FOREIGN KEY ("electionId") REFERENCES "Election"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Voter" ADD CONSTRAINT "Voter_voterGroupId_fkey" FOREIGN KEY ("voterGroupId") REFERENCES "VoterGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VoterRegister" ADD CONSTRAINT "VoterRegister_ballotPaperId_fkey" FOREIGN KEY ("ballotPaperId") REFERENCES "BallotPaper"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VoterRegister" ADD CONSTRAINT "VoterRegister_voterId_fkey" FOREIGN KEY ("voterId") REFERENCES "Voter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
