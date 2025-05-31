@@ -34,8 +34,4 @@ describe('PrivateKey', () => {
 
     expect(decryptedText).toBe(plaintext);
   });
-  // Dummy test that will fail
-  voturaTest('dummy failing test', () => {
-    expect(1n).toBe(2n);
-  });
 });
