@@ -9,8 +9,8 @@ put:
   summary: 'Update a specific voter group'
   description: |
     Updates the configuration of the requested voter group with the provided information.
-    The user of the API access token needs access to the requested voter group and the linked ballot papers / elections.
-    The voter group can only be updated if the linked ballot papers / elections are not frozen.
+    The user of the API access token needs access to the requested voter group and the linked ballot papers & elections.
+    The voter group can only be updated if all linked ballot papers & elections are not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
@@ -55,7 +55,7 @@ get:
   summary: 'Get a specific voter group'
   description: |
     Returns the requested voter group with all public information fields.
-    The user of the API access token needs access to the voter group.
+    The user of the API access token needs access to the voter group and all linked ballot papers & elections.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
@@ -92,8 +92,8 @@ delete:
   summary: 'Delete a specific voter group'
   description: |
     Deletes the requested voter group.
-    The user of the API access token needs access to the voter group and it's linked ballot papers / elections.
-    The voter group can only be deleted if the linked linked ballot papers / elections are not frozen.
+    The user of the API access token needs access to the voter group and all linked ballot papers & elections.
+    The voter group can only be deleted if all linked ballot papers & elections are not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.

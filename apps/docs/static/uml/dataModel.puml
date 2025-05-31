@@ -177,19 +177,18 @@ Timestamps are stored in UTC.
 end note
 
 user ||--o{ elections
-user ||--o{ voterGroups
 elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
 ballotPapers ||--o{ voterRegisters
-voterRegisters }o--|| voters
+voterRegisters }|--|| voters
 ballotPapers ||--o{ ballotPaperSections
 ' ballotPaperSections -- C_2
 ballotPaperSections ||--o{ ballotPaperSectionCandidates
 ballotPaperSectionCandidates }o--|| candidates
 votes }o--|| elections
-voters |o--o{ votes
-voterGroups ||--o{ voters
+voters ||--o{ votes
+voterGroups ||--|{ voters
 voters -- N3
 votes -- N4
 

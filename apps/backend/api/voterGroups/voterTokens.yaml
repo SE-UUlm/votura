@@ -9,9 +9,9 @@ get:
   summary: 'Create voter tokens for a specific voter group'
   description: |
     Creates and returns voter tokens for every voter in the requested voter group.
-    The user of the API access token needs access to the voter group and the  linked ballot papers / elections.
-    The voter tokens can only be created if the linked ballot papers / elections are frozen.
-    The voter tokens can only be created once if the linked ballot papers / elections are frozen.
+    The user of the API access token needs access to the voter group and all linked ballot papers & elections.
+    The voter tokens can only be created if all linked ballot papers & elections are frozen.
+    The voter tokens can only be created once if the linked ballot papers & elections are frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
