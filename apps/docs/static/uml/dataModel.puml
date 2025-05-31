@@ -169,7 +169,6 @@ entity "VoterGroup" as voterGroups #05DFA3 {
     moduloRS256 : NUMERIC | NULL
     * voterTokesGenerated : BOOLEAN
     --
-    * voterGroupCreatorId : User.id <<FK>>
 }
 
 note as N1
