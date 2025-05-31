@@ -7,7 +7,7 @@ export default defineConfig({
     include: ['test/**/*test.ts'],
     reporters: [
       'verbose',
-      ['default', { summary: false }],
+      'github-actions',
       [
         'junit',
         {
