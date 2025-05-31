@@ -5,9 +5,28 @@ export default defineConfig({
     globals: true,
     environment: 'node',
     include: ['test/**/*test.ts'],
+    reporters: [
+      'verbose',
+      'github-actions',
+      [
+        'junit',
+        {
+          suiteName: 'votura-crypto tests',
+          classnameTemplate: 'filename:{filename} - filepath:{filepath}',
+        },
+      ],
+      'json',
+      'html',
+    ],
+    outputFile: {
+      junit: './results/junit-report.xml',
+      json: './results/json-report.json',
+      html: './results/index.html',
+    },
     coverage: {
       provider: 'v8',
-      reporter: ['text', 'json', 'html'],
+      reporter: ['text', 'html', 'clover', 'json'],
+      include: ['src/**'],
       thresholds: {
         lines: 85,
         functions: 90,
