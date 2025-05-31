@@ -4,7 +4,7 @@ import type * as Preset from '@docusaurus/preset-classic';
 import type * as OpenApiPlugin from 'docusaurus-plugin-openapi-docs';
 import remarkDefList from 'remark-deflist';
 
-const config: Config = {
+const CONFIG: Config = {
   title: 'votura',
   tagline: 'Setup online votes and polls in that your users trust!',
   favicon: 'img/logo.svg',
@@ -187,4 +187,4 @@ const config: Config = {
   } satisfies Preset.ThemeConfig,
 };
 
-export default config;
+export default CONFIG;
