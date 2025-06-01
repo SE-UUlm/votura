@@ -35,7 +35,10 @@ jobs:
       - name: Check types
         run: npm run check-types
       - name: Check formats
-        run: npm run check-format
+        # first check files in workspaces & second the root directory
+        run: |
+          npm run check-format
+          npx prettier --check .
       - name: Check code spell
         run: npx cspell lint **
       - name: Build votura-crypto
