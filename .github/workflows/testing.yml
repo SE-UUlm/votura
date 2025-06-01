@@ -3,7 +3,8 @@ name: Testing
 on:
   workflow_dispatch:
   push:
-
+  merge_group:
+    types: [checks_requested]
 jobs:
   test:
     name: Lint, Build & Test

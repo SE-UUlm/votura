@@ -3,6 +3,8 @@ name: Build & deploy docs
 on:
   workflow_dispatch:
   push:
+  merge_group:
+    types: [checks_requested]
 
 jobs:
   build-puml:
