@@ -31,7 +31,7 @@
     "prepublishOnly": "npm run ci"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.17.4",
+    "@arethetypeswrong/cli": "^0.18.1",
     "@changesets/cli": "^2.29.2",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
