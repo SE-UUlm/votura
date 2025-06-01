@@ -119,7 +119,7 @@ entity "Candidate" as candidates #fbca04 {
     * election : Election.id <<FK>>
 }
 
-entity "Vote" as votes #05DFA3 {
+entity "Vote" as votes #728376 {
     * id : uuid <<PK>>
     --
     * createdAt : timestamptz(6)
