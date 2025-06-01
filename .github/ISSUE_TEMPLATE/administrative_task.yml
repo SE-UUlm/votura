@@ -1,9 +1,9 @@
 name: 🛠️ Administrative Task
 description: Describe a task that is not related to any source code.
 # title: ""
-labels: ["Administrative"]
-projects: ["SE-UUlm/6"]
-type: "Task"
+labels: ['Administrative']
+projects: ['SE-UUlm/6']
+type: 'Task'
 # assignees: []
 body:
   - type: markdown

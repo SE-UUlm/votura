@@ -1,9 +1,9 @@
 name: 📖 Documentation request
 description: Request for further documentation improvements.
 # title: ""
-labels: ["Documentation", "Feature"]
-projects: ["SE-UUlm/6"]
-type: "Feature"
+labels: ['Documentation', 'Feature']
+projects: ['SE-UUlm/6']
+type: 'Feature'
 # assignees: []
 body:
   - type: markdown
