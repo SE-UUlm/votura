@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
 import { OpenAPIV3 } from 'openapi-types';
-import { toJsonSchemaParams } from '../utils.js';
+import { defaultResponses, toJsonSchemaParams } from '../utils.js';
 import { SelectableElectionObject } from '../../objects/election.js';
 
 export const SelectableElectionObjectSchema = z.toJSONSchema(
@@ -35,6 +35,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
           },
         },
       },
+      ...defaultResponses,
     },
   },
 };
