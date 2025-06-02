@@ -10,7 +10,7 @@ put:
   description: |
     Updates the configuration of the requested ballot paper with the provided information.
     The user of the API access token needs access to the linked election.
-    The ballot paper can only be updated if the linked election is not frozen.
+    A ballot paper can only be updated if the linked election is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
@@ -22,7 +22,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: './schemas.yaml#/components/schemas/ballotPaperCreateObject'
+          $ref: './schemas.yaml#/components/schemas/ballotPaperUpdateObject'
   responses:
     '200':
       description: |
@@ -93,7 +93,7 @@ delete:
   description: |
     Deletes the requested ballot paper.
     The user of the API access token needs access to the linked election.
-    The ballot paper can only be deleted if the linked election is not frozen.
+    A ballot paper can only be deleted if the linked election is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
