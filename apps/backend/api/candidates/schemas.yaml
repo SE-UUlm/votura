@@ -62,7 +62,7 @@ components:
             - id
             - createdAt
             - modifiedAt
-            - election
+            - electionId
           properties:
             id:
               description: |
@@ -93,7 +93,7 @@ components:
               format: 'date-time'
               maxLength: 20
               example: '2032-10-01T00:00:00Z'
-            election:
+            electionId:
               description: |
                 The ID of the election to which this ballot paper belongs.
               readOnly: false

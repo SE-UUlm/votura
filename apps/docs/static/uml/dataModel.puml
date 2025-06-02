@@ -132,9 +132,9 @@ entity "Vote" as votes #728376 {
     challenge : NUMERIC | NULL
     response : NUMERIC | NULL
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
-    voter : voter.id <<FK>> | NULL
+    voterId : voter.id <<FK>> | NULL
 }
 note as N4
 A vote is an encoded json object containing the entire filled in ballot paper.
@@ -147,8 +147,8 @@ entity "VoterRegister" as voterRegisters #05DFA3 {
     * modifiedAt : timestamptz(6)
     * voted : boolean
     --
-    * ballotPaper : BallotPaper.id <<FK>>
-    * voter : Voter.id <<FK>>
+    * ballotPaperId : BallotPaper.id <<FK>>
+    * voterId : Voter.id <<FK>>
 }
 
 entity "Voter" as voters #05DFA3 {
@@ -157,7 +157,7 @@ entity "Voter" as voters #05DFA3 {
     * createdAt : timestamptz(6)
     * modifiedAt : timestamptz(6)
     --
-    voterGroup: VoterGroup.id <<FK>>
+    voterGroupId: VoterGroup.id <<FK>>
 }
 note as N3
 A voter can only get one ballot paper,
