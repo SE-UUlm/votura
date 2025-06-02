@@ -67,17 +67,17 @@ components:
           required:
             - election
           properties:
-          election:
-            description: |
-              The ID of the election to which this ballot paper belongs.
-            readOnly: false
-            writeOnly: false
-            type: 'string'
-            format: 'uuid'
-            minLength: 36
-            maxLength: 36
-            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-            example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
+            election:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
     ballotPaperUpdateObject:
       # additionalProperties: false # not supported by docusaurus
       allOf:
