@@ -39,6 +39,11 @@
     "timestamptz",
     "turborepo",
     "varchar",
-    "votura"
+    "votura",
+    "Insertable",
+    "APIV",
+    "unrepresentable",
+    "uuidv",
+    "Updateable"
   ]
 }
