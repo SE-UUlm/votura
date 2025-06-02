@@ -71,7 +71,7 @@ components:
           minLength: 36
           maxLength: 36
           pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-          example: '123e4567-e89b-12d3-a456-426614174000'
+          example: '777570e5-fdad-4ebf-a702-c095faeb009f'
     ###################################################################################################
     ballotPaperSectionCreateObject:
       # additionalProperties: false # not supported by docusaurus
@@ -97,7 +97,7 @@ components:
               minLength: 36
               maxLength: 36
               pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-              example: '123e4567-e89b-12d3-a456-426614174000'
+              example: '34fc0661-cd82-4822-ab4a-291f93894c7a'
             createdAt:
               description: |
                 The created date of the ballot paper section.
