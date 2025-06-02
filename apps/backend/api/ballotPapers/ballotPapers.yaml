@@ -95,7 +95,6 @@ get:
           - description
           - maxVotes
           - maxVotesPerCandidate
-          - election
         example: 'modifiedAt'
     - name: 'orderBy'
       in: 'query'

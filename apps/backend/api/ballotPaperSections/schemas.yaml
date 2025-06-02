@@ -8,7 +8,6 @@ components:
         - description
         - maxVotes
         - maxVotesPerCandidate
-        - ballotPaper
       properties:
         name:
           description: |
@@ -61,19 +60,27 @@ components:
           minimum: 1
           maximum: 65535
           example: 42
-        ballotPaper:
-          description: |
-            The ID of the ballot paper to which this ballot paper section belongs.
-          readOnly: false
-          writeOnly: false
-          type: 'string'
-          format: 'uuid'
-          minLength: 36
-          maxLength: 36
-          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-          example: '777570e5-fdad-4ebf-a702-c095faeb009f'
     ###################################################################################################
     ballotPaperSectionCreateObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/ballotPaperSectionBaseObject'
+        - type: 'object'
+          required:
+            - ballotPaper
+          properties:
+            ballotPaper:
+              description: |
+                The ID of the ballot paper to which this ballot paper section belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '777570e5-fdad-4ebf-a702-c095faeb009f'
+    ballotPaperSectionUpdateObject:
       # additionalProperties: false # not supported by docusaurus
       allOf:
         - $ref: '#/components/schemas/ballotPaperSectionBaseObject'
@@ -83,10 +90,22 @@ components:
         - $ref: '#/components/schemas/ballotPaperSectionBaseObject'
         - type: 'object'
           required:
+            - ballotPaper
             - id
             - createdAt
             - modifiedAt
           properties:
+            ballotPaper:
+              description: |
+                The ID of the ballot paper to which this ballot paper section belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '777570e5-fdad-4ebf-a702-c095faeb009f'
             id:
               description: |
                 This is the unique identifier for the ballot paper section.

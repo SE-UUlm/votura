@@ -22,7 +22,7 @@ put:
     content:
       application/json:
         schema:
-          $ref: './schemas.yaml#/components/schemas/ballotPaperCreateObject'
+          $ref: './schemas.yaml#/components/schemas/ballotPaperUpdateObject'
   responses:
     '200':
       description: |

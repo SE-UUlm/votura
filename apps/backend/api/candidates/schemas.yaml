@@ -6,7 +6,6 @@ components:
       required:
         - title
         - description
-        - election
         - ballotPaperSections
       properties:
         title:
@@ -34,17 +33,6 @@ components:
             - type: 'null'
               default: null
               example: null
-        election:
-          description: |
-            The ID of the election to which this ballot paper belongs.
-          readOnly: false
-          writeOnly: false
-          type: 'string'
-          format: 'uuid'
-          minLength: 36
-          maxLength: 36
-          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-          example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
         ballotPaperSections:
           description: |
             The IDs of the ballot paper section where this candidate appears.
@@ -74,6 +62,7 @@ components:
             - id
             - createdAt
             - modifiedAt
+            - election
           properties:
             id:
               description: |
@@ -104,3 +93,14 @@ components:
               format: 'date-time'
               maxLength: 20
               example: '2032-10-01T00:00:00Z'
+            election:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
