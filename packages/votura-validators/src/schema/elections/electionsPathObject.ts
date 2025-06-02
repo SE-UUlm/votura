@@ -1,10 +1,15 @@
 import { z } from 'zod/v4';
 import { OpenAPIV3 } from 'openapi-types';
-import { defaultResponses, toJsonSchemaParams } from '../utils.js';
-import { SelectableElectionObject } from '../../objects/election.js';
+import { defaultResponses, Tag, toJsonSchemaParams } from '../utils.js';
+import { InsertableElectionObject, SelectableElectionObject } from '../../objects/election.js';
 
 export const SelectableElectionObjectSchema = z.toJSONSchema(
   SelectableElectionObject,
+  toJsonSchemaParams,
+);
+
+export const InsertableElectionObjectSchema = z.toJSONSchema(
+  InsertableElectionObject,
   toJsonSchemaParams,
 );
 
@@ -13,11 +18,11 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
   description:
     'A election is always at least linked to one user. You can create a new one ore read the existing ones.',
   get: {
-    tags: ['Elections'],
+    tags: [Tag.Elections],
     summary: 'Get all elections',
     description:
       'Returns all elections with the public information fields, that are linked to user of the API access token.',
-    security: [{}],
+    security: [{ voturaBackendAuth: [] }],
     operationId: 'getElections',
     responses: {
       200: {
@@ -32,6 +37,33 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
               uniqueItems: true,
               items: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
             },
+          },
+        },
+      },
+      ...defaultResponses,
+    },
+  },
+  post: {
+    tags: [Tag.Elections],
+    summary: 'Create a new election',
+    description: 'Creates a new election with a link to the user of the API access token.',
+    security: [{ voturaBackendAuth: [] }],
+    operationId: 'createElection',
+    requestBody: {
+      required: true,
+      content: {
+        'application/json': {
+          schema: InsertableElectionObjectSchema as OpenAPIV3.SchemaObject,
+        },
+      },
+    },
+    responses: {
+      201: {
+        description:
+          'Created. The request was successfully executed. Successfully created a new election.',
+        content: {
+          'application/json': {
+            schema: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
