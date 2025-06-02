@@ -33,7 +33,7 @@ model User {
   emailVerificationTokenExpiresAt DateTime?  @db.Timestamptz(6)
   passwordResetTokenHash          String?    @db.VarChar(64)
   passwordResetTokenExpiresAt     DateTime?  @db.Timestamptz(6)
-  refreshTokenHash                String?
+  refreshTokenHash                String?    @db.VarChar(64)
   refreshTokenExpiresAt           DateTime?  @db.Timestamptz(6)
   elections                       Election[]
 }

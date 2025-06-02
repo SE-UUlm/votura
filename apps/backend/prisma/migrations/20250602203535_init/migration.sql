@@ -10,7 +10,7 @@ CREATE TABLE "User" (
     "emailVerificationTokenExpiresAt" TIMESTAMPTZ(6),
     "passwordResetTokenHash" VARCHAR(64),
     "passwordResetTokenExpiresAt" TIMESTAMPTZ(6),
-    "refreshTokenHash" TEXT,
+    "refreshTokenHash" VARCHAR(64),
     "refreshTokenExpiresAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
