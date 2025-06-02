@@ -9,7 +9,7 @@ post:
   description: |
     Creates a ballot paper with a link to an election.
     The user of the API access token needs access to the linked election.
-    The ballot paper can only be created if the linked election is not frozen.
+    A ballot paper can only be created if the linked election is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.

@@ -10,7 +10,7 @@ put:
   description: |
     Updates the configuration of the requested ballot paper section with the provided information.
     The user of the API access token needs access to the linked ballot paper / election.
-    The ballot paper section can only be updated if the linked election is not frozen.
+    A ballot paper section can only be updated if the linked election is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
@@ -93,7 +93,7 @@ delete:
   description: |
     Deletes the requested ballot paper section.
     The user of the API access token needs access to the linked ballot paper / election.
-    The ballot paper section can only be deleted if the linked election is not frozen.
+    A ballot paper section can only be deleted if the linked election is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
