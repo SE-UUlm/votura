@@ -1,0 +1,106 @@
+components:
+  schemas:
+    #### base objects #################################################################################
+    candidateBaseObject:
+      type: 'object'
+      required:
+        - title
+        - description
+        - ballotPaperSections
+      properties:
+        title:
+          description: |
+            The title / name of the candidate.
+          readOnly: false
+          writeOnly: false
+          type: 'string'
+          minLength: 1
+          maxLength: 256
+          pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+          example: 'Option A'
+        description:
+          description: |
+            The description text of the candidate.
+            The description can be null.
+          readOnly: false
+          writeOnly: false
+          oneOf:
+            - type: 'string'
+              minLength: 1
+              maxLength: 256
+              pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+              example: 'This is a super important description.'
+            - type: 'null'
+              default: null
+              example: null
+        ballotPaperSections:
+          description: |
+            The IDs of the ballot paper section where this candidate appears.
+          readOnly: false
+          writeOnly: false
+          type: 'array'
+          minItems: 0
+          maxItems: 50
+          items:
+            type: 'string'
+            format: 'uuid'
+            minLength: 36
+            maxLength: 36
+            pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+            example: '34fc0661-cd82-4822-ab4a-291f93894c7a'
+    ###################################################################################################
+    candidateCreateObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/candidateBaseObject'
+    candidateReadObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/candidateBaseObject'
+        - type: 'object'
+          required:
+            - id
+            - createdAt
+            - modifiedAt
+            - election
+          properties:
+            id:
+              description: |
+                This is the unique identifier for the candidate.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: 'eb74b168-b717-4f35-8e6c-c1a2851e1f0e'
+            createdAt:
+              description: |
+                The created date of the candidate.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            modifiedAt:
+              description: |
+                The last modified date of the candidate.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            election:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
