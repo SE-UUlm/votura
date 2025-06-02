@@ -46,7 +46,7 @@ const config: Config = {
         docsPluginId: 'classic',
         config: {
           backend: {
-            specPath: '../backend/api/openapi.yaml',
+            specPath: '../../packages/votura-validators/generated/voturaApiSchema.json',
             outputDir: 'docs/api',
             sidebarOptions: {
               groupPathsBy: 'tag',
