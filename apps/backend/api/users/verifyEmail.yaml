@@ -13,7 +13,7 @@ get:
   security: []
   operationId: 'verifyUser'
   parameters:
-    - name: 'verificationToken'
+    - name: 'emailVerificationTokenHash'
       in: 'query'
       description: |
         The verification token that was sent to the users email address.

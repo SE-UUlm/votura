@@ -65,9 +65,9 @@ components:
         - $ref: '#/components/schemas/ballotPaperBaseObject'
         - type: 'object'
           required:
-            - election
+            - electionId
           properties:
-            election:
+            electionId:
               description: |
                 The ID of the election to which this ballot paper belongs.
               readOnly: false
@@ -88,12 +88,12 @@ components:
         - $ref: '#/components/schemas/ballotPaperBaseObject'
         - type: 'object'
           required:
-            - election
+            - electionId
             - id
             - createdAt
             - modifiedAt
           properties:
-            election:
+            electionId:
               description: |
                 The ID of the election to which this ballot paper belongs.
               readOnly: false

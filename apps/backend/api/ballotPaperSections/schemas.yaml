@@ -67,9 +67,9 @@ components:
         - $ref: '#/components/schemas/ballotPaperSectionBaseObject'
         - type: 'object'
           required:
-            - ballotPaper
+            - ballotPaperId
           properties:
-            ballotPaper:
+            ballotPaperId:
               description: |
                 The ID of the ballot paper to which this ballot paper section belongs.
               readOnly: false
@@ -90,12 +90,12 @@ components:
         - $ref: '#/components/schemas/ballotPaperSectionBaseObject'
         - type: 'object'
           required:
-            - ballotPaper
+            - ballotPaperId
             - id
             - createdAt
             - modifiedAt
           properties:
-            ballotPaper:
+            ballotPaperId:
               description: |
                 The ID of the ballot paper to which this ballot paper section belongs.
               readOnly: false
