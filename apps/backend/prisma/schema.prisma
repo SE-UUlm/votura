@@ -50,22 +50,22 @@ model AccessTokenBlacklist {
 }
 
 model Election {
-  id                      String        @id @default(uuid()) @db.Uuid
-  createdAt               DateTime      @default(now()) @db.Timestamptz(6)
-  modifiedAt              DateTime      @updatedAt @db.Timestamptz(6)
+  id                      String                  @id @default(uuid()) @db.Uuid
+  createdAt               DateTime                @default(now()) @db.Timestamptz(6)
+  modifiedAt              DateTime                @updatedAt @db.Timestamptz(6)
   name                    String
   description             String?
-  votingStartAt           DateTime      @db.Timestamptz(6)
-  votingEndAt             DateTime      @db.Timestamptz(6)
-  configFrozen            Boolean       @default(false)
-  allowInvalidVotes       Boolean       @default(false)
-  pubKey                  BigInt?
-  privKey                 BigInt?
-  primeP                  BigInt?
-  primeQ                  BigInt?
-  generator               BigInt?
-  electionCreatorId       String        @db.Uuid
-  electionCreatorRelation User          @relation(fields: [electionCreatorId], references: [id])
+  votingStartAt           DateTime                @db.Timestamptz(6)
+  votingEndAt             DateTime                @db.Timestamptz(6)
+  configFrozen            Boolean                 @default(false)
+  allowInvalidVotes       Boolean                 @default(false)
+  pubKey                  Unsupported("NUMERIC")?
+  privKey                 Unsupported("NUMERIC")?
+  primeP                  Unsupported("NUMERIC")?
+  primeQ                  Unsupported("NUMERIC")?
+  generator               Unsupported("NUMERIC")?
+  electionCreatorId       String                  @db.Uuid
+  electionCreatorRelation User                    @relation(fields: [electionCreatorId], references: [id])
   ballotPapers            BallotPaper[]
   Candidates              Candidate[]
 }
