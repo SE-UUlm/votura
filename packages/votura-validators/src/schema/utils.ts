@@ -107,3 +107,8 @@ export const defaultResponses: OpenAPIV3.ResponsesObject = {
     },
   },
 };
+
+export enum Tag {
+  Elections = 'Elections',
+  Users = 'Users',
+}
