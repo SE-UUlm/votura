@@ -1,7 +1,7 @@
 summary: 'Create and read ballot paper sections'
 description: |
   A ballot paper section is always linked to one ballot paper.
-  You can create a new one ore read all the existing ones for a ballot paper.
+  You can create a new one or read all the existing ones for a ballot paper.
 post:
   tags:
     - BallotPapersSections
@@ -9,7 +9,7 @@ post:
   description: |
     Creates a ballot paper section with a link to a ballot paper.
     The user of the API access token needs access to the linked ballot paper (election).
-    The ballot paper can only be created if the election of the linked ballot paper is not frozen.
+    A ballot paper can only be created if the election of the linked ballot paper is not frozen.
 
     This endpoint is currently only a draft and not implemented!
     When this endpoint is implemented this note will be removed.
@@ -51,7 +51,7 @@ post:
 get:
   tags:
     - BallotPapersSections
-  summary: 'Get all ballot paper section for an ballot paper'
+  summary: 'Get all ballot paper section for a ballot paper'
   description: |
     Returns all ballot paper sections with the public information fields, that are linked to the specified ballot paper. 
     The user of the API access token needs the access rights to the ballot paper / election to read the ballot paper section.
@@ -95,7 +95,6 @@ get:
           - description
           - maxVotes
           - maxVotesPerCandidate
-          - ballotPaper
         example: 'modifiedAt'
     - name: 'orderBy'
       in: 'query'
