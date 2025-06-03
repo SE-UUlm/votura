@@ -36,7 +36,7 @@ components:
               example: null
         nrOfVoters:
           description: |
-            Specifies the number of voters that belongs to this voter group.
+            Specifies the number of voters that belong to this voter group.
           readOnly: false
           writeOnly: false
           type: 'integer'
@@ -47,7 +47,7 @@ components:
         ballotPapers:
           description: |
             All ballot papers that are linked to this voter group.
-            The voter of this voter group can vote on these ballot papers.
+            A voter which is part of this voter group can vote on these ballot papers.
           readOnly: false
           writeOnly: false
           type: 'array'

@@ -21,7 +21,6 @@ entity "User" as user #006b75 {
 }
 
 entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
-entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
     * id : UUID <<PK>>
@@ -38,8 +37,6 @@ entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     --
 }
 
-entity "Election" as elections #b60205 {
-    * id : UUID <<PK>>
 entity "Election" as elections #b60205 {
     * id : UUID <<PK>>
     --
@@ -77,8 +74,6 @@ end note
 
 entity "BallotPaper" as ballotPapers #fbca04 {
     * id : UUID <<PK>>
-entity "BallotPaper" as ballotPapers #fbca04 {
-    * id : UUID <<PK>>
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
@@ -90,8 +85,6 @@ entity "BallotPaper" as ballotPapers #fbca04 {
     * electionId : Election.id <<FK>>
 }
 
-entity "BallotPaperSection" as ballotPaperSections #fbca04 {
-    * id : UUID <<PK>>
 entity "BallotPaperSection" as ballotPaperSections #fbca04 {
     * id : UUID <<PK>>
     --
@@ -107,8 +100,6 @@ entity "BallotPaperSection" as ballotPaperSections #fbca04 {
 
 entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
     * id : UUID <<PK>>
-entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
-    * id : UUID <<PK>>
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
@@ -121,8 +112,6 @@ entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
 
 entity "Candidate" as candidates #fbca04 {
     * id : UUID <<PK>>
-entity "Candidate" as candidates #fbca04 {
-    * id : UUID <<PK>>
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
@@ -132,8 +121,6 @@ entity "Candidate" as candidates #fbca04 {
     * electionId : Election.id <<FK>>
 }
 
-entity "Vote" as votes #728376 {
-    * id : UUID <<PK>>
 entity "Vote" as votes #728376 {
     * id : UUID <<PK>>
     --
@@ -158,8 +145,6 @@ end note
 
 entity "VoterRegister" as voterRegisters #05DFA3 {
     * id : UUID <<PK>>
-entity "VoterRegister" as voterRegisters #05DFA3 {
-    * id : UUID <<PK>>
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
@@ -172,8 +157,6 @@ entity "VoterRegister" as voterRegisters #05DFA3 {
     * voterId : Voter.id <<FK>>
 }
 
-entity "Voter" as voters #05DFA3 {
-    * id : UUID <<PK>>
 entity "Voter" as voters #05DFA3 {
     * id : UUID <<PK>>
     --
@@ -191,13 +174,11 @@ end note
 
 entity "VoterGroup" as voterGroups #05DFA3 {
     * id : UUID <<PK>>
-entity "VoterGroup" as voterGroups #05DFA3 {
-    * id : UUID <<PK>>
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     * name : VARCHAR(256)
-    description : VARCHAR | NULL
+    description : VARCHAR(256) | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
@@ -224,6 +205,5 @@ voters ||--o{ votes
 voterGroups ||--|{ voters
 voters -- N3
 votes -- N4
-
 
 @enduml
