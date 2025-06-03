@@ -1,4 +1,4 @@
-import { z } from 'zod/v4';
+import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../utils.js';
 
 export const Response400Object = z.object({
@@ -9,6 +9,24 @@ export const Response400Object = z.object({
 });
 
 export type Response400 = z.infer<typeof Response400Object>;
+
+export const zodErrorToResponse400 = (error: ZodError): Response400 => {
+  const mappedIssues = error.issues.map(
+    (issue, index) => `Error ${index} - ${issue.message} on '${issue.path.join('/')}'`,
+  );
+
+  const combinedIssues = mappedIssues.reduce((previousValue, currentValue, currentIndex) => {
+    if (currentIndex === 0) {
+      return previousValue + currentValue;
+    } else {
+      return previousValue + '; ' + currentValue;
+    }
+  }, '');
+
+  return {
+    message: combinedIssues,
+  };
+};
 
 export const Response401Object = z.object({
   message: z.string().register(voturaMetadataRegistry, {
