@@ -85,41 +85,9 @@ jobs:
           path: ./apps/docs/static/drawio/*.svg
           retention-days: 5
 
-  build-api-schema:
-    name: Build API schema
-    runs-on:
-      labels: ubuntu-latest
-    container:
-      image: ubuntu:22.04
-    continue-on-error: false
-    timeout-minutes: 10
-
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - uses: actions/setup-node@v4
-        with:
-          node-version-file: package.json
-          cache: npm
-          cache-dependency-path: package-lock.json
-      - name: Install dependencies
-        run: npm ci
-      - name: Build api schema
-        run: |
-          cd ./packages/votura-validators/
-          npm run build
-          npm run persist-schema
-      - name: Upload Build Artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: api_schema
-          path: ./packages/votura-validators/generated/*.json
-          retention-days: 5
-
   build:
     name: Build documentation
-    needs: ['build-puml', 'build-drawio', 'build-api-schema']
+    needs: ['build-puml', 'build-drawio']
     runs-on:
       labels: ubuntu-latest
     container:
@@ -136,17 +104,18 @@ jobs:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Download all artifacts
+      - name: Download all workflow run artifacts
         uses: actions/download-artifact@v4
         with:
-          path: |
-            ./apps/docs/static/
-            ./packages/votura-validators/generated/
+          path: ./apps/docs/static/
       - run: cp -r ./apps/docs/static/uml_svg/* ./apps/docs/static/uml/
       - run: cp -r ./apps/docs/static/drawio_svg/* ./apps/docs/static/drawio/
-      - run: cp -r ./packages/votura-validators/generated/* ./packages/votura-validators/generated/
       - name: Install dependencies
         run: npm ci
+      - name: Build API schema
+        run: |
+          cd ./packages/votura-validators/
+          npm run persist-schema
       - name: Build website
         run: |
           cd ./apps/docs/
