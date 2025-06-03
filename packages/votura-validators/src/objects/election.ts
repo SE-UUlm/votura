@@ -14,11 +14,11 @@ export const ElectionObject = z.object({
     description:
       'If `private` is set to `false` votura will store a link between the voter and his vote. So every vote can be traced back to the voter. If `private` is set to `true` votura will not store a link between the voter and his vote. So the vote is anonymous and cannot be traced back to the voter.',
   }),
-  votingStart: z.iso.datetime().register(voturaMetadataRegistry, {
+  votingStartAt: z.iso.datetime().register(voturaMetadataRegistry, {
     description:
       'The start date of the voting process of the election. This date needs to be in the future.',
   }),
-  votingEnd: z.iso.datetime().register(voturaMetadataRegistry, {
+  votingEndAt: z.iso.datetime().register(voturaMetadataRegistry, {
     description: 'The end date of the voting process of the election. ',
   }),
   configFrozen: z.boolean().register(voturaMetadataRegistry, {
@@ -55,8 +55,8 @@ export const InsertableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
   private: true,
-  votingStart: true,
-  votingEnd: true,
+  votingStartAt: true,
+  votingEndAt: true,
   allowInvalidVotes: true,
 });
 
@@ -69,8 +69,8 @@ export const SelectableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
   private: true,
-  votingStart: true,
-  votingEnd: true,
+  votingStartAt: true,
+  votingEndAt: true,
   allowInvalidVotes: true,
   configFrozen: true,
   pubKey: true,
@@ -84,8 +84,8 @@ export type SelectableElection = z.infer<typeof SelectableElectionObject>;
 export const UpdateableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
-  votingStart: true,
-  votingEnd: true,
+  votingStartAt: true,
+  votingEndAt: true,
   private: true,
   allowInvalidVotes: true,
 });
