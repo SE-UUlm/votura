@@ -30,10 +30,6 @@ entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     * expiresAt : TIMESTAMPTZ(6)
-    * accessTokenId : UUID <<UK>>
-    * createdAt : TIMESTAMPTZ(6)
-    * modifiedAt : TIMESTAMPTZ(6)
-    * expiresAt : TIMESTAMPTZ(6)
     --
 }
 
@@ -103,8 +99,6 @@ entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * createdAt : TIMESTAMPTZ(6)
-    * modifiedAt : TIMESTAMPTZ(6)
     --
     * ballotPaperSectionId : BallotPaperSection.id <<FK>>
     * candidateId : Candidate.id <<FK>>
@@ -124,8 +118,6 @@ entity "Candidate" as candidates #fbca04 {
 entity "Vote" as votes #728376 {
     * id : UUID <<PK>>
     --
-    * createdAt : TIMESTAMPTZ(6)
-    * modifiedAt : TIMESTAMPTZ(6)
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     alpha : NUMERIC | NULL
@@ -149,9 +141,6 @@ entity "VoterRegister" as voterRegisters #05DFA3 {
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     * voted : BOOLEAN
-    * createdAt : TIMESTAMPTZ(6)
-    * modifiedAt : TIMESTAMPTZ(6)
-    * voted : BOOLEAN
     --
     * ballotPaperId : BallotPaper.id <<FK>>
     * voterId : Voter.id <<FK>>
@@ -160,8 +149,6 @@ entity "VoterRegister" as voterRegisters #05DFA3 {
 entity "Voter" as voters #05DFA3 {
     * id : UUID <<PK>>
     --
-    * createdAt : TIMESTAMPTZ(6)
-    * modifiedAt : TIMESTAMPTZ(6)
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     --
