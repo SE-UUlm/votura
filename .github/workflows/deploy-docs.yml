@@ -135,16 +135,12 @@ jobs:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Download all docs artifacts
+      - name: Download all artifacts
         uses: actions/download-artifact@v4
         with:
-          path: ./apps/docs/static/
+          path: ./
       - run: cp -r ./apps/docs/static/uml_svg/* ./apps/docs/static/uml/
       - run: cp -r ./apps/docs/static/drawio_svg/* ./apps/docs/static/drawio/
-      - name: Download all votura-validators artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: ./packages/votura-validators/
       - run: cp -r ./packages/votura-validators/generated/* ./packages/votura-validators/generated/
       - name: Install dependencies
         run: npm ci
