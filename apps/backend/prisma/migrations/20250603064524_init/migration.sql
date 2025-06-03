@@ -14,7 +14,8 @@ CREATE TABLE "User" (
     "refreshTokenExpiresAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
-    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
+    CONSTRAINT "valid_email" CHECK ("email" ~ '^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$') -- manually added
 );
 
 -- CreateTable
@@ -49,7 +50,8 @@ CREATE TABLE "Election" (
 
     CONSTRAINT "Election_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "votingEnd_after_votingStart" CHECK ("votingEndAt" > "votingStartAt"), -- manually added
-    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
+    CONSTRAINT "valid_name" CHECK ("name" ~ '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$') -- manually added
 );
 
 -- CreateTable
@@ -65,7 +67,8 @@ CREATE TABLE "BallotPaper" (
 
     CONSTRAINT "BallotPaper_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
-    CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate") -- manually added
+    CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate"), -- manually added
+    CONSTRAINT "valid_name" CHECK ("name" ~ '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$') -- manually added
 );
 
 -- CreateTable
@@ -81,7 +84,8 @@ CREATE TABLE "BallotPaperSection" (
 
     CONSTRAINT "BallotPaperSection_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
-    CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate") -- manually added
+    CONSTRAINT "maxVotes_and_candidate" CHECK ("maxVotes" >= "maxVotesPerCandidate"), -- manually added
+    CONSTRAINT "valid_name" CHECK ("name" ~ '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$') -- manually added
 );
 
 -- CreateTable
@@ -106,6 +110,47 @@ CREATE TABLE "Candidate" (
     "electionId" UUID NOT NULL,
 
     CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
+    CONSTRAINT "valid_title" CHECK ("title" ~ '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$') -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "VoterGroup" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "name" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
+    "pubKey" TEXT,
+    "privKey" TEXT,
+    "voterTokensGenerated" BOOLEAN NOT NULL DEFAULT false,
+
+    CONSTRAINT "VoterGroup_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt"), -- manually added
+    CONSTRAINT "valid_name" CHECK ("name" ~ '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$') -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "Voter" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "voterGroupId" UUID NOT NULL,
+
+    CONSTRAINT "Voter_pkey" PRIMARY KEY ("id"),
+    CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
+);
+
+-- CreateTable
+CREATE TABLE "VoterRegister" (
+    "id" UUID NOT NULL,
+    "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
+    "voted" BOOLEAN NOT NULL DEFAULT false,
+    "ballotPaperId" UUID NOT NULL,
+    "voterId" UUID NOT NULL,
+
+    CONSTRAINT "VoterRegister_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -132,3 +177,12 @@ ALTER TABLE "BallotPaperSectionCandidate" ADD CONSTRAINT "BallotPaperSectionCand
 
 -- AddForeignKey
 ALTER TABLE "Candidate" ADD CONSTRAINT "Candidate_electionId_fkey" FOREIGN KEY ("electionId") REFERENCES "Election"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "Voter" ADD CONSTRAINT "Voter_voterGroupId_fkey" FOREIGN KEY ("voterGroupId") REFERENCES "VoterGroup"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VoterRegister" ADD CONSTRAINT "VoterRegister_ballotPaperId_fkey" FOREIGN KEY ("ballotPaperId") REFERENCES "BallotPaper"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "VoterRegister" ADD CONSTRAINT "VoterRegister_voterId_fkey" FOREIGN KEY ("voterId") REFERENCES "Voter"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

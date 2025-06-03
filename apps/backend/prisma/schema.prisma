@@ -78,6 +78,7 @@ model BallotPaper {
   electionId           String               @db.Uuid
   electionRelation     Election             @relation(fields: [electionId], references: [id])
   BallotPaperSection   BallotPaperSection[]
+  VoterRegister        VoterRegister[]
 }
 
 model BallotPaperSection {
@@ -112,4 +113,36 @@ model Candidate {
   electionId                   String                        @db.Uuid
   electionRelation             Election                      @relation(fields: [electionId], references: [id])
   BallotPaperSectionCandidates BallotPaperSectionCandidate[]
+}
+
+model VoterGroup {
+  id                   String   @id @default(uuid()) @db.Uuid
+  createdAt            DateTime @default(now()) @db.Timestamptz(6)
+  modifiedAt           DateTime @updatedAt @db.Timestamptz(6)
+  name                 String   @db.VarChar(256)
+  description          String?  @db.VarChar(256)
+  pubKey               String?
+  privKey              String?
+  voterTokensGenerated Boolean  @default(false)
+  Voter                Voter[]
+}
+
+model Voter {
+  id                 String          @id @default(uuid()) @db.Uuid
+  createdAt          DateTime        @default(now()) @db.Timestamptz(6)
+  modifiedAt         DateTime        @updatedAt @db.Timestamptz(6)
+  voterGroupId       String          @db.Uuid
+  voterGroupRelation VoterGroup      @relation(fields: [voterGroupId], references: [id])
+  VoterRegister      VoterRegister[]
+}
+
+model VoterRegister {
+  id                  String      @id @default(uuid()) @db.Uuid
+  createdAt           DateTime    @default(now()) @db.Timestamptz(6)
+  modifiedAt          DateTime    @updatedAt @db.Timestamptz(6)
+  voted               Boolean     @default(false)
+  ballotPaperId       String      @db.Uuid
+  ballotPaperRelation BallotPaper @relation(fields: [ballotPaperId], references: [id])
+  voterId             String      @db.Uuid
+  voterRelation       Voter       @relation(fields: [voterId], references: [id])
 }
