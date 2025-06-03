@@ -177,19 +177,18 @@ note as N1
 Timestamps are stored in UTC.
 end note
 
-user ||--o{ elections
-elections ||--o{ ballotPapers
+user "1"--"*" elections : belongs to <
+elections "1"--"*" ballotPapers : contains >
 elections -- N2
-elections ||--o{ candidates
-ballotPapers ||--o{ voterRegisters
-voterRegisters }|--|| voters
-ballotPapers ||--o{ ballotPaperSections
-' ballotPaperSections -- C_2
-ballotPaperSections ||--o{ ballotPaperSectionCandidates
-ballotPaperSectionCandidates }o--|| candidates
-votes }o--|| elections
-voters ||--o{ votes
-voterGroups ||--|{ voters
+elections "1"--"*" candidates : belongs to <
+ballotPapers "1"--"*" voterRegisters
+voterRegisters "1..*"--"1" voters
+ballotPapers "1"--"*" ballotPaperSections : contains >
+ballotPaperSections "1"--"*" ballotPaperSectionCandidates
+ballotPaperSectionCandidates "*"--"1" candidates
+votes "*"--"1" elections
+voters "1"--"*" votes
+voterGroups "1"--"1..*" voters : contains >
 voters -- N3
 votes -- N4
 
