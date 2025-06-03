@@ -1,61 +1,63 @@
 @startuml dataModel
 
-entity "User" as user {
-    * id : uuid <<PK>>
+entity "User" as user #006b75 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * email : bpchar(255) <<UK>>
-    * passwordHash : bpchar(255)
-    * verified : boolean
-    lastLoginAt : timestamptz(6) | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * email : VARCHAR(256) <<UK>>
+    * passwordHash : VARCHAR(256)
+    * verified : BOOLEAN
+    lastLoginAt : TIMESTAMPTZ(6) | NULL
     ' failed login attempts get reset on successful login
-    * failedLoginAttempts : smallint
-    emailVerificationTokenHash : bpchar(64) | NULL
-    emailVerificationTokenExpiresAt : timestamptz(6) | NULL
-    passwordResetTokenHash : bpchar(64) | NULL
-    passwordResetTokenExpiresAt : timestamptz(6) | NULL
-    refreshTokenHash : bpchar(64) | NULL
-    refreshTokenExpiresAt : timestamptz(6) | NULL
+    * failedLoginAttempts : INTEGER
+    emailVerificationTokenHash : VARCHAR(64) | NULL
+    emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    passwordResetTokenHash : VARCHAR(64) | NULL
+    passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    refreshTokenHash : VARCHAR(64) | NULL
+    refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     --
 }
 
-entity "AccessTokenBlacklist" as jwtBlacklist {
+entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
-    * id : uuid <<PK>>
+    * id : UUID <<PK>>
+    * id : UUID <<PK>>
     --
-    * accessTokenId : uuid <<UK>>
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * expiresAt : timestamptz(6)
+    * accessTokenId : UUID <<UK>>
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * expiresAt : TIMESTAMPTZ(6)
     --
 }
 
-entity "Election" as elections {
-    * id : uuid <<PK>>
+entity "Election" as elections #b60205 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * private : boolean
-    * votingStartAt : date
-    * votingEndAt : date
-    * configFrozen : boolean
-    * allowInvalidVote : boolean
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * private : BOOLEAN
+    * votingStartAt : TIMESTAMPTZ(6)
+    * votingEndAt : TIMESTAMPTZ(6)
+    * configFrozen : BOOLEAN
+    * allowInvalidVote : BOOLEAN
     ' Is there a use case for `votesCounted`?
-    ' * votesCounted : boolean
+    ' * votesCounted : BOOLEAN
+    ' * votesCounted : BOOLEAN
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
-    ' validVotes : integer | NULL
-    ' invalidVotes : integer | NULL
+    ' validVotes : NUMERIC | NULL
+    ' invalidVotes : NUMERIC | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     primeP : NUMERIC | NULL
     primeQ : NUMERIC | NULL
     generator : NUMERIC | NULL
     --
-    * electionCreator : User.id <<FK>>
+    * electionCreatorId : User.id <<FK>>
 }
 
 note as N2
@@ -66,61 +68,58 @@ do not support multiple questions
 in one election.
 end note
 
-entity "BallotPaper" as ballotPapers {
-    * id : uuid <<PK>>
+entity "BallotPaper" as ballotPapers #fbca04 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * maxVotes : smallint
-    * maxVotesPerCandidate : smallint
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
 }
 
-entity "BallotPaperSection" as ballotPaperSections {
-    * id : uuid <<PK>>
+entity "BallotPaperSection" as ballotPaperSections #fbca04 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
-    * maxVotes : smallint
-    * maxVotesPerCandidate : smallint
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
     --
-    * ballotPaper : BallotPaper.id <<FK>>
-}
-' note as C_2
-' If at least two ballotPaperSections are created for one ballotPaper, 
-' the name field of the ballotPaperSections is mandatory.
-' end note
-
-entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates {
-    * ballotPaperSection : BallotPaperSection.id <<PK>> <<FK>>
-    * candidate : Candidate.id <<PK>> <<FK>>
-    --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    --
+    * ballotPaperId : BallotPaper.id <<FK>>
 }
 
-entity "Candidate" as candidates {
-    * id : uuid <<PK>>
+entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * title : bpchar(255)
-    description : bpchar | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     --
-    * election : Election.id <<FK>>
+    * ballotPaperSectionId : BallotPaperSection.id <<FK>>
+    * candidateId : Candidate.id <<FK>>
 }
 
-entity "Vote" as votes {
-    * id : uuid <<PK>>
+entity "Candidate" as candidates #fbca04 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * title : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    --
+    * electionId : Election.id <<FK>>
+}
+
+entity "Vote" as votes #728376 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     alpha : NUMERIC | NULL
     beta : NUMERIC | NULL
     commitmentPart1 : NUMERIC | NULL
@@ -128,46 +127,49 @@ entity "Vote" as votes {
     challenge : NUMERIC | NULL
     response : NUMERIC | NULL
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
-    voter : voter.id <<FK>> | NULL
+    voterId : voter.id <<FK>> | NULL
 }
 note as N4
 A vote is an encoded json object containing the entire filled in ballot paper.
 end note
 
-entity "VoterRegister" as voterRegisters {
-    * ballotPaper : BallotPaper.id <<PK>> <<FK>>
-    * voter : Voter.id <<PK>> <<FK>>
+entity "VoterRegister" as voterRegisters #05DFA3 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * voted : boolean
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * voted : BOOLEAN
+    --
+    * ballotPaperId : BallotPaper.id <<FK>>
+    * voterId : Voter.id <<FK>>
 }
 
-entity "Voter" as voters {
-    * id : uuid <<PK>>
+entity "Voter" as voters #05DFA3 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
     --
-    voterGroup: VoterGroup.id <<FK>>
+    voterGroupId: VoterGroup.id <<FK>>
 }
 note as N3
 A voter can only get one ballot paper,
 and with this one vote per election.
 end note
 
-entity "VoterGroup" as voterGroups {
-    * id : uuid <<PK>>
+entity "VoterGroup" as voterGroups #05DFA3 {
+    * id : UUID <<PK>>
     --
-    * createdAt : timestamptz(6)
-    * modifiedAt : timestamptz(6)
-    * name : bpchar(255)
-    description : bpchar | NULL
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
+    * voterTokesGenerated : BOOLEAN
     --
 }
 
@@ -180,16 +182,15 @@ elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
 ballotPapers ||--o{ voterRegisters
-voterRegisters }o--|| voters
+voterRegisters }|--|| voters
 ballotPapers ||--o{ ballotPaperSections
 ' ballotPaperSections -- C_2
 ballotPaperSections ||--o{ ballotPaperSectionCandidates
 ballotPaperSectionCandidates }o--|| candidates
 votes }o--|| elections
-voters |o--o{ votes
-voterGroups ||--o{ voters
+voters ||--o{ votes
+voterGroups ||--|{ voters
 voters -- N3
 votes -- N4
-
 
 @enduml

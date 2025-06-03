@@ -1,36 +1,45 @@
-summary: 'Create and read elections'
+summary: 'Create and read candidates'
 description: |
-  A election is always at least linked to one user.
-  You can create a new one or read the existing ones.
+  A candidate is always linked to one election and can be linked to several ballot paper sections.
+  You can create a new one or read all the existing ones for an election.
 post:
   tags:
-    - Elections
-  summary: 'Create a new election'
+    - Candidates
+  summary: 'Create a candidate'
   description: |
-    Creates a new election with a link to the user of the API access token.
+    Creates a candidate with a link to a ballot paper sections.
+    The user of the API access token needs access to the linked election.
+    The candidate can only be created if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
-  operationId: 'createElection'
+  operationId: 'createCandidate'
   requestBody:
     required: true
     content:
       application/json:
         schema:
-          $ref: './schemas.yaml#/components/schemas/electionCreateObject'
+          $ref: './schemas.yaml#/components/schemas/candidateCreateObject'
   responses:
     '201':
       description: |
         Created.
         The request was successfully executed.
-        Successfully created a new election.
+        Successfully created a new candidate.
       content:
         application/json:
           schema:
-            $ref: './schemas.yaml#/components/schemas/electionReadObject'
+            $ref: './schemas.yaml#/components/schemas/candidateReadObject'
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '401':
       $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
     '406':
       $ref: './../globals/responses.yaml#/components/responses/406'
     '415':
@@ -41,14 +50,25 @@ post:
       $ref: './../globals/responses.yaml#/components/responses/500'
 get:
   tags:
-    - Elections
-  summary: 'Get all elections for the user'
+    - Candidates
+  summary: 'Get all candidates for an election'
   description: |
-    Returns all elections with the public information fields, that are linked to user of the API access token.
+    Returns all candidates with the public information fields, that are linked to the specified election. 
+    The user of the API access token needs the access rights to the election to read the candidate.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security:
     - voturaBackendAuth: []
-  operationId: 'getElections'
+  operationId: 'getCandidates'
   parameters:
+    - name: 'electionId'
+      in: 'query'
+      description: |
+        The ID of the election for which you want to get the candidates.
+      required: true
+      schema:
+        $ref: './../globals/schemas.yaml#/components/schemas/uuid'
     - name: 'limit'
       in: 'query'
       description: |
@@ -69,12 +89,11 @@ get:
       schema:
         type: 'string'
         enum:
-          - name
-          - votingStartAt
-          - votingEndAt
           - createdAt
           - modifiedAt
-        example: 'votingStartAt'
+          - title
+          - description
+        example: 'modifiedAt'
     - name: 'orderBy'
       in: 'query'
       description: |
@@ -93,7 +112,7 @@ get:
       description: |
         OK.
         The request was successfully executed.
-        Returns elections for the requested user.
+        Returns candidates for the requested election.
       content:
         application/json:
           schema:
@@ -102,11 +121,15 @@ get:
             maxItems: 50
             uniqueItems: true
             items:
-              $ref: './schemas.yaml#/components/schemas/electionReadObject'
+              $ref: './schemas.yaml#/components/schemas/candidateReadObject'
     '400':
       $ref: './../globals/responses.yaml#/components/responses/400'
     '401':
       $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
     '406':
       $ref: './../globals/responses.yaml#/components/responses/406'
     '429':
