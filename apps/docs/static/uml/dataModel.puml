@@ -5,17 +5,17 @@ entity "User" as user #006b75 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * email : TEXT <<UK>>
-    * passwordHash : TEXT
+    * email : VARCHAR(256) <<UK>>
+    * passwordHash : VARCHAR(256)
     * verified : BOOLEAN
     lastLoginAt : TIMESTAMPTZ(6) | NULL
     ' failed login attempts get reset on successful login
     * failedLoginAttempts : INTEGER
-    emailVerificationTokenHash : TEXT | NULL
+    emailVerificationTokenHash : VARCHAR(64) | NULL
     emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
-    passwordResetTokenHash : TEXT | NULL
+    passwordResetTokenHash : VARCHAR(64) | NULL
     passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
-    refreshTokenHash : TEXT | NULL
+    refreshTokenHash : VARCHAR(64) | NULL
     refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     --
 }
@@ -23,6 +23,7 @@ entity "User" as user #006b75 {
 entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
+    * id : UUID <<PK>>
     * id : UUID <<PK>>
     --
     * accessTokenId : UUID <<UK>>
@@ -37,14 +38,15 @@ entity "Election" as elections #b60205 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * name : TEXT
-    description : TEXT | NULL
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     * private : BOOLEAN
     * votingStartAt : TIMESTAMPTZ(6)
     * votingEndAt : TIMESTAMPTZ(6)
     * configFrozen : BOOLEAN
     * allowInvalidVote : BOOLEAN
     ' Is there a use case for `votesCounted`?
+    ' * votesCounted : BOOLEAN
     ' * votesCounted : BOOLEAN
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
     ' validVotes : NUMERIC | NULL
@@ -71,8 +73,8 @@ entity "BallotPaper" as ballotPapers #fbca04 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * name : TEXT
-    description : TEXT | NULL
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     * maxVotes : INTEGER
     * maxVotesPerCandidate : INTEGER
     --
@@ -84,8 +86,8 @@ entity "BallotPaperSection" as ballotPaperSections #fbca04 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * name : TEXT
-    description : TEXT | NULL
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     * maxVotes : INTEGER
     * maxVotesPerCandidate : INTEGER
     --
@@ -107,8 +109,8 @@ entity "Candidate" as candidates #fbca04 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * title : TEXT
-    description : TEXT | NULL
+    * title : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     --
     * electionId : Election.id <<FK>>
 }
@@ -125,9 +127,9 @@ entity "Vote" as votes #728376 {
     challenge : NUMERIC | NULL
     response : NUMERIC | NULL
     --
-    * election : Election.id <<FK>>
+    * electionId : Election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
-    voter : voter.id <<FK>> | NULL
+    voterId : voter.id <<FK>> | NULL
 }
 note as N4
 A vote is an encoded json object containing the entire filled in ballot paper.
@@ -162,8 +164,8 @@ entity "VoterGroup" as voterGroups #05DFA3 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * name : TEXT
-    description : TEXT | NULL
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
@@ -190,6 +192,5 @@ voters ||--o{ votes
 voterGroups ||--|{ voters
 voters -- N3
 votes -- N4
-
 
 @enduml

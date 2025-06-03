@@ -8,7 +8,6 @@ components:
         - description
         - maxVotes
         - maxVotesPerCandidate
-        - election
       properties:
         name:
           description: |
@@ -59,19 +58,27 @@ components:
           minimum: 1
           maximum: 65535
           example: 42
-        election:
-          description: |
-            The ID of the election to which this ballot paper belongs.
-          readOnly: false
-          writeOnly: false
-          type: 'string'
-          format: 'uuid'
-          minLength: 36
-          maxLength: 36
-          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-          example: '123e4567-e89b-12d3-a456-426614174000'
     ###################################################################################################
     ballotPaperCreateObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/ballotPaperBaseObject'
+        - type: 'object'
+          required:
+            - electionId
+          properties:
+            electionId:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
+    ballotPaperUpdateObject:
       # additionalProperties: false # not supported by docusaurus
       allOf:
         - $ref: '#/components/schemas/ballotPaperBaseObject'
@@ -81,10 +88,22 @@ components:
         - $ref: '#/components/schemas/ballotPaperBaseObject'
         - type: 'object'
           required:
+            - electionId
             - id
             - createdAt
             - modifiedAt
           properties:
+            electionId:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'
             id:
               description: |
                 This is the unique identifier for the ballot paper.
@@ -95,7 +114,7 @@ components:
               minLength: 36
               maxLength: 36
               pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-              example: '123e4567-e89b-12d3-a456-426614174000'
+              example: '777570e5-fdad-4ebf-a702-c095faeb009f'
             createdAt:
               description: |
                 The created date of the ballot paper.

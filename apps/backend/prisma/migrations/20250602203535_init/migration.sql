@@ -3,14 +3,14 @@ CREATE TABLE "User" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "email" TEXT NOT NULL,
-    "passwordHash" TEXT NOT NULL,
+    "email" VARCHAR(256) NOT NULL,
+    "passwordHash" VARCHAR(256) NOT NULL,
     "verified" BOOLEAN NOT NULL DEFAULT false,
-    "emailVerificationTokenHash" TEXT,
+    "emailVerificationTokenHash" VARCHAR(64),
     "emailVerificationTokenExpiresAt" TIMESTAMPTZ(6),
-    "passwordResetTokenHash" TEXT,
+    "passwordResetTokenHash" VARCHAR(64),
     "passwordResetTokenExpiresAt" TIMESTAMPTZ(6),
-    "refreshTokenHash" TEXT,
+    "refreshTokenHash" VARCHAR(64),
     "refreshTokenExpiresAt" TIMESTAMPTZ(6),
 
     CONSTRAINT "User_pkey" PRIMARY KEY ("id"),
@@ -34,17 +34,17 @@ CREATE TABLE "Election" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
+    "name" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
     "votingStartAt" TIMESTAMPTZ(6) NOT NULL,
     "votingEndAt" TIMESTAMPTZ(6) NOT NULL,
     "configFrozen" BOOLEAN NOT NULL DEFAULT false,
     "allowInvalidVotes" BOOLEAN NOT NULL DEFAULT false,
-    "pubKey" BIGINT,
-    "privKey" BIGINT,
-    "primeP" BIGINT,
-    "primeQ" BIGINT,
-    "generator" BIGINT,
+    "pubKey" NUMERIC,
+    "privKey" NUMERIC,
+    "primeP" NUMERIC,
+    "primeQ" NUMERIC,
+    "generator" NUMERIC,
     "electionCreatorId" UUID NOT NULL,
 
     CONSTRAINT "Election_pkey" PRIMARY KEY ("id"),
@@ -57,8 +57,8 @@ CREATE TABLE "BallotPaper" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
+    "name" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
     "maxVotes" INTEGER NOT NULL,
     "maxVotesPerCandidate" INTEGER NOT NULL,
     "electionId" UUID NOT NULL,
@@ -73,8 +73,8 @@ CREATE TABLE "BallotPaperSection" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
+    "name" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
     "maxVotes" INTEGER NOT NULL,
     "maxVotesPerCandidate" INTEGER NOT NULL,
     "ballotPaperId" UUID NOT NULL,
@@ -101,11 +101,12 @@ CREATE TABLE "Candidate" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "title" TEXT NOT NULL,
-    "description" TEXT,
+    "title" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
     "electionId" UUID NOT NULL,
 
     CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id"),
+<<<<<<<< HEAD:apps/backend/prisma/migrations/20250531115547_init/migration.sql
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -146,6 +147,8 @@ CREATE TABLE "VoterRegister" (
     "voterId" UUID NOT NULL,
 
     CONSTRAINT "VoterRegister_pkey" PRIMARY KEY ("id"),
+========
+>>>>>>>> 119-oap-desing-voter-votes-api:apps/backend/prisma/migrations/20250602203535_init/migration.sql
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 

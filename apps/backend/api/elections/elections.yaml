@@ -1,7 +1,7 @@
 summary: 'Create and read elections'
 description: |
   A election is always at least linked to one user.
-  You can create a new one ore read the existing ones.
+  You can create a new one or read the existing ones.
 post:
   tags:
     - Elections

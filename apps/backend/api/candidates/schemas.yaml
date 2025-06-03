@@ -6,7 +6,6 @@ components:
       required:
         - title
         - description
-        - election
         - ballotPaperSections
       properties:
         title:
@@ -34,17 +33,6 @@ components:
             - type: 'null'
               default: null
               example: null
-        election:
-          description: |
-            The ID of the election to which this ballot paper belongs.
-          readOnly: false
-          writeOnly: false
-          type: 'string'
-          format: 'uuid'
-          minLength: 36
-          maxLength: 36
-          pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-          example: '123e4567-e89b-12d3-a456-426614174000'
         ballotPaperSections:
           description: |
             The IDs of the ballot paper section where this candidate appears.
@@ -59,7 +47,7 @@ components:
             minLength: 36
             maxLength: 36
             pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-            example: '123e4567-e89b-12d3-a456-426614174000'
+            example: '34fc0661-cd82-4822-ab4a-291f93894c7a'
     ###################################################################################################
     candidateCreateObject:
       # additionalProperties: false # not supported by docusaurus
@@ -74,6 +62,7 @@ components:
             - id
             - createdAt
             - modifiedAt
+            - electionId
           properties:
             id:
               description: |
@@ -85,7 +74,7 @@ components:
               minLength: 36
               maxLength: 36
               pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
-              example: '123e4567-e89b-12d3-a456-426614174000'
+              example: 'eb74b168-b717-4f35-8e6c-c1a2851e1f0e'
             createdAt:
               description: |
                 The created date of the candidate.
@@ -104,3 +93,14 @@ components:
               format: 'date-time'
               maxLength: 20
               example: '2032-10-01T00:00:00Z'
+            electionId:
+              description: |
+                The ID of the election to which this ballot paper belongs.
+              readOnly: false
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d'

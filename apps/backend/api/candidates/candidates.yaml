@@ -1,13 +1,13 @@
 summary: 'Create and read candidates'
 description: |
   A candidate is always linked to one election and can be linked to several ballot paper sections.
-  You can create a new one ore read all the existing ones for an election.
+  You can create a new one or read all the existing ones for an election.
 post:
   tags:
     - Candidates
   summary: 'Create a candidate'
   description: |
-    Creates a candidate with a link to an election and ballot paper sections.
+    Creates a candidate with a link to a ballot paper sections.
     The user of the API access token needs access to the linked election.
     The candidate can only be created if the linked election is not frozen.
 
@@ -93,7 +93,6 @@ get:
           - modifiedAt
           - title
           - description
-          - election
         example: 'modifiedAt'
     - name: 'orderBy'
       in: 'query'

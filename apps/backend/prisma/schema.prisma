@@ -1,6 +1,3 @@
-// Good starting point for developing with prisma:
-// https://www.prisma.io/docs/getting-started/setup-prisma/start-from-scratch/relational-databases/querying-the-database-typescript-postgresql
-
 generator client {
   provider = "prisma-client-js"
   output   = "../generated/prisma"
@@ -27,16 +24,16 @@ model User {
   id                              String     @id @default(uuid()) @db.Uuid
   createdAt                       DateTime   @default(now()) @db.Timestamptz(6) // UTC
   modifiedAt                      DateTime   @updatedAt @db.Timestamptz(6)
-  email                           String     @unique
-  passwordHash                    String
+  email                           String     @unique @db.VarChar(256)
+  passwordHash                    String     @db.VarChar(256)
   verified                        Boolean    @default(false)
   // lastLoginAt DateTime? @db.Timestamptz(6) // Should be implemented with #123
   // failedLoginAttempts Int? @default(0)
-  emailVerificationTokenHash      String?
+  emailVerificationTokenHash      String?    @db.VarChar(64)
   emailVerificationTokenExpiresAt DateTime?  @db.Timestamptz(6)
-  passwordResetTokenHash          String?
+  passwordResetTokenHash          String?    @db.VarChar(64)
   passwordResetTokenExpiresAt     DateTime?  @db.Timestamptz(6)
-  refreshTokenHash                String?
+  refreshTokenHash                String?    @db.VarChar(64)
   refreshTokenExpiresAt           DateTime?  @db.Timestamptz(6)
   elections                       Election[]
 }
@@ -50,22 +47,22 @@ model AccessTokenBlacklist {
 }
 
 model Election {
-  id                      String        @id @default(uuid()) @db.Uuid
-  createdAt               DateTime      @default(now()) @db.Timestamptz(6)
-  modifiedAt              DateTime      @updatedAt @db.Timestamptz(6)
-  name                    String
-  description             String?
-  votingStartAt           DateTime      @db.Timestamptz(6)
-  votingEndAt             DateTime      @db.Timestamptz(6)
-  configFrozen            Boolean       @default(false)
-  allowInvalidVotes       Boolean       @default(false)
-  pubKey                  BigInt?
-  privKey                 BigInt?
-  primeP                  BigInt?
-  primeQ                  BigInt?
-  generator               BigInt?
-  electionCreatorId       String        @db.Uuid
-  electionCreatorRelation User          @relation(fields: [electionCreatorId], references: [id])
+  id                      String                  @id @default(uuid()) @db.Uuid
+  createdAt               DateTime                @default(now()) @db.Timestamptz(6)
+  modifiedAt              DateTime                @updatedAt @db.Timestamptz(6)
+  name                    String                  @db.VarChar(256)
+  description             String?                 @db.VarChar(256)
+  votingStartAt           DateTime                @db.Timestamptz(6)
+  votingEndAt             DateTime                @db.Timestamptz(6)
+  configFrozen            Boolean                 @default(false)
+  allowInvalidVotes       Boolean                 @default(false)
+  pubKey                  Unsupported("NUMERIC")?
+  privKey                 Unsupported("NUMERIC")?
+  primeP                  Unsupported("NUMERIC")?
+  primeQ                  Unsupported("NUMERIC")?
+  generator               Unsupported("NUMERIC")?
+  electionCreatorId       String                  @db.Uuid
+  electionCreatorRelation User                    @relation(fields: [electionCreatorId], references: [id])
   ballotPapers            BallotPaper[]
   Candidates              Candidate[]
 }
@@ -74,8 +71,8 @@ model BallotPaper {
   id                   String               @id @default(uuid()) @db.Uuid
   createdAt            DateTime             @default(now()) @db.Timestamptz(6)
   modifiedAt           DateTime             @updatedAt @db.Timestamptz(6)
-  name                 String
-  description          String?
+  name                 String               @db.VarChar(256)
+  description          String?              @db.VarChar(256)
   maxVotes             Int
   maxVotesPerCandidate Int
   electionId           String               @db.Uuid
@@ -88,8 +85,8 @@ model BallotPaperSection {
   id                           String                        @id @default(uuid()) @db.Uuid
   createdAt                    DateTime                      @default(now()) @db.Timestamptz(6)
   modifiedAt                   DateTime                      @updatedAt @db.Timestamptz(6)
-  name                         String
-  description                  String?
+  name                         String                        @db.VarChar(256)
+  description                  String?                       @db.VarChar(256)
   maxVotes                     Int
   maxVotesPerCandidate         Int
   ballotPaperId                String                        @db.Uuid
@@ -111,8 +108,8 @@ model Candidate {
   id                           String                        @id @default(uuid()) @db.Uuid
   createdAt                    DateTime                      @default(now()) @db.Timestamptz(6)
   modifiedAt                   DateTime                      @updatedAt @db.Timestamptz(6)
-  title                        String
-  description                  String?
+  title                        String                        @db.VarChar(256)
+  description                  String?                       @db.VarChar(256)
   electionId                   String                        @db.Uuid
   electionRelation             Election                      @relation(fields: [electionId], references: [id])
   BallotPaperSectionCandidates BallotPaperSectionCandidate[]
