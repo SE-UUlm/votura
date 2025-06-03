@@ -54,7 +54,6 @@ export type Election = z.infer<typeof ElectionObject>;
 export const InsertableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
-  private: true,
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
@@ -68,7 +67,6 @@ export const SelectableElectionObject = ElectionObject.pick({
   modifiedAt: true,
   name: true,
   description: true,
-  private: true,
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
@@ -86,7 +84,6 @@ export const UpdateableElectionObject = ElectionObject.pick({
   description: true,
   votingStartAt: true,
   votingEndAt: true,
-  private: true,
   allowInvalidVotes: true,
 });
 
