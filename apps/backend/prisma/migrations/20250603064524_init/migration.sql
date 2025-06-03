@@ -116,9 +116,9 @@ CREATE TABLE "VoterGroup" (
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
     "name" VARCHAR(256) NOT NULL,
     "description" VARCHAR(256),
-    "pubKey" NUMERIC,
-    "privKey" NUMERIC,
-    "moduloRS256" NUMERIC,
+    "pubKey" TEXT,
+    "privKey" TEXT,
+    "moduloRS256" TEXT,
     "voterTokensGenerated" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "VoterGroup_pkey" PRIMARY KEY ("id"),

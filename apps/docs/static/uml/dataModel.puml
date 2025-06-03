@@ -166,9 +166,9 @@ entity "VoterGroup" as voterGroups #05DFA3 {
     * modifiedAt : TIMESTAMPTZ(6)
     * name : VARCHAR(256)
     description : VARCHAR(256) | NULL
-    pubKey : NUMERIC | NULL
-    privKey : NUMERIC | NULL
-    moduloRS256 : NUMERIC | NULL
+    pubKey : TEXT | NULL
+    privKey : TEXT | NULL
+    moduloRS256 : TEXT | NULL
     * voterTokensGenerated : BOOLEAN
     --
 }
