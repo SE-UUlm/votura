@@ -52,6 +52,9 @@ tags:
   - name: 'Candidates'
     description: |
       Managing CRUD operations for candidates.
+  - name: 'VoterGroups'
+    description: |
+      Managing CRUD operations for voter groups.
 
 paths:
   /elections:
@@ -88,3 +91,9 @@ paths:
     $ref: './candidates/candidates.yaml'
   /candidates/{candidateId}:
     $ref: './candidates/specificCandidate.yaml'
+  /voterGroups:
+    $ref: './voterGroups/voterGroups.yaml'
+  /voterGroups/{voterGroupId}:
+    $ref: './voterGroups/specificVoterGroup.yaml'
+  /voterGroups/{voterGroupId}/getVoterTokens:
+    $ref: './voterGroups/voterTokens.yaml'

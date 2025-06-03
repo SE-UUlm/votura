@@ -1,8 +1,5 @@
 @startuml dataModel
 
-' The color codes are representing the different epics in GitHub.
-' Same color codes as the used GitHub labels.
-
 entity "User" as user #006b75 {
     * id : UUID <<PK>>
     --
@@ -27,6 +24,7 @@ entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
     * id : UUID <<PK>>
+    * id : UUID <<PK>>
     --
     * accessTokenId : UUID <<UK>>
     * createdAt : TIMESTAMPTZ(6)
@@ -49,9 +47,10 @@ entity "Election" as elections #b60205 {
     * allowInvalidVote : BOOLEAN
     ' Is there a use case for `votesCounted`?
     ' * votesCounted : BOOLEAN
+    ' * votesCounted : BOOLEAN
     ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
-    ' validVotes : integer | NULL
-    ' invalidVotes : integer | NULL
+    ' validVotes : NUMERIC | NULL
+    ' invalidVotes : NUMERIC | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     primeP : NUMERIC | NULL
@@ -94,10 +93,6 @@ entity "BallotPaperSection" as ballotPaperSections #fbca04 {
     --
     * ballotPaperId : BallotPaper.id <<FK>>
 }
-' note as C_2
-' If at least two ballotPaperSections are created for one ballotPaper, 
-' the name field of the ballotPaperSections is mandatory.
-' end note
 
 entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
     * id : UUID <<PK>>
@@ -170,10 +165,11 @@ entity "VoterGroup" as voterGroups #05DFA3 {
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
     * name : VARCHAR(256)
-    description : VARCHAR | NULL
+    description : VARCHAR(256) | NULL
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
+    * voterTokesGenerated : BOOLEAN
     --
 }
 
@@ -186,16 +182,15 @@ elections ||--o{ ballotPapers
 elections -- N2
 elections ||--o{ candidates
 ballotPapers ||--o{ voterRegisters
-voterRegisters }o--|| voters
+voterRegisters }|--|| voters
 ballotPapers ||--o{ ballotPaperSections
 ' ballotPaperSections -- C_2
 ballotPaperSections ||--o{ ballotPaperSectionCandidates
 ballotPaperSectionCandidates }o--|| candidates
 votes }o--|| elections
-voters |o--o{ votes
-voterGroups ||--o{ voters
+voters ||--o{ votes
+voterGroups ||--|{ voters
 voters -- N3
 votes -- N4
-
 
 @enduml
