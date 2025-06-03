@@ -106,7 +106,6 @@ CREATE TABLE "Candidate" (
     "electionId" UUID NOT NULL,
 
     CONSTRAINT "Candidate_pkey" PRIMARY KEY ("id"),
-<<<<<<<< HEAD:apps/backend/prisma/migrations/20250531115547_init/migration.sql
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 
@@ -115,12 +114,12 @@ CREATE TABLE "VoterGroup" (
     "id" UUID NOT NULL,
     "createdAt" TIMESTAMPTZ(6) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "modifiedAt" TIMESTAMPTZ(6) NOT NULL,
-    "name" TEXT NOT NULL,
-    "description" TEXT,
-    "pubKey" BIGINT,
-    "privKey" BIGINT,
-    "moduloRS256" BIGINT,
-    "voterGroupGenerated" BOOLEAN NOT NULL DEFAULT false,
+    "name" VARCHAR(256) NOT NULL,
+    "description" VARCHAR(256),
+    "pubKey" NUMERIC,
+    "privKey" NUMERIC,
+    "moduloRS256" NUMERIC,
+    "voterTokensGenerated" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "VoterGroup_pkey" PRIMARY KEY ("id"),
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
@@ -147,8 +146,6 @@ CREATE TABLE "VoterRegister" (
     "voterId" UUID NOT NULL,
 
     CONSTRAINT "VoterRegister_pkey" PRIMARY KEY ("id"),
-========
->>>>>>>> 119-oap-desing-voter-votes-api:apps/backend/prisma/migrations/20250602203535_init/migration.sql
     CONSTRAINT "modified_after_created" CHECK ("modifiedAt" >= "createdAt") -- manually added
 );
 

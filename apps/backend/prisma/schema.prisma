@@ -116,16 +116,16 @@ model Candidate {
 }
 
 model VoterGroup {
-  id                  String   @id @default(uuid()) @db.Uuid
-  createdAt           DateTime @default(now()) @db.Timestamptz(6)
-  modifiedAt          DateTime @updatedAt @db.Timestamptz(6)
-  name                String
-  description         String?
-  pubKey              BigInt?
-  privKey             BigInt?
-  moduloRS256         BigInt?
-  voterGroupGenerated Boolean  @default(false)
-  Voter               Voter[]
+  id                   String                  @id @default(uuid()) @db.Uuid
+  createdAt            DateTime                @default(now()) @db.Timestamptz(6)
+  modifiedAt           DateTime                @updatedAt @db.Timestamptz(6)
+  name                 String                  @db.VarChar(256)
+  description          String?                 @db.VarChar(256)
+  pubKey               Unsupported("NUMERIC")?
+  privKey              Unsupported("NUMERIC")?
+  moduloRS256          Unsupported("NUMERIC")?
+  voterTokensGenerated Boolean                 @default(false)
+  Voter                Voter[]
 }
 
 model Voter {

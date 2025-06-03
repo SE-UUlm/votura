@@ -169,7 +169,7 @@ entity "VoterGroup" as voterGroups #05DFA3 {
     pubKey : NUMERIC | NULL
     privKey : NUMERIC | NULL
     moduloRS256 : NUMERIC | NULL
-    * voterTokesGenerated : BOOLEAN
+    * voterTokensGenerated : BOOLEAN
     --
 }
 
