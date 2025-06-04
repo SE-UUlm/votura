@@ -3,6 +3,7 @@ import { electionsPathObject } from './elections/electionsPathObject.js';
 import { Tag } from './globals/tag.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
 import { electionPathObject } from './elections/electionPathObject.js';
+import { freezeElectionPathObject } from './elections/freezeElectionPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -81,5 +82,6 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   paths: {
     '/elections': electionsPathObject,
     '/elections/{electionId}': electionPathObject,
+    '/elections/{electionId}/freeze': freezeElectionPathObject,
   },
 };
