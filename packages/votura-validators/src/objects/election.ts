@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
-import { IdentifiableTimestampedObject, voturaMetadataRegistry } from '../utils.js';
+import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { UserObject } from './user.js';
+import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 export const ElectionObject = z.object({
   ...IdentifiableTimestampedObject.shape,

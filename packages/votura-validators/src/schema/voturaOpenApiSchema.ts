@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { electionsPathObject } from './elections/electionsPathObject.js';
-import { Tag } from './utils.js';
+import { Tag } from './globals/tags.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',

@@ -1,5 +1,5 @@
 import { z } from 'zod/v4';
-import { IdentifiableTimestampedObject } from '../utils.js';
+import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 export const UserObject = z.object({
   ...IdentifiableTimestampedObject.shape,
