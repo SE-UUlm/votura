@@ -16,19 +16,12 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { electionIdParameter } from './electionIdParameter.js';
 
 export const electionPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific election',
   description: 'Read, update or delete a specific election.',
-  parameters: [
-    {
-      name: 'electionId',
-      in: 'path',
-      description: 'The unique identifier for the election.',
-      required: true,
-      schema: uuidObjectSchema as OpenAPIV3.SchemaObject,
-    },
-  ],
+  parameters: [electionIdParameter],
   put: {
     tags: [Tag.Elections],
     summary: 'Update a specific election',
