@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { toJsonSchemaParams } from '../parserParams.js';
 
 export const ElectionObject = z.object({
   ...IdentifiableTimestampedObject.shape,
@@ -61,6 +62,11 @@ export const InsertableElectionObject = ElectionObject.pick({
 
 export type InsertableElection = z.infer<typeof InsertableElectionObject>;
 
+export const InsertableElectionObjectSchema = z.toJSONSchema(
+  InsertableElectionObject,
+  toJsonSchemaParams,
+);
+
 export const SelectableElectionObject = ElectionObject.pick({
   id: true,
   createdAt: true,
@@ -80,6 +86,11 @@ export const SelectableElectionObject = ElectionObject.pick({
 
 export type SelectableElection = z.infer<typeof SelectableElectionObject>;
 
+export const SelectableElectionObjectSchema = z.toJSONSchema(
+  SelectableElectionObject,
+  toJsonSchemaParams,
+);
+
 export const UpdateableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
@@ -90,3 +101,8 @@ export const UpdateableElectionObject = ElectionObject.pick({
 });
 
 export type UpdateableElection = z.infer<typeof UpdateableElectionObject>;
+
+export const UpdateableElectionObjectSchema = z.toJSONSchema(
+  UpdateableElectionObject,
+  toJsonSchemaParams,
+);

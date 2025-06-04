@@ -1,7 +1,8 @@
-import { z } from 'zod/v4';
 import { OpenAPIV3 } from 'openapi-types';
-import { toJsonSchemaParams } from '../parserParams.js';
-import { InsertableElectionObject, SelectableElectionObject } from '../../objects/election.js';
+import {
+  InsertableElectionObjectSchema,
+  SelectableElectionObjectSchema,
+} from '../../objects/election.js';
 import { Tag } from '../globals/tag.js';
 import {
   response400,
@@ -12,16 +13,6 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
-
-export const SelectableElectionObjectSchema = z.toJSONSchema(
-  SelectableElectionObject,
-  toJsonSchemaParams,
-);
-
-export const InsertableElectionObjectSchema = z.toJSONSchema(
-  InsertableElectionObject,
-  toJsonSchemaParams,
-);
 
 export const electionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Create and read elections',
