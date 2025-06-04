@@ -2,6 +2,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import { electionsPathObject } from './elections/electionsPathObject.js';
 import { Tag } from './globals/tag.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
+import { electionPathObject } from './elections/electionPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -26,7 +27,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   },
   servers: [
     {
-      url: 'http://localhost:{port}/api/v1',
+      url: 'http://127.0.0.1:{port}',
       description: 'The default local development server.',
       variables: {
         port: {
@@ -79,5 +80,6 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   ],
   paths: {
     '/elections': electionsPathObject,
+    '/elections/{electionId}': electionPathObject,
   },
 };
