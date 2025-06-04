@@ -1,17 +1,16 @@
 import { z } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import { UserObject } from './user.js';
 import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 export const ElectionObject = z.object({
   ...IdentifiableTimestampedObject.shape,
-  name: z.string().register(voturaMetadataRegistry, {
+  name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the election.',
   }),
-  description: z.string().optional().register(voturaMetadataRegistry, {
+  description: z.string().min(1).max(256).optional().register(voturaMetadataRegistry, {
     description: 'The description text of the election.',
   }),
-  private: z.boolean().register(voturaMetadataRegistry, {
+  private: z.boolean().default(true).register(voturaMetadataRegistry, {
     description:
       'If `private` is set to `false` votura will store a link between the voter and his vote. So every vote can be traced back to the voter. If `private` is set to `true` votura will not store a link between the voter and his vote. So the vote is anonymous and cannot be traced back to the voter.',
   }),
@@ -22,11 +21,11 @@ export const ElectionObject = z.object({
   votingEndAt: z.iso.datetime().register(voturaMetadataRegistry, {
     description: 'The end date of the voting process of the election. ',
   }),
-  configFrozen: z.boolean().register(voturaMetadataRegistry, {
+  configFrozen: z.boolean().default(false).register(voturaMetadataRegistry, {
     description:
       'Indicates if the configuration of the election is frozen. This date needs to be in the future and greater than the `votingStart` date.',
   }),
-  allowInvalidVotes: z.boolean().register(voturaMetadataRegistry, {
+  allowInvalidVotes: z.boolean().default(false).register(voturaMetadataRegistry, {
     description:
       'Define if a voter is allowed to submit a invalid Vote. There will always a warning message shown to the voter that his vote will be invalid.',
   }),
@@ -47,7 +46,6 @@ export const ElectionObject = z.object({
     description:
       'The generator of the multiplicative group modulo `primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
-  electionCreatorId: UserObject.shape.id,
 });
 
 export type Election = z.infer<typeof ElectionObject>;
@@ -55,6 +53,7 @@ export type Election = z.infer<typeof ElectionObject>;
 export const InsertableElectionObject = ElectionObject.pick({
   name: true,
   description: true,
+  private: true,
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
@@ -68,6 +67,7 @@ export const SelectableElectionObject = ElectionObject.pick({
   modifiedAt: true,
   name: true,
   description: true,
+  private: true,
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
@@ -86,6 +86,7 @@ export const UpdateableElectionObject = ElectionObject.pick({
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
+  private: true,
 });
 
 export type UpdateableElection = z.infer<typeof UpdateableElectionObject>;

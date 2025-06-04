@@ -96,8 +96,8 @@ export const response429: OpenAPIV3.ResponsesObject = {
   },
 };
 
-export const response500: OpenAPIV3.ResponsesObject = {
-  500: {
+export const responseDefault: OpenAPIV3.ResponsesObject = {
+  'default': {
     description:
       'Internal Server Error. A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.',
     content: {
