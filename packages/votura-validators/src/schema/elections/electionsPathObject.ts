@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 import { OpenAPIV3 } from 'openapi-types';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { InsertableElectionObject, SelectableElectionObject } from '../../objects/election.js';
-import { Tag } from '../globals/tags.js';
+import { Tag } from '../globals/tag.js';
 import { response400, response401 } from '../globals/responses.js';
 
 export const SelectableElectionObjectSchema = z.toJSONSchema(

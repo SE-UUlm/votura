@@ -1,6 +1,7 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { electionsPathObject } from './elections/electionsPathObject.js';
-import { Tag } from './globals/tags.js';
+import { Tag } from './globals/tag.js';
+import { SecuritySchemaName } from './globals/securitySchemaName.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -41,7 +42,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   ],
   components: {
     securitySchemes: {
-      voturaBackendAuth: {
+      [SecuritySchemaName.voturaBackendAuth]: {
         type: 'http',
         scheme: 'bearer',
         bearerFormat: 'JWT',
