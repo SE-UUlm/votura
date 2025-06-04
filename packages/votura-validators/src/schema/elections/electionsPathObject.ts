@@ -3,7 +3,15 @@ import { OpenAPIV3 } from 'openapi-types';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { InsertableElectionObject, SelectableElectionObject } from '../../objects/election.js';
 import { Tag } from '../globals/tag.js';
-import { response400, response401 } from '../globals/responses.js';
+import {
+  response400,
+  response401,
+  response406,
+  response415,
+  response429,
+  responseDefault,
+} from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 
 export const SelectableElectionObjectSchema = z.toJSONSchema(
   SelectableElectionObject,
@@ -24,7 +32,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all elections',
     description:
       'Returns all elections with the public information fields, that are linked to user of the API access token.',
-    security: [{ voturaBackendAuth: [] }],
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getElections',
     responses: {
       200: {
@@ -34,8 +42,8 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
           'application/json': {
             schema: {
               type: 'array',
-              minItems: 0,
-              maxItems: 100,
+              // minItems: 0,
+              // maxItems: 100,
               uniqueItems: true,
               items: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
             },
@@ -44,13 +52,16 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
       },
       ...response400,
       ...response401,
+      ...response406,
+      ...response429,
+      ...responseDefault,
     },
   },
   post: {
     tags: [Tag.Elections],
     summary: 'Create a new election',
     description: 'Creates a new election with a link to the user of the API access token.',
-    security: [{ voturaBackendAuth: [] }],
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createElection',
     requestBody: {
       required: true,
@@ -71,6 +82,11 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
         },
       },
       ...response400,
+      ...response401,
+      ...response406,
+      ...response415,
+      ...response429,
+      ...responseDefault,
     },
   },
 };
