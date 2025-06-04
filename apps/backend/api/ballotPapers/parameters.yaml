@@ -1,10 +1,10 @@
 components:
   parameters:
-    electionId:
-      name: 'electionId'
+    ballotPaperId:
+      name: 'ballotPaperId'
       in: 'path'
       description: |
-        The unique identifier for the election.
+        The unique identifier for the ballot paper.
       required: true
       schema:
         $ref: './../globals/schemas.yaml#/components/schemas/uuid'

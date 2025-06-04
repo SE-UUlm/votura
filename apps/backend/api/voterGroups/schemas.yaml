@@ -1,0 +1,102 @@
+components:
+  schemas:
+    #### base objects #############################################################################
+    voterGroupBaseObject:
+      type: 'object'
+      required:
+        - name
+        - description
+        - nrOfVoters
+        - ballotPapers
+      properties:
+        name:
+          description: |
+            The name of the voter group.
+          readOnly: false
+          writeOnly: false
+          type: 'string'
+          minLength: 1
+          maxLength: 256
+          pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+          example: 'A very important voter group'
+        description:
+          description: |
+            The description text of the voter group.
+            The description can be null.
+          readOnly: false
+          writeOnly: false
+          oneOf:
+            - type: 'string'
+              minLength: 1
+              maxLength: 256
+              pattern: '^[a-zA-Z0-9 .,\-_:;!?()\/]{1,256}$'
+              example: 'This is a super important description.'
+            - type: 'null'
+              default: null
+              example: null
+        nrOfVoters:
+          description: |
+            Specifies the number of voters that belong to this voter group.
+          readOnly: false
+          writeOnly: false
+          type: 'integer'
+          format: 'uint16'
+          minimum: 1
+          maximum: 65535
+          example: 42
+        ballotPapers:
+          description: |
+            All ballot papers that are linked to this voter group.
+            A voter which is part of this voter group can vote on these ballot papers.
+          readOnly: false
+          writeOnly: false
+          type: 'array'
+          minItems: 1
+          maxItems: 50
+          uniqueItems: true
+          items:
+            $ref: './../globals/schemas.yaml#/components/schemas/uuid'
+    ###############################################################################################
+    voterGroupCreateObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/voterGroupBaseObject'
+    voterGroupReadObject:
+      # additionalProperties: false # not supported by docusaurus
+      allOf:
+        - $ref: '#/components/schemas/voterGroupBaseObject'
+        - type: 'object'
+          required:
+            - id
+            - createdAt
+            - modifiedAt
+          properties:
+            id:
+              description: |
+                This is the unique identifier for the voter group.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'uuid'
+              minLength: 36
+              maxLength: 36
+              pattern: '^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$'
+              example: '123e4567-e89b-12d3-a456-426614174000'
+            createdAt:
+              description: |
+                The created date of the voter group.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
+            modifiedAt:
+              description: |
+                The last modified date of the voter group.
+              readOnly: true
+              writeOnly: false
+              type: 'string'
+              format: 'date-time'
+              maxLength: 20
+              example: '2032-10-01T00:00:00Z'
