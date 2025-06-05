@@ -5,7 +5,7 @@ export const Response400Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'The request was invalid, the server cannot process it.',
   }),
-})
+});
 
 export type Response400 = z.infer<typeof Response400Object>;
 
@@ -58,6 +58,15 @@ export const Response406Object = z.object({
 });
 
 export type Response406 = z.infer<typeof Response406Object>;
+
+export const Response409Object = z.object({
+  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
+    example:
+      'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
+  }),
+});
+
+export type Response409 = z.infer<typeof Response409Object>;
 
 export const Response415Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {

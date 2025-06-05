@@ -7,6 +7,7 @@ import {
   Response403Object,
   Response404Object,
   Response406Object,
+  Response409Object,
   Response415Object,
   Response429Object,
   Response500Object,
@@ -72,6 +73,18 @@ export const response406: OpenAPIV3.ResponsesObject = {
   },
 };
 
+export const response409: OpenAPIV3.ResponsesObject = {
+  406: {
+    description:
+      'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
+    content: {
+      'application/json': {
+        schema: z.toJSONSchema(Response409Object, toJsonSchemaParams) as OpenAPIV3.SchemaObject,
+      },
+    },
+  },
+};
+
 export const response415: OpenAPIV3.ResponsesObject = {
   415: {
     description:
@@ -97,7 +110,7 @@ export const response429: OpenAPIV3.ResponsesObject = {
 };
 
 export const responseDefault: OpenAPIV3.ResponsesObject = {
-  'default': {
+  default: {
     description:
       'Internal Server Error. A generic error message, given when an unexpected condition was encountered and no more specific message is suitable.',
     content: {
