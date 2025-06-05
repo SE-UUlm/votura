@@ -14,7 +14,7 @@ export const verifyEmailUserPathObject: OpenAPIV3.PathItemObject = {
   description: 'Verify the users email address with the given verification token.',
   get: {
     tags: [Tag.Users],
-    summary: 'Verify the users email address with the given verification token.',
+    summary: 'Verify the user',
     description:
       'Verify the users email address with the given verification token.\n' +
       '\n' +
