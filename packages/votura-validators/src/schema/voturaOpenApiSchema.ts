@@ -11,7 +11,7 @@ import { loginUsersPathObject } from './users/loginUsersPathObject.js';
 import { refreshTokensUsersPathObject } from './users/refreshTokensUsersPathObject.js';
 import { resetPasswordUsersPathObject } from './users/resetPasswordUsersPathObject.js';
 import { logoutUsersPathObject } from './users/logoutUsersPathObject.js';
-import {requestPasswordResetUsersPathObject} from './users/requestPasswordResetUsersPathObject.js';
+import { requestPasswordResetUsersPathObject } from './users/requestPasswordResetUsersPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
