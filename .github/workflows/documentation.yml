@@ -112,6 +112,10 @@ jobs:
       - run: cp -r ./apps/docs/static/drawio_svg/* ./apps/docs/static/drawio/
       - name: Install dependencies
         run: npm ci
+      - name: Build API schema
+        run: |
+          cd ./packages/votura-validators/
+          npm run persist-schema
       - name: Build website
         run: |
           cd ./apps/docs/

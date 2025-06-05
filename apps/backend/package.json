@@ -48,7 +48,11 @@
     "build": "prisma generate && tsc",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
-    "postgres-down": "docker compose down"
+    "postgres-down": "docker compose down",
+    "seed": "prisma db seed"
+  },
+  "prisma": {
+    "seed": "tsx prisma/seed.ts"
   },
   "type": "module",
   "devDependencies": {

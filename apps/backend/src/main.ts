@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { prisma } from './client.js';
 import { usersRouter } from './routes/users.routes.js';
+import { electionsRouter } from './routes/elections.routes.js';
+import { auth } from './middlewares/auth.js';
 
 dotenv.config();
 
@@ -13,6 +15,7 @@ async function main() {
   app.use(express.json()); // parse JSON bodies
 
   app.use('/users', usersRouter);
+  app.use('/elections', auth, electionsRouter);
   // Fallback for unhandled routes
   app.use((_, res) => {
     res.sendStatus(400);
