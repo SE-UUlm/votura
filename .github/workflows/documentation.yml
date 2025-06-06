@@ -59,6 +59,7 @@ jobs:
     runs-on:
       labels: linux-sp
     container:
+      # For updating to 24.04 we need to update & test the apt-get install dependencies.
       image: ubuntu:22.04
     continue-on-error: false
     timeout-minutes: 10
