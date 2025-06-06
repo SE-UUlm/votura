@@ -1,6 +1,5 @@
 {
   "extends": ["@tsconfig/node22/tsconfig.json", "@repo/typescript-config/tsconfig.json"],
-  "include": ["generated/prisma"],
   "compilerOptions": {
     "rootDir": "src",
     "outDir": "dist"
