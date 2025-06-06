@@ -7,12 +7,12 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
     .addColumn('modifiedAt', 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`)) // I don't know how to set this to update automatically
 }
 
-//const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
-//  return ctb.addCheckConstraint(
-//    'valid_name',
-//    sql`"name" ~ '^[a-zA-Z0-9 .,_:;!?()/\-]{1,256}$'`
-//  );
-//}
+const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
+  return ctb.addCheckConstraint(
+    'valid_name',
+    sql`"name" ~ '^[a-zA-Z0-9 .,_:;!?()/\-]{1,256}$'`
+  );
+}
 
 export async function up(db: Kysely<any>): Promise<void> {
   // Create User table
@@ -29,7 +29,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('refreshTokenHash', 'varchar(64)')
     .addColumn('refreshTokenExpiresAt', 'timestamptz(6)')
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-    //.addCheckConstraint('valid_email', sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`)
+    .addCheckConstraint('valid_email', sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`)
     .execute();
 
   // Create AccessTokenBlacklist table
@@ -59,7 +59,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('electionCreatorId', 'uuid', (col) => col.notNull())
     .addCheckConstraint('votingEnd_after_votingStart', sql`"votingEndAt" > "votingStartAt"`)
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-    //.$call(addNameCheckConstraint)
+    .$call(addNameCheckConstraint)
     .execute();
 
   // Create BallotPaper table
@@ -73,7 +73,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('electionId', 'uuid', (col) => col.notNull())
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
-    //.$call(addNameCheckConstraint)
+    .$call(addNameCheckConstraint)
     .execute();
 
   // Create BallotPaperSection table
@@ -87,7 +87,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('ballotPaperId', 'uuid', (col) => col.notNull())
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
-    //.$call(addNameCheckConstraint)
+    .$call(addNameCheckConstraint)
     .execute();
 
   // Create BallotPaperSectionCandidate table
@@ -107,7 +107,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('description', 'varchar(256)')
     .addColumn('electionId', 'uuid', (col) => col.notNull())
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-    //.$call(addNameCheckConstraint)
+    .addCheckConstraint('valid_title', sql`"title" ~ '^[a-zA-Z0-9 .,_:;!?()/\\-]{1,256}$'`)
     .execute();
 
   // Create VoterGroup table
@@ -120,7 +120,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('privKey', 'text')
     .addColumn('voterTokensGenerated', 'boolean', (col) => col.notNull().defaultTo(false))
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-    //.$call(addNameCheckConstraint)
+    .$call(addNameCheckConstraint)
     .execute();
 
   // Create Voter table
