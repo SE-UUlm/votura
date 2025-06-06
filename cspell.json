@@ -52,6 +52,7 @@
     "APIV",
     "unrepresentable",
     "uuidv",
-    "Updateable"
+    "Updateable",
+    "Metadate"
   ]
 }
