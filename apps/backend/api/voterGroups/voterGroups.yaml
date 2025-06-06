@@ -1,0 +1,134 @@
+summary: 'Create and read ballot voter groups'
+description: |
+  A voter group is always linked to at least one user and at least one ballot paper.
+  You can create a new one ore read all the existing ones for a user.
+post:
+  tags:
+    - VoterGroups
+  summary: 'Create a voter group'
+  description: |
+    Creates a voter group with a link to at least one ballot paper.
+    The user of the API access token needs access to all linked ballot papers & elections.
+    The voter group can only be created if all elections of the linked ballot papers are not frozen.
+    The user can only link one ballot paper per election to the same voter group.
+    It is allowed to link ballot papers from different elections to the same voter group.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'createVoterGroup'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schemas.yaml#/components/schemas/voterGroupCreateObject'
+  responses:
+    '201':
+      description: |
+        Created.
+        The request was successfully executed.
+        Successfully created a new voter group.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/voterGroupReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
+get:
+  tags:
+    - VoterGroups
+  summary: 'Get all voter groups for the user'
+  description: |
+    Returns all voter groups with the public information fields, that are linked to the requesting user.
+    The user of the API access token needs access to all linked ballot papers & elections.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'getVoterGroups'
+  parameters:
+    - name: 'limit'
+      in: 'query'
+      description: |
+        You can limit the number of returned items in the response array.
+      required: false
+      schema:
+        type: 'integer'
+        format: 'int8'
+        minimum: 0
+        maximum: 50
+        example: 42
+        default: 20
+    - name: 'sortBy'
+      in: 'query'
+      description: |
+        You can sort your response items by providing the key name to your field which you want to sort.
+      required: false
+      schema:
+        type: 'string'
+        enum:
+          - createdAt
+          - modifiedAt
+          - name
+          - description
+          - nrOfVoters
+        example: 'modifiedAt'
+    - name: 'orderBy'
+      in: 'query'
+      description: |
+        You can specify in which order you want to get your items.
+        By default in `asc` (ascending) or when you wish `desc`(descending).
+      # Currently I see no need for supporting multi-field sorting. If there is one, we need to update it.
+      required: false
+      schema:
+        type: 'string'
+        enum:
+          - asc
+          - desc
+        example: 'asc'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        Returns voter groups for the requested user.
+      content:
+        application/json:
+          schema:
+            type: 'array'
+            minItems: 0
+            maxItems: 50
+            uniqueItems: true
+            items:
+              $ref: './schemas.yaml#/components/schemas/voterGroupReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'

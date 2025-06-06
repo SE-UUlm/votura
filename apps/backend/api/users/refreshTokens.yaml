@@ -1,0 +1,39 @@
+summary: 'Refresh jwt tokens'
+description: |
+  Refresh jwt tokens used for authentication and authorization.
+post:
+  tags:
+    - Users
+  summary: 'Refresh jwt tokens'
+  description: |
+    Refresh jwt tokens used for authentication and authorization.
+  security: []
+  operationId: 'refreshUserTokens'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schemas.yaml#/components/schemas/refreshRequestObject'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        New tokens returned.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/apiTokenObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'

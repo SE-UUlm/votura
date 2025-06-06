@@ -1,0 +1,122 @@
+summary: 'Manage a specific candidate'
+description: |
+  Read, update or delete a specific candidate.
+parameters:
+  - $ref: './parameters.yaml#/components/parameters/candidateId'
+put:
+  tags:
+    - Candidates
+  summary: 'Update a specific candidate'
+  description: |
+    Updates the configuration of the requested candidate with the provided information.
+    The user of the API access token needs access to the linked election.
+    The candidate can only be updated if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'updateCandidateById'
+  requestBody:
+    required: true
+    content:
+      application/json:
+        schema:
+          $ref: './schemas.yaml#/components/schemas/candidateCreateObject'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        The candidate was updated.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/candidateReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
+get:
+  tags:
+    - Candidates
+  summary: 'Get a specific candidate'
+  description: |
+    Returns the requested candidate with all public information fields.
+    The user of the API access token needs access to the linked election.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'getCandidateById'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        Returns the requested candidate with all public information fields.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/candidateReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
+delete:
+  tags:
+    - Candidates
+  summary: 'Delete a specific candidate'
+  description: |
+    Deletes the requested candidate.
+    The user of the API access token needs access to the linked election.
+    The candidate can only be deleted if the linked election is not frozen.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'deleteCandidateById'
+  responses:
+    '204':
+      description: |
+        No Content.
+        The request was successfully executed.
+        The candidate was deleted.
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'

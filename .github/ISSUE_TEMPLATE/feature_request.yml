@@ -1,9 +1,9 @@
 name: 💡 Feature request
 description: Suggest an idea for this project.
 # title: ""
-labels: ["Feature"]
-projects: ["SE-UUlm/6"]
-type: "Feature"
+labels: ['Feature']
+projects: ['SE-UUlm/6']
+type: 'Feature'
 # assignees: []
 body:
   - type: markdown
@@ -12,14 +12,6 @@ body:
         Thanks for taking the time to fill out this feature request!
 
         Please note that your feature may already be suggested! Please search on the issue tracker before creating one.
-  - type: input
-    id: contact
-    attributes:
-      label: Contact Details
-      description: How can we get in touch with you if we need more info? Leave empty if should contact you via GitHub.
-      placeholder: ex. email@example.com
-    validations:
-      required: false
   - type: textarea
     id: problem
     attributes:

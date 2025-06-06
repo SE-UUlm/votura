@@ -1,0 +1,10 @@
+components:
+  parameters:
+    ballotPaperSectionId:
+      name: 'ballotPaperSectionId'
+      in: 'path'
+      description: |
+        The unique identifier for the ballot paper section.
+      required: true
+      schema:
+        $ref: './../globals/schemas.yaml#/components/schemas/uuid'

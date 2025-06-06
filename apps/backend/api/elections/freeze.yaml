@@ -1,0 +1,48 @@
+summary: 'Freeze a specific election'
+description: |
+  Freezes the requested election.
+parameters:
+  - $ref: './parameters.yaml#/components/parameters/electionId'
+put:
+  tags:
+    - Elections
+  summary: 'Freeze a specific election'
+  description: |
+    Freezes the requested election.
+    Note that freezing an election is an action that should be done with caution and after a careful review of the election configuration.
+    After an election is frozen, the configuration of the election can not be changed anymore.
+    You can not change the number of allowed voters.
+
+    After the election is frozen, the key pair for the election will be generated.
+    The access tokens for your voters can be generated after that.
+    Note that it will take some time until the generated keys are available.
+    After that, you can distribute the generated voting tokens to your voters.
+  security:
+    - voturaBackendAuth: []
+  operationId: 'freezeElectionById'
+  responses:
+    '200':
+      description: |
+        OK.
+        The request was successfully executed.
+        The election is now frozen.
+      content:
+        application/json:
+          schema:
+            $ref: './schemas.yaml#/components/schemas/electionReadObject'
+    '400':
+      $ref: './../globals/responses.yaml#/components/responses/400'
+    '401':
+      $ref: './../globals/responses.yaml#/components/responses/401'
+    '403':
+      $ref: './../globals/responses.yaml#/components/responses/403'
+    '404':
+      $ref: './../globals/responses.yaml#/components/responses/404'
+    '406':
+      $ref: './../globals/responses.yaml#/components/responses/406'
+    '415':
+      $ref: './../globals/responses.yaml#/components/responses/415'
+    '429':
+      $ref: './../globals/responses.yaml#/components/responses/429'
+    default:
+      $ref: './../globals/responses.yaml#/components/responses/500'
