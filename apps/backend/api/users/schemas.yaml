@@ -15,7 +15,7 @@ components:
           type: 'string'
           format: 'password'
           minLength: 12
-          maxLength: 128
+          maxLength: 127
           pattern: '^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$'
           example: 'MyP@ssw0rd!1!'
     emailBaseObject:
@@ -73,9 +73,9 @@ components:
         - $ref: '#/components/schemas/passwordBaseObject'
         - type: 'object'
           required:
-            - token
+            - passwordResetTokenHash
           properties:
-            token:
+            passwordResetTokenHash:
               description: |
                 The token provided to the user via email.
                 This token is used to authenticate and authorize the user.

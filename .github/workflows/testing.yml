@@ -3,10 +3,11 @@ name: Testing
 on:
   workflow_dispatch:
   push:
+  merge_group:
 
 jobs:
   test:
-    name: Test and Lint
+    name: Lint, Build & Test
     runs-on:
       labels: linux-sp
     container:
@@ -15,20 +16,29 @@ jobs:
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Update & install apt packages
+        run: |
+          apt-get update
+          apt-get install -y wget unzip
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm ci
       - name: Check types
         run: npm run check-types
       - name: Check formats
-        run: npm run check-format
+        # first check files in workspaces & second the root directory
+        run: |
+          npm run check-format
+          npx prettier --check .
       - name: Check code spell
         run: npx cspell lint **
       - name: Build votura-crypto
@@ -45,3 +55,14 @@ jobs:
           npm run build
       - name: Run tests
         run: npm run test
+      - name: Teamscale Upload
+        uses: cqse/teamscale-upload-action@v2.9.6
+        with:
+          server: 'https://exia.informatik.uni-ulm.de/teamscale'
+          project: 'b3ef710d-5a48-4918-9383-7381b21e45e2'
+          user: 'thorbencarl'
+          accesskey: ${{ secrets.TEAMSCALE_ACCESS_KEY }}
+          partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
+          format: CLOVER
+          message: 'Code coverage from GitHub Actions'
+          files: './packages/votura-crypto/coverage/clover.xml'

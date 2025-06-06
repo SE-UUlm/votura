@@ -7,10 +7,13 @@ get:
   summary: 'Verify a new user'
   description: |
     Verify the users email address with the given verification token.
+
+    This endpoint is currently only a draft and not implemented!
+    When this endpoint is implemented this note will be removed.
   security: []
   operationId: 'verifyUser'
   parameters:
-    - name: 'verificationToken'
+    - name: 'emailVerificationTokenHash'
       in: 'query'
       description: |
         The verification token that was sent to the users email address.

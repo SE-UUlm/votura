@@ -1,5 +1,10 @@
 import { describe, expect } from 'vitest';
-import { getBitsOfBigInt, getCofactor, getGeneratorForPrimes } from '../src/utils.js';
+import {
+  getBitsOfBigInt,
+  getCofactor,
+  getFiatShamirChallenge,
+  getGeneratorForPrimes,
+} from '../src/utils.js';
 import { gcd, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
@@ -15,6 +20,25 @@ describe('Utility Functions', () => {
     expect(() => getCofactor(23n, 7n)).toThrowError('Invalid: (p - 1) is not divisible by q');
     // chose this example because I could not find two primes that violate this
     expect(() => getCofactor(13n, 4n)).toThrowError('Invalid: cofactor j is not even');
+  });
+
+  voturaTest('getFiatShamirChallenge', ({ keyPair, ciphertext, randomness }) => {
+    const { publicKey } = keyPair;
+
+    const commitmentA = modPow(publicKey.generator, randomness, publicKey.primeP);
+    const commitmentB = modPow(ciphertext[0], randomness, publicKey.primeP);
+
+    const partsToHash: string[] = [];
+    partsToHash.push(commitmentA.toString());
+    partsToHash.push(commitmentB.toString());
+
+    const challenge = getFiatShamirChallenge(partsToHash, publicKey.primeQ);
+    const challenge2 = getFiatShamirChallenge(partsToHash, publicKey.primeQ);
+
+    expect(challenge).toBe(challenge2);
+    expect(typeof challenge).toBe('bigint');
+    expect(challenge >= 0n).toBe(true);
+    expect(challenge < publicKey.primeQ).toBe(true);
   });
 
   voturaTest('getGeneratorForPrimes', () => {
