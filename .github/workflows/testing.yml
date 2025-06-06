@@ -8,7 +8,7 @@ jobs:
   test:
     name: Test and Lint
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
       image: ubuntu:22.04
     continue-on-error: false
