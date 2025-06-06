@@ -74,7 +74,7 @@ export const response406: OpenAPIV3.ResponsesObject = {
 };
 
 export const response409: OpenAPIV3.ResponsesObject = {
-  406: {
+  409: {
     description:
       'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
     content: {
