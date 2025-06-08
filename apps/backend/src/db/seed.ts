@@ -10,7 +10,7 @@ async function seed() {
       verified: true,
       modifiedAt: new Date().toISOString(),
     })
-    .executeTakeFirst();
+    .execute();
 }
 
 seed()
