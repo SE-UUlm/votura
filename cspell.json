@@ -47,6 +47,10 @@
     "timestamptz",
     "turborepo",
     "varchar",
-    "votura"
+    "votura",
+    "Kysely",
+    "fkey",
+    "hashedpassword",
+    "codegen"
   ]
 }
