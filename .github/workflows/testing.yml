@@ -11,7 +11,7 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 15
 

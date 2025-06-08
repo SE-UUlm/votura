@@ -9,9 +9,9 @@ jobs:
   build-puml:
     name: Build UML diagrams
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 10
 
@@ -57,8 +57,9 @@ jobs:
   build-drawio:
     name: Build DrawIO diagrams
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
+      # For updating to 24.04 we need to update & test the apt-get install dependencies.
       image: ubuntu:22.04
     continue-on-error: false
     timeout-minutes: 10
@@ -89,9 +90,9 @@ jobs:
     name: Build documentation
     needs: ['build-puml', 'build-drawio']
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 10
 
@@ -136,9 +137,9 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on:
-      labels: ubuntu-latest
+      labels: linux-sp
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 10
 
