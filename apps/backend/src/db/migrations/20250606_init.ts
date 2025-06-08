@@ -4,15 +4,12 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
   return ctb
     .addColumn('id', 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
     .addColumn('createdAt', 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn('modifiedAt', 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`)) // I don't know how to set this to update automatically
-}
+    .addColumn('modifiedAt', 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`)); // I don't know how to set this to update automatically
+};
 
 const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
-  return ctb.addCheckConstraint(
-    'valid_name',
-    sql`"name" ~ '^[a-zA-Z0-9 .,_:;!?()/\-]{1,256}$'`
-  );
-}
+  return ctb.addCheckConstraint('valid_name', sql`"name" ~ '^[a-zA-Z0-9 .,_:;!?()/\-]{1,256}$'`);
+};
 
 export async function up(db: Kysely<any>): Promise<void> {
   // Create User table
@@ -29,7 +26,10 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('refreshTokenHash', 'varchar(64)')
     .addColumn('refreshTokenExpiresAt', 'timestamptz(6)')
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-    .addCheckConstraint('valid_email', sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`)
+    .addCheckConstraint(
+      'valid_email',
+      sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`,
+    )
     .execute();
 
   // Create AccessTokenBlacklist table
@@ -140,7 +140,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     .addColumn('voterId', 'uuid', (col) => col.notNull())
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
     .execute();
-  
+
   // Add foreign key constraints
   await db.schema
     .alterTable('Election')
@@ -149,20 +149,20 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['electionCreatorId'],
       'User',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
-  
+
   await db.schema
-  .alterTable('BallotPaper')
-  .addForeignKeyConstraint(
-    'BallotPaper_electionId_fkey',
-    ['electionId'],
-    'Election',
-    ['id'],
-    (cb) => cb.onDelete('restrict').onUpdate('cascade')
-  )
-  .execute();
+    .alterTable('BallotPaper')
+    .addForeignKeyConstraint(
+      'BallotPaper_electionId_fkey',
+      ['electionId'],
+      'Election',
+      ['id'],
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+    )
+    .execute();
 
   await db.schema
     .alterTable('BallotPaperSection')
@@ -171,7 +171,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['ballotPaperId'],
       'BallotPaper',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 
@@ -182,7 +182,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['ballotPaperSectionId'],
       'BallotPaperSection',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 
@@ -193,7 +193,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['candidateId'],
       'Candidate',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 
@@ -204,7 +204,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['electionId'],
       'Election',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 
@@ -215,7 +215,7 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['voterGroupId'],
       'VoterGroup',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 
@@ -226,18 +226,14 @@ export async function up(db: Kysely<any>): Promise<void> {
       ['ballotPaperId'],
       'BallotPaper',
       ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
-  
+
   await db.schema
     .alterTable('VoterRegister')
-    .addForeignKeyConstraint(
-      'VoterRegister_voterId_fkey',
-      ['voterId'],
-      'Voter',
-      ['id'],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade')
+    .addForeignKeyConstraint('VoterRegister_voterId_fkey', ['voterId'], 'Voter', ['id'], (cb) =>
+      cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
 }

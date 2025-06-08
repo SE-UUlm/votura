@@ -1,6 +1,6 @@
-import { type DB } from './db.types.js'
-import { Pool } from 'pg'
-import { Kysely, PostgresDialect } from 'kysely'
+import { type DB } from './db.types.js';
+import { Pool } from 'pg';
+import { Kysely, PostgresDialect } from 'kysely';
 import dotenv from 'dotenv';
 dotenv.config();
 
