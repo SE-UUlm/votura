@@ -151,8 +151,21 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-// --- Foreign Key Helper Function ---
-async function addForeignKeys(db: Kysely<any>): Promise<void> {
+async function createTables(db: Kysely<any>): Promise<void> {
+  await createUserTable(db);
+  await createAccessTokenBlacklistTable(db);
+  await createElectionTable(db);
+  await createBallotPaperTable(db);
+  await createBallotPaperSectionTable(db);
+  await createBallotPaperSectionCandidateTable(db);
+  await createCandidateTable(db);
+  await createVoterGroupTable(db);
+  await createVoterTable(db);
+  await createVoterRegisterTable(db);
+}
+
+// --- Foreign Key Helper Functions ---
+async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('Election')
     .addForeignKeyConstraint(
@@ -163,7 +176,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('BallotPaper')
     .addForeignKeyConstraint(
@@ -174,7 +189,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('BallotPaperSection')
     .addForeignKeyConstraint(
@@ -185,7 +202,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('BallotPaperSectionCandidate')
     .addForeignKeyConstraint(
@@ -207,7 +226,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('Candidate')
     .addForeignKeyConstraint(
@@ -218,7 +239,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('Voter')
     .addForeignKeyConstraint(
@@ -229,7 +252,9 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
       (cb) => cb.onDelete('restrict').onUpdate('cascade'),
     )
     .execute();
+}
 
+async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable('VoterRegister')
     .addForeignKeyConstraint(
@@ -249,20 +274,18 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
-export async function up(db: Kysely<any>): Promise<void> {
-  // Create tables
-  await createUserTable(db);
-  await createAccessTokenBlacklistTable(db);
-  await createElectionTable(db);
-  await createBallotPaperTable(db);
-  await createBallotPaperSectionTable(db);
-  await createBallotPaperSectionCandidateTable(db);
-  await createCandidateTable(db);
-  await createVoterGroupTable(db);
-  await createVoterTable(db);
-  await createVoterRegisterTable(db);
+async function addForeignKeys(db: Kysely<any>): Promise<void> {
+  await addElectionForeignKeys(db);
+  await addBallotPaperForeignKeys(db);
+  await addBallotPaperSectionForeignKeys(db);
+  await addBallotPaperSectionCandidateForeignKeys(db);
+  await addCandidateForeignKeys(db);
+  await addVoterForeignKeys(db);
+  await addVoterRegisterForeignKeys(db);
+}
 
-  // Add foreign key constraints
+export async function up(db: Kysely<any>): Promise<void> {
+  await createTables(db);
   await addForeignKeys(db);
 }
 
