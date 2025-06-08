@@ -9,7 +9,7 @@ jobs:
   test:
     name: Lint, Build & Test
     runs-on:
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:24.04
     continue-on-error: false
