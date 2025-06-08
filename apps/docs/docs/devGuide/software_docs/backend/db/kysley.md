@@ -81,7 +81,7 @@ Unlike ORMs that rely on a separate schema file, Kysely leverages TypeScript's t
 You define your database table structures as TypeScript interfaces, which Kysely then uses to provide type-safety for your queries.
 Example of src/db/types.ts defining your database schema:
 
-```prisma
+```typescript
 export interface UserTable {
   id: string;
   email: string;
