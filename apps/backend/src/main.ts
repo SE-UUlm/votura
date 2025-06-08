@@ -1,7 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { prisma } from './client.js';
 import { usersRouter } from './routes/users.routes.js';
+import { db } from './db/database.js';
 
 dotenv.config();
 
@@ -25,10 +25,10 @@ async function main() {
 
 main()
   .then(async () => {
-    await prisma.$disconnect();
+    await db.destroy();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await db.destroy();
     process.exit(1);
   });
