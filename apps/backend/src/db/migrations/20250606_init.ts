@@ -14,23 +14,23 @@ const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
 // --- Table Creation Helper Functions ---
 async function createUserTable(db: Kysely<any>): Promise<void> {
   await db.schema
-  .createTable('User')
-  .$call(addDefaultColumns)
-  .addColumn('email', 'varchar(256)', (col) => col.notNull().unique())
-  .addColumn('passwordHash', 'varchar(256)', (col) => col.notNull())
-  .addColumn('verified', 'boolean', (col) => col.notNull().defaultTo(false))
-  .addColumn('emailVerificationTokenHash', 'varchar(64)')
-  .addColumn('emailVerificationTokenExpiresAt', 'timestamptz(6)')
-  .addColumn('passwordResetTokenHash', 'varchar(64)')
-  .addColumn('passwordResetTokenExpiresAt', 'timestamptz(6)')
-  .addColumn('refreshTokenHash', 'varchar(64)')
-  .addColumn('refreshTokenExpiresAt', 'timestamptz(6)')
-  .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
-  .addCheckConstraint(
-    'valid_email',
-    sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`,
-  )
-  .execute();
+    .createTable('User')
+    .$call(addDefaultColumns)
+    .addColumn('email', 'varchar(256)', (col) => col.notNull().unique())
+    .addColumn('passwordHash', 'varchar(256)', (col) => col.notNull())
+    .addColumn('verified', 'boolean', (col) => col.notNull().defaultTo(false))
+    .addColumn('emailVerificationTokenHash', 'varchar(64)')
+    .addColumn('emailVerificationTokenExpiresAt', 'timestamptz(6)')
+    .addColumn('passwordResetTokenHash', 'varchar(64)')
+    .addColumn('passwordResetTokenExpiresAt', 'timestamptz(6)')
+    .addColumn('refreshTokenHash', 'varchar(64)')
+    .addColumn('refreshTokenExpiresAt', 'timestamptz(6)')
+    .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`)
+    .addCheckConstraint(
+      'valid_email',
+      sql`"email" ~ '^[A-Za-z0-9._%+\-]+@[A-Za-z0-9-]+\.[A-Za-z]{2,4}$'`,
+    )
+    .execute();
 }
 
 async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
@@ -248,7 +248,6 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
     )
     .execute();
 }
-
 
 export async function up(db: Kysely<any>): Promise<void> {
   // Create tables
