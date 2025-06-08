@@ -6,7 +6,7 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "build": "docusaurus clean-api-docs all && docusaurus gen-api-docs all && docusaurus build",
-    "start": "docusaurus clean-api-docs all && docusaurus gen-api-docs all && docusaurus start",
+    "start": "docusaurus clean-api-docs all && docusaurus gen-api-docs all && docusaurus start --no-open",
     "docusaurus": "docusaurus",
     "swizzle": "docusaurus swizzle",
     "deploy": "docusaurus deploy",

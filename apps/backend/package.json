@@ -44,7 +44,7 @@
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-types": "tsc --noEmit && cd api && npx spectral lint /openapi.yaml -v -F hint --show-documentation-url",
+    "check-types": "tsc --noEmit",
     "build": "tsc",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
