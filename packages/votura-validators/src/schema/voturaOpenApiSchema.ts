@@ -18,6 +18,7 @@ import { ballotPaperPathObject } from './ballotPapers/ballotPaperPathObject.js';
 import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
 import { ballotPaperSectionsBallotPapersPathObject } from './ballotPapers/ballotPaperSectionsBallotPapersPathObject.js';
 import { ballotPaperSectionPathObject } from './ballotPaperSections/ballotPaperSectionPathObject.js';
+import {candidatesPathObject} from './candidates/candidatesPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -99,6 +100,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     '/elections/{electionId}/freeze': freezeElectionPathObject,
     '/elections/{electionId}/unfreeze': unfreezeElectionPathObject,
     '/elections/{electionId}/ballotPapers': ballotPapersElectionsPathObject,
+    '/elections/{electionId}/candidates': candidatesPathObject,
     '/users': usersPathObject,
     '/users/verifyEmail': verifyEmailUserPathObject,
     '/users/login': loginUsersPathObject,
@@ -106,6 +108,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     '/users/requestPasswordReset': requestPasswordResetUsersPathObject,
     '/users/resetPassword': resetPasswordUsersPathObject,
     '/users/logout': logoutUsersPathObject,
+    // TODO: All following paths shall be under elections
     '/ballotPapers': ballotPapersPathObject,
     '/ballotPapers/{ballotPaperId}': ballotPaperPathObject,
     '/ballotPapers/{ballotPaperId}/ballotPaperSections': ballotPaperSectionsBallotPapersPathObject,
