@@ -57,6 +57,7 @@
     "Kysely",
     "fkey",
     "hashedpassword",
-    "codegen"
+    "codegen",
+    "plpgsql"
   ]
 }
