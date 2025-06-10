@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { uuidObjectSchema } from '../../objects/identifiableObject.js';
 import { Parameter } from '../globals/parameter.js';
 

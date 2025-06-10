@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { voterGroupIdParameter } from './voterGroupIdParameter.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';

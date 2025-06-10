@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { electionIdParameter } from '../elections/electionIdParameter.js';
 import { candidateIdParameter } from './candidateIdParameter.js';
 import { Tag } from '../globals/tag.js';
