@@ -2,6 +2,7 @@ import { z } from 'zod/v4';
 import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { toJsonSchemaParams } from '../parserParams.js';
+import {ElectionObject} from './election.js';
 
 export const BallotPaperObject = z.object({
   ...IdentifiableTimestampedObject.shape,
@@ -31,7 +32,7 @@ export const BallotPaperObject = z.object({
         'If the ballot paper contains more votes on one candidate than the `maxVotesPerCandidate` value, the vote / ballot paper will be invalid.',
       example: 42,
     }),
-  electionId: z.uuidv4().register(voturaMetadataRegistry, {
+  electionId: ElectionObject.shape.id.register(voturaMetadataRegistry, {
     description: 'The ID of the election to which this ballot paper belongs.',
     example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
   }),
