@@ -16,8 +16,9 @@ import { electionIdParameter } from './electionIdParameter.js';
 export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get ballot papers',
   description:
-      'A ballot paper is always linked to one election.\n' +
-      'You can get ballot papers for an election.',
+    'A ballot paper is always linked to one election.\n' +
+    'You can get ballot papers for an election.',
+  parameters: [electionIdParameter],
   get: {
     tags: [Tag.Elections, Tag.BallotPapers],
     summary: 'Get all ballot papers for an election',
@@ -29,7 +30,6 @@ export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
       'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapers',
-    parameters: [electionIdParameter],
     responses: {
       200: {
         description:
