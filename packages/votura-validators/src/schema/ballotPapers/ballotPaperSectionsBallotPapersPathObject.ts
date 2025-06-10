@@ -20,7 +20,7 @@ export const ballotPaperSectionsBallotPapersPathObject: OpenAPIV3.PathItemObject
     'You can get ballot paper sections for a ballot paper.',
   parameters: [ballotPaperIdParameter],
   get: {
-    tags: [Tag.BallotPaperSections, Tag.BallotPapers],
+    tags: [Tag.BallotPaperSections],
     summary: 'Get all ballot paper section for a ballot paper',
     description:
       'Returns all ballot paper sections with the public information fields, that are linked to the specified ballot paper. \n' +

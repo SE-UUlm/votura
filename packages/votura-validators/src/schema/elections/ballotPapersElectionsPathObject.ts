@@ -20,7 +20,7 @@ export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
     'You can get ballot papers for an election.',
   parameters: [electionIdParameter],
   get: {
-    tags: [Tag.Elections, Tag.BallotPapers],
+    tags: [Tag.BallotPapers],
     summary: 'Get all ballot papers for an election',
     description:
       'Returns all ballot papers with the public information fields, that are linked to the specified election. \n' +
