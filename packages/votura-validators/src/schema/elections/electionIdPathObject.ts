@@ -18,7 +18,7 @@ import {
 } from '../globals/responses.js';
 import { electionIdParameter } from './electionIdParameter.js';
 
-export const electionPathObject: OpenAPIV3.PathItemObject = {
+export const electionIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific election',
   description: 'Read, update or delete a specific election.',
   parameters: [electionIdParameter],

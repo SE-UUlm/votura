@@ -13,7 +13,7 @@ import {
 } from '../globals/responses.js';
 import { electionIdParameter } from './electionIdParameter.js';
 
-export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
+export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get ballot papers',
   description:
     'A ballot paper is always linked to one election.\n' +

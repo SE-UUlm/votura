@@ -9,7 +9,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const verifyEmailUserPathObject: OpenAPIV3.PathItemObject = {
+export const verifyEmailPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Verify the user',
   description: 'Verify the users email address with the given verification token.',
   get: {

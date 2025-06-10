@@ -17,7 +17,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const ballotPaperPathObject: OpenAPIV3.PathItemObject = {
+export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific ballot paper',
   description: 'Read, update or delete a specific election.',
   parameters: [ballotPaperIdParameter],

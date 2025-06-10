@@ -13,7 +13,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const ballotPaperSectionsBallotPapersPathObject: OpenAPIV3.PathItemObject = {
+export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get ballot paper sections',
   description:
     'A ballot paper section is always linked to one ballot paper.\n' +

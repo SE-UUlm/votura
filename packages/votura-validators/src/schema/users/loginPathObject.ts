@@ -11,7 +11,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const loginUsersPathObject: OpenAPIV3.PathItemObject = {
+export const loginPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Login a user',
   description: 'Login a user with the given credentials.',
   post: {

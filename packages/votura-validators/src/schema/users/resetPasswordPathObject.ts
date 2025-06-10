@@ -10,7 +10,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const resetPasswordUsersPathObject: OpenAPIV3.PathItemObject = {
+export const resetPasswordPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Reset user password with token',
   description: 'Reset user password with token provided to the user via email.',
   post: {

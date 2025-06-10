@@ -3,7 +3,7 @@ import { Tag } from '../globals/tag.js';
 import { RequestPasswordResetUserObjectSchema } from '../../objects/user.js';
 import { response406, response415, response429, responseDefault } from '../globals/responses.js';
 
-export const requestPasswordResetUsersPathObject: OpenAPIV3.PathItemObject = {
+export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Request a password reset email',
   description: 'Request a password reset email sent to the email associated with the user account.',
   post: {

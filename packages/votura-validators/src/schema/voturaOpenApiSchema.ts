@@ -2,22 +2,20 @@ import { OpenAPIV3 } from 'openapi-types';
 import { electionsPathObject } from './elections/electionsPathObject.js';
 import { Tag } from './globals/tag.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
-import { electionPathObject } from './elections/electionPathObject.js';
-import { freezeElectionPathObject } from './elections/freezeElectionPathObject.js';
-import { unfreezeElectionPathObject } from './elections/unfreezeElectionPathObject.js';
+import { electionIdPathObject } from './elections/electionIdPathObject.js';
+import { freezePathObject } from './elections/freezePathObject.js';
+import { unfreezePathObject } from './elections/unfreezePathObject.js';
 import { usersPathObject } from './users/usersPathObject.js';
-import { verifyEmailUserPathObject } from './users/verifyEmailUsersPathObject.js';
-import { loginUsersPathObject } from './users/loginUsersPathObject.js';
-import { refreshTokensUsersPathObject } from './users/refreshTokensUsersPathObject.js';
-import { resetPasswordUsersPathObject } from './users/resetPasswordUsersPathObject.js';
-import { logoutUsersPathObject } from './users/logoutUsersPathObject.js';
-import { requestPasswordResetUsersPathObject } from './users/requestPasswordResetUsersPathObject.js';
-import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
-import { ballotPapersElectionsPathObject } from './elections/ballotPapersElectionsPathObject.js';
-import { ballotPaperPathObject } from './ballotPapers/ballotPaperPathObject.js';
-import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
-import { ballotPaperSectionsBallotPapersPathObject } from './ballotPapers/ballotPaperSectionsBallotPapersPathObject.js';
-import { ballotPaperSectionPathObject } from './ballotPaperSections/ballotPaperSectionPathObject.js';
+import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
+import { loginPathObject } from './users/loginPathObject.js';
+import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
+import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
+import { logoutPathObject } from './users/logoutPathObject.js';
+import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
+import { ballotPapersPathObject } from './elections/ballotPapersPathObject.js';
+import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
+import { ballotPaperSectionsPathObject } from './ballotPapers/ballotPaperSectionsPathObject.js';
+import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
 import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { Parameter } from './globals/parameter.js';
@@ -98,25 +96,24 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   ],
   paths: {
     [`/elections`]: electionsPathObject,
-    [`/elections/{${Parameter.electionId}}`]: electionPathObject,
-    [`/elections/{${Parameter.electionId}}/freeze`]: freezeElectionPathObject,
-    [`/elections/{${Parameter.electionId}}/unfreeze`]: unfreezeElectionPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers`]: ballotPapersElectionsPathObject,
+    [`/elections/{${Parameter.electionId}}`]: electionIdPathObject,
+    [`/elections/{${Parameter.electionId}}/freeze`]: freezePathObject,
+    [`/elections/{${Parameter.electionId}}/unfreeze`]: unfreezePathObject,
+    [`/elections/{${Parameter.electionId}}/ballotPapers`]: ballotPapersPathObject,
     [`/elections/{${Parameter.electionId}}/candidates`]: candidatesPathObject,
     [`/elections/{${Parameter.electionId}}/candidates/{${Parameter.candidateId}}`]:
       candidateIdPathObject,
     [`/users`]: usersPathObject,
-    [`/users/verifyEmail`]: verifyEmailUserPathObject,
-    [`/users/login`]: loginUsersPathObject,
-    [`/users/refreshTokens`]: refreshTokensUsersPathObject,
-    [`/users/requestPasswordReset`]: requestPasswordResetUsersPathObject,
-    [`/users/resetPassword`]: resetPasswordUsersPathObject,
-    [`/users/logout`]: logoutUsersPathObject,
+    [`/users/verifyEmail`]: verifyEmailPathObject,
+    [`/users/login`]: loginPathObject,
+    [`/users/refreshTokens`]: refreshTokensPathObject,
+    [`/users/requestPasswordReset`]: requestPasswordResetPathObject,
+    [`/users/resetPassword`]: resetPasswordPathObject,
+    [`/users/logout`]: logoutPathObject,
     [`/ballotPapers`]: ballotPapersPathObject,
-    [`/ballotPapers/{ballotPaperId}`]: ballotPaperPathObject,
-    [`/ballotPapers/{ballotPaperId}/ballotPaperSections`]:
-      ballotPaperSectionsBallotPapersPathObject,
+    [`/ballotPapers/{ballotPaperId}`]: ballotPaperIdPathObject,
+    [`/ballotPapers/{ballotPaperId}/ballotPaperSections`]: ballotPaperSectionsPathObject,
     [`/ballotPaperSections`]: ballotPaperSectionsPathObject,
-    [`/ballotPaperSections/{ballotPaperSectionId}`]: ballotPaperSectionPathObject,
+    [`/ballotPaperSections/{ballotPaperSectionId}`]: ballotPaperSectionIdPathObject,
   },
 };

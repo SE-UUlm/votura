@@ -14,7 +14,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const freezeElectionPathObject: OpenAPIV3.PathItemObject = {
+export const freezePathObject: OpenAPIV3.PathItemObject = {
   summary: 'Freeze a specific election',
   description: 'Freezes the requested election.',
   parameters: [electionIdParameter],

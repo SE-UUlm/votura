@@ -9,7 +9,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 
-export const logoutUsersPathObject: OpenAPIV3.PathItemObject = {
+export const logoutPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Logout user',
   description: 'Logout user (blacklist access and refresh token)',
   post: {
