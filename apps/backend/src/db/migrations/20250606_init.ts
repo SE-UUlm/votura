@@ -39,12 +39,9 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.UserColumnName.passwordResetTokenExpiresAt, 'timestamptz(6)')
     .addColumn(nameEnums.UserColumnName.refreshTokenHash, 'varchar(64)')
     .addColumn(nameEnums.UserColumnName.refreshTokenExpiresAt, 'timestamptz(6)')
-    .addCheckConstraint(
-      'valid_email',
-      sql`"email" ~ ${sql.lit(nameEnums.RegexPattern.Email)}`,
-    )
+    .addCheckConstraint('valid_email', sql`"email" ~ ${sql.lit(nameEnums.RegexPattern.Email)}`)
     .execute();
-  
+
   // Add a trigger to update modifiedAt on row updates
   await sql`
     CREATE TRIGGER ${sql.raw(nameEnums.TableName.User)}_modified_at_trigger
@@ -65,7 +62,7 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
       col.notNull(),
     )
     .execute();
-  
+
   // Add a trigger to update modifiedAt on row updates
   await sql`
     CREATE TRIGGER ${sql.raw(nameEnums.TableName.AccessTokenBlacklist)}_modified_at_trigger
@@ -122,7 +119,7 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
     .$call(addNameCheckConstraint)
     .execute();
-  
+
   // Add a trigger to update modifiedAt on row updates
   await sql`
     CREATE TRIGGER ${sql.raw(nameEnums.TableName.BallotPaper)}_modified_at_trigger
@@ -186,12 +183,9 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.CandidateColumnName.title, 'varchar(256)', (col) => col.notNull())
     .addColumn(nameEnums.CandidateColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.CandidateColumnName.electionId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint(
-      'valid_title',
-      sql`"title" ~ ${sql.lit(nameEnums.RegexPattern.Name)}`,
-    )
+    .addCheckConstraint('valid_title', sql`"title" ~ ${sql.lit(nameEnums.RegexPattern.Name)}`)
     .execute();
-  
+
   // Add a trigger to update modifiedAt on row updates
   await sql`
     CREATE TRIGGER ${sql.raw(nameEnums.TableName.Candidate)}_modified_at_trigger
@@ -214,7 +208,7 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     )
     .$call(addNameCheckConstraint)
     .execute();
-  
+
   // Add a trigger to update modifiedAt on row updates
   await sql`
     CREATE TRIGGER ${sql.raw(nameEnums.TableName.VoterGroup)}_modified_at_trigger
@@ -419,10 +413,7 @@ async function dropUserTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.User)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.User)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.User)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.User).ifExists().execute();
 }
 
 async function dropAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
@@ -430,10 +421,7 @@ async function dropAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.AccessTokenBlacklist)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.AccessTokenBlacklist)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.AccessTokenBlacklist)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.AccessTokenBlacklist).ifExists().execute();
 }
 
 async function dropElectionTable(db: Kysely<any>): Promise<void> {
@@ -441,10 +429,7 @@ async function dropElectionTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.Election)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.Election)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.Election)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.Election).ifExists().execute();
 }
 
 async function dropBallotPaperTable(db: Kysely<any>): Promise<void> {
@@ -452,10 +437,7 @@ async function dropBallotPaperTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.BallotPaper)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.BallotPaper)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.BallotPaper)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.BallotPaper).ifExists().execute();
 }
 
 async function dropBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
@@ -463,10 +445,7 @@ async function dropBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.BallotPaperSection)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.BallotPaperSection)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.BallotPaperSection)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.BallotPaperSection).ifExists().execute();
 }
 
 async function dropBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<void> {
@@ -474,10 +453,7 @@ async function dropBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<vo
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.BallotPaperSectionCandidate)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.BallotPaperSectionCandidate)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.BallotPaperSectionCandidate)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.BallotPaperSectionCandidate).ifExists().execute();
 }
 
 async function dropCandidateTable(db: Kysely<any>): Promise<void> {
@@ -485,10 +461,7 @@ async function dropCandidateTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.Candidate)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.Candidate)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.Candidate)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.Candidate).ifExists().execute();
 }
 
 async function dropVoterGroupTable(db: Kysely<any>): Promise<void> {
@@ -496,10 +469,7 @@ async function dropVoterGroupTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.VoterGroup)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.VoterGroup)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.VoterGroup)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.VoterGroup).ifExists().execute();
 }
 
 async function dropVoterTable(db: Kysely<any>): Promise<void> {
@@ -507,10 +477,7 @@ async function dropVoterTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.Voter)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.Voter)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.Voter)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.Voter).ifExists().execute();
 }
 
 async function dropVoterRegisterTable(db: Kysely<any>): Promise<void> {
@@ -518,10 +485,7 @@ async function dropVoterRegisterTable(db: Kysely<any>): Promise<void> {
     DROP TRIGGER IF EXISTS ${sql.raw(nameEnums.TableName.VoterRegister)}_modified_at_trigger ON ${sql.table(nameEnums.TableName.VoterRegister)};
   `.execute(db);
 
-  await db.schema
-    .dropTable(nameEnums.TableName.VoterRegister)
-    .ifExists()
-    .execute();
+  await db.schema.dropTable(nameEnums.TableName.VoterRegister).ifExists().execute();
 }
 
 export async function down(db: Kysely<any>): Promise<void> {
