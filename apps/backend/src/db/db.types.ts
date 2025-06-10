@@ -3,44 +3,32 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from 'kysely';
+import type { ColumnType } from "kysely";
 
-export type Generated<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S, I | undefined, U>
-    : ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
-export interface _PrismaMigrations {
-  applied_steps_count: Generated<number>;
-  checksum: string;
-  finished_at: Timestamp | null;
-  id: string;
-  logs: string | null;
-  migration_name: string;
-  rolled_back_at: Timestamp | null;
-  started_at: Generated<Timestamp>;
-}
-
 export interface AccessTokenBlacklist {
   accessTokenId: string;
   createdAt: Generated<Timestamp>;
   expiresAt: Timestamp;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
 }
 
 export interface BallotPaper {
   createdAt: Generated<Timestamp>;
   description: string | null;
   electionId: string;
-  id: string;
+  id: Generated<string>;
   maxVotes: number;
   maxVotesPerCandidate: number;
-  modifiedAt: Timestamp;
+  modifiedAt: Generated<Timestamp>;
   name: string;
 }
 
@@ -48,10 +36,10 @@ export interface BallotPaperSection {
   ballotPaperId: string;
   createdAt: Generated<Timestamp>;
   description: string | null;
-  id: string;
+  id: Generated<string>;
   maxVotes: number;
   maxVotesPerCandidate: number;
-  modifiedAt: Timestamp;
+  modifiedAt: Generated<Timestamp>;
   name: string;
 }
 
@@ -59,16 +47,16 @@ export interface BallotPaperSectionCandidate {
   ballotPaperSectionId: string;
   candidateId: string;
   createdAt: Generated<Timestamp>;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
 }
 
 export interface Candidate {
   createdAt: Generated<Timestamp>;
   description: string | null;
   electionId: string;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   title: string;
 }
 
@@ -79,8 +67,8 @@ export interface Election {
   description: string | null;
   electionCreatorId: string;
   generator: Numeric | null;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   name: string;
   primeP: Numeric | null;
   primeQ: Numeric | null;
@@ -95,8 +83,8 @@ export interface User {
   email: string;
   emailVerificationTokenExpiresAt: Timestamp | null;
   emailVerificationTokenHash: string | null;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   passwordHash: string;
   passwordResetTokenExpiresAt: Timestamp | null;
   passwordResetTokenHash: string | null;
@@ -107,16 +95,16 @@ export interface User {
 
 export interface Voter {
   createdAt: Generated<Timestamp>;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   voterGroupId: string;
 }
 
 export interface VoterGroup {
   createdAt: Generated<Timestamp>;
   description: string | null;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   name: string;
   privKey: string | null;
   pubKey: string | null;
@@ -126,14 +114,13 @@ export interface VoterGroup {
 export interface VoterRegister {
   ballotPaperId: string;
   createdAt: Generated<Timestamp>;
-  id: string;
-  modifiedAt: Timestamp;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
   voted: Generated<boolean>;
   voterId: string;
 }
 
 export interface DB {
-  _prisma_migrations: _PrismaMigrations;
   AccessTokenBlacklist: AccessTokenBlacklist;
   BallotPaper: BallotPaper;
   BallotPaperSection: BallotPaperSection;
