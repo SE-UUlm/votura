@@ -14,6 +14,10 @@ import {
 import { electionIdParameter } from './electionIdParameter.js';
 
 export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
+  summary: 'Get ballot papers',
+  description:
+      'A ballot paper is always linked to one election.\n' +
+      'You can get ballot papers for an election.',
   get: {
     tags: [Tag.Elections, Tag.BallotPapers],
     summary: 'Get all ballot papers for an election',

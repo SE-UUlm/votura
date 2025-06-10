@@ -17,10 +17,10 @@ import {
 } from '../globals/responses.js';
 
 export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
-  summary: 'Create and read ballot papers',
+  summary: 'Create ballot papers',
   description:
     'A ballot paper is always linked to one election.\n' +
-    'You can create a new one or read all the existing ones for an election.',
+    'You can create a new one for an election.',
   post: {
     tags: [Tag.BallotPapers],
     summary: 'Create a ballot paper',
