@@ -18,6 +18,7 @@ export const ballotPaperSectionsBallotPapersPathObject: OpenAPIV3.PathItemObject
   description:
     'A ballot paper section is always linked to one ballot paper.\n' +
     'You can get ballot paper sections for a ballot paper.',
+  parameters: [ballotPaperIdParameter],
   get: {
     tags: [Tag.BallotPaperSections, Tag.BallotPapers],
     summary: 'Get all ballot paper section for a ballot paper',
@@ -29,7 +30,6 @@ export const ballotPaperSectionsBallotPapersPathObject: OpenAPIV3.PathItemObject
       'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapersSections',
-    parameters: [ballotPaperIdParameter],
     responses: {
       200: {
         description:
