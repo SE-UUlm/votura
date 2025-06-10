@@ -1,7 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
-import { uuidObjectSchema } from '../../objects/identifiableObject.js';
 import { SelectableBallotPaperObjectSchema } from '../../objects/ballotPaper.js';
 import {
   response400,
@@ -12,6 +11,7 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { electionIdParameter } from './electionIdParameter.js';
 
 export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
   get: {
@@ -25,15 +25,7 @@ export const ballotPapersElectionsPathObject: OpenAPIV3.PathItemObject = {
       'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapers',
-    parameters: [
-      {
-        name: 'electionId',
-        in: 'path',
-        description: 'The ID of the election for which you want to get the ballot papers.',
-        required: true,
-        schema: uuidObjectSchema as OpenAPIV3.SchemaObject,
-      },
-    ],
+    parameters: [electionIdParameter],
     responses: {
       200: {
         description:

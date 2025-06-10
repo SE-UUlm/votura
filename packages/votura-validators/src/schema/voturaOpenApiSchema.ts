@@ -14,6 +14,7 @@ import { logoutUsersPathObject } from './users/logoutUsersPathObject.js';
 import { requestPasswordResetUsersPathObject } from './users/requestPasswordResetUsersPathObject.js';
 import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
 import { ballotPapersElectionsPathObject } from './elections/ballotPapersElectionsPathObject.js';
+import { ballotPaperPathObject } from './ballotPapers/ballotPaperPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -103,5 +104,6 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     '/users/resetPassword': resetPasswordUsersPathObject,
     '/users/logout': logoutUsersPathObject,
     '/ballotPapers': ballotPapersPathObject,
+    '/ballotPapers/{ballotPaperId}': ballotPaperPathObject,
   },
 };
