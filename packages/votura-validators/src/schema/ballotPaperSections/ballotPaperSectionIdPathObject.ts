@@ -16,11 +16,13 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
+import { ballotPaperIdParameter } from '../ballotPapers/ballotPaperIdParameter.js';
 
 export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific ballot paper section',
   description: 'Read, update or delete a specific ballot paper section.',
-  parameters: [ballotPaperSectionIdParameter],
+  parameters: [electionIdParameter, ballotPaperIdParameter, ballotPaperSectionIdParameter],
   put: {
     tags: [Tag.BallotPaperSections],
     summary: 'Update a specific ballot paper section',
