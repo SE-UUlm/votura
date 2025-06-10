@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { uuidObjectSchema } from '../../objects/identifiableObject.js';
-import {Parameter} from '../globals/parameter.js';
+import { Parameter } from '../globals/parameter.js';
 
 export const ballotPaperIdParameter: OpenAPIV3.ParameterObject = {
   name: Parameter.ballotPaperId,

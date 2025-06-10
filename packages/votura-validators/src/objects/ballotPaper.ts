@@ -2,7 +2,7 @@ import { z } from 'zod/v4';
 import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { toJsonSchemaParams } from '../parserParams.js';
-import {ElectionObject} from './election.js';
+import { ElectionObject } from './election.js';
 
 export const BallotPaperObject = z.object({
   ...IdentifiableTimestampedObject.shape,

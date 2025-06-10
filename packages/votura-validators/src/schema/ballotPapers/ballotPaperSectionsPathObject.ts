@@ -16,7 +16,7 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
-import {electionIdParameter} from '../elections/electionIdParameter.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 
 export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get and create ballot paper sections',
