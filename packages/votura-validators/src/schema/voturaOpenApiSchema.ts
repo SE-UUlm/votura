@@ -20,6 +20,8 @@ import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { Parameter } from './globals/parameter.js';
 import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
+import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
+import { getVoterTokensPathObject } from './voterGroups/getVoterTokensPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -118,5 +120,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/resetPassword`]: resetPasswordPathObject,
     [`/users/logout`]: logoutPathObject,
     [`/voterGroups`]: voterGroupsPathObject,
+    [`/voterGroups/{${Parameter.voterGroupId}}`]: voterGroupIdPathObject,
+    [`/voterGroups/{${Parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
   },
 };
