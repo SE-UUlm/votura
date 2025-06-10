@@ -17,6 +17,7 @@ import { ballotPapersElectionsPathObject } from './elections/ballotPapersElectio
 import { ballotPaperPathObject } from './ballotPapers/ballotPaperPathObject.js';
 import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
 import { ballotPaperSectionsBallotPapersPathObject } from './ballotPapers/ballotPaperSectionsBallotPapersPathObject.js';
+import { ballotPaperSectionPathObject } from './ballotPaperSections/ballotPaperSectionPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -109,5 +110,6 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     '/ballotPapers/{ballotPaperId}': ballotPaperPathObject,
     '/ballotPapers/{ballotPaperId}/ballotPaperSections': ballotPaperSectionsBallotPapersPathObject,
     '/ballotPaperSections': ballotPaperSectionsPathObject,
+    '/ballotPaperSections/{ballotPaperSectionId}': ballotPaperSectionPathObject,
   },
 };
