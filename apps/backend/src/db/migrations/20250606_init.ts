@@ -7,10 +7,10 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
     .addColumn(nameEnums.DefaultColumnName.id, 'uuid', (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`),
     )
-    .addColumn(nameEnums.DefaultColumnName.createdAt, 'date', (col) =>
+    .addColumn(nameEnums.DefaultColumnName.createdAt, 'timestamptz(6)', (col) =>
       col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
     )
-    .addColumn(nameEnums.DefaultColumnName.modifiedAt, 'date', (col) =>
+    .addColumn(nameEnums.DefaultColumnName.modifiedAt, 'timestamptz(6)', (col) =>
       col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
     )
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`);
@@ -397,7 +397,7 @@ export async function up(db: Kysely<any>): Promise<void> {
     CREATE OR REPLACE FUNCTION update_modified_at_column()
     RETURNS TRIGGER AS $$
     BEGIN
-        NEW.modifiedAt = NOW();
+        NEW.${sql.raw(`"${nameEnums.DefaultColumnName.modifiedAt}"`)} = NOW();
         RETURN NEW;
     END;
     $$ LANGUAGE plpgsql;
