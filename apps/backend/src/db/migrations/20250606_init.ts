@@ -1,20 +1,26 @@
 import { type CreateTableBuilder, Kysely, sql } from 'kysely';
 import * as nameEnums from '../name_enums.js';
 
-const EMAIL_REGEX = '^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,4}$';
-const NAME_REGEX = '^[a-zA-Z0-9 .,_:;!?()/\\-]{1,256}$'
-
 // --- Helper Functions ---
 const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
   return ctb
-    .addColumn(nameEnums.DefaultColumnName.id, 'uuid', (col) => col.primaryKey().defaultTo(sql`gen_random_uuid()`))
-    .addColumn(nameEnums.DefaultColumnName.createdAt, 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`))
-    .addColumn(nameEnums.DefaultColumnName.modifiedAt, 'date', (col) => col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`)) // I don't know how to set this to update automatically
+    .addColumn(nameEnums.DefaultColumnName.id, 'uuid', (col) =>
+      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
+    )
+    .addColumn(nameEnums.DefaultColumnName.createdAt, 'date', (col) =>
+      col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
+    )
+    .addColumn(nameEnums.DefaultColumnName.modifiedAt, 'date', (col) =>
+      col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
+    ) // I don't know how to set this to update automatically
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`);
 };
 
 const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
-  return ctb.addCheckConstraint('valid_name', sql`"name" ~ ${sql.raw(`'${NAME_REGEX}'`)}`);
+  return ctb.addCheckConstraint(
+    'valid_name',
+    sql`"name" ~ ${sql.raw(`'${nameEnums.RegexPattern.Name}'`)}`,
+  );
 };
 
 // --- Table Creation Helper Functions ---
@@ -24,7 +30,9 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
     .$call(addDefaultColumns)
     .addColumn(nameEnums.UserColumnName.email, 'varchar(256)', (col) => col.notNull().unique())
     .addColumn(nameEnums.UserColumnName.passwordHash, 'varchar(256)', (col) => col.notNull())
-    .addColumn(nameEnums.UserColumnName.verified, 'boolean', (col) => col.notNull().defaultTo(false))
+    .addColumn(nameEnums.UserColumnName.verified, 'boolean', (col) =>
+      col.notNull().defaultTo(false),
+    )
     .addColumn(nameEnums.UserColumnName.emailVerificationTokenHash, 'varchar(64)')
     .addColumn(nameEnums.UserColumnName.emailVerificationTokenExpiresAt, 'timestamptz(6)')
     .addColumn(nameEnums.UserColumnName.passwordResetTokenHash, 'varchar(64)')
@@ -33,7 +41,7 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.UserColumnName.refreshTokenExpiresAt, 'timestamptz(6)')
     .addCheckConstraint(
       'valid_email',
-      sql`"email" ~ ${sql.raw(`'${EMAIL_REGEX}'`)}`,
+      sql`"email" ~ ${sql.raw(`'${nameEnums.RegexPattern.Email}'`)}`,
     )
     .execute();
 }
@@ -42,8 +50,12 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(nameEnums.TableName.AccessTokenBlacklist)
     .$call(addDefaultColumns)
-    .addColumn(nameEnums.AccessTokenBlacklistColumnName.accessTokenId, 'uuid', (col) => col.notNull().unique())
-    .addColumn(nameEnums.AccessTokenBlacklistColumnName.expiresAt, 'timestamptz(6)', (col) => col.notNull())
+    .addColumn(nameEnums.AccessTokenBlacklistColumnName.accessTokenId, 'uuid', (col) =>
+      col.notNull().unique(),
+    )
+    .addColumn(nameEnums.AccessTokenBlacklistColumnName.expiresAt, 'timestamptz(6)', (col) =>
+      col.notNull(),
+    )
     .execute();
 }
 
@@ -55,8 +67,12 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.ElectionColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.ElectionColumnName.votingStartAt, 'timestamptz(6)', (col) => col.notNull())
     .addColumn(nameEnums.ElectionColumnName.votingEndAt, 'timestamptz(6)', (col) => col.notNull())
-    .addColumn(nameEnums.ElectionColumnName.configFrozen, 'boolean', (col) => col.notNull().defaultTo(false))
-    .addColumn(nameEnums.ElectionColumnName.allowInvalidVotes, 'boolean', (col) => col.notNull().defaultTo(false))
+    .addColumn(nameEnums.ElectionColumnName.configFrozen, 'boolean', (col) =>
+      col.notNull().defaultTo(false),
+    )
+    .addColumn(nameEnums.ElectionColumnName.allowInvalidVotes, 'boolean', (col) =>
+      col.notNull().defaultTo(false),
+    )
     .addColumn(nameEnums.ElectionColumnName.pubKey, sql`numeric`)
     .addColumn(nameEnums.ElectionColumnName.privKey, sql`numeric`)
     .addColumn(nameEnums.ElectionColumnName.primeP, sql`numeric`)
@@ -75,7 +91,9 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.BallotPaperColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(nameEnums.BallotPaperColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.BallotPaperColumnName.maxVotes, 'integer', (col) => col.notNull())
-    .addColumn(nameEnums.BallotPaperColumnName.maxVotesPerCandidate, 'integer', (col) => col.notNull())
+    .addColumn(nameEnums.BallotPaperColumnName.maxVotesPerCandidate, 'integer', (col) =>
+      col.notNull(),
+    )
     .addColumn(nameEnums.BallotPaperColumnName.electionId, 'uuid', (col) => col.notNull())
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
     .$call(addNameCheckConstraint)
@@ -89,7 +107,9 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.BallotPaperSectionColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(nameEnums.BallotPaperSectionColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.BallotPaperSectionColumnName.maxVotes, 'integer', (col) => col.notNull())
-    .addColumn(nameEnums.BallotPaperSectionColumnName.maxVotesPerCandidate, 'integer', (col) => col.notNull())
+    .addColumn(nameEnums.BallotPaperSectionColumnName.maxVotesPerCandidate, 'integer', (col) =>
+      col.notNull(),
+    )
     .addColumn(nameEnums.BallotPaperSectionColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
     .$call(addNameCheckConstraint)
@@ -100,8 +120,14 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
   await db.schema
     .createTable(nameEnums.TableName.BallotPaperSectionCandidate)
     .$call(addDefaultColumns)
-    .addColumn(nameEnums.BallotPaperSectionCandidateColumnName.ballotPaperSectionId, 'uuid', (col) => col.notNull())
-    .addColumn(nameEnums.BallotPaperSectionCandidateColumnName.candidateId, 'uuid', (col) => col.notNull())
+    .addColumn(
+      nameEnums.BallotPaperSectionCandidateColumnName.ballotPaperSectionId,
+      'uuid',
+      (col) => col.notNull(),
+    )
+    .addColumn(nameEnums.BallotPaperSectionCandidateColumnName.candidateId, 'uuid', (col) =>
+      col.notNull(),
+    )
     .execute();
 }
 
@@ -112,7 +138,10 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.CandidateColumnName.title, 'varchar(256)', (col) => col.notNull())
     .addColumn(nameEnums.CandidateColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.CandidateColumnName.electionId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint('valid_title', sql`"title" ~ ${sql.raw(`'${NAME_REGEX}'`)}`)
+    .addCheckConstraint(
+      'valid_title',
+      sql`"title" ~ ${sql.raw(`'${nameEnums.RegexPattern.Name}'`)}`,
+    )
     .execute();
 }
 
@@ -124,7 +153,9 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.VoterGroupColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.VoterGroupColumnName.pubKey, 'text')
     .addColumn(nameEnums.VoterGroupColumnName.privKey, 'text')
-    .addColumn(nameEnums.VoterGroupColumnName.voterTokensGenerated, 'boolean', (col) => col.notNull().defaultTo(false))
+    .addColumn(nameEnums.VoterGroupColumnName.voterTokensGenerated, 'boolean', (col) =>
+      col.notNull().defaultTo(false),
+    )
     .$call(addNameCheckConstraint)
     .execute();
 }
@@ -141,7 +172,9 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(nameEnums.TableName.VoterRegister)
     .$call(addDefaultColumns)
-    .addColumn(nameEnums.VoterRegisterColumnName.voted, 'boolean', (col) => col.notNull().defaultTo(false))
+    .addColumn(nameEnums.VoterRegisterColumnName.voted, 'boolean', (col) =>
+      col.notNull().defaultTo(false),
+    )
     .addColumn(nameEnums.VoterRegisterColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
     .addColumn(nameEnums.VoterRegisterColumnName.voterId, 'uuid', (col) => col.notNull())
     .execute();
@@ -265,7 +298,7 @@ async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(nameEnums.TableName.VoterRegister)
     .addForeignKeyConstraint(
-      nameEnums.VoterRegisterFKName.voterId, 
+      nameEnums.VoterRegisterFKName.voterId,
       [nameEnums.VoterRegisterColumnName.voterId],
       nameEnums.TableName.Voter,
       [nameEnums.DefaultColumnName.id],
@@ -296,8 +329,7 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable(nameEnums.TableName.VoterGroup).execute();
   await db.schema.dropTable(nameEnums.TableName.Candidate).execute();
   await db.schema.dropTable(nameEnums.TableName.BallotPaperSectionCandidate).execute();
-  await db.schema.dropTable(nameEnums.TableName.BallotPaperSection
-  ).execute();
+  await db.schema.dropTable(nameEnums.TableName.BallotPaperSection).execute();
   await db.schema.dropTable(nameEnums.TableName.BallotPaper).execute();
   await db.schema.dropTable(nameEnums.TableName.Election).execute();
   await db.schema.dropTable(nameEnums.TableName.AccessTokenBlacklist).execute();
