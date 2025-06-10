@@ -110,7 +110,6 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/requestPasswordReset`]: requestPasswordResetPathObject,
     [`/users/resetPassword`]: resetPasswordPathObject,
     [`/users/logout`]: logoutPathObject,
-    [`/ballotPapers`]: ballotPapersPathObject,
     [`/ballotPapers/{ballotPaperId}`]: ballotPaperIdPathObject,
     [`/ballotPapers/{ballotPaperId}/ballotPaperSections`]: ballotPaperSectionsPathObject,
     [`/ballotPaperSections`]: ballotPaperSectionsPathObject,
