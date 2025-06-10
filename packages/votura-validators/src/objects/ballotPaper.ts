@@ -1,11 +1,6 @@
 import { z } from 'zod/v4';
 import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import {
-  InsertableElectionObject,
-  SelectableElectionObject,
-  UpdateableElectionObject,
-} from './election.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 
 export const BallotPaperObject = z.object({
@@ -55,7 +50,7 @@ export const InsertableBallotPaperObject = BallotPaperObject.pick({
 export type InsertableBallotPaper = z.infer<typeof InsertableBallotPaperObject>;
 
 export const InsertableBallotPaperObjectSchema = z.toJSONSchema(
-  InsertableElectionObject,
+  InsertableBallotPaperObject,
   toJsonSchemaParams,
 );
 
@@ -73,7 +68,7 @@ export const SelectableBallotPaperObject = BallotPaperObject.pick({
 export type SelectableBallotPaper = z.infer<typeof SelectableBallotPaperObject>;
 
 export const SelectableBallotPaperObjectSchema = z.toJSONSchema(
-  SelectableElectionObject,
+  SelectableBallotPaperObject,
   toJsonSchemaParams,
 );
 
@@ -87,6 +82,6 @@ export const UpdateableBallotPaperObject = BallotPaperObject.pick({
 export type UpdateableBallotPaper = z.infer<typeof UpdateableBallotPaperObject>;
 
 export const UpdateableBallotPaperObjectSchema = z.toJSONSchema(
-  UpdateableElectionObject,
+  UpdateableBallotPaperObject,
   toJsonSchemaParams,
 );
