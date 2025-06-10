@@ -16,13 +16,6 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
     .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`);
 };
 
-const addNameCheckConstraint = (ctb: CreateTableBuilder<any, any>) => {
-  return ctb.addCheckConstraint(
-    'valid_name',
-    sql`"name" ~ ${sql.lit(nameEnums.RegexPattern.Name)}`,
-  );
-};
-
 // --- Table Creation Helper Functions ---
 async function createUserTable(db: Kysely<any>): Promise<void> {
   await db.schema
@@ -93,7 +86,6 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.ElectionColumnName.generator, sql`numeric`)
     .addColumn(nameEnums.ElectionColumnName.electionCreatorId, 'uuid', (col) => col.notNull())
     .addCheckConstraint('votingEnd_after_votingStart', sql`"votingEndAt" > "votingStartAt"`)
-    .$call(addNameCheckConstraint)
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
@@ -117,7 +109,6 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
     )
     .addColumn(nameEnums.BallotPaperColumnName.electionId, 'uuid', (col) => col.notNull())
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
-    .$call(addNameCheckConstraint)
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
@@ -141,7 +132,6 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
     )
     .addColumn(nameEnums.BallotPaperSectionColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
     .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
-    .$call(addNameCheckConstraint)
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
@@ -183,7 +173,6 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.CandidateColumnName.title, 'varchar(256)', (col) => col.notNull())
     .addColumn(nameEnums.CandidateColumnName.description, 'varchar(256)')
     .addColumn(nameEnums.CandidateColumnName.electionId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint('valid_title', sql`"title" ~ ${sql.lit(nameEnums.RegexPattern.Name)}`)
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
@@ -206,7 +195,6 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     .addColumn(nameEnums.VoterGroupColumnName.voterTokensGenerated, 'boolean', (col) =>
       col.notNull().defaultTo(false),
     )
-    .$call(addNameCheckConstraint)
     .execute();
 
   // Add a trigger to update modifiedAt on row updates

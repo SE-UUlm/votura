@@ -1,7 +1,6 @@
 // --- Regex patterns ---
 export enum RegexPattern {
   Email = '^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,4}$',
-  Name = '^[a-zA-Z0-9 .,_:;!?()/\\-]{1,256}$',
 }
 
 // --- Table names ---
