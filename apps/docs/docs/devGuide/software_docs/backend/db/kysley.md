@@ -115,14 +115,14 @@ The migrations in this project are in the `src/db/migrations` directory.
 Each migration file typically `up` and `down` functions to apply and revert schema changes. These functions will receive a Kysely instance to execute queries.
 
 The runner is in the `src/db/migrate.ts` file.
-You can run it using `npm tsx path/to/migrate.ts`.
+You can run it using `npx tsx path/to/migrate.ts`.
 
 ### Seeding with Kysely
 
 Seeding involves populating your database with initial data (e.g., for development or testing). Similar to migrations, Kysely doesn't have a built-in seeding mechanism, but you can create a simple script that uses Kysely to insert data.
 
 An example is in the `src/db/seed.ts` file.
-You can run it using `npm tsx path/to/seed.ts`.
+You can run it using `npx tsx path/to/seed.ts`.
 
 ### Further readings
 
