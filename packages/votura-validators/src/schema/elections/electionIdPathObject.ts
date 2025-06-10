@@ -1,5 +1,4 @@
 import { OpenAPIV3 } from 'openapi-types';
-import { uuidObjectSchema } from '../../objects/identifiableObject.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
