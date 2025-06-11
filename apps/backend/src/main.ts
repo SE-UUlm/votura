@@ -2,25 +2,27 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
+import { HttpStatusCode } from './httpStatusCode.js';
 
 dotenv.config();
 
-async function main() {
+async function main(): Promise<void> {
   const app = express();
-  const PORT = process.env.PORT ?? 4000;
+  const defaultPort = 4000;
+  const port = process.env.PORT ?? defaultPort;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
 
   app.use('/users', usersRouter);
   // Fallback for unhandled routes
-  app.use((_, res) => {
-    res.sendStatus(400);
+  app.use((_req, res) => {
+    res.sendStatus(HttpStatusCode.BadRequest);
   });
 
   app
-    .listen(PORT, () => {
-      console.info(`Server is running. Listening on port ${PORT}`);
+    .listen(port, () => {
+      console.info(`Server is running. Listening on port ${port}`);
     })
     .on('error', (err) => {
       console.error(err);
