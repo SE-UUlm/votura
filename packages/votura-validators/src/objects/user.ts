@@ -1,10 +1,10 @@
 import { z } from 'zod/v4';
-import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
-export const UserObject = z.object({
-  ...IdentifiableTimestampedObject.shape,
+export const userObject = z.object({
+  ...identifiableTimestampedObject.shape,
   email: z.email().min(5).max(256).register(voturaMetadataRegistry, {
     description:
       'The users email address (represents the username). This is the unique identifier for the user.',
@@ -52,52 +52,52 @@ export const UserObject = z.object({
     }),
 });
 
-export type User = z.infer<typeof UserObject>;
+export type User = z.infer<typeof userObject>;
 
-export const InsertableUserObject = UserObject.pick({ email: true, password: true });
+export const insertableUserObject = userObject.pick({ email: true, password: true });
 
-export type InsertableUser = z.infer<typeof InsertableUserObject>;
+export type InsertableUser = z.infer<typeof insertableUserObject>;
 
-export const InsertableUserObjectSchema = z.toJSONSchema(InsertableUserObject, toJsonSchemaParams);
+export const insertableUserObjectSchema = z.toJSONSchema(insertableUserObject, toJsonSchemaParams);
 
-export const ApiTokenUserObject = UserObject.pick({
+export const apiTokenUserObject = userObject.pick({
   refreshToken: true,
   accessToken: true,
 });
 
-export type ApiTokenUser = z.infer<typeof ApiTokenUserObject>;
+export type ApiTokenUser = z.infer<typeof apiTokenUserObject>;
 
-export const ApiTokenUserObjectSchema = z.toJSONSchema(ApiTokenUserObject, toJsonSchemaParams);
+export const apiTokenUserObjectSchema = z.toJSONSchema(apiTokenUserObject, toJsonSchemaParams);
 
-export const RefreshRequestUserObject = UserObject.pick({
+export const refreshRequestUserObject = userObject.pick({
   refreshToken: true,
 });
 
-export type RefreshRequestUser = z.infer<typeof RefreshRequestUserObject>;
+export type RefreshRequestUser = z.infer<typeof refreshRequestUserObject>;
 
-export const RefreshRequestUserObjectSchema = z.toJSONSchema(
-  RefreshRequestUserObject,
+export const refreshRequestUserObjectSchema = z.toJSONSchema(
+  refreshRequestUserObject,
   toJsonSchemaParams,
 );
 
-export const RequestPasswordResetUserObject = UserObject.pick({
+export const requestPasswordResetUserObject = userObject.pick({
   email: true,
 });
 
-export type RequestPasswordResetUser = z.infer<typeof RequestPasswordResetUserObject>;
+export type RequestPasswordResetUser = z.infer<typeof requestPasswordResetUserObject>;
 
-export const RequestPasswordResetUserObjectSchema = z.toJSONSchema(
-  RequestPasswordResetUserObject,
+export const requestPasswordResetUserObjectSchema = z.toJSONSchema(
+  requestPasswordResetUserObject,
   toJsonSchemaParams,
 );
 
-export const PasswordResetUserObject = UserObject.pick({
+export const passwordResetUserObject = userObject.pick({
   passwordResetTokenHash: true,
 });
 
-export type PasswordResetUser = z.infer<typeof PasswordResetUserObject>;
+export type PasswordResetUser = z.infer<typeof passwordResetUserObject>;
 
-export const PasswordResetUserObjectSchema = z.toJSONSchema(
-  PasswordResetUserObject,
+export const passwordResetUserObjectSchema = z.toJSONSchema(
+  passwordResetUserObject,
   toJsonSchemaParams,
 );
