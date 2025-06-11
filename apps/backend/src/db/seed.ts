@@ -12,7 +12,7 @@ async function seed() {
 
 seed()
   .then(() => {
-    console.log('Seeding completed.');
+    console.info('Seeding completed.');
     return db.destroy();
   })
   .catch((err) => {
