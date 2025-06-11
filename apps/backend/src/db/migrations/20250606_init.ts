@@ -23,7 +23,7 @@ import {
 } from '../name_enums.js';
 
 // --- Helper Functions ---
-const addDefaultColumns = (ctb: CreateTableBuilder<any, any>) => {
+const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
   return ctb
     .addColumn(DefaultColumnName.id, 'uuid', (col) =>
       col.primaryKey().defaultTo(sql`gen_random_uuid()`),

@@ -7,7 +7,7 @@ import { db } from './database.js';
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
-async function migrateToLatest() {
+async function migrateToLatest(): Promise<void> {
   const migrator = new Migrator({
     db,
     provider: new FileMigrationProvider({

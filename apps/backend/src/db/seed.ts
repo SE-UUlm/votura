@@ -1,6 +1,6 @@
 import { db } from './database.js';
 
-async function seed() {
+async function seed(): Promise<void> {
   await db
     .insertInto('User')
     .values({
