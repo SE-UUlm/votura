@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { electionsPathObject } from './elections/electionsPathObject.js';
 import { Tag } from './globals/tag.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';

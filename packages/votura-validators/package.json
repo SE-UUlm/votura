@@ -17,7 +17,7 @@
     "ci": "npm run build && npm run check-format && npm run check-exports && npm run test"
   },
   "devDependencies": {
-    "@arethetypeswrong/cli": "^0.17.4",
+    "@arethetypeswrong/cli": "^0.18.2",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "eslint": "^9.25.1",

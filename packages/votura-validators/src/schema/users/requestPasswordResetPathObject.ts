@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
 import { requestPasswordResetUserObjectSchema } from '../../objects/user.js';
 import { response406, response415, response429, responseDefault } from '../globals/responses.js';

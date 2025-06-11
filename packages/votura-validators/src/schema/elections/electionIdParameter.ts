@@ -1,5 +1,5 @@
 import { uuidObjectSchema } from '../../objects/identifiableObject.js';
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { Parameter } from '../globals/parameter.js';
 
 export const electionIdParameter: OpenAPIV3.ParameterObject = {

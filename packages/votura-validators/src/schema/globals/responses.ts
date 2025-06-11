@@ -1,4 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import { toJsonSchemaParams } from '../../parserParams.js';
 import { z } from 'zod/v4';
 import {

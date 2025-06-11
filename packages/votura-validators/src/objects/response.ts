@@ -17,9 +17,8 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
   const combinedIssues = mappedIssues.reduce((previousValue, currentValue, currentIndex) => {
     if (currentIndex === 0) {
       return previousValue + currentValue;
-    } else {
-      return previousValue + '; ' + currentValue;
     }
+    return previousValue + '; ' + currentValue;
   }, '');
 
   return {
