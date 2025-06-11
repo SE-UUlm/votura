@@ -7,7 +7,7 @@ dotenv.config();
 
 async function main() {
   const app = express();
-  const PORT = process.env.PORT ?? 3000;
+  const PORT = process.env.PORT ?? 4000;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
@@ -18,9 +18,13 @@ async function main() {
     res.sendStatus(400);
   });
 
-  app.listen(PORT, () => {
-    console.log(`Server is running.`);
-  });
+  app
+    .listen(PORT, () => {
+      console.info(`Server is running. Listening on port ${PORT}`);
+    })
+    .on('error', (err) => {
+      console.error(err);
+    });
 }
 
 main()
