@@ -79,7 +79,7 @@ It supports PostgreSQL, MySQL, and SQLite. This section provides a minimal intro
 
 Unlike ORMs that rely on a separate schema file, Kysely leverages TypeScript's type system directly.
 You define your database table structures as TypeScript interfaces, which Kysely then uses to provide type-safety for your queries.
-Example of src/db/types.ts defining your database schema:
+Example of src/db/types/db.d.ts defining your database schema:
 
 ```typescript
 export interface UserTable {
@@ -102,6 +102,9 @@ export interface Database {
   // add other tables here
 }
 ```
+
+To generate a new file for our project just call `npm run gen-types`.
+This requires the database for which you want to generate the types to be running and for you to have a .env-File in /backend containing `export DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"` with the port you are actually using.
 
 ### Database Migrations with Kysely
 

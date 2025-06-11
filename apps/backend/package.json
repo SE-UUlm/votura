@@ -48,7 +48,8 @@
     "build": "tsc",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
-    "postgres-down": "docker compose down"
+    "postgres-down": "docker compose down",
+    "gen-types": "kysely-codegen"
   },
   "type": "module",
   "devDependencies": {
