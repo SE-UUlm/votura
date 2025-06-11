@@ -36,4 +36,9 @@ async function migrateToLatest(): Promise<void> {
   await db.destroy();
 }
 
-migrateToLatest();
+try {
+  await migrateToLatest();
+} catch {
+  console.error('Migration failed');
+  process.exit(1);
+}
