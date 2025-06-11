@@ -1,10 +1,10 @@
 import { z } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 
-export const ElectionObject = z.object({
-  ...IdentifiableTimestampedObject.shape,
+export const electionObject = z.object({
+  ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the election.',
   }),
@@ -49,9 +49,9 @@ export const ElectionObject = z.object({
   }),
 });
 
-export type Election = z.infer<typeof ElectionObject>;
+export type Election = z.infer<typeof electionObject>;
 
-export const InsertableElectionObject = ElectionObject.pick({
+export const insertableElectionObject = electionObject.pick({
   name: true,
   description: true,
   private: true,
@@ -60,14 +60,14 @@ export const InsertableElectionObject = ElectionObject.pick({
   allowInvalidVotes: true,
 });
 
-export type InsertableElection = z.infer<typeof InsertableElectionObject>;
+export type InsertableElection = z.infer<typeof insertableElectionObject>;
 
-export const InsertableElectionObjectSchema = z.toJSONSchema(
-  InsertableElectionObject,
+export const insertableElectionObjectSchema = z.toJSONSchema(
+  insertableElectionObject,
   toJsonSchemaParams,
 );
 
-export const SelectableElectionObject = ElectionObject.pick({
+export const selectableElectionObject = electionObject.pick({
   id: true,
   createdAt: true,
   modifiedAt: true,
@@ -84,14 +84,14 @@ export const SelectableElectionObject = ElectionObject.pick({
   generator: true,
 });
 
-export type SelectableElection = z.infer<typeof SelectableElectionObject>;
+export type SelectableElection = z.infer<typeof selectableElectionObject>;
 
-export const SelectableElectionObjectSchema = z.toJSONSchema(
-  SelectableElectionObject,
+export const selectableElectionObjectSchema = z.toJSONSchema(
+  selectableElectionObject,
   toJsonSchemaParams,
 );
 
-export const UpdateableElectionObject = ElectionObject.pick({
+export const updateableElectionObject = electionObject.pick({
   name: true,
   description: true,
   votingStartAt: true,
@@ -100,9 +100,9 @@ export const UpdateableElectionObject = ElectionObject.pick({
   private: true,
 });
 
-export type UpdateableElection = z.infer<typeof UpdateableElectionObject>;
+export type UpdateableElection = z.infer<typeof updateableElectionObject>;
 
-export const UpdateableElectionObjectSchema = z.toJSONSchema(
-  UpdateableElectionObject,
+export const updateableElectionObjectSchema = z.toJSONSchema(
+  updateableElectionObject,
   toJsonSchemaParams,
 );

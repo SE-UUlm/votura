@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
-export const TimestampedObject = z.object({
+export const timestampedObject = z.object({
   createdAt: z.iso.datetime().register(voturaMetadataRegistry, {
     description: 'The creation date of the object.',
     example: '2032-10-01T00:00:00Z',
