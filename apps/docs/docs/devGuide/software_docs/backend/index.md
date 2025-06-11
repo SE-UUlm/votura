@@ -9,7 +9,7 @@ draft: false
 ---
 
 Your backend is the heart of your votura project.
-It handles all the API routes, the business logic and the connection to the data base.
+It handles all the API routes, the business logic and the connection to the database.
 It is written in TypeScript and uses the [Express](https://expressjs.com/) framework.
 
 As you can see in the following image, the backend follows a simple layered architecture.
