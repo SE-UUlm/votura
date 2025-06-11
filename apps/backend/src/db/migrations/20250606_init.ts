@@ -20,7 +20,7 @@ import {
   CandidateFKName,
   VoterFKName,
   VoterRegisterFKName,
-} from '../name_enums.js';
+} from '../nameEnums.js';
 
 // --- Helper Functions ---
 const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
@@ -400,87 +400,6 @@ export async function up(db: Kysely<any>): Promise<void> {
   await addForeignKeys(db);
 }
 
-// --- Migration Down Helper functions ---
-async function dropUserTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.User)}_modified_at_trigger ON ${sql.table(TableName.User)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.User).ifExists().execute();
-}
-
-async function dropAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.AccessTokenBlacklist)}_modified_at_trigger ON ${sql.table(TableName.AccessTokenBlacklist)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.AccessTokenBlacklist).ifExists().execute();
-}
-
-async function dropElectionTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.Election)}_modified_at_trigger ON ${sql.table(TableName.Election)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.Election).ifExists().execute();
-}
-
-async function dropBallotPaperTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.BallotPaper)}_modified_at_trigger ON ${sql.table(TableName.BallotPaper)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.BallotPaper).ifExists().execute();
-}
-
-async function dropBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.BallotPaperSection)}_modified_at_trigger ON ${sql.table(TableName.BallotPaperSection)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.BallotPaperSection).ifExists().execute();
-}
-
-async function dropBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.BallotPaperSectionCandidate)}_modified_at_trigger ON ${sql.table(TableName.BallotPaperSectionCandidate)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.BallotPaperSectionCandidate).ifExists().execute();
-}
-
-async function dropCandidateTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.Candidate)}_modified_at_trigger ON ${sql.table(TableName.Candidate)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.Candidate).ifExists().execute();
-}
-
-async function dropVoterGroupTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.VoterGroup)}_modified_at_trigger ON ${sql.table(TableName.VoterGroup)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.VoterGroup).ifExists().execute();
-}
-
-async function dropVoterTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.Voter)}_modified_at_trigger ON ${sql.table(TableName.Voter)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.Voter).ifExists().execute();
-}
-
-async function dropVoterRegisterTable(db: Kysely<any>): Promise<void> {
-  await sql`
-    DROP TRIGGER IF EXISTS ${sql.raw(TableName.VoterRegister)}_modified_at_trigger ON ${sql.table(TableName.VoterRegister)};
-  `.execute(db);
-
-  await db.schema.dropTable(TableName.VoterRegister).ifExists().execute();
-}
-
 export async function down(db: Kysely<any>): Promise<void> {
   // Drop the update_modified_at_column function
   await sql`
@@ -488,14 +407,14 @@ export async function down(db: Kysely<any>): Promise<void> {
   `.execute(db);
 
   // Drop tables in reverse order of creation to handle foreign key dependencies
-  await dropVoterRegisterTable(db);
-  await dropVoterTable(db);
-  await dropVoterGroupTable(db);
-  await dropCandidateTable(db);
-  await dropBallotPaperSectionCandidateTable(db);
-  await dropBallotPaperSectionTable(db);
-  await dropBallotPaperTable(db);
-  await dropElectionTable(db);
-  await dropAccessTokenBlacklistTable(db);
-  await dropUserTable(db);
+  await db.schema.dropTable(TableName.VoterRegister).ifExists().execute();
+  await db.schema.dropTable(TableName.Voter).ifExists().execute();
+  await db.schema.dropTable(TableName.VoterGroup).ifExists().execute();
+  await db.schema.dropTable(TableName.Candidate).ifExists().execute();
+  await db.schema.dropTable(TableName.BallotPaperSectionCandidate).ifExists().execute();
+  await db.schema.dropTable(TableName.BallotPaperSection).ifExists().execute();
+  await db.schema.dropTable(TableName.BallotPaper).ifExists().execute();
+  await db.schema.dropTable(TableName.Election).ifExists().execute();
+  await db.schema.dropTable(TableName.AccessTokenBlacklist).ifExists().execute();
+  await db.schema.dropTable(TableName.User).ifExists().execute();
 }
