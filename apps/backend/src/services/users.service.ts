@@ -1,5 +1,5 @@
 import { db } from '../db/database.js';
-import type { User } from '../db/db.types.js';
+import type { User } from '../db/types/db.js';
 import type { Selectable } from 'kysely';
 
 export async function findUserById(id: Selectable<User>['id']): Promise<Selectable<User> | null> {
