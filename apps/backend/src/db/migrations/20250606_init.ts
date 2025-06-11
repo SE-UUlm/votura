@@ -1,4 +1,4 @@
-import { type CreateTableBuilder, Kysely, sql } from 'kysely';
+import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
 import {
   RegexPattern,
   TableName,
