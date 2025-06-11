@@ -53,6 +53,11 @@
     "unrepresentable",
     "uuidv",
     "Updateable",
-    "Metadate"
+    "Metadate",
+    "Kysely",
+    "fkey",
+    "hashedpassword",
+    "codegen",
+    "plpgsql"
   ]
 }
