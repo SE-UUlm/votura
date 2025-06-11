@@ -27,7 +27,7 @@ async function migrateToLatest(): Promise<void> {
     }
   });
 
-  if (Boolean(error)) {
+  if (error as boolean) {
     console.error('failed to migrate');
     console.error(error);
     process.exit(1);
