@@ -10,12 +10,6 @@ hide_table_of_contents: false
 draft: false
 ---
 
-:::warning
-
-This page is still under construction and will be updated soon.
-
-:::
-
 ## Prerequisites
 
 Make sure you have your database connection URL (that includes your authentication credentials) at hand! This will allow
