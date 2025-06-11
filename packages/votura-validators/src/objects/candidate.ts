@@ -1,12 +1,12 @@
 import { z } from 'zod/v4';
-import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import { BallotPaperSectionObject } from './ballotPaperSection.js';
-import { ElectionObject } from './election.js';
+import { ballotPaperSectionObject } from './ballotPaperSection.js';
+import { electionObject } from './election.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 
-export const CandidateObject = z.object({
-  ...IdentifiableTimestampedObject.shape,
+export const candidateObject = z.object({
+  ...identifiableTimestampedObject.shape,
   title: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The title / name of the candidate.',
     example: 'Option A',
@@ -16,33 +16,33 @@ export const CandidateObject = z.object({
     example: 'This is a super important description.',
   }),
   ballotPaperSections: z
-    .array(BallotPaperSectionObject.shape.id)
+    .array(ballotPaperSectionObject.shape.id)
     .min(0)
     .register(voturaMetadataRegistry, {
       description: 'The IDs of the ballot paper section where this candidate appears.',
     }),
-  electionId: ElectionObject.shape.id.register(voturaMetadataRegistry, {
+  electionId: electionObject.shape.id.register(voturaMetadataRegistry, {
     description: 'The ID of the election to which this candidate belongs.',
     example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
   }),
 });
 
-export type Candidate = z.infer<typeof CandidateObject>;
+export type Candidate = z.infer<typeof candidateObject>;
 
-export const InsertableCandidateObject = CandidateObject.pick({
+export const insertableCandidateObject = candidateObject.pick({
   title: true,
   description: true,
   ballotPaperSections: true,
 });
 
-export type InsertableCandidate = z.infer<typeof InsertableCandidateObject>;
+export type InsertableCandidate = z.infer<typeof insertableCandidateObject>;
 
-export const InsertableCandidateObjectSchema = z.toJSONSchema(
-  InsertableCandidateObject,
+export const insertableCandidateObjectSchema = z.toJSONSchema(
+  insertableCandidateObject,
   toJsonSchemaParams,
 );
 
-export const SelectableCandidateObject = CandidateObject.pick({
+export const selectableCandidateObject = candidateObject.pick({
   id: true,
   createdAt: true,
   modifiedAt: true,
@@ -52,22 +52,22 @@ export const SelectableCandidateObject = CandidateObject.pick({
   electionId: true,
 });
 
-export type SelectableCandidate = z.infer<typeof SelectableCandidateObject>;
+export type SelectableCandidate = z.infer<typeof selectableCandidateObject>;
 
-export const SelectableCandidateObjectSchema = z.toJSONSchema(
-  SelectableCandidateObject,
+export const selectableCandidateObjectSchema = z.toJSONSchema(
+  selectableCandidateObject,
   toJsonSchemaParams,
 );
 
-export const UpdateableCandidateObject = CandidateObject.pick({
+export const updateableCandidateObject = candidateObject.pick({
   title: true,
   description: true,
   ballotPaperSections: true,
 });
 
-export type UpdateableCandidate = z.infer<typeof UpdateableCandidateObject>;
+export type UpdateableCandidate = z.infer<typeof updateableCandidateObject>;
 
-export const UpdateableCandidateObjectSchema = z.toJSONSchema(
-  UpdateableCandidateObject,
+export const updateableCandidateObjectSchema = z.toJSONSchema(
+  updateableCandidateObject,
   toJsonSchemaParams,
 );

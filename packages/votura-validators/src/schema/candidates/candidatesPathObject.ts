@@ -3,8 +3,8 @@ import { Tag } from '../globals/tag.js';
 import { electionIdParameter } from '../elections/electionIdParameter.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  InsertableCandidateObjectSchema,
-  SelectableCandidateObjectSchema,
+  insertableCandidateObjectSchema,
+  selectableCandidateObjectSchema,
 } from '../../objects/candidate.js';
 import {
   response400,
@@ -39,7 +39,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -49,7 +49,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
           'Created. The request was successfully executed. Successfully created a new candidate.',
         content: {
           'application/json': {
-            schema: SelectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -84,7 +84,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
               type: 'array',
               minItems: 0,
               uniqueItems: true,
-              items: SelectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+              items: selectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
             },
           },
         },

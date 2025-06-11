@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
-import { RequestPasswordResetUserObjectSchema } from '../../objects/user.js';
+import { requestPasswordResetUserObjectSchema } from '../../objects/user.js';
 import { response406, response415, response429, responseDefault } from '../globals/responses.js';
 
 export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
@@ -20,7 +20,7 @@ export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: RequestPasswordResetUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: requestPasswordResetUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },

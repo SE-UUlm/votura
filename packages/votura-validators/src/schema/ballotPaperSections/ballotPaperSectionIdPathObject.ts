@@ -3,8 +3,8 @@ import { ballotPaperSectionIdParameter } from './ballotPaperSectionIdParameter.j
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  SelectableBallotPaperSectionObjectSchema,
-  UpdateableBallotPaperSectionObjectSchema,
+  selectableBallotPaperSectionObjectSchema,
+  updateableBallotPaperSectionObjectSchema,
 } from '../../objects/ballotPaperSection.js';
 import {
   response400,
@@ -39,7 +39,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: UpdateableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+          schema: updateableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -49,7 +49,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. The ballot paper section was updated.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -80,7 +80,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. Returns the requested ballot paper section with all public information fields.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

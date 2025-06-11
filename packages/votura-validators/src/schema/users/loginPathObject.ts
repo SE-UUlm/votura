@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
-import { ApiTokenUserObjectSchema, InsertableUserObjectSchema } from '../../objects/user.js';
+import { apiTokenUserObjectSchema, insertableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -23,7 +23,7 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       content: {
         'application/json': {
-          schema: InsertableUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -32,7 +32,7 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. User was verified.',
         content: {
           'application/json': {
-            schema: ApiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
+            schema: apiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

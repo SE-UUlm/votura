@@ -1,11 +1,11 @@
 import { z } from 'zod/v4';
-import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import { BallotPaperObject } from './ballotPaper.js';
+import { ballotPaperObject } from './ballotPaper.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 
-export const BallotPaperSectionObject = z.object({
-  ...IdentifiableTimestampedObject.shape,
+export const ballotPaperSectionObject = z.object({
+  ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the ballot paper section.',
   }),
@@ -34,15 +34,15 @@ export const BallotPaperSectionObject = z.object({
         'If the ballot paper section contains more votes on one candidate than the `maxVotesPerCandidate` value, the whole vote / ballot paper will be invalid.',
       example: 42,
     }),
-  ballotPaperId: BallotPaperObject.shape.id.register(voturaMetadataRegistry, {
+  ballotPaperId: ballotPaperObject.shape.id.register(voturaMetadataRegistry, {
     description: 'The ID of the ballot paper to which this ballot paper section belongs.',
     example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
   }),
 });
 
-export type BallotPaperSection = z.infer<typeof BallotPaperSectionObject>;
+export type BallotPaperSection = z.infer<typeof ballotPaperSectionObject>;
 
-export const InsertableBallotPaperSectionObject = BallotPaperSectionObject.pick({
+export const insertableBallotPaperSectionObject = ballotPaperSectionObject.pick({
   name: true,
   description: true,
   maxVotes: true,
@@ -50,14 +50,14 @@ export const InsertableBallotPaperSectionObject = BallotPaperSectionObject.pick(
   ballotPaperId: true,
 });
 
-export type InsertableBallotPaperSection = z.infer<typeof InsertableBallotPaperSectionObject>;
+export type InsertableBallotPaperSection = z.infer<typeof insertableBallotPaperSectionObject>;
 
-export const InsertableBallotPaperSectionObjectSchema = z.toJSONSchema(
-  InsertableBallotPaperSectionObject,
+export const insertableBallotPaperSectionObjectSchema = z.toJSONSchema(
+  insertableBallotPaperSectionObject,
   toJsonSchemaParams,
 );
 
-export const SelectableBallotPaperSectionObject = BallotPaperSectionObject.pick({
+export const selectableBallotPaperSectionObject = ballotPaperSectionObject.pick({
   id: true,
   createdAt: true,
   modifiedAt: true,
@@ -68,23 +68,23 @@ export const SelectableBallotPaperSectionObject = BallotPaperSectionObject.pick(
   ballotPaperId: true,
 });
 
-export type SelectableBallotPaperSection = z.infer<typeof SelectableBallotPaperSectionObject>;
+export type SelectableBallotPaperSection = z.infer<typeof selectableBallotPaperSectionObject>;
 
-export const SelectableBallotPaperSectionObjectSchema = z.toJSONSchema(
-  SelectableBallotPaperSectionObject,
+export const selectableBallotPaperSectionObjectSchema = z.toJSONSchema(
+  selectableBallotPaperSectionObject,
   toJsonSchemaParams,
 );
 
-export const UpdateableBallotPaperSectionObject = BallotPaperSectionObject.pick({
+export const updateableBallotPaperSectionObject = ballotPaperSectionObject.pick({
   name: true,
   description: true,
   maxVotes: true,
   maxVotesPerCandidate: true,
 });
 
-export type UpdateableBallotPaperSection = z.infer<typeof UpdateableBallotPaperSectionObject>;
+export type UpdateableBallotPaperSection = z.infer<typeof updateableBallotPaperSectionObject>;
 
-export const UpdateableBallotPaperSectionObjectSchema = z.toJSONSchema(
-  UpdateableBallotPaperSectionObject,
+export const updateableBallotPaperSectionObjectSchema = z.toJSONSchema(
+  updateableBallotPaperSectionObject,
   toJsonSchemaParams,
 );

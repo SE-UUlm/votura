@@ -2,8 +2,8 @@ import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  InsertableBallotPaperObjectSchema,
-  SelectableBallotPaperObjectSchema,
+  insertableBallotPaperObjectSchema,
+  selectableBallotPaperObjectSchema,
 } from '../../objects/ballotPaper.js';
 import {
   response400,
@@ -39,7 +39,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -49,7 +49,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
           'Created. The request was successfully executed. Successfully created a new ballot paper.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -84,7 +84,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
               type: 'array',
               minItems: 0,
               uniqueItems: true,
-              items: SelectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+              items: selectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
             },
           },
         },

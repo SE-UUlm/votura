@@ -1,13 +1,13 @@
 import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
-export const Response400Object = z.object({
+export const response400Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'The request was invalid, the server cannot process it.',
   }),
 });
 
-export type Response400 = z.infer<typeof Response400Object>;
+export type Response400 = z.infer<typeof response400Object>;
 
 export const zodErrorToResponse400 = (error: ZodError): Response400 => {
   const mappedIssues = error.issues.map(
@@ -27,67 +27,67 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
   };
 };
 
-export const Response401Object = z.object({
+export const response401Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'Invalid authentication, please check your credentials.',
   }),
 });
 
-export type Response401 = z.infer<typeof Response401Object>;
+export type Response401 = z.infer<typeof response401Object>;
 
-export const Response403Object = z.object({
+export const response403Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'The user is not authorized to do this action, please check your permissions.',
   }),
 });
 
-export type Response403 = z.infer<typeof Response403Object>;
+export type Response403 = z.infer<typeof response403Object>;
 
-export const Response404Object = z.object({
+export const response404Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'The requested resource was not found.',
   }),
 });
 
-export type Response404 = z.infer<typeof Response404Object>;
+export type Response404 = z.infer<typeof response404Object>;
 
-export const Response406Object = z.object({
+export const response406Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'The server is not able to generate a response that is acceptable by the client.',
   }),
 });
 
-export type Response406 = z.infer<typeof Response406Object>;
+export type Response406 = z.infer<typeof response406Object>;
 
-export const Response409Object = z.object({
+export const response409Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example:
       'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
   }),
 });
 
-export type Response409 = z.infer<typeof Response409Object>;
+export type Response409 = z.infer<typeof response409Object>;
 
-export const Response415Object = z.object({
+export const response415Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'Content-Type is not supported. Please provide only supported content types.',
   }),
 });
 
-export type Response415 = z.infer<typeof Response415Object>;
+export type Response415 = z.infer<typeof response415Object>;
 
-export const Response429Object = z.object({
+export const response429Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'Too many requests, please try again later.',
   }),
 });
 
-export type Response429 = z.infer<typeof Response429Object>;
+export type Response429 = z.infer<typeof response429Object>;
 
-export const Response500Object = z.object({
+export const response500Object = z.object({
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'Internal Server Error. This should not happen, please report the issue.',
   }),
 });
 
-export type Response500 = z.infer<typeof Response500Object>;
+export type Response500 = z.infer<typeof response500Object>;

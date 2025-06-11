@@ -2,8 +2,8 @@ import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  SelectableElectionObjectSchema,
-  UpdateableElectionObjectSchema,
+  selectableElectionObjectSchema,
+  updateableElectionObjectSchema,
 } from '../../objects/election.js';
 import {
   response400,
@@ -32,7 +32,7 @@ export const electionIdPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: UpdateableElectionObjectSchema as OpenAPIV3.SchemaObject,
+          schema: updateableElectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -41,7 +41,7 @@ export const electionIdPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. The election was updated.',
         content: {
           'application/json': {
-            schema: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -67,7 +67,7 @@ export const electionIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. Returns the requested election with all public information fields.',
         content: {
           'application/json': {
-            schema: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

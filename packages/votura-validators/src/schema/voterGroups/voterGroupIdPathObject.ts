@@ -3,8 +3,8 @@ import { voterGroupIdParameter } from './voterGroupIdParameter.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  InsertableVoterGroupObjectSchema,
-  SelectableVoterGroupObjectSchema,
+  insertableVoterGroupObjectSchema,
+  selectableVoterGroupObjectSchema,
 } from '../../objects/voterGroup.js';
 import {
   response400,
@@ -37,7 +37,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -46,7 +46,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. The voter group was updated.',
         content: {
           'application/json': {
-            schema: SelectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -77,7 +77,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. Returns the requested voter group with all public information fields.',
         content: {
           'application/json': {
-            schema: SelectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

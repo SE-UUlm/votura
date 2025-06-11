@@ -3,8 +3,8 @@ import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  SelectableBallotPaperObjectSchema,
-  UpdateableBallotPaperObjectSchema,
+  selectableBallotPaperObjectSchema,
+  updateableBallotPaperObjectSchema,
 } from '../../objects/ballotPaper.js';
 import {
   response400,
@@ -38,7 +38,7 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: UpdateableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+          schema: updateableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -47,7 +47,7 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. The ballot paper was updated.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -78,7 +78,7 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. Returns the requested ballot paper with all public information fields.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

@@ -2,8 +2,8 @@ import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  InsertableVoterGroupObjectSchema,
-  SelectableVoterGroupObjectSchema,
+  insertableVoterGroupObjectSchema,
+  selectableVoterGroupObjectSchema,
 } from '../../objects/voterGroup.js';
 import {
   response400,
@@ -39,7 +39,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -49,7 +49,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
           'Created. The request was successfully executed. Successfully created a new voter group.',
         content: {
           'application/json': {
-            schema: SelectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -84,7 +84,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
               type: 'array',
               minItems: 0,
               uniqueItems: true,
-              items: SelectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+              items: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
             },
           },
         },

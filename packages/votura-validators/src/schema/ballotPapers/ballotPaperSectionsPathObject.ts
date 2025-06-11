@@ -3,8 +3,8 @@ import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
 import {
-  InsertableBallotPaperSectionObjectSchema,
-  SelectableBallotPaperSectionObjectSchema,
+  insertableBallotPaperSectionObjectSchema,
+  selectableBallotPaperSectionObjectSchema,
 } from '../../objects/ballotPaperSection.js';
 import {
   response400,
@@ -40,7 +40,7 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -50,7 +50,7 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
           'Created. The request was successfully executed. Successfully created a new ballot paper section.',
         content: {
           'application/json': {
-            schema: SelectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -85,7 +85,7 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
               type: 'array',
               minItems: 0,
               uniqueItems: true,
-              items: SelectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
+              items: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
             },
           },
         },

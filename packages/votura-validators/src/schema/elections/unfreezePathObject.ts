@@ -2,7 +2,7 @@ import { OpenAPIV3 } from 'openapi-types';
 import { electionIdParameter } from './electionIdParameter.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
-import { SelectableElectionObjectSchema } from '../../objects/election.js';
+import { selectableElectionObjectSchema } from '../../objects/election.js';
 import {
   response400,
   response401,
@@ -36,7 +36,7 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
           'OK.\n' + 'The request was successfully executed.\n' + 'The election was unfrozen.',
         content: {
           'application/json': {
-            schema: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

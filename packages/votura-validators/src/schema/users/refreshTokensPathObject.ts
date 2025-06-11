@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
-import { ApiTokenUserObjectSchema, RefreshRequestUserObjectSchema } from '../../objects/user.js';
+import { apiTokenUserObjectSchema, refreshRequestUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -23,7 +23,7 @@ export const refreshTokensPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: RefreshRequestUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: refreshRequestUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -32,7 +32,7 @@ export const refreshTokensPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. New tokens returned.',
         content: {
           'application/json': {
-            schema: ApiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
+            schema: apiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

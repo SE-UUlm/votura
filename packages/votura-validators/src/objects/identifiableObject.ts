@@ -11,6 +11,6 @@ export type uuid = z.infer<typeof uuidObject>;
 
 export const uuidObjectSchema = z.toJSONSchema(uuidObject, toJsonSchemaParams);
 
-export const IdentifiableObject = z.object({
+export const identifiableObject = z.object({
   id: uuidObject,
 });

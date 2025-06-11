@@ -1,11 +1,11 @@
-import { IdentifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { z } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
-import { BallotPaperObject } from './ballotPaper.js';
+import { ballotPaperObject } from './ballotPaper.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 
-export const VoterGroupObject = z.object({
-  ...IdentifiableTimestampedObject.shape,
+export const voterGroupObject = z.object({
+  ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the voter group.',
   }),
@@ -16,29 +16,29 @@ export const VoterGroupObject = z.object({
     description: 'Specifies the number of voters that belong to this voter group.',
     example: 42,
   }),
-  ballotPapers: z.array(BallotPaperObject.shape.id).min(1).register(voturaMetadataRegistry, {
+  ballotPapers: z.array(ballotPaperObject.shape.id).min(1).register(voturaMetadataRegistry, {
     description:
       'All ballot papers that are linked to this voter group. A voter which is part of this voter group can vote on these ballot papers.',
   }),
 });
 
-export type VoterGroup = z.infer<typeof VoterGroupObject>;
+export type VoterGroup = z.infer<typeof voterGroupObject>;
 
-export const InsertableVoterGroupObject = VoterGroupObject.pick({
+export const insertableVoterGroupObject = voterGroupObject.pick({
   name: true,
   description: true,
   numberOfVoters: true,
   ballotPapers: true,
 });
 
-export type InsertableVoterGroup = z.infer<typeof InsertableVoterGroupObject>;
+export type InsertableVoterGroup = z.infer<typeof insertableVoterGroupObject>;
 
-export const InsertableVoterGroupObjectSchema = z.toJSONSchema(
-  InsertableVoterGroupObject,
+export const insertableVoterGroupObjectSchema = z.toJSONSchema(
+  insertableVoterGroupObject,
   toJsonSchemaParams,
 );
 
-export const SelectableVoterGroupObject = VoterGroupObject.pick({
+export const selectableVoterGroupObject = voterGroupObject.pick({
   id: true,
   modifiedAt: true,
   createdAt: true,
@@ -48,23 +48,23 @@ export const SelectableVoterGroupObject = VoterGroupObject.pick({
   ballotPapers: true,
 });
 
-export type SelectableVoterGroup = z.infer<typeof SelectableVoterGroupObject>;
+export type SelectableVoterGroup = z.infer<typeof selectableVoterGroupObject>;
 
-export const SelectableVoterGroupObjectSchema = z.toJSONSchema(
-  SelectableVoterGroupObject,
+export const selectableVoterGroupObjectSchema = z.toJSONSchema(
+  selectableVoterGroupObject,
   toJsonSchemaParams,
 );
 
-export const UpdateableVoterGroupObject = VoterGroupObject.pick({
+export const updateableVoterGroupObject = voterGroupObject.pick({
   name: true,
   description: true,
   numberOfVoters: true,
   ballotPapers: true,
 });
 
-export type UpdateableVoterGroup = z.infer<typeof UpdateableVoterGroupObject>;
+export type UpdateableVoterGroup = z.infer<typeof updateableVoterGroupObject>;
 
-export const UpdateableVoterGroupObjectSchema = z.toJSONSchema(
-  UpdateableVoterGroupObject,
+export const updateableVoterGroupObjectSchema = z.toJSONSchema(
+  updateableVoterGroupObject,
   toJsonSchemaParams,
 );

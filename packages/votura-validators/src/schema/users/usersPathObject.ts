@@ -1,6 +1,6 @@
 import { OpenAPIV3 } from 'openapi-types';
 import { Tag } from '../globals/tag.js';
-import { InsertableUserObjectSchema } from '../../objects/user.js';
+import { insertableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -25,7 +25,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },

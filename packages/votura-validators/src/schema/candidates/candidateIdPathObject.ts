@@ -4,8 +4,8 @@ import { candidateIdParameter } from './candidateIdParameter.js';
 import { Tag } from '../globals/tag.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
-  InsertableCandidateObjectSchema,
-  SelectableCandidateObjectSchema,
+  insertableCandidateObjectSchema,
+  selectableCandidateObjectSchema,
 } from '../../objects/candidate.js';
 import {
   response400,
@@ -38,7 +38,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -47,7 +47,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
         description: 'OK. The request was successfully executed. The candidate was updated.',
         content: {
           'application/json': {
-            schema: SelectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
@@ -78,7 +78,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
           'OK. The request was successfully executed. Returns the requested candidate with all public information fields.',
         content: {
           'application/json': {
-            schema: SelectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
