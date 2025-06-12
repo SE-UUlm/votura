@@ -52,6 +52,12 @@
     "APIV",
     "unrepresentable",
     "uuidv",
-    "Updateable"
+    "Updateable",
+    "Metadate",
+    "Kysely",
+    "fkey",
+    "hashedpassword",
+    "codegen",
+    "plpgsql"
   ]
 }

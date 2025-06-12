@@ -1,7 +1,7 @@
-import { OpenAPIV3 } from 'openapi-types';
+import type { OpenAPIV3 } from 'openapi-types';
 import {
-  InsertableElectionObjectSchema,
-  SelectableElectionObjectSchema,
+  insertableElectionObjectSchema,
+  selectableElectionObjectSchema,
 } from '../../objects/election.js';
 import { Tag } from '../globals/tag.js';
 import {
@@ -36,7 +36,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
               // minItems: 0,
               // maxItems: 100,
               uniqueItems: true,
-              items: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+              items: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
             },
           },
         },
@@ -58,7 +58,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
       required: true,
       content: {
         'application/json': {
-          schema: InsertableElectionObjectSchema as OpenAPIV3.SchemaObject,
+          schema: insertableElectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -68,7 +68,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
           'Created. The request was successfully executed. Successfully created a new election.',
         content: {
           'application/json': {
-            schema: SelectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },

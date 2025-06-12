@@ -1,8 +1,8 @@
 import { z } from 'zod/v4';
-import { IdentifiableObject } from './identifiableObject.js';
-import { TimestampedObject } from './timestampedObject.js';
+import { identifiableObject } from './identifiableObject.js';
+import { timestampedObject } from './timestampedObject.js';
 
-export const IdentifiableTimestampedObject = z.object({
-  ...IdentifiableObject.shape,
-  ...TimestampedObject.shape,
+export const identifiableTimestampedObject = z.object({
+  ...identifiableObject.shape,
+  ...timestampedObject.shape,
 });

@@ -1,6 +1,12 @@
-import { prisma } from '../client.js';
-import { type User } from '../../generated/prisma/index.js';
+import { db } from '../db/database.js';
+import type { User } from '../db/types/db.js';
+import type { Selectable } from 'kysely';
 
-export const findUserById = (id: User['id']): Promise<User | null> => {
-  return prisma.user.findUnique({ where: { id: id } });
-};
+export async function findUserById(id: Selectable<User>['id']): Promise<Selectable<User> | null> {
+  const user: Selectable<User> | undefined = await db
+    .selectFrom('User')
+    .where('id', '=', id)
+    .selectAll()
+    .executeTakeFirst();
+  return user === undefined ? null : user;
+}

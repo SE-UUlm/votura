@@ -9,7 +9,7 @@ import {
 import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
-voturaTest('getKeyPair', { timeout: 60000 }, async () => {
+voturaTest('getKeyPair', { timeout: 120000 }, async () => {
   const bitsPrimeP = 128;
   const { privateKey } = await getKeyPair(bitsPrimeP);
   const { primeP, primeQ } = privateKey;

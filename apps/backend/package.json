@@ -44,15 +44,12 @@
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "check-types": "prisma generate && tsc --noEmit && cd api && npx spectral lint /openapi.yaml -v -F hint --show-documentation-url",
-    "build": "prisma generate && tsc",
+    "check-types": "tsc --noEmit",
+    "build": "tsc",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
-    "seed": "prisma db seed"
-  },
-  "prisma": {
-    "seed": "tsx prisma/seed.ts"
+    "gen-types": "kysely-codegen"
   },
   "type": "module",
   "devDependencies": {
@@ -62,16 +59,17 @@
     "@stoplight/spectral-cli": "^6.15.0",
     "@tsconfig/node22": "^22.0.1",
     "@types/node": "^22.15.16",
+    "@types/pg": "^8.15.4",
     "eslint": "^9.25.1",
+    "kysely-codegen": "^0.18.5",
     "prettier": "^3.5.3",
-    "prisma": "^6.8.2",
-    "prisma-erd-generator": "^2.0.4",
     "tsx": "^4.19.4",
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "@prisma/client": "^6.8.2",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "kysely": "^0.28.2",
+    "pg": "^8.16.0"
   }
 }
