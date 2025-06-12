@@ -2,6 +2,8 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
+import logger from './logger.js';
+import pinoHttp from 'pino-http';
 
 dotenv.config();
 
@@ -11,6 +13,7 @@ async function main() {
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
+  app.use(pinoHttp.pinoHttp({ logger }));
 
   app.use('/users', usersRouter);
   // Fallback for unhandled routes
@@ -18,8 +21,9 @@ async function main() {
     res.sendStatus(400);
   });
 
+  logger.debug('Starting server.');
   app.listen(PORT, () => {
-    console.log(`Server is running.`);
+    logger.info({ port: PORT }, 'Server is listening.');
   });
 }
 
@@ -28,7 +32,7 @@ main()
     await db.destroy();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await db.destroy();
     process.exit(1);
   });
