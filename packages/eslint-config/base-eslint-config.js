@@ -1,25 +1,17 @@
-import { defineConfig } from 'eslint/config';
 import js from '@eslint/js';
-import eslintConfigPrettier from 'eslint-config-prettier';
+import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import turboPlugin from 'eslint-plugin-turbo';
 import tseslint from 'typescript-eslint';
 import json from '@eslint/json';
 
-export const config = defineConfig([
+export const config = tseslint.config(
   js.configs.recommended,
   tseslint.configs.recommended,
-  eslintConfigPrettier,
   {
-    files: ['**/*.json'],
-    plugins: { json },
-    language: 'json/json',
-    extends: ['json/recommended'],
-  },
-  {
-    files: ['**/*.jsonc'],
-    plugins: { json },
-    language: 'json/jsonc',
-    extends: ['json/recommended'],
+    ignores: ['package-loc.json'],
+    plugins: {
+      json,
+    },
   },
   {
     plugins: {
@@ -32,4 +24,5 @@ export const config = defineConfig([
   {
     ignores: ['dist/**', 'build/**', 'coverage/**'],
   },
-]);
+  eslintConfigPrettier,
+);
