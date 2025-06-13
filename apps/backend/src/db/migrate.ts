@@ -3,7 +3,6 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Migrator, FileMigrationProvider } from 'kysely';
 import { db } from './database.js';
-import { ExitCode } from '../utils/exitCode.js';
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
@@ -31,7 +30,7 @@ async function migrateToLatest(): Promise<void> {
   if (error as boolean) {
     console.error('failed to migrate');
     console.error(error);
-    process.exit(ExitCode.GENERAL_ERROR);
+    process.exit(1);
   }
 
   await db.destroy();
@@ -41,5 +40,5 @@ try {
   await migrateToLatest();
 } catch {
   console.error('Migration failed');
-  process.exit(ExitCode.GENERAL_ERROR);
+  process.exit(1);
 }
