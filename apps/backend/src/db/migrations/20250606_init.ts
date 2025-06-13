@@ -26,7 +26,8 @@ import {
 const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
   return ctb
     .addColumn(DefaultColumnName.id, 'uuid', (col) =>
-      col.primaryKey().defaultTo(sql`gen_random_uuid()`),
+      col.primaryKey().defaultTo(sql`gen_random_uuid
+            ()`),
     )
     .addColumn(DefaultColumnName.createdAt, 'timestamptz(6)', (col) =>
       col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
@@ -34,7 +35,11 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilde
     .addColumn(DefaultColumnName.modifiedAt, 'timestamptz(6)', (col) =>
       col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
     )
-    .addCheckConstraint('modified_after_created', sql`"modifiedAt" >= "createdAt"`);
+    .addCheckConstraint(
+      'modified_after_created',
+      sql`"modifiedAt"
+        >= "createdAt"`,
+    );
 };
 
 // --- Table Creation Helper Functions ---
@@ -51,16 +56,22 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
     .addColumn(UserColumnName.passwordResetTokenExpiresAt, 'timestamptz(6)')
     .addColumn(UserColumnName.refreshTokenHash, 'varchar(64)')
     .addColumn(UserColumnName.refreshTokenExpiresAt, 'timestamptz(6)')
-    .addCheckConstraint('valid_email', sql`"email" ~ ${sql.lit(RegexPattern.Email)}`)
+    .addCheckConstraint(
+      'valid_email',
+      sql`"email"
+        ~
+        ${sql.lit(RegexPattern.Email)}`,
+    )
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.User)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.User)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.User)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.User)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
@@ -75,11 +86,12 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.AccessTokenBlacklist)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.AccessTokenBlacklist)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.AccessTokenBlacklist)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.AccessTokenBlacklist)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createElectionTable(db: Kysely<any>): Promise<void> {
@@ -94,22 +106,28 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(ElectionColumnName.allowInvalidVotes, 'boolean', (col) =>
       col.notNull().defaultTo(false),
     )
+    .addColumn(ElectionColumnName.private, 'boolean', (col) => col.notNull().defaultTo(true))
     .addColumn(ElectionColumnName.pubKey, sql`numeric`)
     .addColumn(ElectionColumnName.privKey, sql`numeric`)
     .addColumn(ElectionColumnName.primeP, sql`numeric`)
     .addColumn(ElectionColumnName.primeQ, sql`numeric`)
     .addColumn(ElectionColumnName.generator, sql`numeric`)
     .addColumn(ElectionColumnName.electionCreatorId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint('votingEnd_after_votingStart', sql`"votingEndAt" > "votingStartAt"`)
+    .addCheckConstraint(
+      'votingEnd_after_votingStart',
+      sql`"votingEndAt"
+        > "votingStartAt"`,
+    )
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.Election)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.Election)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.Election)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.Election)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
@@ -121,16 +139,21 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
     .addColumn(BallotPaperColumnName.maxVotes, 'integer', (col) => col.notNull())
     .addColumn(BallotPaperColumnName.maxVotesPerCandidate, 'integer', (col) => col.notNull())
     .addColumn(BallotPaperColumnName.electionId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
+    .addCheckConstraint(
+      'maxVotes_and_candidate',
+      sql`"maxVotes"
+        >= "maxVotesPerCandidate"`,
+    )
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.BallotPaper)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.BallotPaper)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.BallotPaper)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.BallotPaper)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
@@ -142,16 +165,21 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(BallotPaperSectionColumnName.maxVotes, 'integer', (col) => col.notNull())
     .addColumn(BallotPaperSectionColumnName.maxVotesPerCandidate, 'integer', (col) => col.notNull())
     .addColumn(BallotPaperSectionColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
-    .addCheckConstraint('maxVotes_and_candidate', sql`"maxVotes" >= "maxVotesPerCandidate"`)
+    .addCheckConstraint(
+      'maxVotes_and_candidate',
+      sql`"maxVotes"
+        >= "maxVotesPerCandidate"`,
+    )
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.BallotPaperSection)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.BallotPaperSection)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.BallotPaperSection)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.BallotPaperSection)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<void> {
@@ -166,11 +194,12 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.BallotPaperSectionCandidate)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.BallotPaperSectionCandidate)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.BallotPaperSectionCandidate)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.BallotPaperSectionCandidate)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createCandidateTable(db: Kysely<any>): Promise<void> {
@@ -184,11 +213,12 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.Candidate)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.Candidate)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.Candidate)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.Candidate)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
@@ -206,11 +236,12 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.VoterGroup)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.VoterGroup)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.VoterGroup)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.VoterGroup)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createVoterTable(db: Kysely<any>): Promise<void> {
@@ -222,11 +253,12 @@ async function createVoterTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.Voter)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.Voter)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.Voter)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.Voter)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
@@ -240,11 +272,12 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-    CREATE TRIGGER ${sql.raw(TableName.VoterRegister)}_modified_at_trigger
-    BEFORE UPDATE ON ${sql.table(TableName.VoterRegister)}
-    FOR EACH ROW
-    EXECUTE FUNCTION update_modified_at_column();
-  `.execute(db);
+        CREATE TRIGGER ${sql.raw(TableName.VoterRegister)}_modified_at_trigger
+            BEFORE UPDATE
+            ON ${sql.table(TableName.VoterRegister)}
+            FOR EACH ROW
+            EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
 }
 
 async function createTables(db: Kysely<any>): Promise<void> {
@@ -387,14 +420,18 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   // Create the update_modified_at_column function to update modifiedAt on row updates
   await sql`
-    CREATE OR REPLACE FUNCTION update_modified_at_column()
+        CREATE
+        OR REPLACE FUNCTION update_modified_at_column()
     RETURNS TRIGGER AS $$
-    BEGIN
-        NEW.${sql.raw(`"${DefaultColumnName.modifiedAt}"`)} = NOW();
+        BEGIN
+        NEW.
+        ${sql.raw(`"${DefaultColumnName.modifiedAt}"`)}
+        = NOW();
         RETURN NEW;
-    END;
-    $$ LANGUAGE plpgsql;
-  `.execute(db);
+        END;
+    $$
+        LANGUAGE plpgsql;
+    `.execute(db);
 
   await createTables(db);
   await addForeignKeys(db);
@@ -403,8 +440,8 @@ export async function up(db: Kysely<any>): Promise<void> {
 export async function down(db: Kysely<any>): Promise<void> {
   // Drop the update_modified_at_column function
   await sql`
-    DROP FUNCTION IF EXISTS update_modified_at_column();
-  `.execute(db);
+        DROP FUNCTION IF EXISTS update_modified_at_column();
+    `.execute(db);
 
   // Drop tables in reverse order of creation to handle foreign key dependencies
   await db.schema.dropTable(TableName.VoterRegister).ifExists().execute();

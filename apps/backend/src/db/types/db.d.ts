@@ -3,12 +3,11 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from 'kysely';
+import type { ColumnType } from "kysely";
 
-export type Generated<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S, I | undefined, U>
-    : ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Numeric = ColumnType<string, number | string, number | string>;
 
@@ -73,6 +72,7 @@ export interface Election {
   name: string;
   primeP: Numeric | null;
   primeQ: Numeric | null;
+  private: Generated<boolean>;
   privKey: Numeric | null;
   pubKey: Numeric | null;
   votingEndAt: Timestamp;
