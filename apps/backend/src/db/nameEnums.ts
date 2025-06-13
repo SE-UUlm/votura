@@ -48,6 +48,7 @@ export enum ElectionColumnName {
   votingEndAt = 'votingEndAt',
   configFrozen = 'configFrozen',
   allowInvalidVotes = 'allowInvalidVotes',
+  private = 'private',
   pubKey = 'pubKey',
   privKey = 'privKey',
   primeP = 'primeP',

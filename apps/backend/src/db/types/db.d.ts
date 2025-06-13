@@ -73,6 +73,7 @@ export interface Election {
   name: string;
   primeP: Numeric | null;
   primeQ: Numeric | null;
+  private: Generated<boolean>;
   privKey: Numeric | null;
   pubKey: Numeric | null;
   votingEndAt: Timestamp;
