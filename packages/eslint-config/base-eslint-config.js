@@ -8,7 +8,7 @@ export const config = tseslint.config(
   js.configs.recommended,
   tseslint.configs.recommended,
   {
-    ignores: ['package-loc.json'],
+    ignores: ['package-lock.json'],
     plugins: {
       json,
     },
