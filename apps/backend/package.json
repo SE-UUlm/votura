@@ -49,10 +49,12 @@
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
-    "gen-types": "kysely-codegen"
+    "gen-types": "kysely-codegen",
+    "lint": "eslint"
   },
   "type": "module",
   "devDependencies": {
+    "@eslint/compat": "^1.3.0",
     "@mermaid-js/mermaid-cli": "^11.4.2",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",

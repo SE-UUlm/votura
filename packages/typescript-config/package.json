@@ -7,8 +7,12 @@
     "access": "public"
   },
   "type": "module",
+  "scripts": {
+    "lint": "eslint"
+  },
   "devDependencies": {
     "@repo/eslint-config": "*",
-    "typescript": "^5.8.2"
+    "typescript": "^5.8.2",
+    "eslint": "^9.25.1"
   }
 }

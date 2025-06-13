@@ -12,16 +12,19 @@ type FeatureItem = {
 const FeatureList: FeatureItem[] = [
   {
     title: 'Create Votes.',
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require('@site/static/img/logo.svg').default,
     description: <></>,
   },
   {
     title: 'Create Polls.',
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require('@site/static/img/logo.svg').default,
     description: <></>,
   },
   {
     title: 'Trust the process!',
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     Svg: require('@site/static/img/logo.svg').default,
     description: <></>,
   },

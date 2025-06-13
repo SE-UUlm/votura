@@ -14,10 +14,12 @@
     "build": "tsc",
     "check-types": "tsc --noEmit",
     "check-exports": "attw --pack . --ignore-rules=cjs-resolves-to-esm",
-    "ci": "npm run build && npm run check-format && npm run check-exports && npm run test"
+    "ci": "npm run build && npm run check-format && npm run check-exports && npm run test",
+    "lint": "eslint"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.2",
+    "@eslint/compat": "^1.3.0",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "eslint": "^9.25.1",

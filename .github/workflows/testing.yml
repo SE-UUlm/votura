@@ -39,6 +39,10 @@ jobs:
         run: |
           npm run check-format
           npx prettier --check .
+      - name: Check linting
+        run: |
+          npm run lint
+          npx eslint
       - name: Check code spell
         run: npx cspell lint **
       - name: Build votura-crypto
