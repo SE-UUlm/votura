@@ -25,7 +25,7 @@ export const createElection = async (
     modifiedAt: election.modifiedAt.toISOString(),
     name: election.name,
     ...spreadableOptional(election, 'description'),
-    private: true, // TODO: Change on implementation
+    private: election.private,
     votingStartAt: election.votingStartAt.toISOString(),
     votingEndAt: election.votingEndAt.toISOString(),
     allowInvalidVotes: election.allowInvalidVotes,
