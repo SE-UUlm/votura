@@ -1,50 +1,38 @@
 import type { InsertableElection, SelectableElection, User } from '@repo/votura-validators';
-import { prisma } from '../client.js';
+import { db } from '../db/database.js';
+import { spreadableOptional } from '../utils.js';
 
 export const createElection = async (
-  election: InsertableElection,
+  insertableElection: InsertableElection,
   userId: User['id'],
-): Promise<SelectableElection> => {
-  const dbUser = await prisma.election.create({
-    data: {
-      ...election,
-      description: election.description ?? null,
-      electionCreatorRelation: {
-        connect: {
-          id: userId,
-        },
-      },
-    },
-    select: {
-      id: true,
-      createdAt: true,
-      modifiedAt: true,
-      name: true,
-      description: true,
-      votingStartAt: true,
-      votingEndAt: true,
-      allowInvalidVotes: true,
-      configFrozen: true,
-      pubKey: true,
-      primeP: true,
-      primeQ: true,
-      generator: true,
-    },
-  });
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .insertInto('Election')
+    .values({
+      ...insertableElection,
+      electionCreatorId: userId,
+    })
+    .returningAll()
+    .executeTakeFirst();
+
+  if (!election) {
+    return null;
+  }
 
   return {
-    id: dbUser.id,
-    name: dbUser.name,
-    ...(dbUser.description ? { description: dbUser.description } : undefined),
-    createdAt: dbUser.createdAt.toISOString(),
-    modifiedAt: dbUser.modifiedAt.toISOString(),
-    votingStartAt: dbUser.votingStartAt.toISOString(),
-    votingEndAt: dbUser.votingEndAt.toISOString(),
-    configFrozen: dbUser.configFrozen,
-    allowInvalidVotes: dbUser.allowInvalidVotes,
-    ...(dbUser.pubKey ? { pubKey: dbUser.pubKey } : undefined),
-    ...(dbUser.primeP ? { primeP: dbUser.primeP } : undefined),
-    ...(dbUser.primeQ ? { primeQ: dbUser.primeQ } : undefined),
-    ...(dbUser.generator ? { generator: dbUser.generator } : undefined),
+    id: election.id,
+    createdAt: election.createdAt.toISOString(),
+    modifiedAt: election.modifiedAt.toISOString(),
+    name: election.name,
+    ...spreadableOptional(election, 'description'),
+    private: true, // TODO: Change on implementation
+    votingStartAt: election.votingStartAt.toISOString(),
+    votingEndAt: election.votingEndAt.toISOString(),
+    allowInvalidVotes: election.allowInvalidVotes,
+    configFrozen: election.configFrozen,
+    ...spreadableOptional(election, 'pubKey'),
+    ...spreadableOptional(election, 'primeP'),
+    ...spreadableOptional(election, 'primeQ'),
+    ...spreadableOptional(election, 'generator'),
   };
 };
