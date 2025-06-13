@@ -8,6 +8,12 @@ export const config = tseslint.config(
   js.configs.recommended,
   tseslint.configs.recommended,
   {
+    files: ['**/*.js', '**/*.mjs', '**/*.ts'],
+    rules: {
+      'no-magic-numbers': 'error',
+    },
+  },
+  {
     ignores: ['package-lock.json'],
     plugins: {
       json,
