@@ -1,0 +1,7 @@
+const SUCCESS_CODE = 0;
+const GENERAL_ERROR_CODE = 1;
+
+export enum ExitCode {
+  SUCCESS = SUCCESS_CODE,
+  GENERAL_ERROR = GENERAL_ERROR_CODE,
+}
