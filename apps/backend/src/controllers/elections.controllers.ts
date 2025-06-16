@@ -14,7 +14,7 @@ export type CreateElectionResponse = Response<
   { user: SelectableUser }
 >;
 
-export const createElection = async (req: Request, res: CreateElectionResponse) => {
+export const createElection = async (req: Request, res: CreateElectionResponse): Promise<void> => {
   const body: unknown = req.body;
 
   const { data, error, success } = await insertableElectionObject.safeParseAsync(body);

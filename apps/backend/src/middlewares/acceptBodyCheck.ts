@@ -3,7 +3,7 @@ import { MimeType } from './utils.js';
 
 export const acceptBodyCheck =
   (mimeType = MimeType.ApplicationJson) =>
-  (req: Request, res: Response, next: NextFunction) => {
+  (req: Request, res: Response, next: NextFunction): void => {
     const bodyMimeType = req.get('content-type');
 
     if (bodyMimeType !== mimeType) {

@@ -15,7 +15,7 @@ function main(): void {
   app.use(express.json()); // parse JSON bodies
 
   app.use('/users', usersRouter);
-  app.use('/elections', auth, electionsRouter);
+  app.use('/elections', [auth, electionsRouter]);
   // Fallback for unhandled routes
   app.use((_, res) => {
     res.sendStatus(400);

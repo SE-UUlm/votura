@@ -3,8 +3,10 @@ import { MimeType } from './utils.js';
 
 export const acceptHeaderCheck =
   (mimeType = MimeType.ApplicationJson) =>
-  (req: Request, res: Response, next: NextFunction) => {
-    if (!req.accepts(mimeType)) {
+  (req: Request, res: Response, next: NextFunction): void => {
+    const acceptsMimeType = req.accepts(mimeType) === mimeType;
+
+    if (!acceptsMimeType) {
       res.sendStatus(406);
       return;
     }

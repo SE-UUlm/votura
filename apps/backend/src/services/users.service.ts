@@ -1,5 +1,5 @@
 import { db } from '../db/database.js';
-import { type SelectableUser, type User } from '@repo/votura-validators';
+import type { SelectableUser, User } from '@repo/votura-validators';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
@@ -10,11 +10,11 @@ export async function findUserBy(
 
   let query = db.selectFrom('User');
 
-  if (criteria.id) {
+  if (criteria.id !== undefined) {
     query = query.where('id', '=', criteria.id);
   }
 
-  if (criteria.email) {
+  if (criteria.email !== undefined) {
     query = query.where('email', '=', criteria.email);
   }
 
