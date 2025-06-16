@@ -22,9 +22,13 @@ jobs:
           POSTGRES_USER: votura
           POSTGRES_PASSWORD: votura
           POSTGRES_DB: votura
-          DATABASE_URL: postgresql://votura:votura@localhost:5432/votura?schema=public
         ports:
           - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U votura"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
 
     steps:
       - name: Update & install apt packages
@@ -57,6 +61,7 @@ jobs:
           npm run build
       - name: Setup DB
         run: |
+          echo "DATABASE_URL=postgresql://votura:votura@localhost:5432/votura?schema=public" >> $GITHUB_ENV
           cd apps/backend
           npm run migrate
           npm run seed
