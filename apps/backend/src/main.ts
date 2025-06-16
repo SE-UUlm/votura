@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
 import { response400Object } from '@repo/votura-validators';
+import logger from './logger.js';
+import pinoHttp from 'pino-http';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
 
@@ -14,6 +16,7 @@ function main(): void {
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
+  app.use(pinoHttp.pinoHttp({ logger }));
 
   app.use('/users', usersRouter);
   app.use('/elections', [auth, electionsRouter]);
@@ -22,8 +25,9 @@ function main(): void {
     res.status(400).json(response400Object.parse({}));
   });
 
+  logger.debug('Starting server.');
   app.listen(PORT, () => {
-    console.log(`Server is running.`);
+    logger.info({ port: PORT }, 'Server is listening.');
   });
 }
 
@@ -35,7 +39,7 @@ Promise.resolve()
     await db.destroy();
   })
   .catch(async (e) => {
-    console.error(e);
+    logger.error(e);
     await db.destroy();
     process.exit(1);
   });

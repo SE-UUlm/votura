@@ -42,7 +42,7 @@
       "dependsOn": ["^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
-      "env": ["PORT"],
+      "env": ["PORT", "TERMINAL_LOG_LEVEL"],
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
