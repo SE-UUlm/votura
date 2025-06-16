@@ -27,6 +27,8 @@ export default tseslint.config(
       // the following rule is currently not usable due to other package types
       // '@typescript-eslint/prefer-readonly-parameter-types': 'error',
       '@typescript-eslint/no-import-type-side-effects': 'error',
+      '@typescript-eslint/no-confusing-void-expression': 'error',
+      '@typescript-eslint/no-non-null-assertion': 'error',
     },
   },
   eslintConfigPrettier,

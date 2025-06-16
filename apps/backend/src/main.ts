@@ -24,7 +24,9 @@ function main() {
 }
 
 Promise.resolve()
-  .then(() => main())
+  .then(() => {
+    main();
+  })
   .then(async () => {
     await db.destroy();
   })
