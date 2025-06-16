@@ -9,8 +9,8 @@ export const usersRouter: Router = Router();
 usersRouter.get('/', [getUsers]);
 usersRouter.get('/:id', [getUserById]);
 usersRouter.post(
-  '/', 
+  '/',
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  createUser
+  createUser,
 );
