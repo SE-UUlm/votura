@@ -12,6 +12,7 @@ import {
 export * from './utils.js';
 
 export type Ciphertext = [bigint, bigint];
+
 export interface ZKProof {
   commitment: [bigint, bigint];
   challenge: bigint;
@@ -122,7 +123,7 @@ export class KeyPair {
   }
 }
 
-export const getKeyPair = async (bitsPrimeP: number = 2048): Promise<KeyPair> => {
+export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
   let primeP = await prime(bitsPrimeP);
   let probablePrimeQ = modMultiply([modAdd([primeP, -1n], primeP), modInv(2n, primeP)], primeP);
 
@@ -352,6 +353,7 @@ export class ZeroKnowledgeProof {
       const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
       const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
       if (!isValid0 && !isValid1) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions,@typescript-eslint/no-base-to-string
         console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
