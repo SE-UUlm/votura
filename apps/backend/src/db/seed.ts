@@ -16,7 +16,7 @@ seed()
     logger.info('Seeding completed.');
     return db.destroy();
   })
-  .catch((err) => {
-    logger.error({ err }, 'Seeding failed.');
+  .catch((err: unknown) => {
+    logger.error({ err: err instanceof Error ? err.message : String(err) }, 'Seeding failed.');
     return db.destroy();
   });

@@ -30,7 +30,7 @@ const transport = pino.transport({
       },
     },
   ],
-});
+}) as pino.DestinationStream;
 
 const logger = pino.pino(
   {
