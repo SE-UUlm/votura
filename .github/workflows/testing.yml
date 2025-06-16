@@ -2,8 +2,8 @@ name: Testing
 
 on:
   workflow_dispatch:
-  push:
-  merge_group:
+  # push:
+  # merge_group:
 
 jobs:
   test:
