@@ -20,7 +20,8 @@ export const ElectionsView = () => {
     const election: MockElection = getDefaultMockElection(partial);
     addElection(election);
     notifications.show(getAddSuccessElectionConfig(election.name));
-    void navigate(`/elections/${election.id}`);
+    navigate(`/elections/${election.id}`);
+    return;
   };
 
   return (
