@@ -1,6 +1,5 @@
-import type { InsertableUser } from '@repo/votura-validators';
+import type { InsertableUser, SelectableUser, User } from '@repo/votura-validators';
 import { db } from '../db/database.js';
-import type { SelectableUser, User } from '@repo/votura-validators';
 import argon2 from 'argon2';
 
 export async function findUserBy(
@@ -35,12 +34,12 @@ export async function findUserBy(
 }
 
 export async function createUser(insertableUser: InsertableUser): Promise<boolean> {
-  const PEPPER = process.env.PEPPER;
-  if (!PEPPER) {
-    throw new Error('PEPPER environment variable is not set');
+  const pepper: string | undefined = process.env.PEPPER;
+  if (pepper === undefined) {
+    throw new Error('PEPPER environment variable is not set. Set it to a non-empty string.');
   }
 
-  const hashedPassword = await argon2.hash(insertableUser.password + PEPPER);
+  const hashedPassword = await argon2.hash(insertableUser.password + pepper);
 
   const user = await db
     .insertInto('User')

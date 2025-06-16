@@ -6,8 +6,7 @@ import {
   type Response409,
   type Response500,
 } from '@repo/votura-validators';
-import { findUserBy } from '../services/users.service.js';
-import { createUser as createPersistentUser } from '../services/users.service.js';
+import { findUserBy, createUser as createPersistentUser } from '../services/users.service.js';
 
 export interface GetUserByIdParams {
   id: string;
@@ -52,7 +51,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
     const user = await findUserBy({
       email: data.email,
     });
-    if (user) {
+    if (user !== null) {
       res.status(409).json({ message: 'User with the provided email address already exists.' });
       return;
     }
@@ -64,7 +63,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       return;
     }
 
-    res.status(204);
+    res.sendStatus(204);
   } else {
     res.status(400).json(zodErrorToResponse400(error));
   }
