@@ -32,10 +32,12 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
+      - name: Build all packages
+        run: |
+          npm run build
       - name: Run API tests
         run: |
           cd apps/backend
-          npm run build
           npm run start &
           sleep 5
           npm run test-api
