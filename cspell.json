@@ -7,7 +7,7 @@
     "./**/results/**",
     "./**/coverage/**",
     "./**/generated/**",
-     "./**/logs/**",
+    "./**/logs/**",
     "**/prisma/migrations/**",
     "**/package.json",
     "apps/docs/docs/api/**",
