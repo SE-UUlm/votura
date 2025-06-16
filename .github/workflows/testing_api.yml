@@ -74,3 +74,8 @@ jobs:
           npm run start &
           sleep 5
           npm run test-api
+      - name: Test Summary
+        uses: test-summary/action@v2
+        with:
+          paths: 'apps/backend/tests_api/Votura-API/results/*xml'
+        if: always()
