@@ -24,3 +24,8 @@ body:json {
     "allowInvalidVotes": ""
   }
 }
+
+assert {
+  res.status: eq 400
+  res.body: isJson
+}

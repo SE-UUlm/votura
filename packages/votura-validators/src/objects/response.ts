@@ -2,9 +2,14 @@ import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
 export const response400Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'The request was invalid, the server cannot process it.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Bad Request. The request was invalid, the server cannot process it.')
+    .register(voturaMetadataRegistry, {
+      example: 'Bad Request. The request was invalid, the server cannot process it.',
+    }),
 });
 
 export type Response400 = z.infer<typeof response400Object>;

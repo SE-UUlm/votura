@@ -2,6 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
+import { response400Object } from '@repo/votura-validators';
 
 dotenv.config();
 
@@ -15,7 +16,7 @@ async function main() {
   app.use('/users', usersRouter);
   // Fallback for unhandled routes
   app.use((_, res) => {
-    res.sendStatus(400);
+    res.status(400).json(response400Object.parse({}));
   });
 
   app.listen(PORT, () => {
