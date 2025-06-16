@@ -3,11 +3,5 @@ import { Router, type Request, type Response} from 'express';
 import { signup , type UserSignupRequestBody} from '../controllers/users.controllers.js';
 export const usersRouter: Router = Router();
 
-//usersRouter.get('/', getUsers);
-//usersRouter.get('/:id', getUserById);
-//
-usersRouter.post('/user', (req, res) => {
-    async (req: Request<UserSignupRequestBody>, res: Response) => {
-        return signup(req, res);
-    }
-});
+usersRouter.get('/', [getUsers]);
+usersRouter.get('/:id', [getUserById]);

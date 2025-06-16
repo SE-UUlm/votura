@@ -3,8 +3,8 @@
   "extends": "@repo/typescript-config/tsconfig.json",
   "compilerOptions": {
     "outDir": "./dist",
-    "rootDir": "./src"
+    "rootDirs": ["./src", "./test"]
   },
-  "include": ["src"],
+  "include": ["src", "test"],
   "exclude": ["node_modules"]
 }

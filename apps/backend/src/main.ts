@@ -1,18 +1,21 @@
 import express from 'express';
 import dotenv from 'dotenv';
-import { prisma } from './client.js';
 import { usersRouter } from './routes/users.routes.js';
+import { db } from './db/database.js';
+import { auth } from './middlewares/auth.js';
+import { electionsRouter } from './routes/elections.routes.js';
 
 dotenv.config();
 
-async function main() {
+function main(): void {
   const app = express();
-  const PORT = process.env.PORT ?? 5000;
+  const PORT = process.env.PORT ?? 4000;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
 
   app.use('/users', usersRouter);
+  app.use('/elections', [auth, electionsRouter]);
   // Fallback for unhandled routes
   app.use((_, res) => {
     res.sendStatus(400);
@@ -23,12 +26,15 @@ async function main() {
   });
 }
 
-main()
+Promise.resolve()
+  .then(() => {
+    main();
+  })
   .then(async () => {
-    await prisma.$disconnect();
+    await db.destroy();
   })
   .catch(async (e) => {
     console.error(e);
-    await prisma.$disconnect();
+    await db.destroy();
     process.exit(1);
   });

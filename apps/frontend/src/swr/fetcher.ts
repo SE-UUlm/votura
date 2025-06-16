@@ -1,4 +1,4 @@
-export const fetcher = async <T>(...args: Parameters<typeof fetch>): Promise<T> => {
+export const fetcher = async (...args: Parameters<typeof fetch>): Promise<unknown> => {
   const response = await fetch(...args);
 
   if (!response.ok) {

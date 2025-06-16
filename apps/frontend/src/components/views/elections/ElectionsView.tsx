@@ -21,6 +21,7 @@ export const ElectionsView = () => {
     addElection(election);
     notifications.show(getAddSuccessElectionConfig(election.name));
     navigate(`/elections/${election.id}`);
+    return;
   };
 
   return (

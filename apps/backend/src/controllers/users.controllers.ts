@@ -1,59 +1,16 @@
-import { type Request, type Response } from 'express';
-//import { findUserById, getUserByEmail, createUser } from '../services/users.service.js';
-import { getUserByEmail, createUser } from '../services/users.service.js';
-import { hashPassword } from '../utils/hash.js';
-import { type User } from '../../generated/prisma/index.js';
+import type { Request, Response } from 'express';
+import { findUserBy } from '../services/users.service.js';
 
-//export interface GetUserByIdParams {
-//  id: string;
-//}
-//
-//export const getUsers = async (req: Request, res: Response): Promise<void> => {
-//  res.sendStatus(501);
-//};
-//
-//export const getUserById = async (
-//  req: Request<GetUserByIdParams>,
-//  res: Response,
-//): Promise<void> => {
-//  const id = req.params.id;
-//
-//  if (id === '') {
-//    res.status(400).json({ message: 'Invalid user id.' });
-//    return;
-//  }
-//
-//  const user = await findUserById(id);
-//
-//  if (!user) {
-//    res.status(404).json({ message: 'User not found' });
-//    return;
-//  }
-//
-//  res.status(200).json(user);
-//};
-
-
-const EMAIL_REGEX: RegExp = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
-const PASSWORD_REGEX: RegExp = /^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9])(?=.*?[#?!@$%^&*-]).{12,}$/;
-
-export interface UserSignupRequestBody {
-  email: string;
-  password: string;
+export interface GetUserByIdParams {
+  id: string;
 }
 
-/**
- * POST /users/user
- *
- * Expects JSON body: { email: string, password: string }
- * - Validates presence of both fields
- * - Checks uniqueness of email
- * - Hashes password (Argon2id + pepper)
- * - Inserts new User row in the database
- * - Returns 201 with { id, email, createdAt }
- */
-export async function signup(
-  req: Request<UserSignupRequestBody>,
+export const getUsers = (req: Request, res: Response): void => {
+  res.sendStatus(501);
+};
+
+export const getUserById = async (
+  req: Request<GetUserByIdParams>,
   res: Response,
 ): Promise<void> {
   try {
@@ -80,25 +37,14 @@ export async function signup(
       return;
     }
 
-    if (
-      password.length < 12 ||
-      password.length > 128 ||
-      !PASSWORD_REGEX.test(password)
-    ) {
-      res.status(400).json({
-        message: "Password does not meet required strength policy. It must be at least 12 characters long, contain at least one uppercase letter, one lowercase letter, one digit, and one special character.",
-      });
-      return;
-    }
+  const user = await findUserBy({
+    id: id,
+  });
 
-    // Check if email already exists
-    const existingUser: User | null = await getUserByEmail(email);
-    if (existingUser) {
-      res.status(409).json({
-        message: "The user already exists.",
-      });
-      return;
-    }
+  if (!user) {
+    res.status(404).json({ message: 'User not found' });
+    return;
+  }
 
     //const passwordHash: string = await hashPassword(password);
     //await createUser(email, passwordHash);
