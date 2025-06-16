@@ -80,7 +80,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
           <ActionIcon
             variant="subtle"
             aria-label="Settings"
-            onClick={() => navigate(`/elections/${election.id}`)}
+            onClick={() => void navigate(`/elections/${election.id}`)}
           >
             <IconArrowRight size={14} />
           </ActionIcon>

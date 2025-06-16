@@ -5,7 +5,7 @@ import { db } from './db/database.js';
 
 dotenv.config();
 
-async function main() {
+function main() {
   const app = express();
   const PORT = process.env.PORT ?? 3000;
 
@@ -23,7 +23,8 @@ async function main() {
   });
 }
 
-main()
+Promise.resolve()
+  .then(() => main())
   .then(async () => {
     await db.destroy();
   })

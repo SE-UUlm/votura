@@ -22,7 +22,7 @@
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "build": "tsc",
+    "build": "tsc --project tsconfig.build.json",
     "check-types": "tsc --noEmit",
     "test": "vitest run --coverage",
     "ci": "npm run build && npm run check-format && npm run check-exports && npm run test",

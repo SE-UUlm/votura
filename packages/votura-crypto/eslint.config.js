@@ -1,7 +1,21 @@
-import { config } from '@repo/eslint-config/node';
+import tseslint from 'typescript-eslint';
+import config from '@repo/eslint-config/node';
 import { fileURLToPath } from 'url';
 import { includeIgnoreFile } from '@eslint/compat';
 
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
-export default [includeIgnoreFile(gitignorePath, 'Imported .gitignore patterns'), ...config];
+export default tseslint.config(
+    {
+      files: ['**/*.ts'],
+      ignores: ['**/*.json'],
+      languageOptions: {
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
+      },
+    },
+    includeIgnoreFile(gitignorePath, 'Imported .gitignore patterns'),
+    ...config,
+);
