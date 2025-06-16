@@ -15,6 +15,17 @@ jobs:
     continue-on-error: false
     timeout-minutes: 15
 
+    services:
+      postgres:
+        image: postgres:17.4
+        env:
+          POSTGRES_USER: votura
+          POSTGRES_PASSWORD: votura
+          POSTGRES_DB: votura
+          DATABASE_URL: postgresql://votura:votura@localhost:5432/votura?schema=public
+        ports:
+          - 5432:5432
+
     steps:
       - name: Update & install apt packages
         run: |
@@ -44,6 +55,11 @@ jobs:
         run: |
           cd apps/backend
           npm run build
+      - name: Setup DB
+        run: |
+          cd apps/backend
+          npm run migrate
+          npm run seed
       - name: Run API tests
         run: |
           cd apps/backend
