@@ -50,7 +50,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
       description: 'The default local development server.',
       variables: {
         port: {
-          default: '5000',
+          default: '4000',
           description: 'The port of the local development server, the votura backend.',
         },
       },
