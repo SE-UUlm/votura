@@ -1,0 +1,26 @@
+meta {
+  name: Update a specific election
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/elections/:electionId
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "votingStartAt": "",
+    "votingEndAt": "",
+    "allowInvalidVotes": "",
+    "private": ""
+  }
+}

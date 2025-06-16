@@ -1,0 +1,15 @@
+meta {
+  name: Get all candidates for an election
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/elections/:electionId/candidates
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

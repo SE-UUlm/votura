@@ -1,0 +1,25 @@
+meta {
+  name: Create a ballot paper
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/elections/:electionId/ballotPapers
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "maxVotes": "",
+    "maxVotesPerCandidate": "",
+    "electionId": ""
+  }
+}

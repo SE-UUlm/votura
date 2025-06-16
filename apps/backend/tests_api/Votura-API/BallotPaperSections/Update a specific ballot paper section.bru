@@ -1,0 +1,24 @@
+meta {
+  name: Update a specific ballot paper section
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/elections/:electionId/ballotPapers/:ballotPaperId/ballotPaperSections/:ballotPaperSectionId
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "maxVotes": "",
+    "maxVotesPerCandidate": ""
+  }
+}

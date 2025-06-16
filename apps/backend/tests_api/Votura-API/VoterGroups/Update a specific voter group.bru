@@ -1,0 +1,24 @@
+meta {
+  name: Update a specific voter group
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/voterGroups/:voterGroupId
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "name": "",
+    "description": "",
+    "numberOfVoters": "",
+    "ballotPapers": []
+  }
+}

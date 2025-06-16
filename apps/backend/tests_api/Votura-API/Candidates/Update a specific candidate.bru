@@ -1,0 +1,23 @@
+meta {
+  name: Update a specific candidate
+  type: http
+  seq: 3
+}
+
+put {
+  url: {{baseUrl}}/elections/:electionId/candidates/:candidateId
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
+
+body:json {
+  {
+    "title": "",
+    "description": "",
+    "ballotPaperSections": []
+  }
+}

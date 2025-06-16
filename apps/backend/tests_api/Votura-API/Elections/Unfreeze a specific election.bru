@@ -1,0 +1,15 @@
+meta {
+  name: Unfreeze a specific election
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/elections/:electionId/unfreeze
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

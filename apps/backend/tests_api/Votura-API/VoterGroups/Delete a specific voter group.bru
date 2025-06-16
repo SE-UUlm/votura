@@ -1,0 +1,15 @@
+meta {
+  name: Delete a specific voter group
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/voterGroups/:voterGroupId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

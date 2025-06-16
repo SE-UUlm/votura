@@ -1,0 +1,15 @@
+meta {
+  name: Get a specific voter group
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/voterGroups/:voterGroupId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

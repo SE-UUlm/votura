@@ -1,0 +1,15 @@
+meta {
+  name: Delete a specific ballot paper
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/elections/:electionId/ballotPapers/:ballotPaperId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

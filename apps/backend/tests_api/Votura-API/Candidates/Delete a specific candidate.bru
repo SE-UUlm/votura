@@ -1,0 +1,15 @@
+meta {
+  name: Delete a specific candidate
+  type: http
+  seq: 5
+}
+
+delete {
+  url: {{baseUrl}}/elections/:electionId/candidates/:candidateId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

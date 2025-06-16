@@ -1,0 +1,17 @@
+meta {
+  name: Refresh jwt tokens
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{baseUrl}}/users/refreshTokens
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "refreshToken": ""
+  }
+}

@@ -1,0 +1,15 @@
+meta {
+  name: Get all ballot papers for an election
+  type: http
+  seq: 2
+}
+
+get {
+  url: {{baseUrl}}/elections/:electionId/ballotPapers
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}

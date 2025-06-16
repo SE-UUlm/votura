@@ -1,0 +1,15 @@
+meta {
+  name: Get a specific ballot paper section
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/elections/:electionId/ballotPapers/:ballotPaperId/ballotPaperSections/:ballotPaperSectionId
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{token}}
+}
