@@ -5,7 +5,7 @@ import {
   type SelectableElection,
   type SelectableUser,
   zodErrorToResponse400,
-  type Response400
+  type Response400,
 } from '@repo/votura-validators';
 import { createElection as createPersistentElection } from '../services/elections.service.js';
 

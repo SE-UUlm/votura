@@ -1,11 +1,13 @@
 import type { NextFunction, Request, Response } from 'express';
 import { MimeType } from './utils.js';
 
-export const acceptHeaderCheck =
+export const acceptBodyCheck =
   (mimeType = MimeType.ApplicationJson) =>
   (req: Request, res: Response, next: NextFunction) => {
-    if (!req.accepts(mimeType)) {
-      res.sendStatus(406);
+    const bodyMimeType = req.get('content-type');
+
+    if (bodyMimeType !== mimeType) {
+      res.sendStatus(415);
       return;
     }
 
