@@ -49,6 +49,10 @@ jobs:
         run: |
           cd packages/votura-crypto
           npm run build
+      - name: Build votura-validators
+        run: |
+          cd packages/votura-validators
+          npm run build
       - name: Build backend
         run: |
           cd apps/backend
