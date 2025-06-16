@@ -1,4 +1,4 @@
-import { type NextFunction, type Request, type Response } from 'express';
+import type { NextFunction, Request, Response } from 'express';
 import type { Response401 } from '@repo/votura-validators';
 import { findUserBy } from '../services/users.service.js';
 

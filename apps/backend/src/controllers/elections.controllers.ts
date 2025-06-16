@@ -1,12 +1,12 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 import {
   insertableElectionObject,
   type Response500,
   type SelectableElection,
   type SelectableUser,
   zodErrorToResponse400,
+  type Response400
 } from '@repo/votura-validators';
-import { type Response400 } from '@repo/votura-validators';
 import { createElection as createPersistentElection } from '../services/elections.service.js';
 
 export type CreateElectionResponse = Response<
