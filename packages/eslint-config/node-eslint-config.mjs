@@ -1,9 +1,9 @@
 import { defineConfig } from 'eslint/config';
-import { config as baseConfig } from './base-eslint-config.js';
+import config from './base-eslint-config.mjs';
 import globals from 'globals';
 
-export const config = defineConfig([
-  ...baseConfig,
+export default defineConfig([
+  ...config,
   {
     files: ['**/*.{js,mjs,cjs,ts}'],
     languageOptions: { globals: globals.node },

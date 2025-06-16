@@ -6,16 +6,16 @@ import { includeIgnoreFile } from '@eslint/compat';
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
 export default tseslint.config(
-  {
-    files: ['**/*.ts'],
-    ignores: ['**/*.json'],
-    languageOptions: {
-      parserOptions: {
-        projectService: true,
-        tsconfigRootDir: import.meta.dirname,
+    {
+      files: ['**/*.ts'],
+      ignores: ['**/*.json'],
+      languageOptions: {
+        parserOptions: {
+          projectService: true,
+          tsconfigRootDir: import.meta.dirname,
+        },
       },
     },
-  },
-  includeIgnoreFile(gitignorePath, 'Imported .gitignore patterns'),
-  ...config,
+    includeIgnoreFile(gitignorePath, 'Imported .gitignore patterns'),
+    ...config,
 );
