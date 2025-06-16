@@ -29,7 +29,7 @@
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "zod": "^3.25.42"
+    "zod": "3.25.57"
   },
   "packageManager": "npm@11.3.0",
   "engines": {
