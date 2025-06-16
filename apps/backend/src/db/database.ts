@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 const databaseUrl =
-  process.env.DATABASE_URL ?? 'postgresql://votura:votura@postgres:5432/votura?schema=public';
+  process.env.DATABASE_URL ?? 'postgresql://votura:votura@localhost:5432/votura?schema=public';
 
 export const db = new Kysely<DB>({
   dialect: new PostgresDialect({
