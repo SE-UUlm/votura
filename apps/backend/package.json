@@ -51,10 +51,12 @@
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
     "migrate": "tsx ./src/db/migrate.ts",
-    "seed": "tsx ./src/db/seed.ts"
+    "seed": "tsx ./src/db/seed.ts",
+    "lint": "eslint"
   },
   "type": "module",
   "devDependencies": {
+    "@eslint/compat": "^1.3.0",
     "@mermaid-js/mermaid-cli": "^11.4.2",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",

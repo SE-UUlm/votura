@@ -1,4 +1,4 @@
-import useSWR from 'swr';
+import useSWR, { type SWRResponse } from 'swr';
 import { fetcher } from './fetcher.ts';
 
 interface UseVoturaGithubRepoResponse {
@@ -7,9 +7,9 @@ interface UseVoturaGithubRepoResponse {
   forks_count: number;
 }
 
-export const useVoturaGithubRepo = () => {
-  return useSWR(
+export const useVoturaGithubRepo = (): SWRResponse<UseVoturaGithubRepoResponse> => {
+  return useSWR<unknown>(
     `https://api.github.com/repos/SE-UUlm/votura`,
-    fetcher<UseVoturaGithubRepoResponse>,
-  );
+    fetcher,
+  ) as SWRResponse<UseVoturaGithubRepoResponse>;
 };

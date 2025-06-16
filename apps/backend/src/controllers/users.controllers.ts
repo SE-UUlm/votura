@@ -1,11 +1,11 @@
-import { type Request, type Response } from 'express';
+import type { Request, Response } from 'express';
 import { findUserBy } from '../services/users.service.js';
 
 export interface GetUserByIdParams {
   id: string;
 }
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
+export const getUsers = (req: Request, res: Response): void => {
   res.sendStatus(501);
 };
 

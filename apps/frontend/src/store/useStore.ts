@@ -68,19 +68,21 @@ export const createMockElectionSlice: StateCreator<
   MockElectionSlice
 > = (set) => ({
   elections: mockElections,
-  addElection: (election) =>
+  addElection: (election): void => {
     set(
       (state) => ({ elections: [...state.elections, election] }),
       undefined,
       'mockElectionSlice/addElection',
-    ),
-  deleteElection: (id) =>
+    );
+  },
+  deleteElection: (id): void => {
     set(
       (state) => ({ elections: state.elections.filter((e) => e.id !== id) }),
       undefined,
       'mockElectionSlice/deleteElection',
-    ),
-  updateElection: (id, partial) =>
+    );
+  },
+  updateElection: (id, partial): void => {
     set(
       (state) => ({
         elections: state.elections.map((election) =>
@@ -89,7 +91,8 @@ export const createMockElectionSlice: StateCreator<
       }),
       undefined,
       'mockElectionSlice/updateElection',
-    ),
+    );
+  },
 });
 
 export const useStore = create<StoreState>()(

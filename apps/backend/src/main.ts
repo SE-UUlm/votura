@@ -7,7 +7,7 @@ import { electionsRouter } from './routes/elections.routes.js';
 
 dotenv.config();
 
-async function main() {
+function main(): void {
   const app = express();
   const PORT = process.env.PORT ?? 4000;
 
@@ -26,7 +26,10 @@ async function main() {
   });
 }
 
-main()
+Promise.resolve()
+  .then(() => {
+    main();
+  })
   .then(async () => {
     await db.destroy();
   })

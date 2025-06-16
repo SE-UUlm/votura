@@ -23,6 +23,7 @@ import {
 } from '../nameEnums.js';
 
 // --- Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
   return ctb
     .addColumn(DefaultColumnName.id, 'uuid', (col) =>
@@ -43,6 +44,7 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilde
 };
 
 // --- Table Creation Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createUserTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.User)
@@ -74,6 +76,7 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.AccessTokenBlacklist)
@@ -94,6 +97,7 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createElectionTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.Election)
@@ -130,6 +134,7 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.BallotPaper)
@@ -156,6 +161,7 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.BallotPaperSection)
@@ -182,6 +188,7 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.BallotPaperSectionCandidate)
@@ -202,6 +209,7 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createCandidateTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.Candidate)
@@ -221,6 +229,7 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.VoterGroup)
@@ -244,6 +253,7 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.Voter)
@@ -261,6 +271,7 @@ async function createVoterTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.VoterRegister)
@@ -280,6 +291,7 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
     `.execute(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createTables(db: Kysely<any>): Promise<void> {
   await createUserTable(db);
   await createAccessTokenBlacklistTable(db);
@@ -294,6 +306,7 @@ async function createTables(db: Kysely<any>): Promise<void> {
 }
 
 // --- Foreign Key Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.Election)
@@ -307,6 +320,7 @@ async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.BallotPaper)
@@ -320,6 +334,7 @@ async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.BallotPaperSection)
@@ -333,6 +348,7 @@ async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> 
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.BallotPaperSectionCandidate)
@@ -357,6 +373,7 @@ async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promi
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.Candidate)
@@ -370,6 +387,7 @@ async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.Voter)
@@ -383,6 +401,7 @@ async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.VoterRegister)
@@ -407,6 +426,7 @@ async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addElectionForeignKeys(db);
   await addBallotPaperForeignKeys(db);
@@ -417,6 +437,7 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addVoterRegisterForeignKeys(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   // Create the update_modified_at_column function to update modifiedAt on row updates
   await sql`
@@ -437,6 +458,7 @@ export async function up(db: Kysely<any>): Promise<void> {
   await addForeignKeys(db);
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
   // Drop the update_modified_at_column function
   await sql`
