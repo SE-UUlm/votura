@@ -40,3 +40,12 @@ If you want to create a new collection, you can create a new one by generating i
 
 Normally we only need to open existing collection under the `apps/backend/tests_api/Votura-API` folder and open it in the developer mode.
 You can now select in the upper right corner your environment like `The default local development server`.
+
+## Testing
+
+### Create Tests
+
+You can create simple asserts by using the `Assert` function in the Bruno UI.
+For example, to check if the response status code is 200.
+
+But you can also create more complex tests by using the `Tests` function in the Bruno UI.

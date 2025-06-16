@@ -13,3 +13,7 @@ get {
 params:query {
   emailVerificationTokenHash: 
 }
+
+assert {
+  res.status: eq 500
+}
