@@ -1,12 +1,33 @@
 import { db } from '../db/database.js';
-import type { User } from '../db/types/db.js';
-import type { Selectable } from 'kysely';
+import type { SelectableUser, User } from '@repo/votura-validators';
 
-export async function findUserById(id: Selectable<User>['id']): Promise<Selectable<User> | null> {
-  const user: Selectable<User> | undefined = await db
-    .selectFrom('User')
-    .where('id', '=', id)
-    .selectAll()
-    .executeTakeFirst();
-  return user === undefined ? null : user;
+export async function findUserBy(
+  criteria: Partial<Pick<User, 'id' | 'email'>>,
+): Promise<SelectableUser | null> {
+  if (Object.keys(criteria).length === 0) {
+    return null;
+  }
+
+  let query = db.selectFrom('User');
+
+  if (criteria.id !== undefined) {
+    query = query.where('id', '=', criteria.id);
+  }
+
+  if (criteria.email !== undefined) {
+    query = query.where('email', '=', criteria.email);
+  }
+
+  const user = await query.selectAll().executeTakeFirst();
+
+  if (user === undefined) {
+    return null;
+  }
+
+  return {
+    id: user.id,
+    createdAt: user.createdAt.toISOString(),
+    modifiedAt: user.modifiedAt.toISOString(),
+    email: user.email,
+  };
 }

@@ -1,11 +1,19 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": [],
+  "globalEnv": ["DATABASE_URL"],
   "ui": "stream",
   "concurrency": "100%",
   "cacheDir": ".turbo/cache",
   "envMode": "strict",
   "tasks": {
+    "lint": {
+      "dependsOn": ["^lint"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false
+    },
     "format": {
       "dependsOn": ["^format"],
       "cache": true,
@@ -34,7 +42,7 @@
       "dependsOn": ["^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
-      "env": ["PORT"],
+      "env": ["PORT", "TERMINAL_LOG_LEVEL"],
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,

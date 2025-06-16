@@ -3,6 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { Migrator, FileMigrationProvider } from 'kysely';
 import { db } from './database.js';
+import logger from '../logger.js';
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
@@ -21,15 +22,14 @@ async function migrateToLatest(): Promise<void> {
 
   results?.forEach((it) => {
     if (it.status === 'Success') {
-      console.info(`migration "${it.migrationName}" was executed successfully`);
+      logger.info({ migration: it.migrationName }, 'Migration was executed successfully.');
     } else if (it.status === 'Error') {
-      console.error(`failed to execute migration "${it.migrationName}"`);
+      logger.error({ migration: it.migrationName }, 'Failed to execute migration.');
     }
   });
 
   if (error as boolean) {
-    console.error('failed to migrate');
-    console.error(error);
+    logger.error({ error }, 'Migration failed.');
     process.exit(1);
   }
 
@@ -39,6 +39,6 @@ async function migrateToLatest(): Promise<void> {
 try {
   await migrateToLatest();
 } catch {
-  console.error('Migration failed');
+  logger.error('Migration failed.');
   process.exit(1);
 }

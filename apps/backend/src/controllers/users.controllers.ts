@@ -1,11 +1,11 @@
-import { type Request, type Response } from 'express';
-import { findUserById } from '../services/users.service.js';
+import type { Request, Response } from 'express';
+import { findUserBy } from '../services/users.service.js';
 
 export interface GetUserByIdParams {
   id: string;
 }
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
+export const getUsers = (req: Request, res: Response): void => {
   res.sendStatus(501);
 };
 
@@ -20,7 +20,9 @@ export const getUserById = async (
     return;
   }
 
-  const user = await findUserById(id);
+  const user = await findUserBy({
+    id: id,
+  });
 
   if (!user) {
     res.status(404).json({ message: 'User not found' });

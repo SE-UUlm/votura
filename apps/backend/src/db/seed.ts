@@ -1,10 +1,11 @@
 import { db } from './database.js';
+import logger from '../logger.js';
 
 async function seed(): Promise<void> {
   await db
     .insertInto('User')
     .values({
-      email: 'someemail@domain.com',
+      email: 'user@votura.org',
       passwordHash: 'hashedpassword',
     })
     .execute();
@@ -12,10 +13,10 @@ async function seed(): Promise<void> {
 
 seed()
   .then(() => {
-    console.info('Seeding completed.');
+    logger.info('Seeding completed.');
     return db.destroy();
   })
-  .catch((err) => {
-    console.error('Seeding failed:', err);
+  .catch((err: unknown) => {
+    logger.error({ err: err instanceof Error ? err.message : String(err) }, 'Seeding failed.');
     return db.destroy();
   });
