@@ -26,13 +26,10 @@ function main(): void {
     res.sendStatus(HttpStatusCode.BadRequest);
   });
 
-  app
-    .listen(port, () => {
-      console.info(`Server is running. Listening on port ${port}`);
-    })
-    .on('error', (err) => {
-      console.error(err);
-    });
+  logger.debug('Starting server.');
+  app.listen(port, () => {
+    logger.info({ port: port }, 'Server is listening.');
+  });
 }
 
 Promise.resolve()
