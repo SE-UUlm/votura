@@ -167,7 +167,7 @@ describe('Tallying', () => {
     });
 
     const zero = publicKey.encrypt(plainNo)[0];
-    const zeroRow = (cols: number) => Array(cols).fill(zero) as Ciphertext[];
+    const zeroRow = (cols: number): Ciphertext[] => Array(cols).fill(zero) as Ciphertext[];
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const lenA = votesA1[0]!.length;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
@@ -328,59 +328,59 @@ describe('ZeroKnowledgeProof', () => {
   });
 
   /* voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
-                    const { publicKey } = keyPair;
-                    const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-                    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
-                    const realIndex = plaintexts.indexOf(plaintext);
+                      const { publicKey } = keyPair;
+                      const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
+                      const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
+                      const realIndex = plaintexts.indexOf(plaintext);
 
-                    const zkp = new ZeroKnowledgeProof(publicKey);
-                    const validProofs = zkp.createDisjunctiveEncryptionProof(
-                      ciphertexts,
-                      realIndex,
-                      randomness,
-                    );
+                      const zkp = new ZeroKnowledgeProof(publicKey);
+                      const validProofs = zkp.createDisjunctiveEncryptionProof(
+                        ciphertexts,
+                        realIndex,
+                        randomness,
+                      );
 
-                    const isValid = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, validProofs);
-                    expect(isValid).toBe(true); // test fails here
+                      const isValid = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, validProofs);
+                      expect(isValid).toBe(true); // test fails here
 
-                    const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
-                      commitment:
-                        index === 0
-                          ? [(proof.commitment[0] + 1n) % publicKey.primeP, proof.commitment[1]]
-                          : [proof.commitment[0], proof.commitment[1]],
-                      challenge: proof.challenge,
-                      response: proof.response,
-                    }));
-                    const isValid1 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs1);
-                    expect(isValid1).toBe(false);
+                      const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
+                        commitment:
+                          index === 0
+                            ? [(proof.commitment[0] + 1n) % publicKey.primeP, proof.commitment[1]]
+                            : [proof.commitment[0], proof.commitment[1]],
+                        challenge: proof.challenge,
+                        response: proof.response,
+                      }));
+                      const isValid1 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs1);
+                      expect(isValid1).toBe(false);
 
-                    const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
-                      commitment:
-                        index === 1
-                          ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.primeP]
-                          : [proof.commitment[0], proof.commitment[1]],
-                      challenge: proof.challenge,
-                      response: proof.response,
-                    }));
-                    const isValid2 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs2);
-                    expect(isValid2).toBe(false);
+                      const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
+                        commitment:
+                          index === 1
+                            ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.primeP]
+                            : [proof.commitment[0], proof.commitment[1]],
+                        challenge: proof.challenge,
+                        response: proof.response,
+                      }));
+                      const isValid2 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs2);
+                      expect(isValid2).toBe(false);
 
-                    const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
-                      commitment: [proof.commitment[0], proof.commitment[1]],
-                      challenge: index === 2 ? (proof.challenge + 1n) % publicKey.primeQ : proof.challenge,
-                      response: proof.response,
-                    }));
-                    const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
-                    expect(isValid3).toBe(false);
+                      const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
+                        commitment: [proof.commitment[0], proof.commitment[1]],
+                        challenge: index === 2 ? (proof.challenge + 1n) % publicKey.primeQ : proof.challenge,
+                        response: proof.response,
+                      }));
+                      const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
+                      expect(isValid3).toBe(false);
 
-                    const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
-                      commitment: [proof.commitment[0], proof.commitment[1]],
-                      challenge: proof.challenge,
-                      response: index === 3 ? (proof.response + 1n) % publicKey.primeQ : proof.response,
-                    }));
-                    const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
-                    expect(isValid4).toBe(false);
-                  }); //*/
+                      const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
+                        commitment: [proof.commitment[0], proof.commitment[1]],
+                        challenge: proof.challenge,
+                        response: index === 3 ? (proof.response + 1n) % publicKey.primeQ : proof.response,
+                      }));
+                      const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
+                      expect(isValid4).toBe(false);
+                    }); //*/
 
   voturaTest('verifyDecryptionProof', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;

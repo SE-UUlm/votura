@@ -29,6 +29,7 @@ export default tseslint.config(
       '@typescript-eslint/no-import-type-side-effects': 'error',
       '@typescript-eslint/no-confusing-void-expression': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
+      '@typescript-eslint/explicit-function-return-type': 'error',
     },
   },
   eslintConfigPrettier,
