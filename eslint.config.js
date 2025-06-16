@@ -2,7 +2,7 @@ import tseslint from 'typescript-eslint';
 import config from '@repo/eslint-config/node';
 import { fileURLToPath } from 'url';
 import { includeIgnoreFile } from '@eslint/compat';
-import {globalIgnores} from "eslint/config";
+import { globalIgnores } from 'eslint/config';
 
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
