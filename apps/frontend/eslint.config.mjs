@@ -1,5 +1,5 @@
 import tseslint from 'typescript-eslint';
-import config from '@repo/eslint-config/node';
+import config from '@repo/eslint-config/browser';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
 import { fileURLToPath } from 'url';
