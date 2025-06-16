@@ -50,6 +50,8 @@
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
+    "migrate": "tsx ./src/db/migrate.ts",
+    "seed": "tsx ./src/db/seed.ts",
     "lint": "eslint"
   },
   "type": "module",
@@ -59,6 +61,7 @@
     "@repo/typescript-config": "*",
     "@stoplight/spectral-cli": "^6.15.0",
     "@tsconfig/node22": "^22.0.1",
+    "@types/express": "^5.0.3",
     "@types/node": "^22.15.16",
     "@types/pg": "^8.15.4",
     "eslint": "^9.25.1",

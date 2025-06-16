@@ -4,18 +4,21 @@ import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
 import logger from './logger.js';
 import pinoHttp from 'pino-http';
+import { auth } from './middlewares/auth.js';
+import { electionsRouter } from './routes/elections.routes.js';
 
 dotenv.config();
 
 function main(): void {
   const app = express();
-  const PORT = process.env.PORT ?? 3000;
+  const PORT = process.env.PORT ?? 4000;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
   app.use(pinoHttp.pinoHttp({ logger }));
 
   app.use('/users', usersRouter);
+  app.use('/elections', [auth, electionsRouter]);
   // Fallback for unhandled routes
   app.use((_, res) => {
     res.sendStatus(400);

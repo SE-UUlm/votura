@@ -51,14 +51,19 @@ export const electionObject = z.object({
 
 export type Election = z.infer<typeof electionObject>;
 
-export const insertableElectionObject = electionObject.pick({
-  name: true,
-  description: true,
-  private: true,
-  votingStartAt: true,
-  votingEndAt: true,
-  allowInvalidVotes: true,
-});
+export const insertableElectionObject = electionObject
+  .pick({
+    name: true,
+    description: true,
+    private: true,
+    votingStartAt: true,
+    votingEndAt: true,
+    allowInvalidVotes: true,
+  })
+  .refine((data) => data.votingStartAt < data.votingEndAt, {
+    error: 'votingStartAt must be before votingEndAt',
+    path: ['votingEndAt'],
+  });
 
 export type InsertableElection = z.infer<typeof insertableElectionObject>;
 

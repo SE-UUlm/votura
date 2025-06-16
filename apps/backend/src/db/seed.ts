@@ -5,7 +5,7 @@ async function seed(): Promise<void> {
   await db
     .insertInto('User')
     .values({
-      email: 'someemail@domain.com',
+      email: 'user@votura.org',
       passwordHash: 'hashedpassword',
     })
     .execute();
