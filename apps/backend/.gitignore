@@ -1,1 +1,3 @@
-tests_api/Votura-API/results/*
+tests_api/Votura-API/results/*.json
+tests_api/Votura-API/results/*.xml
+tests_api/Votura-API/results/*.html
