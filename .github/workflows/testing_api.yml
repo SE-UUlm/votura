@@ -60,8 +60,9 @@ jobs:
           cd apps/backend
           npm run build
       - name: Setup DB
+        env:
+          DATABASE_URL: DATABASE_URL=postgresql://votura:votura@localhost:5432/votura?schema=public
         run: |
-          echo "DATABASE_URL=postgresql://votura:votura@localhost:5432/votura?schema=public" >> $GITHUB_ENV
           cd apps/backend
           npm run migrate
           npm run seed
