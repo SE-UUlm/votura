@@ -123,7 +123,9 @@ You can connect your IDE (e.g. with the VSC Extension) to the Teamscale server t
 
 ##### ESLint
 
-TODO: @JKortmann
+```bash
+npm run lint
+```
 
 #### Format votura
 
