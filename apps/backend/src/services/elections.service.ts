@@ -15,7 +15,7 @@ export const createElection = async (
     .returningAll()
     .executeTakeFirst();
 
-  if (!election) {
+  if (election === undefined) {
     return null;
   }
 

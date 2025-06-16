@@ -22,7 +22,7 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
   if (success) {
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
-    if (!selectableElection) {
+    if (selectableElection === null) {
       res.sendStatus(500);
       return;
     }

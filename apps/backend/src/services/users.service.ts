@@ -20,7 +20,7 @@ export async function findUserBy(
 
   const user = await query.selectAll().executeTakeFirst();
 
-  if (!user) {
+  if (user === undefined) {
     return null;
   }
 
