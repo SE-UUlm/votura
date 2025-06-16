@@ -16,17 +16,17 @@ auth:bearer {
 
 body:json {
   {
-    "name": "",
-    "description": "",
-    "private": "",
-    "votingStartAt": "",
-    "votingEndAt": "",
-    "allowInvalidVotes": ""
+    "name": "My test election",
+    "description": "My description",
+    "private": true,
+    "votingStartAt": "2025-06-16T14:30:00Z",
+    "votingEndAt": "2025-06-18T14:30:00Z",
+    "allowInvalidVotes": false
   }
 }
 
 assert {
-  res.status: eq 400
+  res.status: eq 201
   res.body: isJson
 }
 
@@ -34,9 +34,7 @@ tests {
   test("Should contain error message", function () {
     const body = res.getBody();
   
-    expect(body).to.have.property("message");
-    expect(body.message).to.be.a("string");
-    expect(body.message).to.include("Bad Request");
+    expect(body).to.include.all.keys("id", "createdAt", "modifiedAt", "name", "description", "private", "votingStartAt", "votingEndAt", "allowInvalidVotes", "configFrozen");
   });
   
 }
