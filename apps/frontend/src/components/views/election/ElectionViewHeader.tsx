@@ -25,7 +25,8 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const onDelete = () => {
     deleteElection(election.id);
     notifications.show(getDeleteSuccessElectionConfig(election.name));
-    void navigate('/elections');
+    navigate('/elections');
+    return;
   };
 
   const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
@@ -47,7 +48,9 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           <Button
             leftSection={<IconArrowLeft size={16} />}
             variant="subtle"
-            onClick={() => void navigate('/elections')}
+            onClick={() => {
+              navigate('/elections');
+            }}
           >
             Back to all elections
           </Button>
