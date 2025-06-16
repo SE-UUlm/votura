@@ -3,6 +3,8 @@ import dotenv from 'dotenv';
 import { usersRouter } from './routes/users.routes.js';
 import { db } from './db/database.js';
 import { response400Object } from '@repo/votura-validators';
+import { auth } from './middlewares/auth.js';
+import { electionsRouter } from './routes/elections.routes.js';
 
 dotenv.config();
 
@@ -14,6 +16,7 @@ function main(): void {
   app.use(express.json()); // parse JSON bodies
 
   app.use('/users', usersRouter);
+  app.use('/elections', [auth, electionsRouter]);
   // Fallback for unhandled routes
   app.use((_, res) => {
     res.status(400).json(response400Object.parse({}));
