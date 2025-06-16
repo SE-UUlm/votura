@@ -8,5 +8,5 @@ export async function findUserById(id: Selectable<User>['id']): Promise<Selectab
     .where('id', '=', id)
     .selectAll()
     .executeTakeFirst();
-  return user === undefined ? null : user;
+  return user ?? null;
 }

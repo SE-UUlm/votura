@@ -3,5 +3,5 @@ import { getUserById, getUsers } from '../controllers/users.controllers.js';
 
 export const usersRouter: Router = Router();
 
-usersRouter.get('/', getUsers);
-usersRouter.get('/:id', getUserById);
+usersRouter.get('/', [getUsers]);
+usersRouter.get('/:id', [getUserById]);
