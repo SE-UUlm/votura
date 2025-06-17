@@ -74,3 +74,6 @@ So feel free to use Bruno for quick tests, but we recommend writing vitest testc
 ### API tests with vitest
 
 We are using supertest to test the votura API with vitest.
+
+You can find the tests in the `apps/backend/test` folder.
+This test cases are run automatically in the pipeline and ensure that the API is working as expected.
