@@ -1,13 +1,11 @@
-name: Testing API
+name: Testing Bruno
 
 on:
   workflow_dispatch:
-  push:
-  merge_group:
 
 jobs:
   test:
-    name: Testing API Endpoints
+    name: Bruno Tests
     runs-on:
       labels: ubuntu-latest
     container:
@@ -73,7 +71,7 @@ jobs:
           cd apps/backend
           npm run start &
           sleep 5
-          npm run test-api
+          npm run test-bru
       - name: Test Summary
         uses: test-summary/action@v2
         with:

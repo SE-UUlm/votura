@@ -31,7 +31,7 @@ assert {
 }
 
 tests {
-  test("Should contain error message", function () {
+  test("Should contain keys", function () {
     const body = res.getBody();
   
     expect(body).to.include.all.keys("id", "createdAt", "modifiedAt", "name", "description", "private", "votingStartAt", "votingEndAt", "allowInvalidVotes", "configFrozen");
