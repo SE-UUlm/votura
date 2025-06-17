@@ -50,6 +50,7 @@
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
+    "gen-keys": "tsx ./src/auth/generateJWTKeyPair.ts",
     "migrate": "tsx ./src/db/migrate.ts",
     "seed": "tsx ./src/db/seed.ts",
     "lint": "eslint"
@@ -62,6 +63,7 @@
     "@stoplight/spectral-cli": "^6.15.0",
     "@tsconfig/node22": "^22.0.1",
     "@types/express": "^5.0.3",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.16",
     "@types/pg": "^8.15.4",
     "eslint": "^9.25.1",
@@ -74,6 +76,7 @@
     "argon2": "^0.43.0",
     "dotenv": "^16.5.0",
     "express": "^5.1.0",
+    "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.2",
     "pg": "^8.16.0",
     "pino": "^9.7.0",

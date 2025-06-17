@@ -1,26 +1,30 @@
-import type { Request, Response } from 'express';
+import type { Response } from 'express';
 import {
   insertableElectionObject,
   type Response500,
   type SelectableElection,
-  type SelectableUser,
   zodErrorToResponse400,
   type Response400,
 } from '@repo/votura-validators';
 import { createElection as createPersistentElection } from '../services/elections.service.js';
+import type { AuthenticatedRequest } from '../middlewares/auth.js';
 
-export type CreateElectionResponse = Response<
-  SelectableElection | Response400 | Response500,
-  { user: SelectableUser }
->;
+export type CreateElectionResponse = Response<SelectableElection | Response400 | Response500>;
 
-export const createElection = async (req: Request, res: CreateElectionResponse): Promise<void> => {
+export const createElection = async (
+  req: AuthenticatedRequest,
+  res: CreateElectionResponse,
+): Promise<void> => {
+  if (req.user === undefined) {
+    res.status(401).send({ message: 'User not authenticated.' });
+    return;
+  }
   const body: unknown = req.body;
 
   const { data, error, success } = await insertableElectionObject.safeParseAsync(body);
 
   if (success) {
-    const selectableElection = await createPersistentElection(data, res.locals.user.id);
+    const selectableElection = await createPersistentElection(data, req.user.id);
 
     if (selectableElection === null) {
       res.sendStatus(500);
