@@ -7,12 +7,14 @@ import logger from './logger.js';
 import pinoHttp from 'pino-http';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
+import { HttpStatusCode } from './httpStatusCode.js';
 
 dotenv.config();
 
 function main(): void {
   const app = express();
-  const PORT = process.env.PORT ?? 4000;
+  const defaultPort = 4000;
+  const port = process.env.PORT ?? defaultPort;
 
   app.use(express.urlencoded({ extended: true }));
   app.use(express.json()); // parse JSON bodies
@@ -21,13 +23,13 @@ function main(): void {
   app.use('/users', usersRouter);
   app.use('/elections', [auth, electionsRouter]);
   // Fallback for unhandled routes
-  app.use((_, res) => {
-    res.status(400).json(response400Object.parse({}));
+  app.use((_req, res) => {
+    res.status(HttpStatusCode.BadRequest).json(response400Object.parse({}));
   });
 
   logger.debug('Starting server.');
-  app.listen(PORT, () => {
-    logger.info({ port: PORT }, 'Server is listening.');
+  app.listen(port, () => {
+    logger.info({ port: port }, 'Server is listening.');
   });
 }
 
