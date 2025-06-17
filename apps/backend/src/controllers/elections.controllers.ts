@@ -8,6 +8,7 @@ import {
   type Response400,
 } from '@repo/votura-validators';
 import { createElection as createPersistentElection } from '../services/elections.service.js';
+import { HttpStatusCode } from '../httpStatusCode.js';
 
 export type CreateElectionResponse = Response<
   SelectableElection | Response400 | Response500,
@@ -23,12 +24,12 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
-      res.sendStatus(500);
+      res.sendStatus(HttpStatusCode.InternalServerError);
       return;
     }
 
-    res.status(201).send(selectableElection);
+    res.status(HttpStatusCode.Created).send(selectableElection);
   } else {
-    res.status(400).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
   }
 };

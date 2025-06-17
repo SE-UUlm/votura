@@ -1,7 +1,7 @@
 {
   "extends": ["@tsconfig/node22/tsconfig.json", "@repo/typescript-config/tsconfig.json"],
   "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "rootDirs": ["./src", "./test"]
   }
 }

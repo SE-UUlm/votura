@@ -1,5 +1,7 @@
 import type { NextFunction, Request, Response } from 'express';
 import { MimeType } from './utils.js';
+import { HttpStatusCode } from './../httpStatusCode.js';
+import { response415Object } from '@repo/votura-validators';
 
 export const acceptBodyCheck =
   (mimeType = MimeType.ApplicationJson) =>
@@ -7,7 +9,7 @@ export const acceptBodyCheck =
     const bodyMimeType = req.get('content-type');
 
     if (bodyMimeType !== mimeType) {
-      res.sendStatus(415);
+      res.status(HttpStatusCode.UnsupportedMediaType).json(response415Object.parse({}));
       return;
     }
 

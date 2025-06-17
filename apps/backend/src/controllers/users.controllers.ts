@@ -1,5 +1,6 @@
 import type { Request, Response } from 'express';
 import { findUserBy } from '../services/users.service.js';
+import { HttpStatusCode } from '../httpStatusCode.js';
 
 export interface GetUserByIdParams {
   id: string;
@@ -16,7 +17,7 @@ export const getUserById = async (
   const id = req.params.id;
 
   if (id === '') {
-    res.status(400).json({ message: 'Invalid user id.' });
+    res.status(HttpStatusCode.BadRequest).json({ message: 'Invalid user id.' });
     return;
   }
 
@@ -25,9 +26,9 @@ export const getUserById = async (
   });
 
   if (!user) {
-    res.status(404).json({ message: 'User not found' });
+    res.status(HttpStatusCode.NotFound).json({ message: 'User not found' });
     return;
   }
 
-  res.status(200).json(user);
+  res.status(HttpStatusCode.Ok).json(user);
 };
