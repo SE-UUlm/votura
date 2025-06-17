@@ -30,21 +30,23 @@ Bruno supports OpenAPI definitions and allows you to create tests for your API r
 We are using Bruno only during the development, it is not enforced in the pipeline. (But you can trigger the pipeline `Testing Bruno` manually if you want to test your changes.)
 To prove your code coverage you need to write vitest testcases (see below).
 
-## Getting started with Bruno
+### API tests with Bruno
 
-### Install Bruno
+#### Install Bruno
 
 We recommend you to use the Bruno UI to edit your collections.
 You can download it from the [Bruno website](https://www.usebruno.com/downloads).
 
 You can also edit the collections in you favorite text editor, but the UI makes it much easier to work with.
 
-### Test your API with Bruno
+#### Test your API with Bruno
 
 If you want to create a new collection, you can create a new one by generating it from the OpenAPI definition.
 
-Normally we only need to open existing collection under the `apps/backend/tests_api/Votura-API` folder and open it in the developer mode.
+Normally we only need to open existing collection under the `apps/backend/bruno/Votura-API` folder and open it in the developer mode.
 You can now select in the upper right corner your environment like `The default local development server`.
+
+You can start your tests in the UI or by running `npm run test-bru` in the backend folder.
 
 You can create simple asserts by using the `Assert` function in the Bruno UI.
 For example, to check if the response status code is 200.
@@ -58,9 +60,9 @@ You need to ensure that the backend and the database are running before you can 
 
 :::
 
-The Bruno collections are stored in the `apps/backend/tests_api/Votura-API` folder, so that everyone can use and update the same collection.
+The Bruno collections are stored in the `apps/backend/bruno/Votura-API` folder, so that everyone can use and update the same collection.
 
-### Why we are not forcing Bruno in the pipeline?
+#### Why we are not forcing Bruno in the pipeline?
 
 Bruno is a convenient tool for quick and handy testing of the API, but it has some limitations.
 Writing complex tests are possible, but not so easy as with vitest.
@@ -68,3 +70,7 @@ For example, you can not import our zod schemas to validate the response data.
 
 Another limitation that we can not measure the code coverage of the tests, so that is harder to find out if the code is covered by tests or not.
 So feel free to use Bruno for quick tests, but we recommend writing vitest testcases for more complex tests and to ensure the code coverage.
+
+### API tests with vitest
+
+We are using supertest to test the votura API with vitest.
