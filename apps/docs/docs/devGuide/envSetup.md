@@ -110,6 +110,23 @@ The same applies to all other following commands.
 turbo typecheck
 ```
 
+#### Linting votura
+
+##### Teamscale
+
+We are using a [Teamscale](https://exia.informatik.uni-ulm.de/teamscale) server to run linting and static analysis on the votura codebase.
+You can connect your IDE (e.g. with the VSC Extension) to the Teamscale server to get real-time feedback on your code.
+
+1. Please check all findings that Teamscale reports in our PR in GitHub and fix them.
+2. If you think there is a rule activated that is not useful for the votura project at all, please bring this discussion to the next technical meeting, so that we can discuss it with the whole team and can reconfigure Teamscale if necessary.
+3. If you think the complaining rule is useful in general, but not for your specific case, you can add tolerate this finding with a comment in the Teamscale UI.
+
+##### ESLint
+
+```bash
+npm run lint
+```
+
 #### Format votura
 
 ```bash
