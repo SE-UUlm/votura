@@ -1,12 +1,15 @@
 import type { Request, Response } from 'express';
 import {
   insertableUserObject,
+  response409Object,
+  response500Object,
   zodErrorToResponse400,
   type Response400,
   type Response409,
   type Response500,
 } from '@repo/votura-validators';
 import { findUserBy, createUser as createPersistentUser } from '../services/users.service.js';
+import { HttpStatusCode } from '../httpStatusCode.js';
 
 export interface GetUserByIdParams {
   id: string;
@@ -23,7 +26,7 @@ export const getUserById = async (
   const id = req.params.id;
 
   if (id === '') {
-    res.status(400).json({ message: 'Invalid user id.' });
+    res.status(HttpStatusCode.BadRequest).json({ message: 'Invalid user id.' });
     return;
   }
 
@@ -32,11 +35,11 @@ export const getUserById = async (
   });
 
   if (!user) {
-    res.status(404).json({ message: 'User not found' });
+    res.status(HttpStatusCode.NotFound).json({ message: 'User not found' });
     return;
   }
 
-  res.status(200).json(user);
+  res.status(HttpStatusCode.Ok).json(user);
 };
 
 export type CreateUserResponse = Response<void | Response400 | Response409 | Response500>;
@@ -52,19 +55,29 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       email: data.email,
     });
     if (user !== null) {
-      res.status(409).json({ message: 'User with the provided email address already exists.' });
+      res
+        .status(HttpStatusCode.Conflict)
+        .json(
+          response409Object.parse({
+            message: 'User with the provided email address already exists.',
+          }),
+        );
       return;
     }
 
     const createdUser = await createPersistentUser(data);
 
     if (!createdUser) {
-      res.sendStatus(500);
+      res
+        .status(HttpStatusCode.InternalServerError)
+        .json(
+          response500Object.parse({ message: 'Failed to create user due to internal errors.' }),
+        );
       return;
     }
 
-    res.sendStatus(204);
+    res.sendStatus(HttpStatusCode.NoContent);
   } else {
-    res.status(400).json(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
   }
 };
