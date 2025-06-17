@@ -11,6 +11,16 @@ toc_min_heading_level: 2
 toc_max_heading_level: 3
 ---
 
+## Unit testing with vitest
+
+We are using [vitest](https://vitest.dev/) for unit testing in votura.
+
+You can run the tests with the following command:
+
+```bash
+npm run test
+```
+
 ## Testing votura API
 
 A convenient way to test the votura API during the development is to use [Bruno](https://docs.usebruno.com).
