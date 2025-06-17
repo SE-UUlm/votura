@@ -1,7 +1,6 @@
 import type { InsertableUser, SelectableUser, User } from '@repo/votura-validators';
 import { db } from '../db/database.js';
 import argon2 from 'argon2';
-import { DefaultColumnName, UserColumnName, TableName } from '../db/nameEnums.js';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
@@ -10,14 +9,14 @@ export async function findUserBy(
     return null;
   }
 
-  let query = db.selectFrom(TableName.User);
+  let query = db.selectFrom('User');
 
   if (criteria.id !== undefined) {
-    query = query.where(DefaultColumnName.id, '=', criteria.id);
+    query = query.where('id', '=', criteria.id);
   }
 
   if (criteria.email !== undefined) {
-    query = query.where(UserColumnName.email, '=', criteria.email);
+    query = query.where('email', '=', criteria.email);
   }
 
   const user = await query.selectAll().executeTakeFirst();
