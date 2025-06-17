@@ -55,13 +55,11 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       email: data.email,
     });
     if (user !== null) {
-      res
-        .status(HttpStatusCode.Conflict)
-        .json(
-          response409Object.parse({
-            message: 'User with the provided email address already exists.',
-          }),
-        );
+      res.status(HttpStatusCode.Conflict).json(
+        response409Object.parse({
+          message: 'User with the provided email address already exists.',
+        }),
+      );
       return;
     }
 
