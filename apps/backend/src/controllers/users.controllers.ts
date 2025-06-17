@@ -63,7 +63,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       return;
     }
 
-    const createdUser = await createPersistentUser(data);
+    const createdUser: boolean = await createPersistentUser(data);
 
     if (!createdUser) {
       res
