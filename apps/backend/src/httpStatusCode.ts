@@ -7,6 +7,7 @@ export enum HttpStatusCode {
   Forbidden = 403,
   NotFound = 404,
   NotAcceptable = 406,
+  Conflict = 409,
   UnsupportedMediaType = 415,
   InternalServerError = 500,
 }
