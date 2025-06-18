@@ -27,7 +27,7 @@ A convenient way to test the votura API during the development is to use [Bruno]
 Bruno is a tool that allows you to create collections of API requests and test them.
 Bruno supports OpenAPI definitions and allows you to create tests for your API requests.
 
-We are using Bruno only during the development, it is not enforced in the pipeline. (But you can trigger the pipeline `Testing Bruno` manually if you want to test your changes.)
+We are using Bruno only during the development, it is not enforced in the pipeline.
 To prove your code coverage you need to write vitest testcases (see below).
 
 ### API tests with Bruno
@@ -43,11 +43,6 @@ You can also edit the collections in you favorite text editor, but the UI makes 
 
 If you want to create a new collection, you can create a new one by generating it from the OpenAPI definition.
 
-Normally we only need to open existing collection under the `apps/backend/bruno/Votura-API` folder and open it in the developer mode.
-You can now select in the upper right corner your environment like `The default local development server`.
-
-You can start your tests in the UI or by running `npm run test-bru` in the backend folder.
-
 You can create simple asserts by using the `Assert` function in the Bruno UI.
 For example, to check if the response status code is 200.
 But you can also create more complex tests by using the `Tests` function in the Bruno UI.
@@ -59,8 +54,6 @@ For creating new asserts and tests we refer to the [Bruno documentation](https:/
 You need to ensure that the backend and the database are running before you can test it with Bruno.
 
 :::
-
-The Bruno collections are stored in the `apps/backend/bruno/Votura-API` folder, so that everyone can use and update the same collection.
 
 #### Why we are not forcing Bruno in the pipeline?
 
