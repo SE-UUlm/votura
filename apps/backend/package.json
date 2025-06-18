@@ -45,7 +45,7 @@
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "check-types": "tsc --noEmit",
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "vitest run --coverage",
     "start": "tsx src/main.ts",
     "postgres-up": "docker compose up -d",
