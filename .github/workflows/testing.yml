@@ -15,6 +15,21 @@ jobs:
     continue-on-error: false
     timeout-minutes: 15
 
+    services:
+      postgres:
+        image: postgres:17.4
+        env:
+          POSTGRES_USER: votura
+          POSTGRES_PASSWORD: votura
+          POSTGRES_DB: votura
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U votura"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+
     steps:
       - name: Update & install apt packages
         run: |
@@ -32,6 +47,10 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
+      - name: Generate .env file
+        run: |
+          cd apps/backend
+          echo "DATABASE_URL=postgresql://votura:votura@postgres:5432/votura?schema=public" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
@@ -49,6 +68,10 @@ jobs:
         run: |
           cd packages/votura-crypto
           npm run build
+      - name: Build votura-validators
+        run: |
+          cd packages/votura-validators
+          npm run build
       - name: Build backend
         run: |
           cd apps/backend
@@ -57,6 +80,11 @@ jobs:
         run: |
           cd apps/frontend
           npm run build
+      - name: Setup DB
+        run: |
+          cd apps/backend
+          npm run migrate
+          npm run seed
       - name: Run tests
         run: npm run test
       - name: Teamscale Upload
@@ -69,4 +97,4 @@ jobs:
           partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
           format: CLOVER
           message: 'Code coverage from GitHub Actions'
-          files: './packages/votura-crypto/coverage/clover.xml'
+          files: './packages/votura-crypto/coverage/clover.xml apps/backend/coverage/clover.xml'

@@ -26,7 +26,7 @@ import { getVoterTokensPathObject } from './voterGroups/getVoterTokensPathObject
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
   info: {
-    title: 'Votura backend HTTP-API definition',
+    title: 'Votura-API',
     description:
       'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.',
     termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file',

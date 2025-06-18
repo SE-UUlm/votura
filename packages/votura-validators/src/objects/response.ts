@@ -2,9 +2,14 @@ import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
 export const response400Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'The request was invalid, the server cannot process it.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Bad Request. The request was invalid, the server cannot process it.')
+    .register(voturaMetadataRegistry, {
+      example: 'Bad Request. The request was invalid, the server cannot process it.',
+    }),
 });
 
 export type Response400 = z.infer<typeof response400Object>;
@@ -51,9 +56,16 @@ export const response404Object = z.object({
 export type Response404 = z.infer<typeof response404Object>;
 
 export const response406Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'The server is not able to generate a response that is acceptable by the client.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default(
+      'Not Acceptable. The server is not able to generate a response that is acceptable by the client.',
+    )
+    .register(voturaMetadataRegistry, {
+      example: 'The server is not able to generate a response that is acceptable by the client.',
+    }),
 });
 
 export type Response406 = z.infer<typeof response406Object>;
@@ -68,9 +80,14 @@ export const response409Object = z.object({
 export type Response409 = z.infer<typeof response409Object>;
 
 export const response415Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Content-Type is not supported. Please provide only supported content types.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Content-Type is not supported. Please provide only supported content types.')
+    .register(voturaMetadataRegistry, {
+      example: 'Content-Type is not supported. Please provide only supported content types.',
+    }),
 });
 
 export type Response415 = z.infer<typeof response415Object>;

@@ -1,0 +1,69 @@
+import request from 'supertest';
+import { describe, it, expect } from 'vitest';
+import { app } from '../../src/app.js';
+import {
+  selectableElectionObject,
+  insertableElectionObject,
+  response400Object,
+  response415Object,
+  response406Object,
+} from '@repo/votura-validators';
+import { HttpStatusCode } from '../../src/httpStatusCode.js';
+
+const TOKEN = '1234';
+const REQUEST = '/elections';
+const demoElection = insertableElectionObject.parse({
+  name: 'My test election',
+  description: 'My description',
+  private: true,
+  votingStartAt: '2025-06-16T14:30:00Z',
+  votingEndAt: '2025-06-18T14:30:00Z',
+  allowInvalidVotes: false,
+});
+
+describe('POST /elections', () => {
+  it('should create an election when authorized and body is valid', async () => {
+    const res = await request(app).post(REQUEST).set('Authorization', TOKEN).send(demoElection);
+    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.type).toBe('application/json');
+    const parseResult = selectableElectionObject.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+
+  it('should throw error missing fields', async () => {
+    const res = await request(app).post(REQUEST).set('Authorization', TOKEN).send({
+      name: 'My test election',
+      description: 'My description',
+      private: true,
+      votingStartAt: '2025-06-16T14:30:00Z',
+      allowInvalidVotes: false,
+    });
+    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('should throw error on wrong body type xml', async () => {
+    const res = await request(app)
+      .post(REQUEST)
+      .set('Authorization', TOKEN)
+      .send(
+        '<election><name>My test election</name><description>My description</description><private>true</private><votingStartAt>2025-06-16T14:30:00Z</votingStartAt><votingEndAt>2025-06-18T14:30:00Z</votingEndAt><allowInvalidVotes>false</allowInvalidVotes></election>',
+      );
+    expect(res.status).toBe(HttpStatusCode.UnsupportedMediaType);
+    expect(res.type).toBe('application/json');
+    const parseResult = response415Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('should return 406 Not Acceptable when Accept header is not application/json', async () => {
+    const res = await request(app)
+      .post(REQUEST)
+      .set('Authorization', TOKEN)
+      .set('Accept', 'text/plain')
+      .send(demoElection);
+    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.type).toBe('application/json');
+    const parseResult = response406Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+});
