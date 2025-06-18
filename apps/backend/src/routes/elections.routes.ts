@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { createElection } from '../controllers/elections.controllers.js';
+import { createElection, getElections } from '../controllers/elections.controllers.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { MimeType } from '../middlewares/utils.js';
@@ -12,3 +12,5 @@ electionsRouter.post(
   acceptBodyCheck(MimeType.ApplicationJson),
   createElection,
 );
+
+electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);

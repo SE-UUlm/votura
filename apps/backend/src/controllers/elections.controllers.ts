@@ -7,7 +7,10 @@ import {
   zodErrorToResponse400,
   type Response400,
 } from '@repo/votura-validators';
-import { createElection as createPersistentElection } from '../services/elections.service.js';
+import {
+  createElection as createPersistentElection,
+  getAllElections,
+} from '../services/elections.service.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 
 export type CreateElectionResponse = Response<
@@ -32,4 +35,12 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
   } else {
     res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
   }
+};
+
+export type GetAllElectionsResponse = Response<SelectableElection[], { user: SelectableUser }>;
+
+export const getElections = async (_req: Request, res: GetAllElectionsResponse): Promise<void> => {
+  const elections = await getAllElections(res.locals.user.id);
+
+  res.status(HttpStatusCode.Ok).json(elections);
 };
