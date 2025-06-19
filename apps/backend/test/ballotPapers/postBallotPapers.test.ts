@@ -6,6 +6,7 @@ import {
   insertableBallotPaperObject,
   type InsertableBallotPaper,
   response400Object,
+  response404Object,
   response415Object,
   response406Object,
   selectableBallotPaperObject,
@@ -63,11 +64,30 @@ describe('POST /elections/:electionId/ballotPapers', () => {
       description: 'Test description',
       maxVotes: 5,
       maxVotesPerCandidate: 3,
-      electionId: '651327a8-ac5c-4125-bb38-d2be6b34bf3b',
     });
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('400: when no valid election uuid is provided', async () => {
+    const res = await request(app)
+      .post('/elections/invalid/ballotPapers')
+      .set('Authorization', TOKEN)
+      .send(demoBallotPaper);
+    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('404: when election uuid does not exist', async () => {
+    const res = await request(app)
+      .post('/elections/b3e3b70b-4008-4694-afc6-5e454ebcbd42/ballotPapers')
+      .set('Authorization', TOKEN)
+      .send(demoBallotPaper);
+    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.type).toBe('application/json');
+    const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
   it('406: when Accept header is not application/json', async () => {

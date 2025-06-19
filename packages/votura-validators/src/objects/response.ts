@@ -40,9 +40,14 @@ export const response401Object = z.object({
 export type Response401 = z.infer<typeof response401Object>;
 
 export const response403Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'The user is not authorized to do this action, please check your permissions.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('The user is not authorized to do this action, please check your permissions.')
+    .register(voturaMetadataRegistry, {
+      example: 'The user is not authorized to do this action, please check your permissions.',
+    }),
 });
 
 export type Response403 = z.infer<typeof response403Object>;
