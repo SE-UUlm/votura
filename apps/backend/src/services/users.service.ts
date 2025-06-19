@@ -1,6 +1,6 @@
 import type { InsertableUser, SelectableUser, User } from '@repo/votura-validators';
-import { db } from '../db/database.js';
 import argon2 from 'argon2';
+import { db } from '../db/database.js';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,

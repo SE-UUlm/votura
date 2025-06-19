@@ -1,9 +1,9 @@
 import { promises as fs } from 'fs';
+import { FileMigrationProvider, Migrator } from 'kysely';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { Migrator, FileMigrationProvider } from 'kysely';
-import { db } from './database.js';
 import logger from '../logger.js';
+import { db } from './database.js';
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);

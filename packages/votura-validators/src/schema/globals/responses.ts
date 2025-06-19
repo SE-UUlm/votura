@@ -1,5 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { toJsonSchemaParams } from '../../parserParams.js';
 import { z } from 'zod/v4';
 import {
   response400Object,
@@ -12,6 +11,7 @@ import {
   response429Object,
   response500Object,
 } from '../../objects/response.js';
+import { toJsonSchemaParams } from '../../parserParams.js';
 
 export const response400: OpenAPIV3.ResponsesObject = {
   400: {

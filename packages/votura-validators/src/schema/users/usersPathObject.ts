@@ -1,5 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
 import { insertableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
@@ -11,6 +10,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 
 export const usersPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Creating and deleting a user',

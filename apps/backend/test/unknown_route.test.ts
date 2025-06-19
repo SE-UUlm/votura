@@ -1,8 +1,8 @@
+import { response400Object } from '@repo/votura-validators';
 import request from 'supertest';
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from 'vitest';
 import { app } from '../src/app.js';
 import { HttpStatusCode } from '../src/httpStatusCode.js';
-import { response400Object } from '@repo/votura-validators';
 
 describe('Handle unknown routes', () => {
   it('should return 400 for unknown route', async () => {

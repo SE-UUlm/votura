@@ -1,7 +1,7 @@
-import type { NextFunction, Request, Response } from 'express';
-import { MimeType } from './utils.js';
-import { HttpStatusCode } from './../httpStatusCode.js';
 import { response406Object } from '@repo/votura-validators';
+import type { NextFunction, Request, Response } from 'express';
+import { HttpStatusCode } from './../httpStatusCode.js';
+import { MimeType } from './utils.js';
 
 export const acceptHeaderCheck =
   (mimeType = MimeType.ApplicationJson) =>

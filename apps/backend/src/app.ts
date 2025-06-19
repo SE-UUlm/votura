@@ -1,12 +1,12 @@
-import express from 'express';
-import dotenv from 'dotenv';
-import { usersRouter } from './routes/users.routes.js';
 import { response400Object } from '@repo/votura-validators';
-import logger from './logger.js';
+import dotenv from 'dotenv';
+import express from 'express';
 import pinoHttp from 'pino-http';
+import { HttpStatusCode } from './httpStatusCode.js';
+import logger from './logger.js';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
-import { HttpStatusCode } from './httpStatusCode.js';
+import { usersRouter } from './routes/users.routes.js';
 
 dotenv.config();
 

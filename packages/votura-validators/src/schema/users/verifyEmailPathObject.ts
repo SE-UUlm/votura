@@ -1,6 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { emailVerificationTokenHashParameter } from './emailVerificationTokenHashParameter.js';
 import {
   response400,
   response406,
@@ -8,6 +6,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { Tag } from '../globals/tag.js';
+import { emailVerificationTokenHashParameter } from './emailVerificationTokenHashParameter.js';
 
 export const verifyEmailPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Verify the user',

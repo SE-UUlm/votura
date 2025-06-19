@@ -1,11 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
-import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
 import {
   insertableBallotPaperSectionObjectSchema,
   selectableBallotPaperSectionObjectSchema,
 } from '../../objects/ballotPaperSection.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -16,7 +14,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
-import { electionIdParameter } from '../elections/electionIdParameter.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
 
 export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get and create ballot paper sections',
