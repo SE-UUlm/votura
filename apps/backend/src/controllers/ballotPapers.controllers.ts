@@ -8,13 +8,14 @@ import {
   uuidObject,
   type Response400,
   type Response500,
+  type SelectableUser,
   type SelectableBallotPaper,
 } from '@repo/votura-validators';
 import { createBallotPaper as createPersistentBallotPaper } from '../services/ballotPapers.service.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { electionExists, validOwnerOfElection } from './validators.js';
 
-export type CreateBallotPaperResponse = Response<SelectableBallotPaper | Response400 | Response500>;
+export type CreateBallotPaperResponse = Response<SelectableBallotPaper | Response400 | Response500, { user: SelectableUser }>;
 
 export const createBallotPaper = async (
   req: Request,
