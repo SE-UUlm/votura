@@ -1,4 +1,3 @@
-import { type MockElection } from '../store/useStore.ts';
 import {
   Button,
   Group,
@@ -9,10 +8,11 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
-import { type ReactNode, useEffect } from 'react';
-import { isNotEmpty, useForm } from '@mantine/form';
 import { DatePickerInput } from '@mantine/dates';
+import { isNotEmpty, useForm } from '@mantine/form';
 import dayjs from 'dayjs';
+import { type ReactNode, useEffect } from 'react';
+import { type MockElection } from '../store/useStore.ts';
 
 export interface MutateElectionModalProps {
   election?: MockElection;

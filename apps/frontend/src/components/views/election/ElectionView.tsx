@@ -1,8 +1,8 @@
-import { Navigate, useParams } from 'react-router';
 import { Container, Divider, Loader, Space } from '@mantine/core';
+import { Navigate, useParams } from 'react-router';
 import { useStore } from '../../../store/useStore.ts';
-import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 import { ElectionStats } from './ElectionStats.tsx';
+import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 
 export type ElectionViewRouteParams = Record<'id', string>;
 

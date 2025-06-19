@@ -1,10 +1,10 @@
+import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import json from '@eslint/json';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import turboPlugin from 'eslint-plugin-turbo';
+import tseslint from 'typescript-eslint';
 import { fileURLToPath } from 'url';
-import { includeIgnoreFile } from '@eslint/compat';
 
 const gitignorePath = fileURLToPath(new URL('../../.gitignore', import.meta.url));
 

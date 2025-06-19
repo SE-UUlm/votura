@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { Stack, Text } from '@mantine/core';
+import type { ReactNode } from 'react';
 
 export interface ElectionStatFieldProps {
   title: string;

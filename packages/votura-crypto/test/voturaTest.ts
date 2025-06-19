@@ -1,5 +1,5 @@
-import { type Ciphertext, KeyPair } from '../src/index.js';
 import { test } from 'vitest';
+import { type Ciphertext, KeyPair } from '../src/index.js';
 
 interface VoturaFixtures {
   keyPair: KeyPair;

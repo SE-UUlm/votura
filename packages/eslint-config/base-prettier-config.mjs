@@ -4,5 +4,5 @@ export const config = {
   trailingComma: 'all',
   printWidth: 100,
   tabWidth: 2,
-  plugins: ["prettier-plugin-organize-imports"]
+  plugins: ['prettier-plugin-organize-imports'],
 };

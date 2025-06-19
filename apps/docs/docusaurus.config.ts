@@ -1,10 +1,10 @@
-import { themes as prismThemes } from 'prism-react-renderer';
-import type { Config } from '@docusaurus/types';
 import {
   Options as PresetOptions,
   ThemeConfig as PresetThemeConfig,
 } from '@docusaurus/preset-classic';
+import type { Config } from '@docusaurus/types';
 import { Options as OpenApiPluginOptions } from 'docusaurus-plugin-openapi-docs';
+import { themes as prismThemes } from 'prism-react-renderer';
 import remarkDefList from 'remark-deflist';
 
 const GITHUB_URL = 'https://github.com/SE-UUlm/votura';
