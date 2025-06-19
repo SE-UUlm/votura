@@ -101,9 +101,14 @@ export const response429Object = z.object({
 export type Response429 = z.infer<typeof response429Object>;
 
 export const response500Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Internal Server Error. This should not happen, please report the issue.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Internal Server Error. This should not happen, please report the issue.')
+    .register(voturaMetadataRegistry, {
+      example: 'Internal Server Error. This should not happen, please report the issue.',
+    }),
 });
 
 export type Response500 = z.infer<typeof response500Object>;
