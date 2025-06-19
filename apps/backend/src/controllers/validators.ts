@@ -16,8 +16,21 @@ export async function electionExists(electionId: Election['id']): Promise<boolea
   return true;
 }
 
-export const validOwnerOfElection = (electionId: Election['id'], userId: User['id']): boolean => {
+export async function validOwnerOfElection(
+  electionId: Election['id'],
+  userId: User['id'],
+): Promise<boolean> {
   // Checks if the user with the given ID is the owner of the election with the given ID.
+  const result = await db
+    .selectFrom('Election')
+    .select(['id', 'electionCreatorId'])
+    .where('id', '=', electionId)
+    .where('electionCreatorId', '=', userId)
+    .limit(1)
+    .executeTakeFirst();
 
-  return true; // Placeholder
-};
+  if (result === undefined) {
+    return false;
+  }
+  return true;
+}

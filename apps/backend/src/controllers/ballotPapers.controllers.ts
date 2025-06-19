@@ -35,7 +35,7 @@ export const createBallotPaper = async (
     );
     return;
   }
-  if (validOwnerOfElection(electionId.data, res.locals.user.id) === false) {
+  if ((await validOwnerOfElection(electionId.data, res.locals.user.id)) === false) {
     res.status(HttpStatusCode.Forbidden).json(response403Object.parse({ undefined }));
     return;
   }

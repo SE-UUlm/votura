@@ -9,6 +9,13 @@ async function seed(): Promise<void> {
       passwordHash: 'hashedpassword',
     })
     .execute();
+  await db
+    .insertInto('User')
+    .values({
+      email: 'user2@votura.org',
+      passwordHash: 'newHashedPassword',
+    })
+    .execute();
 }
 
 seed()
