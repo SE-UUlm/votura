@@ -4,7 +4,6 @@ import { app } from '../../src/app.js';
 import {
   insertableElectionObject,
   insertableBallotPaperObject,
-  type InsertableBallotPaper,
   response400Object,
   response403Object,
   response404Object,
