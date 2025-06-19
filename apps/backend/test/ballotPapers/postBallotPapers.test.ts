@@ -28,7 +28,12 @@ const demoElection = insertableElectionObject.parse({
   votingEndAt: '2025-06-18T14:30:00Z',
   allowInvalidVotes: false,
 });
-let demoBallotPaper: InsertableBallotPaper;
+const demoBallotPaper = insertableBallotPaperObject.parse({
+  name: 'Test BallotPaper',
+  description: 'Test description',
+  maxVotes: 5,
+  maxVotesPerCandidate: 3,
+});
 
 describe('POST /elections/:electionId/ballotPapers', () => {
   // Setup the test environment
@@ -47,12 +52,6 @@ describe('POST /elections/:electionId/ballotPapers', () => {
 
     requestPath = `/elections/${election.id}/ballotPapers`;
     requestPath2 = `/elections/${election2.id}/ballotPapers`;
-    demoBallotPaper = insertableBallotPaperObject.parse({
-      name: 'Test BallotPaper',
-      description: 'Test description',
-      maxVotes: 5,
-      maxVotesPerCandidate: 3,
-    });
   });
 
   it('should create an election when authorized and body is valid', async () => {
