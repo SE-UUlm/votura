@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import {
   insertableElectionObject,
+  response500Object,
   type Response500,
   type SelectableElection,
   type SelectableUser,
@@ -24,7 +25,9 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
-      res.sendStatus(HttpStatusCode.InternalServerError);
+      res
+        .status(HttpStatusCode.InternalServerError)
+        .json(response500Object.parse({ message: undefined }));
       return;
     }
 
