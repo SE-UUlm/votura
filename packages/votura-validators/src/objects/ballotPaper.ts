@@ -45,7 +45,6 @@ export const insertableBallotPaperObject = ballotPaperObject.pick({
   description: true,
   maxVotes: true,
   maxVotesPerCandidate: true,
-  electionId: true,
 });
 
 export type InsertableBallotPaper = z.infer<typeof insertableBallotPaperObject>;
