@@ -48,7 +48,7 @@ export const createElection = async (
   return electionTransformer(election);
 };
 
-export const getAllElections = async (userId: User['id']): Promise<SelectableElection[]> => {
+export const getElections = async (userId: User['id']): Promise<SelectableElection[]> => {
   const elections = await db
     .selectFrom('Election')
     .selectAll()

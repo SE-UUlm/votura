@@ -13,8 +13,8 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createElection as createPersistentElection,
-  getAllElections,
   getElection as getPersistentElection,
+  getElections as getPersistentElections,
 } from '../services/elections.service.js';
 
 export type CreateElectionResponse = Response<
@@ -44,7 +44,7 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
 export type GetAllElectionsResponse = Response<SelectableElection[], { user: SelectableUser }>;
 
 export const getElections = async (_req: Request, res: GetAllElectionsResponse): Promise<void> => {
-  const elections = await getAllElections(res.locals.user.id);
+  const elections = await getPersistentElections(res.locals.user.id);
 
   res.status(HttpStatusCode.Ok).json(elections);
 };
