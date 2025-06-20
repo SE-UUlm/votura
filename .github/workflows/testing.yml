@@ -51,6 +51,7 @@ jobs:
         run: |
           cd apps/backend
           echo "DATABASE_URL=postgresql://votura:votura@postgres:5432/votura?schema=public" > .env
+          echo "PEPPER=12a34" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
