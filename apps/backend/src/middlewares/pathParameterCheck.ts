@@ -23,7 +23,9 @@ export const electionIdCheck = async (
     res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(electionId.error));
     return;
   }
-  if ((await electionExists(electionId.data)) === false) {
+
+  const exists = await electionExists(electionId.data);
+  if (exists !== true) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
         message: 'The parent election for this ballot paper does not exist!',
@@ -31,7 +33,9 @@ export const electionIdCheck = async (
     );
     return;
   }
-  if ((await validOwnerOfElection(electionId.data, res.locals.user.id)) === false) {
+
+  const isValidOwner = await validOwnerOfElection(electionId.data, res.locals.user.id);
+  if (isValidOwner !== true) {
     res.status(HttpStatusCode.Forbidden).json(response403Object.parse({ undefined }));
     return;
   }
