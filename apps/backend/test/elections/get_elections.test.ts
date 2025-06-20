@@ -1,13 +1,46 @@
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import request from 'supertest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { response406Object, selectableElectionObject } from '@repo/votura-validators';
-
-const AUTH_TOKEN = '1234';
-const ELECTIONS_SLUG = '/elections';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
+import { createElection } from '../../src/services/elections.service.js';
 
 describe('GET /elections', () => {
+  const AUTH_TOKEN = '1234';
+  const ELECTIONS_SLUG = '/elections';
+
+  beforeAll(async () => {
+    await createUser({
+      email: 'user@votura.org',
+      password: 'password',
+    });
+
+    const user = await findUserBy({
+      email: 'user@votura.org',
+    });
+
+    if (user === null) {
+      throw new Error('User not found!');
+    }
+
+    const election = await createElection(
+      {
+        private: true,
+        name: 'Election 1',
+        description: 'This is election one',
+        votingStartAt: '2024-07-29T15:51:28.071Z',
+        votingEndAt: '2024-07-30T15:51:28.071Z',
+        allowInvalidVotes: false,
+      },
+      user?.id,
+    );
+
+    if (election === null) {
+      throw new Error('Election not found!');
+    }
+  });
+
   it('should get all elections', async () => {
     const res = await request(app).get(ELECTIONS_SLUG).set('Authorization', AUTH_TOKEN).send();
 
@@ -15,7 +48,7 @@ describe('GET /elections', () => {
     expect(res.type).toBe('application/json');
     expect(res.body).toBeInstanceOf(Array);
     const arrBody = res.body as unknown[];
-    expect(arrBody.length).toBeGreaterThan(0);
+    expect(arrBody.length).toBe(1);
 
     const parseResult = await Promise.all(
       arrBody.map((el) => selectableElectionObject.safeParseAsync(el)),

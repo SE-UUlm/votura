@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import { app } from '../../src/app.js';
 import {
   selectableElectionObject,
@@ -9,6 +9,7 @@ import {
   response406Object,
 } from '@repo/votura-validators';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
 
 const TOKEN = '1234';
 const REQUEST = '/elections';
@@ -22,6 +23,21 @@ const demoElection = insertableElectionObject.parse({
 });
 
 describe('POST /elections', () => {
+  beforeAll(async () => {
+    await createUser({
+      email: 'user@votura.org',
+      password: 'password',
+    });
+
+    const user = await findUserBy({
+      email: 'user@votura.org',
+    });
+
+    if (user === null) {
+      throw new Error('User not found!');
+    }
+  });
+
   it('should create an election when authorized and body is valid', async () => {
     const res = await request(app).post(REQUEST).set('Authorization', TOKEN).send(demoElection);
     expect(res.status).toBe(HttpStatusCode.Created);

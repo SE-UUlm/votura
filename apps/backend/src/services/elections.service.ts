@@ -57,3 +57,21 @@ export const getAllElections = async (userId: User['id']): Promise<SelectableEle
 
   return elections.map((kysleyElection) => electionTransformer(kysleyElection));
 };
+
+export const getElection = async (
+  electionId: Election['id'],
+  userId: User['id'],
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .selectFrom('Election')
+    .where('id', '=', electionId)
+    .where('electionCreatorId', '=', userId)
+    .selectAll()
+    .executeTakeFirst();
+
+  if (election === undefined) {
+    return null;
+  }
+
+  return electionTransformer(election);
+};

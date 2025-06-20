@@ -6,10 +6,12 @@ import {
   type SelectableUser,
   zodErrorToResponse400,
   type Response400,
+  type Election, response404Object, type Response404,
 } from '@repo/votura-validators';
 import {
   createElection as createPersistentElection,
   getAllElections,
+  getElection as getPersistentElection,
 } from '../services/elections.service.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 
@@ -43,4 +45,21 @@ export const getElections = async (_req: Request, res: GetAllElectionsResponse):
   const elections = await getAllElections(res.locals.user.id);
 
   res.status(HttpStatusCode.Ok).json(elections);
+};
+
+export type GetElectionRequest = Request<{ electionId: Election['id'] }>;
+export type GetElectionResponse = Response<SelectableElection | Response404, { user: SelectableUser }>;
+
+export const getElection = async (
+  req: GetElectionRequest,
+  res: GetElectionResponse,
+): Promise<void> => {
+  const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
+
+  if (election === null) {
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({}));
+    return;
+  }
+
+  res.status(HttpStatusCode.Ok).json(election);
 };

@@ -48,7 +48,9 @@ export const response403Object = z.object({
 export type Response403 = z.infer<typeof response403Object>;
 
 export const response404Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
+  message: z.string().min(1).max(256).default(
+      'Not Found. The requested resource was not found.',
+  ).register(voturaMetadataRegistry, {
     example: 'The requested resource was not found.',
   }),
 });
