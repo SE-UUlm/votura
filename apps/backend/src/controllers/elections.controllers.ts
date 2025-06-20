@@ -6,7 +6,9 @@ import {
   type SelectableUser,
   zodErrorToResponse400,
   type Response400,
-  type Election, response404Object, type Response404,
+  type Election,
+  response404Object,
+  type Response404,
 } from '@repo/votura-validators';
 import {
   createElection as createPersistentElection,
@@ -48,7 +50,10 @@ export const getElections = async (_req: Request, res: GetAllElectionsResponse):
 };
 
 export type GetElectionRequest = Request<{ electionId: Election['id'] }>;
-export type GetElectionResponse = Response<SelectableElection | Response404, { user: SelectableUser }>;
+export type GetElectionResponse = Response<
+  SelectableElection | Response404,
+  { user: SelectableUser }
+>;
 
 export const getElection = async (
   req: GetElectionRequest,
