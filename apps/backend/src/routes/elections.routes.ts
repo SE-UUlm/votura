@@ -17,7 +17,7 @@ electionsRouter.post(
 );
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
 electionsRouter.get(
-  '/:electionId',
+  `/:${Parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   getElection,
