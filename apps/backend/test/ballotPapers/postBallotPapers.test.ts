@@ -38,6 +38,16 @@ const demoBallotPaper = insertableBallotPaperObject.parse({
 describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
   // Setup the test environment
   beforeAll(async () => {
+    // TODO: Use the following lines when test container are working
+    // await createUser({
+    //   email: 'user@votura.org',
+    //   password: 'hashedpassword',
+    // });
+    // createUser({
+    //   email: 'user2@votura.org',
+    //   password: 'StrongPassword',
+    // });
+
     const user = await findUserBy({ email: 'user@votura.org' });
     const user2 = await findUserBy({ email: 'user2@votura.org' });
     if (user === null || user2 === null) {

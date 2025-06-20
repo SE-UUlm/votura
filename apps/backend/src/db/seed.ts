@@ -9,6 +9,7 @@ async function seed(): Promise<void> {
       passwordHash: 'hashedpassword',
     })
     .execute();
+  // TODO: Remove the following line when test container are working
   await db
     .insertInto('User')
     .values({
