@@ -6,10 +6,10 @@ import type {
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { db } from '../db/database.js';
-import type { Election as KysleyElection } from '../db/types/db.js';
+import type { Election as KyselyElection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
-export const electionTransformer = (election: Selectable<KysleyElection>): Election => {
+export const electionTransformer = (election: Selectable<KyselyElection>): Election => {
   return {
     id: election.id,
     createdAt: election.createdAt.toISOString(),
@@ -55,7 +55,7 @@ export const getAllElections = async (userId: User['id']): Promise<SelectableEle
     .where('electionCreatorId', '=', userId)
     .execute();
 
-  return elections.map((kysleyElection) => electionTransformer(kysleyElection));
+  return elections.map((kyselyElection) => electionTransformer(kyselyElection));
 };
 
 export const getElection = async (
