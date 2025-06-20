@@ -11,7 +11,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
-import { findUserBy } from '../../src/services/users.service.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
@@ -22,15 +22,14 @@ let requestPath2 = '';
 
 describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
   beforeAll(async () => {
-    // TODO: Use the following lines when test container are working
-    // await createUser({
-    //   email: 'user@votura.org',
-    //   password: 'hashedpassword',
-    // });
-    // createUser({
-    //   email: 'user2@votura.org',
-    //   password: 'StrongPassword',
-    // });
+    await createUser({
+      email: 'user@votura.org',
+      password: 'hashedpassword',
+    });
+    await createUser({
+      email: 'user2@votura.org',
+      password: 'StrongPassword',
+    });
 
     const user = await findUserBy({ email: 'user@votura.org' });
     const user2 = await findUserBy({ email: 'user2@votura.org' });

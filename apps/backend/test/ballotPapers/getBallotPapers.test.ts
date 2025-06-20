@@ -3,7 +3,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
-import { findUserBy } from '../../src/services/users.service.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
@@ -13,11 +13,10 @@ let requestPath = '';
 
 describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
   beforeAll(async () => {
-    // TODO: Use the following lines when test container are working
-    // await createUser({
-    //   email: 'user@votura.org',
-    //   password: 'hashedpassword',
-    // });
+    await createUser({
+      email: 'user@votura.org',
+      password: 'hashedpassword',
+    });
 
     const user = await findUserBy({ email: 'user@votura.org' });
 
