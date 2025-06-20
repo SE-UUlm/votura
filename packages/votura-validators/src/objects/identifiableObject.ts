@@ -1,6 +1,6 @@
 import { z } from 'zod/v4';
-import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { toJsonSchemaParams } from '../parserParams.js';
+import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
 export const uuidObject = z.uuidv4().register(voturaMetadataRegistry, {
   description: 'The unique identifier of the object',

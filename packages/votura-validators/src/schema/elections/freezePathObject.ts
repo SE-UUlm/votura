@@ -1,7 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { electionIdParameter } from './electionIdParameter.js';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { selectableElectionObjectSchema } from '../../objects/election.js';
 import {
   response400,
@@ -13,6 +10,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { electionIdParameter } from './electionIdParameter.js';
 
 export const freezePathObject: OpenAPIV3.PathItemObject = {
   summary: 'Freeze a specific election',

@@ -1,8 +1,8 @@
 import { z } from 'zod/v4';
-import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
-import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { toJsonSchemaParams } from '../parserParams.js';
+import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { electionObject } from './election.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 const refineMessage = 'maxVotes must be greater than or equal to maxVotesPerCandidate';
 

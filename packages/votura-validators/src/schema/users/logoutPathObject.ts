@@ -1,6 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   response401,
   response406,
@@ -8,6 +6,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 
 export const logoutPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Logout user',

@@ -1,5 +1,5 @@
-import { create } from 'zustand/react';
 import { devtools } from 'zustand/middleware';
+import { create } from 'zustand/react';
 import type { StateCreator } from 'zustand/vanilla';
 
 export interface MockElection {

@@ -1,4 +1,3 @@
-import { getFiatShamirChallenge, getGeneratorForPrimes } from './utils.js';
 import {
   isProbablyPrime,
   modAdd,
@@ -8,6 +7,7 @@ import {
   prime,
   randBetween,
 } from 'bigint-crypto-utils';
+import { getFiatShamirChallenge, getGeneratorForPrimes } from './utils.js';
 
 export * from './utils.js';
 

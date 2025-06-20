@@ -1,7 +1,7 @@
 import { Router } from 'express';
-import { getUserById, getUsers, createUser } from '../controllers/users.controllers.js';
-import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
+import { createUser, getUserById, getUsers } from '../controllers/users.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
+import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
 export const usersRouter: Router = Router();

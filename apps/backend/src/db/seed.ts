@@ -1,5 +1,5 @@
-import { db } from './database.js';
 import logger from '../logger.js';
+import { db } from './database.js';
 
 async function seed(): Promise<void> {
   await db

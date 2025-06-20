@@ -1,27 +1,27 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { electionsPathObject } from './elections/electionsPathObject.js';
-import { Tag } from './globals/tag.js';
-import { SecuritySchemaName } from './globals/securitySchemaName.js';
-import { electionIdPathObject } from './elections/electionIdPathObject.js';
-import { freezePathObject } from './elections/freezePathObject.js';
-import { unfreezePathObject } from './elections/unfreezePathObject.js';
-import { usersPathObject } from './users/usersPathObject.js';
-import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
-import { loginPathObject } from './users/loginPathObject.js';
-import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
-import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
-import { logoutPathObject } from './users/logoutPathObject.js';
-import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
-import { ballotPapersPathObject } from './elections/ballotPapersPathObject.js';
 import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
 import { ballotPaperSectionsPathObject } from './ballotPapers/ballotPaperSectionsPathObject.js';
 import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
-import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
+import { candidatesPathObject } from './candidates/candidatesPathObject.js';
+import { ballotPapersPathObject } from './elections/ballotPapersPathObject.js';
+import { electionIdPathObject } from './elections/electionIdPathObject.js';
+import { electionsPathObject } from './elections/electionsPathObject.js';
+import { freezePathObject } from './elections/freezePathObject.js';
+import { unfreezePathObject } from './elections/unfreezePathObject.js';
 import { Parameter } from './globals/parameter.js';
-import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
-import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
+import { SecuritySchemaName } from './globals/securitySchemaName.js';
+import { Tag } from './globals/tag.js';
+import { loginPathObject } from './users/loginPathObject.js';
+import { logoutPathObject } from './users/logoutPathObject.js';
+import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
+import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
+import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
+import { usersPathObject } from './users/usersPathObject.js';
+import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
 import { getVoterTokensPathObject } from './voterGroups/getVoterTokensPathObject.js';
+import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
+import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
