@@ -96,14 +96,19 @@ export const selectableElectionObjectSchema = z.toJSONSchema(
   toJsonSchemaParams,
 );
 
-export const updateableElectionObject = electionObject.pick({
-  name: true,
-  description: true,
-  votingStartAt: true,
-  votingEndAt: true,
-  allowInvalidVotes: true,
-  private: true,
-});
+export const updateableElectionObject = electionObject
+  .pick({
+    name: true,
+    description: true,
+    votingStartAt: true,
+    votingEndAt: true,
+    allowInvalidVotes: true,
+    private: true,
+  })
+  .refine((data) => data.votingStartAt < data.votingEndAt, {
+    error: 'votingStartAt must be before votingEndAt',
+    path: ['votingEndAt'],
+  });
 
 export type UpdateableElection = z.infer<typeof updateableElectionObject>;
 
