@@ -6,15 +6,17 @@ import {
   type Response400,
   type Response500,
   type SelectableBallotPaper,
-  type SelectableUser,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { createBallotPaper as createPersistentBallotPaper } from '../services/ballotPapers.service.js';
+import {
+  createBallotPaper as createPersistentBallotPaper,
+  getBallotPapers as getPersistentBallotPapers,
+} from '../services/ballotPapers.service.js';
 
 export const createBallotPaper = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableBallotPaper | Response400 | Response500, { user: SelectableUser }>,
+  res: Response<SelectableBallotPaper | Response400 | Response500>,
 ): Promise<void> => {
   // Validate body
   const body: unknown = req.body;
@@ -33,4 +35,12 @@ export const createBallotPaper = async (
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaper);
+};
+
+export const getBallotPapers = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<SelectableBallotPaper[]>,
+): Promise<void> => {
+  const ballotPapers = await getPersistentBallotPapers(req.params.electionId);
+  res.status(HttpStatusCode.Ok).json(ballotPapers);
 };

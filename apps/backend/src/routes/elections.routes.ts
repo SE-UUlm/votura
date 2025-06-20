@@ -1,6 +1,6 @@
 import { Parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import { createBallotPaper } from '../controllers/ballotPapers.controllers.js';
+import { createBallotPaper, getBallotPapers } from '../controllers/ballotPapers.controllers.js';
 import { createElection } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
@@ -22,4 +22,11 @@ electionsRouter.post(
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck,
   createBallotPaper,
+);
+
+electionsRouter.get(
+  `/:${Parameter.electionId}/ballotPapers`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  getBallotPapers,
 );

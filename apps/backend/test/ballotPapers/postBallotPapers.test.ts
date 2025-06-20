@@ -1,6 +1,4 @@
 import {
-  insertableBallotPaperObject,
-  insertableElectionObject,
   Parameter,
   response400Object,
   response403Object,
@@ -14,29 +12,15 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { findUserBy } from '../../src/services/users.service.js';
+import { demoBallotPaper, demoElection } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 const TOKEN = '1234';
 
 let requestPath = '';
 let requestPath2 = '';
-const demoElection = insertableElectionObject.parse({
-  name: 'My test election',
-  description: 'My description',
-  private: true,
-  votingStartAt: '2025-06-16T14:30:00Z',
-  votingEndAt: '2025-06-18T14:30:00Z',
-  allowInvalidVotes: false,
-});
-const demoBallotPaper = insertableBallotPaperObject.parse({
-  name: 'Test BallotPaper',
-  description: 'Test description',
-  maxVotes: 5,
-  maxVotesPerCandidate: 3,
-});
 
 describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
-  // Setup the test environment
   beforeAll(async () => {
     // TODO: Use the following lines when test container are working
     // await createUser({
@@ -64,7 +48,7 @@ describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
     requestPath2 = `/elections/${election2.id}/ballotPapers`;
   });
 
-  it('should create an election when authorized and body is valid', async () => {
+  it('200: should create an election when authorized and body is valid', async () => {
     const res = await request(app)
       .post(requestPath)
       .set('Authorization', TOKEN)
