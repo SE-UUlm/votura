@@ -15,20 +15,20 @@ jobs:
     continue-on-error: false
     timeout-minutes: 15
 
-#    services:
-#      postgres:
-#        image: postgres:17.4
-#        env:
-#          POSTGRES_USER: votura
-#          POSTGRES_PASSWORD: votura
-#          POSTGRES_DB: votura
-#        ports:
-#          - 5432:5432
-#        options: >-
-#          --health-cmd="pg_isready -U votura"
-#          --health-interval=10s
-#          --health-timeout=5s
-#          --health-retries=5
+    #    services:
+    #      postgres:
+    #        image: postgres:17.4
+    #        env:
+    #          POSTGRES_USER: votura
+    #          POSTGRES_PASSWORD: votura
+    #          POSTGRES_DB: votura
+    #        ports:
+    #          - 5432:5432
+    #        options: >-
+    #          --health-cmd="pg_isready -U votura"
+    #          --health-interval=10s
+    #          --health-timeout=5s
+    #          --health-retries=5
 
     steps:
       - name: Update & install apt packages
@@ -80,11 +80,11 @@ jobs:
         run: |
           cd apps/frontend
           npm run build
-#      - name: Setup DB
-#        run: |
-#          cd apps/backend
-#          npm run migrate
-#          npm run seed
+      #      - name: Setup DB
+      #        run: |
+      #          cd apps/backend
+      #          npm run migrate
+      #          npm run seed
       - name: Run tests
         run: npm run test
       - name: Teamscale Upload

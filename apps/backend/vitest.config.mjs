@@ -12,7 +12,7 @@ export default defineConfig({
       [
         'junit',
         {
-          suiteName: 'votura-crypto tests',
+          suiteName: 'votura-backend tests',
           classnameTemplate: 'filename:{filename} - filepath:{filepath}',
         },
       ],
