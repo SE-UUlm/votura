@@ -20,7 +20,8 @@ const migrationClient = new Kysely<DB>({
   }),
 });
 
-await migrateToLatest(migrationClient, path.join(DIRNAME, '../src/db/migrations'));
+const migrationPath = path.join(DIRNAME, '../src/db/migrations');
+await migrateToLatest(migrationClient, migrationPath);
 
 const client = new Kysely<DB>({
   dialect: new PostgresDialect({
