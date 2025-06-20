@@ -1,4 +1,3 @@
-import type { Request, Response } from 'express';
 import {
   insertableUserObject,
   response409Object,
@@ -8,8 +7,9 @@ import {
   type Response409,
   type Response500,
 } from '@repo/votura-validators';
-import { findUserBy, createUser as createPersistentUser } from '../services/users.service.js';
+import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { createUser as createPersistentUser, findUserBy } from '../services/users.service.js';
 
 export interface GetUserByIdParams {
   id: string;

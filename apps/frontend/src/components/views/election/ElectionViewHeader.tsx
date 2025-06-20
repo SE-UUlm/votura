@@ -1,17 +1,17 @@
 import { ActionIcon, Button, Group, Title } from '@mantine/core';
-import { HEADER_HEIGHT } from '../../utils.ts';
-import { IconArrowLeft, IconDots } from '@tabler/icons-react';
-import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
+import { IconArrowLeft, IconDots } from '@tabler/icons-react';
+import { useNavigate } from 'react-router';
+import { type MockElection, useStore } from '../../../store/useStore.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
+import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
+import { HEADER_HEIGHT } from '../../utils.ts';
 
 export interface ElectionViewHeaderProps {
   election: MockElection;

@@ -1,11 +1,10 @@
-import type { Request, Response } from 'express';
 import {
   insertableElectionObject,
+  zodErrorToResponse400,
+  type Response400,
   type Response500,
   type SelectableElection,
   type SelectableUser,
-  zodErrorToResponse400,
-  type Response400,
   type Election,
   response404Object,
   type Response404,
@@ -15,6 +14,7 @@ import {
   getAllElections,
   getElection as getPersistentElection,
 } from '../services/elections.service.js';
+import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 
 export type CreateElectionResponse = Response<

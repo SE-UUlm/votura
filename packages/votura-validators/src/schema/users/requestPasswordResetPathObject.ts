@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
 import { requestPasswordResetUserObjectSchema } from '../../objects/user.js';
 import { response406, response415, response429, responseDefault } from '../globals/responses.js';
+import { Tag } from '../globals/tag.js';
 
 export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Request a password reset email',

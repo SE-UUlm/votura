@@ -1,3 +1,4 @@
+import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { describe, expect } from 'vitest';
 import {
   type Ciphertext,
@@ -6,7 +7,6 @@ import {
   ZeroKnowledgeProof,
   type ZKProof,
 } from '../src/index.js';
-import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
 voturaTest('getKeyPair', { timeout: 120000 }, async () => {

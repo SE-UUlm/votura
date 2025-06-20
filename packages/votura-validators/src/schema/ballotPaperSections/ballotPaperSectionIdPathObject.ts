@@ -1,11 +1,10 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { ballotPaperSectionIdParameter } from './ballotPaperSectionIdParameter.js';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   selectableBallotPaperSectionObjectSchema,
   updateableBallotPaperSectionObjectSchema,
 } from '../../objects/ballotPaperSection.js';
+import { ballotPaperIdParameter } from '../ballotPapers/ballotPaperIdParameter.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -16,8 +15,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
-import { electionIdParameter } from '../elections/electionIdParameter.js';
-import { ballotPaperIdParameter } from '../ballotPapers/ballotPaperIdParameter.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { ballotPaperSectionIdParameter } from './ballotPaperSectionIdParameter.js';
 
 export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific ballot paper section',

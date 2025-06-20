@@ -1,7 +1,7 @@
-import type { DB } from './types/db.js';
-import { Pool } from 'pg';
-import { Kysely, PostgresDialect } from 'kysely';
 import dotenv from 'dotenv';
+import { Kysely, PostgresDialect } from 'kysely';
+import { Pool } from 'pg';
+import type { DB } from './types/db.js';
 dotenv.config();
 
 const databaseUrl =

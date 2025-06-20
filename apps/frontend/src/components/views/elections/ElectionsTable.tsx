@@ -1,17 +1,17 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
-import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
-import { useNavigate } from 'react-router';
-import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import { notifications } from '@mantine/notifications';
+import { IconArrowRight, IconDots } from '@tabler/icons-react';
+import type { PropsWithChildren } from 'react';
+import { useNavigate } from 'react-router';
+import { type MockElection, useStore } from '../../../store/useStore.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
+import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import type { PropsWithChildren } from 'react';
 import { BooleanBadge } from '../BooleanBadge.tsx';
 
 export interface ElectionsTableProps {
