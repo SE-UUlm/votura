@@ -42,7 +42,7 @@ describe('GET /elections/:electionId', () => {
         votingEndAt: '2024-07-30T15:51:28.071Z',
         allowInvalidVotes: false,
       },
-      user?.id,
+      user.id,
     );
 
     if (election === null) {
