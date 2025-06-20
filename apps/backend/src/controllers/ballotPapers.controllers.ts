@@ -2,6 +2,7 @@ import {
   insertableBallotPaperObject,
   response500Object,
   zodErrorToResponse400,
+  type Election,
   type Response400,
   type Response500,
   type SelectableBallotPaper,
@@ -12,7 +13,7 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import { createBallotPaper as createPersistentBallotPaper } from '../services/ballotPapers.service.js';
 
 export const createBallotPaper = async (
-  req: Request<{ electionId: string }>,
+  req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableBallotPaper | Response400 | Response500, { user: SelectableUser }>,
 ): Promise<void> => {
   // Validate body
