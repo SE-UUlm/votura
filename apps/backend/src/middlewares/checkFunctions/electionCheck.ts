@@ -1,5 +1,5 @@
 import type { Election, User } from '@repo/votura-validators';
-import { db } from '../db/database.js';
+import { db } from '../../db/database.js';
 
 export async function electionExists(electionId: Election['id']): Promise<boolean> {
   // Checks if the election with the given ID exists in the database.
