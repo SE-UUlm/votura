@@ -4,10 +4,10 @@ import type {
   SelectableElection,
   User,
 } from '@repo/votura-validators';
-import { db } from '../db/database.js';
-import { spreadableOptional } from '../utils.js';
 import type { Selectable } from 'kysely';
+import { db } from '../db/database.js';
 import type { Election as KysleyElection } from '../db/types/db.js';
+import { spreadableOptional } from '../utils.js';
 
 export const electionTransformer = (election: Selectable<KysleyElection>): Election => {
   return {

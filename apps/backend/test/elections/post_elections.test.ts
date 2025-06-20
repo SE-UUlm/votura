@@ -1,13 +1,13 @@
-import request from 'supertest';
-import { describe, it, expect, beforeAll } from 'vitest';
-import { app } from '../../src/app.js';
 import {
-  selectableElectionObject,
   insertableElectionObject,
   response400Object,
-  response415Object,
   response406Object,
+  response415Object,
+  selectableElectionObject,
 } from '@repo/votura-validators';
+import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 

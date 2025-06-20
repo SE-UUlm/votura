@@ -1,11 +1,11 @@
-import { vi } from 'vitest';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { Kysely, PostgresDialect } from 'kysely';
-import type { DB } from '../src/db/types/db.js';
-import { Pool } from 'pg';
-import { migrateToLatest } from '../src/db/migrateToLatest.js';
-import { fileURLToPath } from 'url';
 import path from 'path';
+import { Pool } from 'pg';
+import { fileURLToPath } from 'url';
+import { vi } from 'vitest';
+import { migrateToLatest } from '../src/db/migrateToLatest.js';
+import type { DB } from '../src/db/types/db.js';
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);

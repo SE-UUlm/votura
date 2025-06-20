@@ -1,6 +1,3 @@
-import { beforeAll, describe, expect, it } from 'vitest';
-import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { createElection } from '../../src/services/elections.service.js';
 import {
   response404Object,
   response406Object,
@@ -9,8 +6,11 @@ import {
   type SelectableUser,
 } from '@repo/votura-validators';
 import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { createElection } from '../../src/services/elections.service.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
 
 describe('GET /elections/:electionId', () => {
   const AUTH_TOKEN = '1234';

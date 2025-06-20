@@ -1,5 +1,5 @@
-import { FileMigrationProvider, type Kysely, Migrator } from 'kysely';
 import { promises as fs } from 'fs';
+import { FileMigrationProvider, type Kysely, Migrator } from 'kysely';
 import path from 'path';
 import logger from '../logger.js';
 

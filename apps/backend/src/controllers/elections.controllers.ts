@@ -1,21 +1,21 @@
 import {
   insertableElectionObject,
+  response404Object,
   zodErrorToResponse400,
+  type Election,
   type Response400,
+  type Response404,
   type Response500,
   type SelectableElection,
   type SelectableUser,
-  type Election,
-  response404Object,
-  type Response404,
 } from '@repo/votura-validators';
+import type { Request, Response } from 'express';
+import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createElection as createPersistentElection,
   getAllElections,
   getElection as getPersistentElection,
 } from '../services/elections.service.js';
-import type { Request, Response } from 'express';
-import { HttpStatusCode } from '../httpStatusCode.js';
 
 export type CreateElectionResponse = Response<
   SelectableElection | Response400 | Response500,

@@ -1,10 +1,10 @@
-import { beforeAll, describe, expect, it } from 'vitest';
+import { response406Object, selectableElectionObject } from '@repo/votura-validators';
 import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
-import { response406Object, selectableElectionObject } from '@repo/votura-validators';
-import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { createElection } from '../../src/services/elections.service.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
 
 describe('GET /elections', () => {
   const AUTH_TOKEN = '1234';
