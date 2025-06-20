@@ -1,10 +1,10 @@
 import { AppShell, Divider } from '@mantine/core';
-import { Navigate, Route, Routes } from 'react-router';
 import { IconNotes } from '@tabler/icons-react';
+import { Navigate, Route, Routes } from 'react-router';
 import { NavbarHeader } from './components/navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './components/navbar/RoutingNavbarLink.tsx';
-import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
+import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 
 function App() {
   return (

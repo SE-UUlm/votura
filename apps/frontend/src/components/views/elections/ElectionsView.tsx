@@ -1,14 +1,14 @@
 import { Button, Container, Divider, Group, Space, Title } from '@mantine/core';
-import { IconPlus } from '@tabler/icons-react';
-import { ElectionsTable } from './ElectionsTable.tsx';
-import { HEADER_HEIGHT } from '../../utils.ts';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
-import { MutateElectionModal, type MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import { useDisclosure } from '@mantine/hooks';
-import { getDefaultMockElection } from '../../../utils/defaults.ts';
 import { notifications } from '@mantine/notifications';
-import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
+import { IconPlus } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
+import { type MockElection, useStore } from '../../../store/useStore.ts';
+import { getDefaultMockElection } from '../../../utils/defaults.ts';
+import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
+import { MutateElectionModal, type MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { ElectionsTable } from './ElectionsTable.tsx';
 
 export const ElectionsView = () => {
   const elections = useStore((state) => state.elections);

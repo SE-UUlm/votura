@@ -1,5 +1,5 @@
-import type { NextFunction, Request, Response } from 'express';
 import type { Response401 } from '@repo/votura-validators';
+import type { NextFunction, Request, Response } from 'express';
 import { findUserBy } from '../services/users.service.js';
 
 export const auth = async (_req: Request, res: Response, next: NextFunction): Promise<void> => {

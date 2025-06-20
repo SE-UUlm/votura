@@ -1,9 +1,9 @@
 import { Menu } from '@mantine/core';
-import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
-import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
-import type { MockElection } from '../store/useStore.ts';
+import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
+import type { MockElection } from '../store/useStore.ts';
+import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
 import { MutateElectionModal, type MutateElectionModalProps } from './MutateElectionModal.tsx';
 import {
   ToggleFreezeElectionModal,

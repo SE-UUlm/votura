@@ -1,5 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
 import { apiTokenUserObjectSchema, insertableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
@@ -10,6 +9,7 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { Tag } from '../globals/tag.js';
 
 export const loginPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Login a user',

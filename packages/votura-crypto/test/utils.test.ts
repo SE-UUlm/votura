@@ -1,3 +1,4 @@
+import { gcd, modPow } from 'bigint-crypto-utils';
 import { describe, expect } from 'vitest';
 import {
   getBitsOfBigInt,
@@ -5,7 +6,6 @@ import {
   getFiatShamirChallenge,
   getGeneratorForPrimes,
 } from '../src/utils.js';
-import { gcd, modPow } from 'bigint-crypto-utils';
 import { voturaTest } from './voturaTest.js';
 
 describe('Utility Functions', () => {

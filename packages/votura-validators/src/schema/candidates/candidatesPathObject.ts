@@ -1,11 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { electionIdParameter } from '../elections/electionIdParameter.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   insertableCandidateObjectSchema,
   selectableCandidateObjectSchema,
 } from '../../objects/candidate.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -16,6 +14,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 
 export const candidatesPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Create and read candidates',

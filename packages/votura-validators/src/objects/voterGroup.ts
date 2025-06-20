@@ -1,8 +1,8 @@
-import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { z } from 'zod/v4';
+import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { ballotPaperObject } from './ballotPaper.js';
-import { toJsonSchemaParams } from '../parserParams.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 export const voterGroupObject = z.object({
   ...identifiableTimestampedObject.shape,

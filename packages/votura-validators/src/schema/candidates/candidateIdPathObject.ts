@@ -1,12 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { electionIdParameter } from '../elections/electionIdParameter.js';
-import { candidateIdParameter } from './candidateIdParameter.js';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   insertableCandidateObjectSchema,
   selectableCandidateObjectSchema,
 } from '../../objects/candidate.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -17,6 +14,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { candidateIdParameter } from './candidateIdParameter.js';
 
 export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific candidate',

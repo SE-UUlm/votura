@@ -1,5 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
 import { passwordResetUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
@@ -9,6 +8,7 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { Tag } from '../globals/tag.js';
 
 export const resetPasswordPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Reset user password with token',

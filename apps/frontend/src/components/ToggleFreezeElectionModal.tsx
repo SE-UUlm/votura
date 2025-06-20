@@ -1,6 +1,6 @@
-import type { MockElection } from '../store/useStore.ts';
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { MouseEventHandler } from 'react';
+import type { MockElection } from '../store/useStore.ts';
 
 export interface ToggleFreezeElectionModalProps {
   election: MockElection;

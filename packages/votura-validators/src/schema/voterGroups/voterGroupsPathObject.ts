@@ -1,6 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   insertableVoterGroupObjectSchema,
   selectableVoterGroupObjectSchema,
@@ -15,6 +13,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 
 export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Create and read ballot voter groups',

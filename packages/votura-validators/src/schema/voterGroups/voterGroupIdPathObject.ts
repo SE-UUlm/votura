@@ -1,7 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { voterGroupIdParameter } from './voterGroupIdParameter.js';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   insertableVoterGroupObjectSchema,
   selectableVoterGroupObjectSchema,
@@ -16,6 +13,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { voterGroupIdParameter } from './voterGroupIdParameter.js';
 
 export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific voter group',

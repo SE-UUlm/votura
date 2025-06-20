@@ -3,7 +3,6 @@ import {
   insertableElectionObjectSchema,
   selectableElectionObjectSchema,
 } from '../../objects/election.js';
-import { Tag } from '../globals/tag.js';
 import {
   response400,
   response401,
@@ -13,6 +12,7 @@ import {
   responseDefault,
 } from '../globals/responses.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 
 export const electionsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Create and read elections',

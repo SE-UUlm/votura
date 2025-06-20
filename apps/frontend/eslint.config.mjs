@@ -1,9 +1,9 @@
-import tseslint from 'typescript-eslint';
+import { includeIgnoreFile } from '@eslint/compat';
 import config from '@repo/eslint-config/browser';
 import reactHooks from 'eslint-plugin-react-hooks';
 import reactRefresh from 'eslint-plugin-react-refresh';
+import tseslint from 'typescript-eslint';
 import { fileURLToPath } from 'url';
-import { includeIgnoreFile } from '@eslint/compat';
 
 const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
