@@ -1,7 +1,7 @@
 import type {
+  Election,
   InsertableBallotPaper,
   SelectableBallotPaper,
-  Election,
 } from '@repo/votura-validators';
 import { db } from '../db/database.js';
 import { spreadableOptional } from '../utils.js';

@@ -1,19 +1,19 @@
-import request from 'supertest';
-import { describe, it, expect, beforeAll } from 'vitest';
-import { app } from '../../src/app.js';
 import {
-  insertableElectionObject,
   insertableBallotPaperObject,
+  insertableElectionObject,
   response400Object,
   response403Object,
   response404Object,
-  response415Object,
   response406Object,
+  response415Object,
   selectableBallotPaperObject,
 } from '@repo/votura-validators';
+import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
-import { createElection } from './../../src/services/elections.service.js';
 import { findUserBy } from '../../src/services/users.service.js';
+import { createElection } from './../../src/services/elections.service.js';
 
 const TOKEN = '1234';
 

@@ -1,7 +1,7 @@
 import { Router } from 'express';
+import { createBallotPaper } from '../controllers/ballotPapers.controllers.js';
 import { createElection } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
-import { createBallotPaper } from '../controllers/ballotPapers.controllers.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
