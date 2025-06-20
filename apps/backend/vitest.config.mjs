@@ -2,6 +2,7 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
+    setupFiles: ['./test/vitest.setup.ts'],
     globals: true,
     environment: 'node',
     include: ['test/**/*test.ts'],
@@ -11,7 +12,7 @@ export default defineConfig({
       [
         'junit',
         {
-          suiteName: 'votura-crypto tests',
+          suiteName: 'votura-backend tests',
           classnameTemplate: 'filename:{filename} - filepath:{filepath}',
         },
       ],

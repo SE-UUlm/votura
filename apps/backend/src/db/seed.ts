@@ -2,21 +2,30 @@ import logger from '../logger.js';
 import { db } from './database.js';
 
 async function seed(): Promise<void> {
-  await db
+  const user = await db
     .insertInto('User')
     .values({
       email: 'user@votura.org',
       passwordHash: 'hashedpassword',
     })
-    .execute();
-  // TODO: Remove the following line when test container are working
+    .returningAll()
+    .executeTakeFirst();
+
+  if (user === undefined) {
+    throw Error('User could not be created');
+  }
+
   await db
-    .insertInto('User')
+    .insertInto('Election')
     .values({
-      email: 'user2@votura.org',
-      passwordHash: 'newHashedPassword',
+      electionCreatorId: user.id,
+      name: 'Election 1',
+      description: 'This is election one',
+      votingStartAt: new Date('2024-07-29T15:51:28.071Z'),
+      votingEndAt: new Date('2024-07-30T15:51:28.071Z'),
     })
-    .execute();
+    .returningAll()
+    .executeTakeFirst();
 }
 
 seed()
