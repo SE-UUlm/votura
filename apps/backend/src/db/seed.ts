@@ -12,7 +12,7 @@ async function seed(): Promise<void> {
     .executeTakeFirst();
 
   if (user === undefined) {
-    throw Error('User cound not be created');
+    throw Error('User could not be created');
   }
 
   await db
