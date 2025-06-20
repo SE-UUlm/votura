@@ -10,11 +10,9 @@ import path from 'path';
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
-let client: Kysely<DB>;
-
 const container = await new PostgreSqlContainer('postgres:17.4').start();
 
-client = new Kysely<DB>({
+const migrationClient = new Kysely<DB>({
   dialect: new PostgresDialect({
     pool: new Pool({
       connectionString: container.getConnectionUri(),
@@ -22,9 +20,9 @@ client = new Kysely<DB>({
   }),
 });
 
-await migrateToLatest(client, path.join(DIRNAME, '../src/db/migrations'));
+await migrateToLatest(migrationClient, path.join(DIRNAME, '../src/db/migrations'));
 
-client = new Kysely<DB>({
+const client = new Kysely<DB>({
   dialect: new PostgresDialect({
     pool: new Pool({
       connectionString: container.getConnectionUri(),

@@ -16,8 +16,8 @@ describe('GET /elections/:electionId', () => {
   const AUTH_TOKEN = '1234';
   const ELECTIONS_SLUG = '/elections';
 
-  let user: SelectableUser | null;
-  let election: SelectableElection | null;
+  let user: SelectableUser | null = null;
+  let election: SelectableElection | null = null;
 
   beforeAll(async () => {
     await createUser({
