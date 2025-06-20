@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperObject,
   insertableElectionObject,
+  Parameter,
   response400Object,
   response403Object,
   response404Object,
@@ -34,7 +35,7 @@ const demoBallotPaper = insertableBallotPaperObject.parse({
   maxVotesPerCandidate: 3,
 });
 
-describe('POST /elections/:electionId/ballotPapers', () => {
+describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
   // Setup the test environment
   beforeAll(async () => {
     const user = await findUserBy({ email: 'user@votura.org' });

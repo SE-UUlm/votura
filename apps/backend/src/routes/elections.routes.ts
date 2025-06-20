@@ -1,3 +1,4 @@
+import { Parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import { createBallotPaper } from '../controllers/ballotPapers.controllers.js';
 import { createElection } from '../controllers/elections.controllers.js';
@@ -15,7 +16,7 @@ electionsRouter.post(
 );
 
 electionsRouter.post(
-  '/:electionId/ballotPapers',
+  `/:${Parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   createBallotPaper,

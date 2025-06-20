@@ -28,7 +28,8 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   info: {
     title: 'Votura-API',
     description:
-      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.',
+      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.\n\n' +
+      'If a request body object contains more than the required properties, the additional properties will be ignored without throwing an error.',
     termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file',
     contact: {
       name: 'Votura Dev-Team',
