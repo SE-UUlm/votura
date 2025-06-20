@@ -1,6 +1,5 @@
 import {
   insertableElectionObject,
-  response404Object,
   response500Object,
   zodErrorToResponse400,
   type Election,
@@ -65,7 +64,7 @@ export const getElection = async (
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
 
   if (election === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({}));
+    res.status(HttpStatusCode.NotFound).json(response500Object.parse({ message: undefined }));
     return;
   }
 

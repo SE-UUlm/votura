@@ -16,7 +16,12 @@ electionsRouter.post(
   createElection,
 );
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
-electionsRouter.get('/:electionId', acceptHeaderCheck(MimeType.ApplicationJson), getElection);
+electionsRouter.get(
+  '/:electionId',
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  getElection,
+);
 
 electionsRouter.post(
   `/:${Parameter.electionId}/ballotPapers`,
@@ -25,7 +30,6 @@ electionsRouter.post(
   electionIdCheck,
   createBallotPaper,
 );
-
 electionsRouter.get(
   `/:${Parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
