@@ -56,7 +56,7 @@ export const electionIdCheck = async (
   }
 
   const exists = await electionExists(electionId);
-  if (exists !== true) {
+  if (exists === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
         message: 'The provided election uuid does not exist!',
@@ -66,7 +66,7 @@ export const electionIdCheck = async (
   }
 
   const isValidOwner = await validOwnerOfElection(electionId, res.locals.user.id);
-  if (isValidOwner !== true) {
+  if (isValidOwner === false) {
     res
       .status(HttpStatusCode.Forbidden)
       .json(
@@ -101,7 +101,7 @@ export const ballotPaperIdCheck = async (
   }
 
   const exists = await ballotPaperExists(ballotPaperId);
-  if (exists !== true) {
+  if (exists === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
         message: 'The provided ballot paper uuid does not exist!',
@@ -111,7 +111,7 @@ export const ballotPaperIdCheck = async (
   }
 
   const isParent = await isParentElection(ballotPaperId, req.params.electionId);
-  if (isParent !== true) {
+  if (isParent === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
         message: 'The provided ballot paper does not belong to the provided election.',
