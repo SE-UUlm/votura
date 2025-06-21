@@ -72,3 +72,10 @@ You can find the tests in the `apps/backend/test` folder.
 This test cases are run automatically in the pipeline and ensure that the API is working as expected.
 
 To run these tests locally, ensure that the Docker daemon is running since the tests dynamically create multiple Docker containers for the database.
+
+If you run `npm run test` in the root of `backend` workspace, it will run all tests in the `apps/backend/test` folder.
+Depending on your setup this might take a lot of resources and time, so you can also run a specific test file:
+
+```bash
+NODE_OPTIONS=--import=tsx npx vitest run --coverage ./test/ballotPapers/getBallotPaper.test.ts
+```
