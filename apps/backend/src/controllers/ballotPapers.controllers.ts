@@ -88,7 +88,7 @@ export const deleteBallotPaper = async (
   res: Response<Response500>,
 ): Promise<void> => {
   const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
-  if (result === false) {
+  if (result !== true) {
     res
       .status(HttpStatusCode.InternalServerError)
       .json(response500Object.parse({ message: undefined }));
