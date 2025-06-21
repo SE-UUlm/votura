@@ -17,7 +17,6 @@ export const demoUser2 = insertableUserObject.parse({
 
 export const demoElection = insertableElectionObject.parse({
   name: 'My test election',
-  description: 'My test election description',
   private: true,
   votingStartAt: '2025-06-16T14:30:00Z',
   votingEndAt: '2025-06-18T14:30:00Z',
