@@ -70,3 +70,5 @@ We are using supertest to test the votura API with vitest.
 
 You can find the tests in the `apps/backend/test` folder.
 This test cases are run automatically in the pipeline and ensure that the API is working as expected.
+
+To run these tests locally, ensure that the Docker daemon is running since the tests dynamically create multiple Docker containers for the database.
