@@ -13,6 +13,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createBallotPaper as createPersistentBallotPaper,
+  deleteBallotPaper as deletePersistentBallotPaper,
   getBallotPaper as getPersistentBallotPaper,
   getBallotPapers as getPersistentBallotPapers,
   updateBallotPaper as updatePersistentBallotPaper,
@@ -22,7 +23,6 @@ export const createBallotPaper = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableBallotPaper | Response400 | Response500>,
 ): Promise<void> => {
-  // Validate body
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperObject.safeParseAsync(body);
   if (success === false) {
@@ -30,7 +30,6 @@ export const createBallotPaper = async (
     return;
   }
 
-  // Create the ballot paper
   const selectableBallotPaper = await createPersistentBallotPaper(data, req.params.electionId);
   if (selectableBallotPaper === null) {
     res
@@ -63,15 +62,6 @@ export const getBallotPaper = async (
   res.status(HttpStatusCode.Ok).json(ballotPaper);
 };
 
-/**
- * Validates the request body and updates an existing ballot paper.
- * If the body is invalid, it responds with a 400 status code.
- * If the ballot paper cannot be updated, it responds with a 500 status code.
- *
- * @param req The request object.
- * @param res The response object.
- * @returns A promise that resolves when the update is complete.
- */
 export const updateBallotPaper = async (
   req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
   res: Response<SelectableBallotPaper | Response400 | Response500>,
@@ -91,4 +81,18 @@ export const updateBallotPaper = async (
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableBallotPaper);
+};
+
+export const deleteBallotPaper = async (
+  req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
+  res: Response<Response500>,
+): Promise<void> => {
+  const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
+  if (result === false) {
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
+    return;
+  }
+  res.sendStatus(HttpStatusCode.NoContent);
 };

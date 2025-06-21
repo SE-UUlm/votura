@@ -2,6 +2,7 @@ import { Parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import {
   createBallotPaper,
+  deleteBallotPaper,
   getBallotPaper,
   getBallotPapers,
   updateBallotPaper,
@@ -44,6 +45,7 @@ electionsRouter.get(
 electionsRouter.put(
   `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck,
   ballotPaperIdCheck,
   updateBallotPaper,
@@ -55,4 +57,10 @@ electionsRouter.get(
   ballotPaperIdCheck,
   getBallotPaper,
 );
-// TODO: DELETE
+electionsRouter.delete(
+  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  deleteBallotPaper,
+);

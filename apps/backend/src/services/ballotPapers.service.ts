@@ -85,3 +85,15 @@ export const updateBallotPaper = async (
 
   return ballotPaperTransformer(ballotPaper);
 };
+
+export const deleteBallotPaper = async (ballotPaperId: BallotPaper['id']): Promise<boolean> => {
+  const result = await db
+    .deleteFrom('BallotPaper')
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirst();
+
+  if (result.numDeletedRows !== 1n) {
+    return false;
+  }
+  return true;
+};
