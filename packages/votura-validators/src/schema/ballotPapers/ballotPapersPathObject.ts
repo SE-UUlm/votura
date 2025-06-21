@@ -3,6 +3,7 @@ import {
   insertableBallotPaperObjectSchema,
   selectableBallotPaperObjectSchema,
 } from '../../objects/ballotPaper.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -15,7 +16,6 @@ import {
 } from '../globals/responses.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { Tag } from '../globals/tag.js';
-import { electionIdParameter } from './electionIdParameter.js';
 
 export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get and create ballot papers',
