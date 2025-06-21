@@ -2,6 +2,7 @@ import {
   insertableBallotPaperObject,
   response500Object,
   zodErrorToResponse400,
+  type BallotPaper,
   type Election,
   type Response400,
   type Response500,
@@ -11,6 +12,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createBallotPaper as createPersistentBallotPaper,
+  getBallotPaper as getPersistentBallotPaper,
   getBallotPapers as getPersistentBallotPapers,
 } from '../services/ballotPapers.service.js';
 
@@ -43,4 +45,18 @@ export const getBallotPapers = async (
 ): Promise<void> => {
   const ballotPapers = await getPersistentBallotPapers(req.params.electionId);
   res.status(HttpStatusCode.Ok).json(ballotPapers);
+};
+
+export const getBallotPaper = async (
+  req: Request<{ ballotPaperId: BallotPaper['id'] }>,
+  res: Response<SelectableBallotPaper | Response500>,
+): Promise<void> => {
+  const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
+  if (ballotPaper === null) {
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
+    return;
+  }
+  res.status(HttpStatusCode.Ok).json(ballotPaper);
 };

@@ -50,3 +50,19 @@ export const getBallotPapers = async (
 
   return ballotPapers.map((ballotPaper) => ballotPaperTransformer(ballotPaper));
 };
+
+export const getBallotPaper = async (
+  ballotPaperId: BallotPaper['id'],
+): Promise<SelectableBallotPaper | null> => {
+  const ballotPaper = await db
+    .selectFrom('BallotPaper')
+    .selectAll()
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirst();
+
+  if (ballotPaper === undefined) {
+    return null;
+  }
+
+  return ballotPaperTransformer(ballotPaper);
+};

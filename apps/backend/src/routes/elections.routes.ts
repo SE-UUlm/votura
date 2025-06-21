@@ -1,10 +1,14 @@
 import { Parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import { createBallotPaper, getBallotPapers } from '../controllers/ballotPapers.controllers.js';
+import {
+  createBallotPaper,
+  getBallotPaper,
+  getBallotPapers,
+} from '../controllers/ballotPapers.controllers.js';
 import { createElection, getElection, getElections } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import { electionIdCheck } from '../middlewares/pathParameterCheck.js';
+import { ballotPaperIdCheck, electionIdCheck } from '../middlewares/pathParameterCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
 export const electionsRouter: Router = Router();
@@ -36,3 +40,12 @@ electionsRouter.get(
   electionIdCheck,
   getBallotPapers,
 );
+// TODO: PUT
+electionsRouter.get(
+  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  getBallotPaper,
+);
+// TODO: DELETE
