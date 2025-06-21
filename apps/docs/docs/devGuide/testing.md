@@ -77,5 +77,5 @@ If you run `npm run test` in the root of `backend` workspace, it will run all te
 Depending on your setup this might take a lot of resources and time, so you can also run a specific test file:
 
 ```bash
-NODE_OPTIONS=--import=tsx npx vitest run --coverage ./test/ballotPapers/getBallotPaper.test.ts
+NODE_OPTIONS=--import=tsx npx vitest run --coverage ./path/to/file.test.ts
 ```
