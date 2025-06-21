@@ -1,6 +1,6 @@
 import type { OpenAPIV3 } from 'openapi-types';
 import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
-import { ballotPaperSectionsPathObject } from './ballotPapers/ballotPaperSectionsPathObject.js';
+import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
 import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { candidatesPathObject } from './candidates/candidatesPathObject.js';
