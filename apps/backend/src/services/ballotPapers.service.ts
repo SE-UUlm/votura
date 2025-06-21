@@ -3,6 +3,7 @@ import type {
   Election,
   InsertableBallotPaper,
   SelectableBallotPaper,
+  UpdateableBallotPaper,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { db } from '../db/database.js';
@@ -58,6 +59,24 @@ export const getBallotPaper = async (
     .selectFrom('BallotPaper')
     .selectAll()
     .where('id', '=', ballotPaperId)
+    .executeTakeFirst();
+
+  if (ballotPaper === undefined) {
+    return null;
+  }
+
+  return ballotPaperTransformer(ballotPaper);
+};
+
+export const updateBallotPaper = async (
+  updateableBallotPaper: UpdateableBallotPaper,
+  ballotPaperId: BallotPaper['id'],
+): Promise<SelectableBallotPaper | null> => {
+  const ballotPaper = await db
+    .updateTable('BallotPaper')
+    .set({ ...updateableBallotPaper })
+    .where('id', '=', ballotPaperId)
+    .returningAll()
     .executeTakeFirst();
 
   if (ballotPaper === undefined) {

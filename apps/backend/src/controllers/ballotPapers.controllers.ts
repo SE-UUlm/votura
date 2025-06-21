@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperObject,
   response500Object,
+  updateableBallotPaperObject,
   zodErrorToResponse400,
   type BallotPaper,
   type Election,
@@ -14,6 +15,7 @@ import {
   createBallotPaper as createPersistentBallotPaper,
   getBallotPaper as getPersistentBallotPaper,
   getBallotPapers as getPersistentBallotPapers,
+  updateBallotPaper as updatePersistentBallotPaper,
 } from '../services/ballotPapers.service.js';
 
 export const createBallotPaper = async (
@@ -59,4 +61,34 @@ export const getBallotPaper = async (
     return;
   }
   res.status(HttpStatusCode.Ok).json(ballotPaper);
+};
+
+/**
+ * Validates the request body and updates an existing ballot paper.
+ * If the body is invalid, it responds with a 400 status code.
+ * If the ballot paper cannot be updated, it responds with a 500 status code.
+ *
+ * @param req The request object.
+ * @param res The response object.
+ * @returns A promise that resolves when the update is complete.
+ */
+export const updateBallotPaper = async (
+  req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
+  res: Response<SelectableBallotPaper | Response400 | Response500>,
+): Promise<void> => {
+  const body: unknown = req.body;
+  const { data, error, success } = await updateableBallotPaperObject.safeParseAsync(body);
+  if (success === false) {
+    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    return;
+  }
+
+  const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
+  if (selectableBallotPaper === null) {
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
+    return;
+  }
+  res.status(HttpStatusCode.Ok).json(selectableBallotPaper);
 };

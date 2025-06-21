@@ -4,6 +4,7 @@ import {
   createBallotPaper,
   getBallotPaper,
   getBallotPapers,
+  updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import { createElection, getElection, getElections } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
@@ -40,7 +41,13 @@ electionsRouter.get(
   electionIdCheck,
   getBallotPapers,
 );
-// TODO: PUT
+electionsRouter.put(
+  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  updateBallotPaper,
+);
 electionsRouter.get(
   `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
