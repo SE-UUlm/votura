@@ -2,6 +2,7 @@ import type {
   Election,
   InsertableElection,
   SelectableElection,
+  UpdateableElection,
   User,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
@@ -67,6 +68,24 @@ export const getElection = async (
     .where('id', '=', electionId)
     .where('electionCreatorId', '=', userId)
     .selectAll()
+    .executeTakeFirst();
+
+  if (election === undefined) {
+    return null;
+  }
+
+  return electionTransformer(election);
+};
+
+export const updateElection = async (
+  updateableElection: UpdateableElection,
+  electionId: Election['id'],
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .updateTable('Election')
+    .set({ ...updateableElection })
+    .where('id', '=', electionId)
+    .returningAll()
     .executeTakeFirst();
 
   if (election === undefined) {

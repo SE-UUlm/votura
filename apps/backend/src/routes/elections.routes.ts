@@ -7,7 +7,12 @@ import {
   getBallotPapers,
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
-import { createElection, getElection, getElections } from '../controllers/elections.controllers.js';
+import {
+  createElection,
+  getElection,
+  getElections,
+  updateElection,
+} from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { ballotPaperIdCheck, electionIdCheck } from '../middlewares/pathParameterCheck.js';
@@ -27,6 +32,13 @@ electionsRouter.get(
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   getElection,
+);
+electionsRouter.put(
+  `/:${Parameter.electionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  updateElection,
 );
 
 electionsRouter.post(

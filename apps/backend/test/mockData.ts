@@ -30,6 +30,13 @@ export const demoElection2 = insertableElectionObject.parse({
   votingEndAt: '2026-06-18T14:30:00Z',
   allowInvalidVotes: false,
 });
+export const brokenElection = {
+  name: 'My broken election',
+  private: 123,
+  votingStartAt: '2025-06-18T14:30:00Z',
+  votingEndAt: '2025-06-16T14:30:00Z',
+  allowInvalidVotes: 'false',
+};
 
 export const demoBallotPaper = insertableBallotPaperObject.parse({
   name: 'Test ballot paper',
