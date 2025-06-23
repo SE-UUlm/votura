@@ -10,7 +10,7 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { electionExists, validOwnerOfElection } from './checkFunctions/electionCheck.js';
+import { exitsElection, isValidOwnerOfElection } from './checkFunctions/electionCheck.js';
 
 export const electionIdCheck = async (
   req: Request,
@@ -24,7 +24,7 @@ export const electionIdCheck = async (
     return;
   }
 
-  const exists = await electionExists(electionId.data);
+  const exists = await exitsElection(electionId.data);
   if (exists !== true) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
@@ -34,7 +34,7 @@ export const electionIdCheck = async (
     return;
   }
 
-  const isValidOwner = await validOwnerOfElection(electionId.data, res.locals.user.id);
+  const isValidOwner = await isValidOwnerOfElection(electionId.data, res.locals.user.id);
   if (isValidOwner !== true) {
     res.status(HttpStatusCode.Forbidden).json(response403Object.parse({ undefined }));
     return;
