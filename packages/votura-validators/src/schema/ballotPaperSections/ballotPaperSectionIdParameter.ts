@@ -6,9 +6,9 @@ export const ballotPaperSectionIdParameter: OpenAPIV3.ParameterObject = {
   name: Parameter.ballotPaperSectionId,
   in: 'path',
   description:
-    'The unique identifier for the ballot paper section.' +
-    'The requested ballot paper section must exist in the database.' +
-    'The requesting user must have access to this ballot paper section.' +
+    'The unique identifier for the ballot paper section. ' +
+    'The requested ballot paper section must exist in the database. ' +
+    'The requesting user must have access to this ballot paper section. ' +
     'The ballot paper section must be a child of the ballot paper specified in the path parameter.',
   required: true,
   schema: uuidObjectSchema as OpenAPIV3.SchemaObject,
