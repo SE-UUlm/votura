@@ -7,7 +7,7 @@ export const uuidObject = z.uuidv4().register(voturaMetadataRegistry, {
   example: '123e4567-e89b-12d3-a456-426614174000',
 });
 
-export type uuid = z.infer<typeof uuidObject>;
+export type Uuid = z.infer<typeof uuidObject>;
 
 export const uuidObjectSchema = z.toJSONSchema(uuidObject, toJsonSchemaParams);
 

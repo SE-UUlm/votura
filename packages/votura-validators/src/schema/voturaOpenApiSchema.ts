@@ -1,10 +1,10 @@
 import type { OpenAPIV3 } from 'openapi-types';
 import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
-import { ballotPaperSectionsPathObject } from './ballotPapers/ballotPaperSectionsPathObject.js';
+import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
 import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
+import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { candidatesPathObject } from './candidates/candidatesPathObject.js';
-import { ballotPapersPathObject } from './elections/ballotPapersPathObject.js';
 import { electionIdPathObject } from './elections/electionIdPathObject.js';
 import { electionsPathObject } from './elections/electionsPathObject.js';
 import { freezePathObject } from './elections/freezePathObject.js';
@@ -28,7 +28,8 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   info: {
     title: 'Votura-API',
     description:
-      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.',
+      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.\n\n' +
+      'If a request body object contains more than the required properties, the additional properties will be ignored without throwing an error.',
     termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file',
     contact: {
       name: 'Votura Dev-Team',

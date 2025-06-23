@@ -61,7 +61,7 @@ npm install
 
 ### Turborepo
 
-All these sub-projects are independent npm projects, but they some dependencies and configuration to each other.
+All these sub-projects are independent npm projects, but they have some dependencies and configuration to each other.
 You can navigate to the sub-projects and test, build or run them on their own.
 But the main advantage of turborepo is that you can run all the commands in the root folder, and you can run, test or
 build all the sub-projects at once.
@@ -103,6 +103,13 @@ turbo docs#build
 ```
 
 The same applies to all other following commands.
+
+Turborepo automatically detects the dependencies between the sub-projects and builds them in the correct order.
+You can check the order for a specific task in the generated SVG by typing:
+
+```bash
+npx turbo run build --graph=graph.svg
+```
 
 #### Typecheck votura
 
