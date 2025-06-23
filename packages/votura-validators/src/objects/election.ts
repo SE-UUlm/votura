@@ -3,6 +3,10 @@ import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
+const votingTimelineRefinement = (data: { votingStartAt: string; votingEndAt: string }): boolean =>
+  new Date(data.votingStartAt).getTime() < new Date(data.votingEndAt).getTime();
+const votingTimelineRefinementMessage = 'votingStartAt must be before votingEndAt';
+
 export const electionObject = z.object({
   ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
@@ -60,8 +64,8 @@ export const insertableElectionObject = electionObject
     votingEndAt: true,
     allowInvalidVotes: true,
   })
-  .refine((data) => data.votingStartAt < data.votingEndAt, {
-    error: 'votingStartAt must be before votingEndAt',
+  .refine(votingTimelineRefinement, {
+    error: votingTimelineRefinementMessage,
     path: ['votingEndAt'],
   });
 
@@ -105,8 +109,8 @@ export const updateableElectionObject = electionObject
     allowInvalidVotes: true,
     private: true,
   })
-  .refine((data) => data.votingStartAt < data.votingEndAt, {
-    error: 'votingStartAt must be before votingEndAt',
+  .refine(votingTimelineRefinement, {
+    error: votingTimelineRefinementMessage,
     path: ['votingEndAt'],
   });
 
