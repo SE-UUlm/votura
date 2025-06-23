@@ -25,7 +25,7 @@ export const electionIdCheck = async (
   }
 
   const exists = await exitsElection(electionId.data);
-  if (exists !== true) {
+  if (exists === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
         message: 'The parent election for this ballot paper does not exist!',
@@ -35,7 +35,7 @@ export const electionIdCheck = async (
   }
 
   const isValidOwner = await isValidOwnerOfElection(electionId.data, res.locals.user.id);
-  if (isValidOwner !== true) {
+  if (isValidOwner === false) {
     res.status(HttpStatusCode.Forbidden).json(response403Object.parse({ undefined }));
     return;
   }
