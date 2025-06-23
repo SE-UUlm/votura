@@ -12,7 +12,7 @@ import {
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import { BooleanBadge } from '../BooleanBadge.tsx';
+import { BooleanBadge } from '../../BooleanBadge.tsx';
 
 export interface ElectionsTableProps {
   data: MockElection[];

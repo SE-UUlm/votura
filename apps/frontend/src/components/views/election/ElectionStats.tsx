@@ -1,6 +1,6 @@
 import { Grid, Text } from '@mantine/core';
 import type { MockElection } from '../../../store/useStore.ts';
-import { BooleanBadge } from '../BooleanBadge.tsx';
+import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
 
 export interface ElectionStatsProps {
