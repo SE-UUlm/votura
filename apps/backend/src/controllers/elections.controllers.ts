@@ -87,7 +87,9 @@ export const getElection = async (
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
 
   if (election === null) {
-    res.status(HttpStatusCode.InternalServerError).json(response500Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
     return;
   }
 
