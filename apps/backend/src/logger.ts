@@ -1,3 +1,4 @@
+import { type LogEvent } from 'kysely';
 import pino from 'pino';
 
 const transport = pino.transport({
@@ -40,4 +41,20 @@ const logger = pino.pino(
   transport,
 );
 
+export const kyselyLogger = (event: LogEvent): void => {
+  if (event.level === 'error') {
+    logger.error({ event }, 'DB query error');
+  }
+
+  if (event.level === 'query') {
+    logger.debug(
+      {
+        query: event.query.sql,
+        params: event.query.parameters,
+        duration: event.queryDurationMillis,
+      },
+      'DB query executed',
+    );
+  }
+};
 export default logger;
