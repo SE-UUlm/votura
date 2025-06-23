@@ -1,4 +1,4 @@
-import { type LogEvent } from 'kysely';
+import type { LogEvent } from 'kysely';
 import pino from 'pino';
 
 const transport = pino.transport({
