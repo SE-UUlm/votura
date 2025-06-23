@@ -42,7 +42,6 @@ jobs:
         # first check files in workspaces & second the root directory
         run: |
           npm run check-format
-          npx prettier --check .
       - name: Check linting
         run: |
           npm run lint

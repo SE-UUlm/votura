@@ -4,7 +4,9 @@ import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { electionObject } from './election.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
-const refineMessage = 'maxVotes must be greater than or equal to maxVotesPerCandidate';
+const maxVotesRefinement = (data: { maxVotes: number; maxVotesPerCandidate: number }): boolean =>
+  data.maxVotes >= data.maxVotesPerCandidate;
+const maxVotesRefinementMessage = 'maxVotes must be greater than or equal to maxVotesPerCandidate';
 
 export const ballotPaperObject = z.object({
   ...identifiableTimestampedObject.shape,
@@ -51,8 +53,8 @@ export const insertableBallotPaperObject = ballotPaperObject
     maxVotes: true,
     maxVotesPerCandidate: true,
   })
-  .refine((data) => data.maxVotes >= data.maxVotesPerCandidate, {
-    message: refineMessage,
+  .refine(maxVotesRefinement, {
+    message: maxVotesRefinementMessage,
     path: ['maxVotes', 'maxVotesPerCandidate'],
   });
 
@@ -88,8 +90,8 @@ export const updateableBallotPaperObject = ballotPaperObject
     maxVotes: true,
     maxVotesPerCandidate: true,
   })
-  .refine((data) => data.maxVotes >= data.maxVotesPerCandidate, {
-    message: refineMessage,
+  .refine(maxVotesRefinement, {
+    message: maxVotesRefinementMessage,
     path: ['maxVotes', 'maxVotesPerCandidate'],
   });
 

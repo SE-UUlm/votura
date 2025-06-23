@@ -13,7 +13,7 @@ import {
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { ballotPaperExists, isParentElection } from './checkFunctions/ballotPaperCheck.js';
-import { electionExists, validOwnerOfElection } from './checkFunctions/electionCheck.js';
+import { exitsElection, isValidOwnerOfElection } from './checkFunctions/electionCheck.js';
 
 /**
  * Validates if the provided UUID is a valid UUID string.
@@ -55,7 +55,7 @@ export const electionIdCheck = async (
     return;
   }
 
-  const exists = await electionExists(electionId);
+  const exists = await exitsElection(electionId);
   if (exists === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
@@ -65,7 +65,7 @@ export const electionIdCheck = async (
     return;
   }
 
-  const isValidOwner = await validOwnerOfElection(electionId, res.locals.user.id);
+  const isValidOwner = await isValidOwnerOfElection(electionId, res.locals.user.id);
   if (isValidOwner === false) {
     res
       .status(HttpStatusCode.Forbidden)
