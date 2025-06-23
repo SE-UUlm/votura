@@ -1,7 +1,7 @@
 import type { BallotPaper, Election } from '@repo/votura-validators';
 import { db } from '../../db/database.js';
 
-export async function ballotPaperExists(ballotPaperId: BallotPaper['id']): Promise<boolean> {
+export async function exitsBallotPaper(ballotPaperId: BallotPaper['id']): Promise<boolean> {
   const result = await db
     .selectFrom('BallotPaper')
     .select(['id'])
@@ -15,7 +15,7 @@ export async function ballotPaperExists(ballotPaperId: BallotPaper['id']): Promi
   return true;
 }
 
-export async function isParentElection(
+export async function isElectionParent(
   ballotPaperId: BallotPaper['id'],
   electionId: Election['id'],
 ): Promise<boolean> {

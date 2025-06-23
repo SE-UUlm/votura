@@ -12,7 +12,7 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { ballotPaperExists, isParentElection } from './checkFunctions/ballotPaperCheck.js';
+import { exitsBallotPaper, isElectionParent } from './checkFunctions/ballotPaperCheck.js';
 import { exitsElection, isValidOwnerOfElection } from './checkFunctions/electionCheck.js';
 
 /**
@@ -100,7 +100,7 @@ export const ballotPaperIdCheck = async (
     return;
   }
 
-  const exists = await ballotPaperExists(ballotPaperId);
+  const exists = await exitsBallotPaper(ballotPaperId);
   if (exists === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
@@ -110,7 +110,7 @@ export const ballotPaperIdCheck = async (
     return;
   }
 
-  const isParent = await isParentElection(ballotPaperId, req.params.electionId);
+  const isParent = await isElectionParent(ballotPaperId, req.params.electionId);
   if (isParent === false) {
     res.status(HttpStatusCode.NotFound).json(
       response404Object.parse({
