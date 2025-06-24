@@ -51,7 +51,7 @@ export const MutateElectionModal = ({
     if (election) {
       form.setValues({
         name: election.name,
-        ...(election.description ? { description: election.description } : undefined),
+        ...(election.description !== undefined ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
         dateRange: [election.votingStartAt, election.votingEndAt],
       });
