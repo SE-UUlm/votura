@@ -6,7 +6,9 @@ import { useGetElection } from '../../../swr/elections/useGetElection.ts';
 import { ElectionStats } from './ElectionStats.tsx';
 import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 
-export type ElectionViewRouteParams = Record<Parameter.electionId, string>;
+export type ElectionViewRouteParams = {
+    [Parameter.electionId]: string;
+};
 
 export const ElectionView = () => {
   const params = useParams<ElectionViewRouteParams>();
