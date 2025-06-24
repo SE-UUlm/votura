@@ -1,21 +1,21 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import type { PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
+import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import { BooleanBadge } from '../../BooleanBadge.tsx';
 
 export interface ElectionsTableProps {
-  data: MockElection[];
+  data: SelectableElection[];
 }
 
 const TableText = ({ children }: PropsWithChildren) => (
@@ -26,27 +26,24 @@ const TableText = ({ children }: PropsWithChildren) => (
 
 export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const navigate = useNavigate();
-  const deleteElection = useStore((state) => state.deleteElection);
-  const updateElection = useStore((state) => state.updateElection);
 
-  const onDelete = (election: MockElection) => () => {
-    deleteElection(election.id);
+  const onDelete = (election: SelectableElection) => () => {
+    // deleteElection(election.id);
     notifications.show(getDeleteSuccessElectionConfig(election.name));
   };
 
   const onMutate =
-    (election: MockElection): MutateElectionModalProps['onMutate'] =>
+    (election: SelectableElection): MutateElectionModalProps['onMutate'] =>
     (mutatedElection) => {
-      updateElection(election.id, mutatedElection);
+      // updateElection(election.id, mutatedElection);
       notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
     };
 
   const onToggleFreeze =
-    (election: MockElection): ToggleFreezeElectionModalProps['onToggleFreeze'] =>
+    (election: SelectableElection): ToggleFreezeElectionModalProps['onToggleFreeze'] =>
     () => {
-      updateElection(election.id, { immutableConfig: !election.immutableConfig });
       notifications.show(
-        getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig),
+        getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen),
       );
     };
 
@@ -59,10 +56,10 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
         <TableText>{election.description}</TableText>
       </Table.Td>
       <Table.Td>
-        <TableText>{election.createdAt.toLocaleString('en-US')}</TableText>
+        <TableText>{new Date(election.createdAt).toLocaleString('en-US')}</TableText>
       </Table.Td>
       <Table.Td>
-        <BooleanBadge isTrue={election.immutableConfig} />
+        <BooleanBadge isTrue={election.configFrozen} />
       </Table.Td>
       <Table.Td>
         <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>

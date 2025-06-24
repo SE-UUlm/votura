@@ -7,11 +7,13 @@ import logger from './logger.js';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
 import { usersRouter } from './routes/users.routes.js';
+import cors from 'cors';
 
 dotenv.config();
 
 export const app = express();
 
+app.use(cors())
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
 app.use(pinoHttp.pinoHttp({ logger }));

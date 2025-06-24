@@ -10,21 +10,20 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
-import dayjs from 'dayjs';
+import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 import { type ReactNode, useEffect } from 'react';
-import { type MockElection } from '../store/useStore.ts';
 
 export interface MutateElectionModalProps {
-  election?: MockElection;
+  election?: SelectableElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
-  onMutate: (mutatedElection: Partial<MockElection>) => void;
+  onMutate: (mutatedElection: Partial<UpdateableElection>) => void;
   title: ModalProps['title'];
 }
 
 export interface MutateElectionFormValues
-  extends Pick<MockElection, 'name' | 'description' | 'allowInvalidVotes'> {
+  extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
   dateRange: [Date, Date];
 }
 
@@ -52,10 +51,7 @@ export const MutateElectionModal = ({
         name: election.name,
         ...(election.description ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
-        dateRange:
-          election.votingStart && election.votingEnd
-            ? [election.votingStart, election.votingEnd]
-            : [dayjs().toDate(), dayjs().add(1, 'day').toDate()],
+        dateRange: [new Date(election.votingStartAt), new Date(election.votingEndAt)],
       });
     } else {
       form.reset();
@@ -76,8 +72,8 @@ export const MutateElectionModal = ({
       name: formValues.name,
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
-      votingStart: formValues.dateRange[0],
-      votingEnd: formValues.dateRange[1],
+      votingStartAt: formValues.dateRange[0].toISOString(),
+      votingEndAt: formValues.dateRange[1].toISOString(),
     });
     onClose();
   };

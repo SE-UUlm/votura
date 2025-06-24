@@ -1,8 +1,8 @@
 import { ActionIcon, Button, Group, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
+import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
@@ -14,31 +14,27 @@ import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionM
 import { HEADER_HEIGHT } from '../../utils.ts';
 
 export interface ElectionViewHeaderProps {
-  election: MockElection;
+  election: SelectableElection;
 }
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
-  const deleteElection = useStore((state) => state.deleteElection);
-  const updateElection = useStore((state) => state.updateElection);
 
   const onDelete = () => {
-    deleteElection(election.id);
+    // deleteElection(election.id); TODO: Implement election deletion
     notifications.show(getDeleteSuccessElectionConfig(election.name));
     navigate('/elections');
     return;
   };
 
   const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
-    updateElection(election.id, mutatedElection);
+    // updateElection(election.id, mutatedElection); TODO: Implement election update
     notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    updateElection(election.id, { immutableConfig: !election.immutableConfig });
-    notifications.show(
-      getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig),
-    );
+    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update
+    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
   return (
