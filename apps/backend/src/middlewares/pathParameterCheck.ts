@@ -35,35 +35,35 @@ import { validUuid } from './checkFunctions/globalChecks.js';
  */
 export const electionIdCheck =
   (electionUnfrozen: boolean) =>
-  async (
-    req: Request<{ electionId: string }>,
-    res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
-    next: NextFunction,
-  ): Promise<void> => {
-    const electionId = await validUuid(req.params.electionId, res);
-    if (electionId === null) {
-      return;
-    }
-
-    const exists = await exitsElection(electionId, res);
-    if (exists === false) {
-      return;
-    }
-
-    const isValidOwner = await isValidOwnerOfElection(electionId, res.locals.user.id, res);
-    if (isValidOwner === false) {
-      return;
-    }
-
-    if (electionUnfrozen) {
-      const electionIsUnfrozen = await isElectionUnfrozen(electionId, res);
-      if (electionIsUnfrozen === false) {
+    async (
+      req: Request<{ electionId: string }>,
+      res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
+      next: NextFunction,
+    ): Promise<void> => {
+      const electionId = await validUuid(req.params.electionId, res);
+      if (electionId === null) {
         return;
       }
-    }
 
-    next();
-  };
+      const exists = await exitsElection(electionId, res);
+      if (exists !== true) {
+        return;
+      }
+
+      const isValidOwner = await isValidOwnerOfElection(electionId, res.locals.user.id, res);
+      if (isValidOwner !== true) {
+        return;
+      }
+
+      if (electionUnfrozen) {
+        const electionIsUnfrozen = await isElectionUnfrozen(electionId, res);
+        if (electionIsUnfrozen !== true) {
+          return;
+        }
+      }
+
+      next();
+    };
 
 /**
  * Checks the ballotPaperId path parameter in the request.
