@@ -1,23 +1,26 @@
 import { Button, Container, Divider, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
+import { useNavigate } from 'react-router';
+import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
+import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
 import { MutateElectionModal, type MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
 
 export const ElectionsView = () => {
-  // const elections = useStore((state) => state.elections);
-
+  const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
-  // const navigate = useNavigate();
+  const navigate = useNavigate();
 
-  const onMutate: MutateElectionModalProps['onMutate'] = (_partial) => {
-    // ADD NEW ELECTION HERE TODO: Implement election creation
-    // notifications.show(getAddSuccessElectionConfig(election.name));
-    // navigate(`/elections/${election.id}`);
+  const onMutate: MutateElectionModalProps['onMutate'] = async (partial) => {
+    const response = await trigger(partial);
+    notifications.show(getAddSuccessElectionConfig(partial.name));
+    navigate(`/elections/${response.id}`);
     return;
   };
 
@@ -41,6 +44,7 @@ export const ElectionsView = () => {
         onMutate={onMutate}
         onClose={mutateModalActions.close}
         mutateButtonText={'Create new election'}
+        isMutating={isMutating}
       />
       <Container fluid>
         <Group justify="space-between" h={HEADER_HEIGHT}>

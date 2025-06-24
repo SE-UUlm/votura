@@ -14,17 +14,18 @@ import type { SelectableElection, UpdateableElection } from '@repo/votura-valida
 import { type ReactNode, useEffect } from 'react';
 
 export interface MutateElectionModalProps {
-  election?: SelectableElection;
+  election?: UpdateableElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
-  onMutate: (mutatedElection: Partial<UpdateableElection>) => void;
+  onMutate: (mutatedElection: UpdateableElection) => void;
   title: ModalProps['title'];
+  isMutating: boolean;
 }
 
 export interface MutateElectionFormValues
   extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
-  dateRange: [Date, Date];
+  dateRange: [string, string];
 }
 
 export const MutateElectionModal = ({
@@ -34,6 +35,7 @@ export const MutateElectionModal = ({
   onClose,
   mutateButtonText,
   title,
+  isMutating,
 }: MutateElectionModalProps) => {
   const form = useForm<MutateElectionFormValues>({
     mode: 'uncontrolled',
@@ -51,7 +53,7 @@ export const MutateElectionModal = ({
         name: election.name,
         ...(election.description ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
-        dateRange: [new Date(election.votingStartAt), new Date(election.votingEndAt)],
+        dateRange: [election.votingStartAt, election.votingEndAt],
       });
     } else {
       form.reset();
@@ -72,8 +74,9 @@ export const MutateElectionModal = ({
       name: formValues.name,
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
-      votingStartAt: formValues.dateRange[0].toISOString(),
-      votingEndAt: formValues.dateRange[1].toISOString(),
+      votingStartAt: new Date(formValues.dateRange[0]).toISOString(),
+      votingEndAt: new Date(formValues.dateRange[1]).toISOString(),
+      private: true,
     });
     onClose();
   };
@@ -112,10 +115,10 @@ export const MutateElectionModal = ({
           {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
         />
         <Group justify="flex-end">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isMutating}>
             Cancel
           </Button>
-          <Button variant="filled" onClick={onMutateTransform}>
+          <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
             {mutateButtonText}
           </Button>
         </Group>

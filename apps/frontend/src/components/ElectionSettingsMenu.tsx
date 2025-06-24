@@ -15,6 +15,7 @@ export interface ElectionsTableMenuProps {
   targetElement: ReactNode;
   onDelete: DeleteElectionModalProps['onDelete'];
   onMutate: MutateElectionModalProps['onMutate'];
+  isMutating: MutateElectionModalProps['isMutating'];
   onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'];
 }
 
@@ -24,6 +25,7 @@ export const ElectionsSettingsMenu = ({
   onDelete,
   onMutate,
   onToggleFreeze,
+  isMutating,
 }: ElectionsTableMenuProps) => {
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
@@ -52,6 +54,7 @@ export const ElectionsSettingsMenu = ({
         onMutate={onMutate}
         onClose={mutateModalActions.close}
         mutateButtonText={'Save changes'}
+        isMutating={isMutating}
       />
       <ToggleFreezeElectionModal
         election={election}
