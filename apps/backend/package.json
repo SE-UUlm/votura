@@ -79,6 +79,8 @@
     "vitest": "^3.2.3"
   },
   "dependencies": {
+    "@repo/votura-validators": "*",
+    "@votura/votura-crypto": "^0.0.3",
     "argon2": "^0.43.0",
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",

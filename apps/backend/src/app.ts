@@ -22,5 +22,9 @@ app.use('/users', usersRouter);
 app.use('/elections', [auth, electionsRouter]);
 // Fallback for unhandled routes
 app.use((_req, res) => {
-  res.status(HttpStatusCode.BadRequest).json(response400Object.parse({}));
+  res
+    .status(HttpStatusCode.BadRequest)
+    .json(
+      response400Object.parse({ message: 'Invalid request! The requested route does not exist.' }),
+    );
 });

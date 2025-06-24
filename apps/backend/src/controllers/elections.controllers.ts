@@ -1,6 +1,6 @@
 import {
   insertableElectionObject,
-  response404Object,
+  response500Object,
   zodErrorToResponse400,
   type Election,
   type Response400,
@@ -31,7 +31,9 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
-      res.sendStatus(HttpStatusCode.InternalServerError);
+      res
+        .status(HttpStatusCode.InternalServerError)
+        .json(response500Object.parse({ message: undefined }));
       return;
     }
 
@@ -62,7 +64,7 @@ export const getElection = async (
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
 
   if (election === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({}));
+    res.status(HttpStatusCode.NotFound).json(response500Object.parse({ message: undefined }));
     return;
   }
 

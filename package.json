@@ -47,8 +47,8 @@
     "url": "git+https://github.com/SE-UUlm/votura.git"
   },
   "scripts": {
-    "format": "turbo run format",
-    "check-format": "turbo run check-format",
+    "format": "prettier --write . && turbo run format",
+    "check-format": "prettier --check . && turbo run check-format",
     "check-spell": "cspell lint **",
     "check-types": "turbo run check-types",
     "build": "turbo run build",

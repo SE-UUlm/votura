@@ -3,6 +3,7 @@ import {
   insertableBallotPaperObjectSchema,
   selectableBallotPaperObjectSchema,
 } from '../../objects/ballotPaper.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -15,7 +16,6 @@ import {
 } from '../globals/responses.js';
 import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { Tag } from '../globals/tag.js';
-import { electionIdParameter } from './electionIdParameter.js';
 
 export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Get and create ballot papers',
@@ -29,10 +29,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Creates a ballot paper with a link to an election.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'A ballot paper can only be created if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A ballot paper can only be created if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createBallotPaper',
     requestBody: {
@@ -68,10 +65,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all ballot papers for an election',
     description:
       'Returns all ballot papers with the public information fields, that are linked to the specified election. \n' +
-      'The user of the API access token needs the access rights to the election to read the ballot papers.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs the access rights to the election to read the ballot papers.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapers',
     responses: {

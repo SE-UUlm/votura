@@ -15,7 +15,7 @@ export interface GetUserByIdParams {
   id: string;
 }
 
-export const getUsers = (req: Request, res: Response): void => {
+export const getUsers = (_req: Request, res: Response): void => {
   res.sendStatus(501);
 };
 
