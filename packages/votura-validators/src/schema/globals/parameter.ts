@@ -4,6 +4,6 @@ export const Parameter = {
   ballotPaperSectionId: 'ballotPaperSectionId',
   candidateId: 'candidateId',
   voterGroupId: 'voterGroupId',
-} as const
+} as const;
 
-type Parameter = typeof Parameter[keyof typeof Parameter];
+type Parameter = (typeof Parameter)[keyof typeof Parameter];

@@ -7,7 +7,7 @@ import { ElectionStats } from './ElectionStats.tsx';
 import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 
 export type ElectionViewRouteParams = {
-    [Parameter.electionId]: string;
+  [Parameter.electionId]: string;
 };
 
 export const ElectionView = () => {
