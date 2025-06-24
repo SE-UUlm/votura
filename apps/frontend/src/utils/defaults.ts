@@ -1,4 +1,4 @@
-import type {SelectableElection, UpdateableElection} from '@repo/votura-validators';
+import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 
 export const getDefaultElection = (partial: Partial<SelectableElection>): UpdateableElection => {
   return {

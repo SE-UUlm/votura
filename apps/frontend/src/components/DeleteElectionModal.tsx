@@ -1,6 +1,6 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
+import type { SelectableElection } from '@repo/votura-validators';
 import type { MouseEventHandler } from 'react';
-import type {SelectableElection} from '@repo/votura-validators';
 
 export interface DeleteElectionModalProps {
   election: SelectableElection;

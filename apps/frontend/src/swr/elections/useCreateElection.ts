@@ -1,7 +1,11 @@
-import {type InsertableElection, type SelectableElection, selectableElectionObject} from '@repo/votura-validators';
+import {
+  type InsertableElection,
+  type SelectableElection,
+  selectableElectionObject,
+} from '@repo/votura-validators';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiRoutes } from '../apiRoutes.ts';
-import {posterFactory} from '../posterFactory.ts';
+import { posterFactory } from '../posterFactory.ts';
 
 export const useCreateElection = (): SWRMutationResponse<
   SelectableElection,
