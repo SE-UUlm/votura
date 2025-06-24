@@ -30,14 +30,14 @@ electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElectio
 electionsRouter.get(
   `/:${Parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(false),
   getElection,
 );
 electionsRouter.put(
   `/:${Parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(true),
   updateElection,
 );
 
@@ -45,34 +45,34 @@ electionsRouter.post(
   `/:${Parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(false),
   createBallotPaper,
 );
 electionsRouter.get(
   `/:${Parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(false),
   getBallotPapers,
 );
 electionsRouter.put(
   `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(true),
   ballotPaperIdCheck,
   updateBallotPaper,
 );
 electionsRouter.get(
   `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(false),
   ballotPaperIdCheck,
   getBallotPaper,
 );
 electionsRouter.delete(
   `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck,
+  electionIdCheck(true),
   ballotPaperIdCheck,
   deleteBallotPaper,
 );
