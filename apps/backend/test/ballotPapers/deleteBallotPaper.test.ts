@@ -37,7 +37,7 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
   });
 
-  it('203: should delete a ballot paper', async () => {
+  it('204: should delete a ballot paper', async () => {
     const res = await request(app).delete(requestPath).set('Authorization', DEMO_TOKEN);
     expect(res.status).toBe(HttpStatusCode.NoContent);
     if (ballotPaper?.id === undefined) {
