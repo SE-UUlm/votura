@@ -34,7 +34,7 @@ electionsRouter.get(
   getElection,
 );
 electionsRouter.put(
-  `/:${Parameter.electionId}`,
+  `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck,

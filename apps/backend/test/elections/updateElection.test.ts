@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   response400Object,
   selectableElectionObject,
   type SelectableElection,
@@ -12,7 +12,7 @@ import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { brokenElection, DEMO_TOKEN, demoElection, demoElection2, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`PUT /elections/:${Parameter.electionId}`, () => {
+describe(`PUT /elections/:${parameter.electionId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
 
