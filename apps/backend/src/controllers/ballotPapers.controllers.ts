@@ -1,12 +1,12 @@
 import {
   insertableBallotPaperObject,
-  response500Object,
+  response404Object,
   updateableBallotPaperObject,
   zodErrorToResponse400,
   type BallotPaper,
   type Election,
   type Response400,
-  type Response500,
+  type Response404,
   type SelectableBallotPaper,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
@@ -21,7 +21,7 @@ import {
 
 export const createBallotPaper = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableBallotPaper | Response400 | Response500>,
+  res: Response<SelectableBallotPaper | Response400 | Response404>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperObject.safeParseAsync(body);
@@ -32,9 +32,7 @@ export const createBallotPaper = async (
 
   const selectableBallotPaper = await createPersistentBallotPaper(data, req.params.electionId);
   if (selectableBallotPaper === null) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaper);
@@ -50,13 +48,11 @@ export const getBallotPapers = async (
 
 export const getBallotPaper = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
-  res: Response<SelectableBallotPaper | Response500>,
+  res: Response<SelectableBallotPaper | Response404>,
 ): Promise<void> => {
   const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
   if (ballotPaper === null) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(ballotPaper);
@@ -64,7 +60,7 @@ export const getBallotPaper = async (
 
 export const updateBallotPaper = async (
   req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
-  res: Response<SelectableBallotPaper | Response400 | Response500>,
+  res: Response<SelectableBallotPaper | Response400 | Response404>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableBallotPaperObject.safeParseAsync(body);
@@ -75,9 +71,7 @@ export const updateBallotPaper = async (
 
   const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
   if (selectableBallotPaper === null) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableBallotPaper);
@@ -85,13 +79,11 @@ export const updateBallotPaper = async (
 
 export const deleteBallotPaper = async (
   req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
-  res: Response<Response500>,
+  res: Response<void | Response404>,
 ): Promise<void> => {
   const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
   if (result !== true) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.sendStatus(HttpStatusCode.NoContent);

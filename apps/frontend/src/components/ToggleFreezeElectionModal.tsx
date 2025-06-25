@@ -1,9 +1,9 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
+import type { SelectableElection } from '@repo/votura-validators';
 import type { MouseEventHandler } from 'react';
-import type { MockElection } from '../store/useStore.ts';
 
 export interface ToggleFreezeElectionModalProps {
-  election: MockElection;
+  election: SelectableElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   onToggleFreeze: MouseEventHandler<HTMLButtonElement>;
@@ -15,8 +15,8 @@ export const ToggleFreezeElectionModal = ({
   onClose,
   onToggleFreeze,
 }: ToggleFreezeElectionModalProps) => {
-  const title = election.immutableConfig ? 'Unfreeze election config' : 'Freeze election config';
-  const action = election.immutableConfig ? 'Unfreeze' : 'Freeze';
+  const title = election.configFrozen ? 'Unfreeze election config' : 'Freeze election config';
+  const action = election.configFrozen ? 'Unfreeze' : 'Freeze';
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>

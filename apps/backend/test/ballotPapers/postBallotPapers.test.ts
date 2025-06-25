@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   response400Object,
   response403Object,
   response404Object,
@@ -15,7 +15,7 @@ import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser, demoUser2 } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
+describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
   let requestPath2 = '';
 

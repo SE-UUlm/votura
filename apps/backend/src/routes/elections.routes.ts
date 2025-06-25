@@ -1,4 +1,4 @@
-import { Parameter } from '@repo/votura-validators';
+import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import {
   createBallotPaper,
@@ -28,7 +28,7 @@ electionsRouter.post(
 );
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
 electionsRouter.get(
-  `/:${Parameter.electionId}`,
+  `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck(false),
   getElection,
@@ -42,20 +42,20 @@ electionsRouter.put(
 );
 
 electionsRouter.post(
-  `/:${Parameter.electionId}/ballotPapers`,
+  `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck(false),
   createBallotPaper,
 );
 electionsRouter.get(
-  `/:${Parameter.electionId}/ballotPapers`,
+  `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck(false),
   getBallotPapers,
 );
 electionsRouter.put(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck(true),
@@ -63,14 +63,14 @@ electionsRouter.put(
   updateBallotPaper,
 );
 electionsRouter.get(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck(false),
   ballotPaperIdCheck,
   getBallotPaper,
 );
 electionsRouter.delete(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck(true),
   ballotPaperIdCheck,

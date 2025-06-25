@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   response400Object,
   selectableBallotPaperObject,
   type SelectableBallotPaper,
@@ -21,7 +21,7 @@ import {
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`PUT /elections/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`, () => {
+describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;

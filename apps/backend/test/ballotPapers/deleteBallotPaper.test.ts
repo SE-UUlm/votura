@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   type SelectableBallotPaper,
   type SelectableElection,
 } from '@repo/votura-validators';
@@ -12,7 +12,7 @@ import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser } from '../mockData
 import { createBallotPaper, getBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`DEL /elections/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`, () => {
+describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;

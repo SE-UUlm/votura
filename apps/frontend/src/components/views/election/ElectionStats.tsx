@@ -1,10 +1,10 @@
 import { Grid, Text } from '@mantine/core';
-import type { MockElection } from '../../../store/useStore.ts';
-import { BooleanBadge } from '../BooleanBadge.tsx';
+import type { SelectableElection } from '@repo/votura-validators';
+import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
 
 export interface ElectionStatsProps {
-  election: MockElection;
+  election: SelectableElection;
 }
 
 export const ElectionStats = ({ election }: ElectionStatsProps) => {
@@ -23,7 +23,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps) => {
       <Grid.Col span={3}>
         <ElectionStatField
           title={'Frozen'}
-          content={<BooleanBadge isTrue={election.immutableConfig} />}
+          content={<BooleanBadge isTrue={election.configFrozen} />}
         />
       </Grid.Col>
       <Grid.Col span={3}>
@@ -35,13 +35,17 @@ export const ElectionStats = ({ election }: ElectionStatsProps) => {
       <Grid.Col span={6}>
         <ElectionStatField
           title={'Start of voting'}
-          content={<Text size={'sm'}>{election.votingStart.toLocaleString('en-US')}</Text>}
+          content={
+            <Text size={'sm'}>{new Date(election.votingStartAt).toLocaleString('en-US')}</Text>
+          }
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <ElectionStatField
           title={'End of voting'}
-          content={<Text size={'sm'}>{election.votingEnd.toLocaleString('en-US')}</Text>}
+          content={
+            <Text size={'sm'}>{new Date(election.votingEndAt).toLocaleString('en-US')}</Text>
+          }
         />
       </Grid.Col>
     </Grid>

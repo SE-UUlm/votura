@@ -1,4 +1,4 @@
-import { Parameter, selectableBallotPaperObject } from '@repo/votura-validators';
+import { parameter, selectableBallotPaperObject } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -8,7 +8,7 @@ import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser } from '../mockData
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
+describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
 
   beforeAll(async () => {
