@@ -6,7 +6,6 @@ export async function exitsBallotPaper(ballotPaperId: BallotPaper['id']): Promis
     .selectFrom('BallotPaper')
     .select(['id'])
     .where('id', '=', ballotPaperId)
-    .limit(1)
     .executeTakeFirst();
 
   if (result === undefined) {
@@ -24,7 +23,6 @@ export async function isElectionParent(
     .select(['id', 'electionId'])
     .where('id', '=', ballotPaperId)
     .where('electionId', '=', electionId)
-    .limit(1)
     .executeTakeFirst();
   if (result === undefined) {
     return false;
