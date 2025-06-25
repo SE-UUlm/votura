@@ -1,4 +1,4 @@
-export const Parameter = {
+export const parameter = {
   electionId: 'electionId',
   ballotPaperId: 'ballotPaperId',
   ballotPaperSectionId: 'ballotPaperSectionId',
@@ -6,4 +6,4 @@ export const Parameter = {
   voterGroupId: 'voterGroupId',
 } as const;
 
-type Parameter = (typeof Parameter)[keyof typeof Parameter];
+type Parameter = (typeof parameter)[keyof typeof parameter];

@@ -1,4 +1,4 @@
-import { Parameter, selectableBallotPaperObject } from '@repo/votura-validators';
+import { parameter, selectableBallotPaperObject } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -11,7 +11,7 @@ import { createElection } from './../../src/services/elections.service.js';
 const TOKEN = '1234';
 let requestPath = '';
 
-describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
+describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   beforeAll(async () => {
     await createUser({
       email: 'user@votura.org',

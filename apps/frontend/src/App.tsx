@@ -1,5 +1,5 @@
 import { AppShell, Divider } from '@mantine/core';
-import { Parameter } from '@repo/votura-validators';
+import { parameter } from '@repo/votura-validators';
 import { IconNotes } from '@tabler/icons-react';
 import { Navigate, Route, Routes } from 'react-router';
 import { NavbarHeader } from './components/navbar/NavbarHeader.tsx';
@@ -25,7 +25,7 @@ function App() {
         <Routes>
           <Route path={'/'} element={<Navigate to={'/elections'} replace />} />
           <Route path={'/elections'} element={<ElectionsView />} />
-          <Route path={`/elections/:${Parameter.electionId}`} element={<ElectionView />} />
+          <Route path={`/elections/:${parameter.electionId}`} element={<ElectionView />} />
         </Routes>
       </AppShell.Main>
     </AppShell>

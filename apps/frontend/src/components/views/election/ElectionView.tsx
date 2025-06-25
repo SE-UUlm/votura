@@ -1,5 +1,5 @@
 import { Container, Divider, Loader, Space, ThemeIcon } from '@mantine/core';
-import { Parameter } from '@repo/votura-validators';
+import { parameter } from '@repo/votura-validators';
 import { IconBug } from '@tabler/icons-react';
 import { Navigate, useParams } from 'react-router';
 import { useGetElection } from '../../../swr/elections/useGetElection.ts';
@@ -7,7 +7,7 @@ import { ElectionStats } from './ElectionStats.tsx';
 import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 
 export type ElectionViewRouteParams = {
-  [Parameter.electionId]: string;
+  [parameter.electionId]: string;
 };
 
 export const ElectionView = () => {
