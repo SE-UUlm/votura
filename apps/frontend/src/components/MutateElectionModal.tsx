@@ -10,22 +10,22 @@ import {
 } from '@mantine/core';
 import { DatePickerInput } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
-import dayjs from 'dayjs';
+import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 import { type ReactNode, useEffect } from 'react';
-import { type MockElection } from '../store/useStore.ts';
 
 export interface MutateElectionModalProps {
-  election?: MockElection;
+  election?: UpdateableElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
-  onMutate: (mutatedElection: Partial<MockElection>) => void;
+  onMutate: (mutatedElection: UpdateableElection) => void | Promise<void>;
   title: ModalProps['title'];
+  isMutating: boolean;
 }
 
 export interface MutateElectionFormValues
-  extends Pick<MockElection, 'name' | 'description' | 'allowInvalidVotes'> {
-  dateRange: [Date, Date];
+  extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
+  dateRange: [string, string];
 }
 
 export const MutateElectionModal = ({
@@ -35,6 +35,7 @@ export const MutateElectionModal = ({
   onClose,
   mutateButtonText,
   title,
+  isMutating,
 }: MutateElectionModalProps) => {
   const form = useForm<MutateElectionFormValues>({
     mode: 'uncontrolled',
@@ -50,12 +51,9 @@ export const MutateElectionModal = ({
     if (election) {
       form.setValues({
         name: election.name,
-        ...(election.description ? { description: election.description } : undefined),
+        ...(election.description !== undefined ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
-        dateRange:
-          election.votingStart && election.votingEnd
-            ? [election.votingStart, election.votingEnd]
-            : [dayjs().toDate(), dayjs().add(1, 'day').toDate()],
+        dateRange: [election.votingStartAt, election.votingEndAt],
       });
     } else {
       form.reset();
@@ -76,8 +74,9 @@ export const MutateElectionModal = ({
       name: formValues.name,
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
-      votingStart: formValues.dateRange[0],
-      votingEnd: formValues.dateRange[1],
+      votingStartAt: new Date(formValues.dateRange[0]).toISOString(),
+      votingEndAt: new Date(formValues.dateRange[1]).toISOString(),
+      private: true,
     });
     onClose();
   };
@@ -116,10 +115,10 @@ export const MutateElectionModal = ({
           {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
         />
         <Group justify="flex-end">
-          <Button variant="outline" onClick={onClose}>
+          <Button variant="outline" onClick={onClose} disabled={isMutating}>
             Cancel
           </Button>
-          <Button variant="filled" onClick={onMutateTransform}>
+          <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
             {mutateButtonText}
           </Button>
         </Group>

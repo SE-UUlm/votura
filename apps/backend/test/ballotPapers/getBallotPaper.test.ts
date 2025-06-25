@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   response400Object,
   response404Object,
   selectableBallotPaperObject,
@@ -15,7 +15,7 @@ import { DEMO_TOKEN, demoBallotPaper, demoElection, demoElection2, demoUser } fr
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`GET /elections/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`, () => {
+describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let requestPath2 = '';
   let election: SelectableElection | null = null;
