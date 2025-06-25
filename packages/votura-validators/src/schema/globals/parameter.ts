@@ -5,5 +5,3 @@ export const parameter = {
   candidateId: 'candidateId',
   voterGroupId: 'voterGroupId',
 } as const;
-
-type Parameter = (typeof parameter)[keyof typeof parameter];
