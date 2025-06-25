@@ -32,6 +32,7 @@ export default tseslint.config(
       '@typescript-eslint/explicit-function-return-type': 'error',
       '@typescript-eslint/restrict-plus-operands': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
     },
   },
   eslintConfigPrettier,
