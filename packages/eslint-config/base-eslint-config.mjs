@@ -30,6 +30,7 @@ export default tseslint.config(
       '@typescript-eslint/no-confusing-void-expression': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/restrict-plus-operands': 'error',
     },
   },
   eslintConfigPrettier,
