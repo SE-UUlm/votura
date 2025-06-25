@@ -33,6 +33,7 @@ export default tseslint.config(
       '@typescript-eslint/restrict-plus-operands': 'error',
       '@typescript-eslint/no-misused-promises': 'error',
       '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
   eslintConfigPrettier,
