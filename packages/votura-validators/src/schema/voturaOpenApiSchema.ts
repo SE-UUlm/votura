@@ -9,7 +9,7 @@ import { electionIdPathObject } from './elections/electionIdPathObject.js';
 import { electionsPathObject } from './elections/electionsPathObject.js';
 import { freezePathObject } from './elections/freezePathObject.js';
 import { unfreezePathObject } from './elections/unfreezePathObject.js';
-import { Parameter } from './globals/parameter.js';
+import { parameter } from './globals/parameter.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
 import { Tag } from './globals/tag.js';
 import { loginPathObject } from './users/loginPathObject.js';
@@ -100,18 +100,18 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   ],
   paths: {
     [`/elections`]: electionsPathObject,
-    [`/elections/{${Parameter.electionId}}`]: electionIdPathObject,
-    [`/elections/{${Parameter.electionId}}/freeze`]: freezePathObject,
-    [`/elections/{${Parameter.electionId}}/unfreeze`]: unfreezePathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers`]: ballotPapersPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}`]:
+    [`/elections/{${parameter.electionId}}`]: electionIdPathObject,
+    [`/elections/{${parameter.electionId}}/freeze`]: freezePathObject,
+    [`/elections/{${parameter.electionId}}/unfreeze`]: unfreezePathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers`]: ballotPapersPathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}`]:
       ballotPaperIdPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}/ballotPaperSections`]:
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections`]:
       ballotPaperSectionsPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}/ballotPaperSections/{${Parameter.ballotPaperSectionId}}`]:
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}`]:
       ballotPaperSectionIdPathObject,
-    [`/elections/{${Parameter.electionId}}/candidates`]: candidatesPathObject,
-    [`/elections/{${Parameter.electionId}}/candidates/{${Parameter.candidateId}}`]:
+    [`/elections/{${parameter.electionId}}/candidates`]: candidatesPathObject,
+    [`/elections/{${parameter.electionId}}/candidates/{${parameter.candidateId}}`]:
       candidateIdPathObject,
     [`/users`]: usersPathObject,
     [`/users/verifyEmail`]: verifyEmailPathObject,
@@ -121,7 +121,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/resetPassword`]: resetPasswordPathObject,
     [`/users/logout`]: logoutPathObject,
     [`/voterGroups`]: voterGroupsPathObject,
-    [`/voterGroups/{${Parameter.voterGroupId}}`]: voterGroupIdPathObject,
-    [`/voterGroups/{${Parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
+    [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
+    [`/voterGroups/{${parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
   },
 };

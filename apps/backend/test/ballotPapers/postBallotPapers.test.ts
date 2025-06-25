@@ -1,5 +1,5 @@
 import {
-  Parameter,
+  parameter,
   response400Object,
   response403Object,
   response404Object,
@@ -20,7 +20,7 @@ const TOKEN = '1234';
 let requestPath = '';
 let requestPath2 = '';
 
-describe(`POST /elections/:${Parameter.electionId}/ballotPapers`, () => {
+describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   beforeAll(async () => {
     await createUser({
       email: 'user@votura.org',
