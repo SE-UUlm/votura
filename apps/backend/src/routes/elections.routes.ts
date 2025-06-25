@@ -43,7 +43,7 @@ electionsRouter.get(
   getBallotPapers,
 );
 electionsRouter.put(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck,
@@ -51,14 +51,14 @@ electionsRouter.put(
   updateBallotPaper,
 );
 electionsRouter.get(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   ballotPaperIdCheck,
   getBallotPaper,
 );
 electionsRouter.delete(
-  `/:${Parameter.electionId}/ballotPapers/:${Parameter.ballotPaperId}`,
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   ballotPaperIdCheck,
