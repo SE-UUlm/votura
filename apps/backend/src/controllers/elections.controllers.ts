@@ -1,12 +1,11 @@
 import {
   insertableElectionObject,
-  response500Object,
+  response404Object,
   updateableElectionObject,
   zodErrorToResponse400,
   type Election,
   type Response400,
   type Response404,
-  type Response500,
   type SelectableElection,
   type SelectableUser,
 } from '@repo/votura-validators';
@@ -20,7 +19,7 @@ import {
 } from '../services/elections.service.js';
 
 export type CreateElectionResponse = Response<
-  SelectableElection | Response400 | Response500,
+  SelectableElection | Response400 | Response404,
   { user: SelectableUser }
 >;
 
@@ -33,9 +32,7 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
-      res
-        .status(HttpStatusCode.InternalServerError)
-        .json(response500Object.parse({ message: undefined }));
+      res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
       return;
     }
 
@@ -55,7 +52,7 @@ export const getElections = async (_req: Request, res: GetAllElectionsResponse):
 
 export const updateElection = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableElection | Response400 | Response500>,
+  res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableElectionObject.safeParseAsync(body);
@@ -66,9 +63,7 @@ export const updateElection = async (
 
   const selectableElection = await updatePersistentElection(data, req.params.electionId);
   if (selectableElection === null) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableElection);
@@ -87,9 +82,7 @@ export const getElection = async (
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
 
   if (election === null) {
-    res
-      .status(HttpStatusCode.InternalServerError)
-      .json(response500Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
 
