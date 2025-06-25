@@ -21,19 +21,19 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
 
   const onDelete = () => {
-    // deleteElection(election.id); TODO: Implement election deletion
+    // deleteElection(election.id); TODO: Implement election deletion (see #147)
     notifications.show(getDeleteSuccessElectionConfig(election.name));
     navigate('/elections');
     return;
   };
 
   const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
-    // updateElection(election.id, mutatedElection); TODO: Implement election update
+    // updateElection(election.id, mutatedElection); TODO: Implement election update (see #146)
     notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update
+    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
@@ -62,7 +62,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
-          isMutating={false} // TODO: Implement election update
+          isMutating={false} // TODO: Implement election update (see #146))
         />
       </Group>
     </>
