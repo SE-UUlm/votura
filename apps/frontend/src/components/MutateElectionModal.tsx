@@ -18,7 +18,7 @@ export interface MutateElectionModalProps {
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
-  onMutate: (mutatedElection: UpdateableElection) => void;
+  onMutate: (mutatedElection: UpdateableElection) => void | Promise<void>;
   title: ModalProps['title'];
   isMutating: boolean;
 }
