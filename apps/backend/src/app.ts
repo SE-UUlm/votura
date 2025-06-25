@@ -1,4 +1,5 @@
 import { response400Object } from '@repo/votura-validators';
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express from 'express';
 import pinoHttp from 'pino-http';
@@ -12,6 +13,7 @@ dotenv.config();
 
 export const app = express();
 
+app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
 app.use(pinoHttp.pinoHttp({ logger }));

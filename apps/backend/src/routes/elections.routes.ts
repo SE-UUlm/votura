@@ -1,4 +1,4 @@
-import { Parameter } from '@repo/votura-validators';
+import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import {
   createBallotPaper,
@@ -23,21 +23,21 @@ electionsRouter.post(
 );
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
 electionsRouter.get(
-  `/:${Parameter.electionId}`,
+  `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   getElection,
 );
 
 electionsRouter.post(
-  `/:${Parameter.electionId}/ballotPapers`,
+  `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck,
   createBallotPaper,
 );
 electionsRouter.get(
-  `/:${Parameter.electionId}/ballotPapers`,
+  `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   getBallotPapers,
