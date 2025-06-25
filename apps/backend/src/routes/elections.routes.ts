@@ -1,10 +1,16 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import { createBallotPaper, getBallotPapers } from '../controllers/ballotPapers.controllers.js';
+import {
+  createBallotPaper,
+  deleteBallotPaper,
+  getBallotPaper,
+  getBallotPapers,
+  updateBallotPaper,
+} from '../controllers/ballotPapers.controllers.js';
 import { createElection, getElection, getElections } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import { electionIdCheck } from '../middlewares/pathParameterCheck.js';
+import { ballotPaperIdCheck, electionIdCheck } from '../middlewares/pathParameterCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
 export const electionsRouter: Router = Router();
@@ -35,4 +41,26 @@ electionsRouter.get(
   acceptHeaderCheck(MimeType.ApplicationJson),
   electionIdCheck,
   getBallotPapers,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  updateBallotPaper,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  getBallotPaper,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck,
+  ballotPaperIdCheck,
+  deleteBallotPaper,
 );

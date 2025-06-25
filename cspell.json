@@ -59,6 +59,7 @@
     "fkey",
     "hashedpassword",
     "codegen",
-    "plpgsql"
+    "plpgsql",
+    "Millis"
   ]
 }

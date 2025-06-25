@@ -1,11 +1,12 @@
 import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
+import { kyselyLogger } from './../logger.js';
 import type { DB } from './types/db.js';
+
 dotenv.config();
 
-const databaseUrl =
-  process.env.DATABASE_URL ?? 'postgresql://votura:votura@localhost:5432/votura?schema=public';
+const databaseUrl = process.env.DATABASE_URL;
 
 export const db = new Kysely<DB>({
   dialect: new PostgresDialect({
@@ -13,4 +14,5 @@ export const db = new Kysely<DB>({
       connectionString: databaseUrl,
     }),
   }),
+  log: kyselyLogger,
 });

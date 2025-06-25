@@ -3,6 +3,7 @@ import type {
   Election,
   InsertableBallotPaper,
   SelectableBallotPaper,
+  UpdateableBallotPaper,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { db } from '../db/database.js';
@@ -49,4 +50,50 @@ export const getBallotPapers = async (
     .execute();
 
   return ballotPapers.map((ballotPaper) => ballotPaperTransformer(ballotPaper));
+};
+
+export const getBallotPaper = async (
+  ballotPaperId: BallotPaper['id'],
+): Promise<SelectableBallotPaper | null> => {
+  const ballotPaper = await db
+    .selectFrom('BallotPaper')
+    .selectAll()
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirst();
+
+  if (ballotPaper === undefined) {
+    return null;
+  }
+
+  return ballotPaperTransformer(ballotPaper);
+};
+
+export const updateBallotPaper = async (
+  updateableBallotPaper: UpdateableBallotPaper,
+  ballotPaperId: BallotPaper['id'],
+): Promise<SelectableBallotPaper | null> => {
+  const ballotPaper = await db
+    .updateTable('BallotPaper')
+    .set({ ...updateableBallotPaper })
+    .where('id', '=', ballotPaperId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (ballotPaper === undefined) {
+    return null;
+  }
+
+  return ballotPaperTransformer(ballotPaper);
+};
+
+export const deleteBallotPaper = async (ballotPaperId: BallotPaper['id']): Promise<boolean> => {
+  const result = await db
+    .deleteFrom('BallotPaper')
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirst();
+
+  if (result.numDeletedRows !== 1n) {
+    return false;
+  }
+  return true;
 };

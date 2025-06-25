@@ -4,28 +4,21 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { demoBallotPaper, demoElection } from '../mockData.js';
+import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-const TOKEN = '1234';
-let requestPath = '';
-
 describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
+  let requestPath = '';
+
   beforeAll(async () => {
-    await createUser({
-      email: 'user@votura.org',
-      password: 'hashedpassword',
-    });
-
-    const user = await findUserBy({ email: 'user@votura.org' });
-
+    await createUser(demoUser);
+    const user = await findUserBy({ email: demoUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
     }
 
     const election = await createElection(demoElection, user.id);
-
     if (election === null) {
       throw new Error('Failed to create test election');
     }
@@ -40,7 +33,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   });
 
   it('200: should get all ballot papers for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', TOKEN);
+    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
 
