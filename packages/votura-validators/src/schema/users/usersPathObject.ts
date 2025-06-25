@@ -47,6 +47,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Delete a user',
     description:
       'Deletes a user in the votura backend.\n' +
+      'Be aware that deleting a user will also trigger a deletion of all associated elections.\n' +
       '\n' +
       'This endpoint is currently only a draft and not implemented!\n' +
       'When this endpoint is implemented this note will be removed.',
