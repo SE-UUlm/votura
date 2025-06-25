@@ -98,7 +98,7 @@ export const updateElection = async (
 export const deleteElection = async (electionId: Election['id']): Promise<boolean> => {
   const result = await db.deleteFrom('Election').where('id', '=', electionId).executeTakeFirst();
 
-  if (result.numDeletedRows !== 1n) {
+  if (result.numDeletedRows >= 1n) {
     return false;
   }
   return true;

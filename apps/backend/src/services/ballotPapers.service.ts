@@ -92,7 +92,7 @@ export const deleteBallotPaper = async (ballotPaperId: BallotPaper['id']): Promi
     .where('id', '=', ballotPaperId)
     .executeTakeFirst();
 
-  if (result.numDeletedRows !== 1n) {
+  if (result.numDeletedRows >= 1n) {
     return false;
   }
   return true;
