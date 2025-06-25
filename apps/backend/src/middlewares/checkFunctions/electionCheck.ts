@@ -7,7 +7,6 @@ import {
 import type { Response } from 'express';
 import { db } from '../../db/database.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import logger from '../../logger.js';
 
 /**
  * Checks if the election with the given ID exists in the database.
@@ -86,7 +85,11 @@ export async function isElectionUnfrozen(
     .executeTakeFirst();
 
   if (result === undefined) {
-    logger.error({ electionId: electionId }, 'Election not found during unfrozen check.');
+    res.status(HttpStatusCode.NotFound).json(
+      response404Object.parse({
+        message: 'The election was not found.',
+      }),
+    );
     return false;
   }
 
