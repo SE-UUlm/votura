@@ -95,7 +95,7 @@ export const deleteElection = async (
   res: Response<void | Response404>,
 ): Promise<void> => {
   const result = await deletePersistentElection(req.params.electionId);
-  if (result !== true) {
+  if (!result) {
     res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
