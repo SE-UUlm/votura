@@ -9,6 +9,7 @@ import {
 } from '../controllers/ballotPapers.controllers.js';
 import {
   createElection,
+  deleteElection,
   getElection,
   getElections,
   updateElection,
@@ -39,6 +40,12 @@ electionsRouter.put(
   acceptBodyCheck(MimeType.ApplicationJson),
   electionIdCheck(true),
   updateElection,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck(true),
+  deleteElection,
 );
 
 electionsRouter.post(
