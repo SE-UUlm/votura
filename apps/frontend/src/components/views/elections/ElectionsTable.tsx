@@ -4,6 +4,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import type { PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
+import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
@@ -32,12 +33,14 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
     notifications.show(getDeleteSuccessElectionConfig(election.name));
   };
 
-  const onMutate =
-    (election: SelectableElection): MutateElectionModalProps['onMutate'] =>
-    (mutatedElection) => {
-      // updateElection(election.id, mutatedElection); TODO: Implement update election
+  const onMutate = (election: SelectableElection): MutateElectionModalProps['onMutate'] => {
+    const { trigger } = useUpdateElection(election.id);
+
+    return async (mutatedElection) => {
+      await trigger(mutatedElection);
       notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
     };
+  };
 
   const onToggleFreeze =
     (election: SelectableElection): ToggleFreezeElectionModalProps['onToggleFreeze'] =>

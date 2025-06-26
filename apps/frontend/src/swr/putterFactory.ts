@@ -10,7 +10,7 @@ export type PutterFactory = <T, R>(
   },
 ) => Promise<R>;
 
-export const posterFactory: PutterFactory = (responseSchema) => {
+export const putterFactory: PutterFactory = (responseSchema) => {
   return async (url, args) => {
     const response = await putter(url, args);
     const parsed = await responseSchema.safeParseAsync(response);

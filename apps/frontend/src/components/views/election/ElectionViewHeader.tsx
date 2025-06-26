@@ -12,6 +12,7 @@ import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
+import {useUpdateElection} from '../../../swr/elections/useUpdateElection.ts';
 
 export interface ElectionViewHeaderProps {
   election: SelectableElection;
@@ -19,6 +20,7 @@ export interface ElectionViewHeaderProps {
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
+  const {trigger, isMutating} = useUpdateElection(election.id);
 
   const onDelete = () => {
     // deleteElection(election.id); TODO: Implement election deletion
@@ -27,12 +29,12 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
     return;
   };
 
-  const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
-    // updateElection(election.id, mutatedElection); TODO: Implement election update
-    notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
+  const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
+    await trigger(mutatedElection);
+    notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] =  async () => {
     // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
@@ -62,7 +64,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
-          isMutating={false} // TODO: Implement election update
+          isMutating={isMutating}
         />
       </Group>
     </>
