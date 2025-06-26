@@ -62,7 +62,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
-          isMutating={false} // TODO: Implement election update (see #146))
+          isMutating={false} // TODO: Implement election update (see #146)
         />
       </Group>
     </>
