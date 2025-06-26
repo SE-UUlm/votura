@@ -122,7 +122,7 @@ export const unfreezeElection = async (
     return;
   }
 
-  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #??)
+  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #201)
 
   res.status(HttpStatusCode.Ok).json(election);
 };
