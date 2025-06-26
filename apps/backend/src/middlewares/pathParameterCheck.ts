@@ -11,10 +11,10 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import { exitsBallotPaper, isElectionParent } from './checkFunctions/ballotPaperCheck.js';
 import {
   exitsElection,
-  isElectionUnfrozen,
+  isElectionFrozen,
   isValidOwnerOfElection,
 } from './checkFunctions/electionCheck.js';
-import { validUuid } from './checkFunctions/globalChecks.js';
+import { validateUuid } from './checkFunctions/globalChecks.js';
 
 /**
  * Checks the electionId path parameter in the request.
@@ -40,24 +40,24 @@ export const electionIdCheck =
     res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
     next: NextFunction,
   ): Promise<void> => {
-    const electionId = await validUuid(req.params.electionId, res);
+    const electionId = await validateUuid(req.params.electionId, res);
     if (electionId === null) {
       return;
     }
 
     const exists = await exitsElection(electionId, res);
-    if (exists !== true) {
+    if (!exists) {
       return;
     }
 
     const isValidOwner = await isValidOwnerOfElection(electionId, res.locals.user.id, res);
-    if (isValidOwner !== true) {
+    if (!isValidOwner) {
       return;
     }
 
     if (electionUnfrozen) {
-      const electionIsUnfrozen = await isElectionUnfrozen(electionId, res);
-      if (electionIsUnfrozen !== true) {
+      const electionIsFrozen = await isElectionFrozen(electionId, res);
+      if (electionIsFrozen === true || electionIsFrozen === null) {
         return;
       }
     }
@@ -82,7 +82,7 @@ export const ballotPaperIdCheck = async (
   res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
   next: NextFunction,
 ): Promise<void> => {
-  const ballotPaperId = await validUuid(req.params.ballotPaperId, res);
+  const ballotPaperId = await validateUuid(req.params.ballotPaperId, res);
   if (ballotPaperId === null) {
     return;
   }
