@@ -103,7 +103,7 @@ export const updateElection = async (
  * @param configFrozen The new `configFrozen` state of the election.
  * @returns The updated election or null if not found.
  */
-export const setElectionFrozen = async (
+export const setElectionFrozenState = async (
   electionId: Election['id'],
   configFrozen: boolean,
 ): Promise<SelectableElection | null> => {

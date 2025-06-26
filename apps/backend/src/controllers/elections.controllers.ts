@@ -15,7 +15,7 @@ import {
   createElection as createPersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
-  setElectionFrozen,
+  setElectionFrozenState,
   updateElection as updatePersistentElection,
 } from '../services/elections.service.js';
 
@@ -51,10 +51,8 @@ export const getElections = async (_req: Request, res: GetAllElectionsResponse):
   res.status(HttpStatusCode.Ok).json(elections);
 };
 
-export type GetElectionRequest = Request<{ electionId: Election['id'] }>;
-
 export const updateElection = async (
-  req: GetElectionRequest,
+  req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
   const body: unknown = req.body;
@@ -72,6 +70,7 @@ export const updateElection = async (
   res.status(HttpStatusCode.Ok).json(selectableElection);
 };
 
+export type GetElectionRequest = Request<{ electionId: Election['id'] }>;
 export type GetElectionResponse = Response<
   SelectableElection | Response404,
   { user: SelectableUser }
@@ -95,7 +94,7 @@ export const freezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
-  const election = await setElectionFrozen(req.params.electionId, true);
+  const election = await setElectionFrozenState(req.params.electionId, true);
 
   if (election === null) {
     res
@@ -113,7 +112,7 @@ export const unfreezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
-  const election = await setElectionFrozen(req.params.electionId, false);
+  const election = await setElectionFrozenState(req.params.electionId, false);
 
   if (election === null) {
     res
