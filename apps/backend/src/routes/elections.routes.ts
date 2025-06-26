@@ -9,11 +9,10 @@ import {
 } from '../controllers/ballotPapers.controllers.js';
 import {
   createElection,
+  freezeElection,
   getElection,
   getElections,
   updateElection,
-  freezeElection,
-  // unfreezeElection,
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';

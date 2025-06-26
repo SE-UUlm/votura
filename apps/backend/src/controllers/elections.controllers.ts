@@ -13,11 +13,10 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createElection as createPersistentElection,
+  freezeElection as freezePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
   updateElection as updatePersistentElection,
-  freezeElection as freezePersistentElection,
-  // unfreezeElection as unfreezePersistentElection,
 } from '../services/elections.service.js';
 
 export type CreateElectionResponse = Response<
@@ -73,7 +72,6 @@ export const updateElection = async (
   res.status(HttpStatusCode.Ok).json(selectableElection);
 };
 
-
 export type GetElectionResponse = Response<
   SelectableElection | Response404,
   { user: SelectableUser }
@@ -100,11 +98,13 @@ export const freezeElection = async (
   const election = await freezePersistentElection(req.params.electionId);
 
   if (election === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: "The election to freeze was not found." }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: 'The election to freeze was not found.' }));
     return;
   }
 
-  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #???)
+  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #198)
 
   res.status(HttpStatusCode.Ok).json(election);
 };
