@@ -67,17 +67,18 @@ export async function isValidOwnerOfElection(
 }
 
 /**
- * Checks if the election with the given ID is unfrozen.
+ * Checks if the election with the given ID is frozen.
  * If the election is frozen, it sends a 403 Forbidden response.
  *
  * @param electionId The ID of the election to check.
  * @param res The response object to send errors to.
- * @returns A promise that resolves to true if the election is unfrozen, or false if it is frozen.
+ * @returns A promise that resolves to true if the election is frozen, or false if it is not.
+ * If the election does not exist, it sends a 404 Not Found response and returns null.
  */
-export async function isElectionUnfrozen(
+export async function isElectionFrozen(
   electionId: Election['id'],
   res: Response,
-): Promise<boolean> {
+): Promise<boolean | null> {
   const result = await db
     .selectFrom('Election')
     .select(['id', 'configFrozen'])
@@ -90,17 +91,17 @@ export async function isElectionUnfrozen(
         message: 'The election was not found.',
       }),
     );
-    return false;
+    return null;
   }
 
-  if (result.configFrozen !== false) {
+  if (result.configFrozen) {
     res.status(HttpStatusCode.Forbidden).json(
       response403Object.parse({
         message: 'The election is frozen and cannot be modified.',
       }),
     );
-    return false;
+    return true;
   }
 
-  return true;
+  return false;
 }

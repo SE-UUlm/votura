@@ -11,7 +11,7 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import { exitsBallotPaper, isElectionParent } from './checkFunctions/ballotPaperCheck.js';
 import {
   exitsElection,
-  isElectionUnfrozen,
+  isElectionFrozen,
   isValidOwnerOfElection,
 } from './checkFunctions/electionCheck.js';
 import { validUuid } from './checkFunctions/globalChecks.js';
@@ -46,18 +46,18 @@ export const electionIdCheck =
     }
 
     const exists = await exitsElection(electionId, res);
-    if (exists !== true) {
+    if (!exists) {
       return;
     }
 
     const isValidOwner = await isValidOwnerOfElection(electionId, res.locals.user.id, res);
-    if (isValidOwner !== true) {
+    if (!isValidOwner) {
       return;
     }
 
     if (electionUnfrozen) {
-      const electionIsUnfrozen = await isElectionUnfrozen(electionId, res);
-      if (electionIsUnfrozen !== true) {
+      const electionIsFrozen = await isElectionFrozen(electionId, res);
+      if (electionIsFrozen === true || electionIsFrozen === null) {
         return;
       }
     }
