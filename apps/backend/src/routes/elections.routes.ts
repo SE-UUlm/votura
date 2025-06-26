@@ -12,6 +12,8 @@ import {
   getElection,
   getElections,
   updateElection,
+  freezeElection,
+  // unfreezeElection,
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
@@ -20,6 +22,7 @@ import { MimeType } from '../middlewares/utils.js';
 
 export const electionsRouter: Router = Router();
 
+// Elections routes
 electionsRouter.post(
   '/',
   acceptHeaderCheck(MimeType.ApplicationJson),
@@ -40,7 +43,20 @@ electionsRouter.put(
   electionIdCheck(true),
   updateElection,
 );
+electionsRouter.put(
+  `/:${parameter.electionId}/freeze`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck(true),
+  freezeElection,
+);
+// electionsRouter.put(
+//   `/:${parameter.electionId}/unfreeze`,
+//   acceptHeaderCheck(MimeType.ApplicationJson),
+//   electionIdCheck(false),
+//   unfreezeElection,
+// );
 
+// Ballot Papers routes
 electionsRouter.post(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),

@@ -94,3 +94,20 @@ export const updateElection = async (
 
   return electionTransformer(election);
 };
+
+export const freezeElection = async (
+  electionId: Election['id'],
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .updateTable('Election')
+    .set({ configFrozen: true })
+    .where('id', '=', electionId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (election === undefined) {
+    return null;
+  }
+
+  return electionTransformer(election);
+};
