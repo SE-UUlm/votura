@@ -14,7 +14,7 @@ import {
   isElectionFrozen,
   isValidOwnerOfElection,
 } from './checkFunctions/electionCheck.js';
-import { validUuid } from './checkFunctions/globalChecks.js';
+import { validateUuid } from './checkFunctions/globalChecks.js';
 
 /**
  * Checks the electionId path parameter in the request.
@@ -40,7 +40,7 @@ export const electionIdCheck =
     res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
     next: NextFunction,
   ): Promise<void> => {
-    const electionId = await validUuid(req.params.electionId, res);
+    const electionId = await validateUuid(req.params.electionId, res);
     if (electionId === null) {
       return;
     }
@@ -82,7 +82,7 @@ export const ballotPaperIdCheck = async (
   res: Response<Response400 | Response403 | Response404, { user: SelectableUser }>,
   next: NextFunction,
 ): Promise<void> => {
-  const ballotPaperId = await validUuid(req.params.ballotPaperId, res);
+  const ballotPaperId = await validateUuid(req.params.ballotPaperId, res);
   if (ballotPaperId === null) {
     return;
   }
