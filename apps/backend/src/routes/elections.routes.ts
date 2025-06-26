@@ -12,6 +12,7 @@ import {
   freezeElection,
   getElection,
   getElections,
+  unfreezeElection,
   updateElection,
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
@@ -48,12 +49,12 @@ electionsRouter.put(
   electionIdCheck(true),
   freezeElection,
 );
-// electionsRouter.put(
-//   `/:${parameter.electionId}/unfreeze`,
-//   acceptHeaderCheck(MimeType.ApplicationJson),
-//   electionIdCheck(false),
-//   unfreezeElection,
-// );
+electionsRouter.put(
+  `/:${parameter.electionId}/unfreeze`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  electionIdCheck(false),
+  unfreezeElection,
+);
 
 // Ballot Papers routes
 electionsRouter.post(
