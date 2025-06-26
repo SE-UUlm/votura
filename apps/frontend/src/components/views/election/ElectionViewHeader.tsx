@@ -3,6 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import { useNavigate } from 'react-router';
+import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
@@ -19,6 +20,7 @@ export interface ElectionViewHeaderProps {
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
+  const { trigger, isMutating } = useUpdateElection(election.id);
 
   const onDelete = () => {
     // deleteElection(election.id); TODO: Implement election deletion
@@ -27,9 +29,9 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
     return;
   };
 
-  const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
-    // updateElection(election.id, mutatedElection); TODO: Implement election update
-    notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
+  const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
+    await trigger(mutatedElection);
+    notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
@@ -62,7 +64,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
-          isMutating={false} // TODO: Implement election update
+          isMutating={isMutating}
         />
       </Group>
     </>
