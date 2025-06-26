@@ -14,5 +14,5 @@ export const putter = async <T>(url: string, args: { arg: T }): Promise<unknown>
     throw new Error(response.statusText);
   }
 
-  return await response.json();
+  return response.json();
 };

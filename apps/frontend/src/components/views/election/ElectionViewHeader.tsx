@@ -34,7 +34,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
     // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
