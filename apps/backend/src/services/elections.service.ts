@@ -94,3 +94,29 @@ export const updateElection = async (
 
   return electionTransformer(election);
 };
+
+/**
+ * Sets the election to frozen or unfrozen state and returns the updated election.
+ * If the election was not found, it returns null.
+ *
+ * @param electionId The ID of the election to update.
+ * @param configFrozen The new `configFrozen` state of the election.
+ * @returns The updated election or null if not found.
+ */
+export const setElectionFrozenState = async (
+  electionId: Election['id'],
+  configFrozen: boolean,
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .updateTable('Election')
+    .set({ configFrozen: configFrozen })
+    .where('id', '=', electionId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (election === undefined) {
+    return null;
+  }
+
+  return electionTransformer(election);
+};

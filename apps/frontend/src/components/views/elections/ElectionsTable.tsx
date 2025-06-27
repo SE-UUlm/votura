@@ -28,14 +28,14 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const navigate = useNavigate();
 
   const onDelete = (election: SelectableElection) => () => {
-    // deleteElection(election.id); TODO: implement delete election
+    // deleteElection(election.id); TODO: implement delete election (see #147)
     notifications.show(getDeleteSuccessElectionConfig(election.name));
   };
 
   const onMutate =
     (election: SelectableElection): MutateElectionModalProps['onMutate'] =>
     (mutatedElection) => {
-      // updateElection(election.id, mutatedElection); TODO: Implement update election
+      // updateElection(election.id, mutatedElection); TODO: Implement update election (see #146)
       notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
     };
 
@@ -73,7 +73,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
             onDelete={onDelete(election)}
             onMutate={onMutate(election)}
             onToggleFreeze={onToggleFreeze(election)}
-            isMutating={false} // TODO: Implement update election
+            isMutating={false} // TODO: Implement update election (see #146)
           />
           <ActionIcon
             variant="subtle"

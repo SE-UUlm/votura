@@ -6,7 +6,7 @@ export const emailVerificationTokenHashParameter: OpenAPIV3.ParameterObject = {
   description: 'The verification token that was sent to the users email address.',
   required: true,
   schema: {
-    // TODO: Maybe replace with Zod object.
+    // TODO: Maybe replace with Zod object. (see #125)
     type: 'string',
     minLength: 1,
     maxLength: 1,
