@@ -74,11 +74,11 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
-  it('404: should return 404 when election is not the parent of ballot paper', async () => {
+  it('400: should return 400 when election is not the parent of ballot paper', async () => {
     const res = await request(app).get(requestPath2).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
-    const parseResult = response404Object.safeParse(res.body);
+    const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
 });
