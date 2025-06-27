@@ -50,7 +50,7 @@ describe('GET /elections/:electionId', () => {
     }
   });
 
-  it('should get a specific election', async () => {
+  it('200: should get a specific election', async () => {
     const res = await request(app)
       .get(`${ELECTIONS_SLUG}/${election?.id}`)
       .set('Authorization', AUTH_TOKEN)
