@@ -1,5 +1,8 @@
+import dotenv from 'dotenv';
 import type { LogEvent } from 'kysely';
 import pino from 'pino';
+
+dotenv.config();
 
 const transport = pino.transport({
   targets: [
@@ -43,7 +46,15 @@ const logger = pino.pino(
 
 export const kyselyLogger = (event: LogEvent): void => {
   if (event.level === 'error') {
-    logger.error({ event }, 'DB query error');
+    logger.error(
+      {
+        error: event.error,
+        query: event.query.sql,
+        params: event.query.parameters,
+        duration: event.queryDurationMillis,
+      },
+      'DB query execution failed',
+    );
   }
 
   if (event.level === 'query') {
@@ -53,7 +64,7 @@ export const kyselyLogger = (event: LogEvent): void => {
         params: event.query.parameters,
         duration: event.queryDurationMillis,
       },
-      'DB query executed',
+      'DB query successfully executed',
     );
   }
 };
