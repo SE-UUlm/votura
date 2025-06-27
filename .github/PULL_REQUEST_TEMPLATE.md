@@ -1,5 +1,7 @@
 # Changes
 
+Resolves #<issue_number>
+
 This pr fixes/implements ... (Describe your changes)
 
 ## Checklist during development

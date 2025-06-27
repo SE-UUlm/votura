@@ -1,0 +1,183 @@
+@startuml electionCreationAndVoting
+actor "Voter" as voter
+actor "Election Creator" as electionCreator
+participant "votura frontend" as frontend
+participant "votura backend" as backend
+database "PostgreSQL" as db
+
+== Election Creation ==
+
+electionCreator -> frontend : Create election (name, [description], start date, end date, ballot papers, candidates etc.)
+activate frontend
+frontend -> backend : Create election
+activate backend
+backend -> backend : validate + process election
+backend -> db : create election, link to election creator
+activate db
+db --> backend : election created
+deactivate db
+backend --> frontend : election created
+deactivate backend
+frontend --> electionCreator : Show election
+deactivate frontend
+
+||45||
+
+electionCreator -> frontend : Create voter group (name, [description], #voters, relevant ballot papers)
+note left
+    The election creator can create a group of voters
+    and assign them to any number of ballot papers 
+    but only per election.
+    This can be repeated for multiple groups.
+end note
+activate frontend
+frontend -> backend : Create voter group
+activate backend
+backend -> backend : validate + process voter group
+backend -> db : create voter group, #voters associated voters and voterRegisters
+activate db
+db --> backend : voter group id
+deactivate db
+backend --> frontend : voter group id
+deactivate backend
+frontend --> electionCreator : display voter group created
+deactivate frontend
+
+group Optional
+    electionCreator -> frontend : Update voter group [name, description, relevant ballot papers, #voters]
+    note left
+        The election creator can update the number of voters in a voter group
+        as long as none of the related elections are frozen.
+        Relevant ballot papers may be updated in unfrozen elections.
+        The name and description of the group may be updated
+        even if the associated elections are frozen.
+    end note
+    activate frontend
+    frontend -> backend : Update voter group
+    activate backend
+    backend -> backend : validate + process voter group
+    backend -> db : update voter group, #voters associated voters and voterRegisters
+    activate db
+    db --> backend : voter group updated
+    deactivate db
+    backend --> frontend : voter group updated
+    deactivate backend
+    frontend --> electionCreator : Show voter group updated
+    deactivate frontend
+
+    electionCreator -> frontend : Delete voter group 
+    note left
+        The election creator can invalidate any voter group
+        as long as none of the related elections are frozen.
+    end note
+    frontend -> backend : Delete voter group (group id)
+    activate backend
+    backend -> backend : validate + process deletion
+    backend -> db : delete voter group and associated voters
+    activate db
+    db --> backend : voter group deleted
+    deactivate db
+    backend --> frontend : voter group deleted
+    deactivate backend
+    frontend --> electionCreator : Show voter group invalidated (remove from list)
+    deactivate frontend
+end
+
+electionCreator -> frontend : Freeze election
+note left
+    The election creator can freeze the election
+    to prevent any further changes.
+    This is necessary to get the JWTs for the voters.
+end note
+activate frontend
+frontend -> backend : Freeze election
+activate backend
+backend -> backend : validate + process freeze election
+backend -> db : freeze election
+activate db
+db --> backend : election frozen
+deactivate db
+backend --> frontend : election frozen
+deactivate backend
+frontend --> electionCreator : Show election frozen
+deactivate frontend
+
+electionCreator -> frontend : Generate JWTs for voter group
+note left
+    The election creator can only generate the JWTs 
+    for the voters for each group after each associated
+    election has been frozen.
+end note
+activate frontend
+frontend -> backend : Generate JWTs for voter group
+activate backend
+backend -> backend : validate + process JWT generation (generate RS256 keys for group)
+backend -> db : get voter ids
+activate db
+db --> backend : voter ids
+deactivate db
+backend -> backend : generate JWTs for each voter (payload = voter id)
+backend --> frontend : JWTs
+deactivate backend
+frontend --> electionCreator : download JWTs for voter group
+deactivate frontend
+
+group Optional
+    electionCreator -> frontend : Unfreeze election
+    note left
+        The election creator can unfreeze an election at any time.
+        With this, all voter tokens, election keys, and votes 
+        are invalidated and removed.
+    end note
+    activate frontend
+    frontend -> backend : unfreeze election (election id)
+    activate backend
+    backend -> backend : validate
+    backend -> db : process unfreeze election (unset configFrozen, delete votes, voter registers, voter token keys, election keys, ...)
+    activate db
+    db --> backend : election unfrozen
+    deactivate db
+    backend --> frontend : election unfrozen
+    deactivate backend
+    frontend --> electionCreator : election unfrozen
+    deactivate frontend
+end
+
+electionCreator -> voter : Send JWT accordingly
+
+== Voting ==
+note left
+    The JWT is always included in the header of requests by the voter.
+end note
+voter -> frontend : Login with JWT
+activate frontend
+frontend -> backend : Login with JWT
+activate backend
+backend -> db : get JWT key according to voter id and related voter group
+db --> backend : JWT key
+deactivate db
+backend -> backend : validate JWT
+backend -> db : get elections and ballot papers related to voter group
+activate db
+db --> backend : elections + ballot papers 
+deactivate db
+backend --> frontend : elections + ballot papers
+deactivate backend
+frontend --> voter : Show elections + ballot papers
+deactivate frontend
+
+voter -> frontend : Vote
+activate frontend
+frontend -> frontend : validate vote
+frontend --> voter : Show vote
+frontend -> backend : Vote (election id, ballot paper id, vote)
+activate backend
+backend -> backend : validate + process vote
+activate db
+backend -> db : save vote
+deactivate db
+backend -> frontend : Vote saved
+deactivate backend
+frontend --> voter : Show vote saved
+deactivate frontend
+@enduml

@@ -1,0 +1,9 @@
+{
+  "extends": ["@tsconfig/node22/tsconfig.json", "@repo/typescript-config/tsconfig.json"],
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "./src"
+  },
+  "include": ["./src"],
+  "exclude": ["node_modules"]
+}
