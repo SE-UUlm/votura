@@ -10,7 +10,7 @@ import { db } from '../db/database.js';
 import type { BallotPaper as KyselyBallotPaper } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
-export const ballotPaperTransformer = (ballotPaper: Selectable<KyselyBallotPaper>): BallotPaper => {
+const ballotPaperTransformer = (ballotPaper: Selectable<KyselyBallotPaper>): BallotPaper => {
   return {
     id: ballotPaper.id,
     modifiedAt: ballotPaper.modifiedAt.toISOString(),
