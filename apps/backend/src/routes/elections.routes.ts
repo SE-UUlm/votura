@@ -15,11 +15,11 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
+import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperCheck.js';
 import {
   checkElectionNotFrozen,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionCheck.js';
-import { ballotPaperIdCheck } from '../middlewares/pathParameterCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
 export const electionsRouter: Router = Router();
@@ -66,14 +66,14 @@ electionsRouter.put(
   acceptBodyCheck(MimeType.ApplicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ballotPaperIdCheck,
+  ...defaultBallotPaperChecks,
   updateBallotPaper,
 );
 electionsRouter.get(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   ...defaultElectionChecks,
-  ballotPaperIdCheck,
+  ...defaultBallotPaperChecks,
   getBallotPaper,
 );
 electionsRouter.delete(
@@ -81,6 +81,6 @@ electionsRouter.delete(
   acceptHeaderCheck(MimeType.ApplicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ballotPaperIdCheck,
+  ...defaultBallotPaperChecks,
   deleteBallotPaper,
 );

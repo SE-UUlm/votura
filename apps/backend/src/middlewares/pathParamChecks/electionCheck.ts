@@ -24,7 +24,7 @@ import { HttpStatusCode } from '../../httpStatusCode.js';
  */
 export async function checkElectionUuid(
   req: Request<{ electionId: string }>,
-  res: Response<void | Response400>,
+  res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
   const parsedUuid = await uuidObject.safeParseAsync(req.params.electionId);
