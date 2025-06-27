@@ -15,7 +15,11 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import { ballotPaperIdCheck, electionIdCheck } from '../middlewares/pathParameterCheck.js';
+import {
+  checkElectionNotFrozen,
+  defaultElectionChecks,
+} from '../middlewares/pathParamChecks/electionCheck.js';
+import { ballotPaperIdCheck } from '../middlewares/pathParameterCheck.js';
 import { MimeType } from '../middlewares/utils.js';
 
 export const electionsRouter: Router = Router();
@@ -26,18 +30,20 @@ electionsRouter.post(
   acceptBodyCheck(MimeType.ApplicationJson),
   createElection,
 );
+
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
 electionsRouter.get(
   `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(false),
+  ...defaultElectionChecks,
   getElection,
 );
 electionsRouter.put(
   `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck(true),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
   updateElection,
 );
 
@@ -45,34 +51,36 @@ electionsRouter.post(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck(false),
+  ...defaultElectionChecks,
   createBallotPaper,
 );
 electionsRouter.get(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(false),
+  ...defaultElectionChecks,
   getBallotPapers,
 );
 electionsRouter.put(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  electionIdCheck(true),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
   ballotPaperIdCheck,
   updateBallotPaper,
 );
 electionsRouter.get(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(false),
+  ...defaultElectionChecks,
   ballotPaperIdCheck,
   getBallotPaper,
 );
 electionsRouter.delete(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(true),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
   ballotPaperIdCheck,
   deleteBallotPaper,
 );
