@@ -33,7 +33,6 @@ electionsRouter.post(
   acceptBodyCheck(MimeType.ApplicationJson),
   createElection,
 );
-
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);
 electionsRouter.get(
   `/:${parameter.electionId}`,
@@ -69,6 +68,7 @@ electionsRouter.post(
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
   ...defaultElectionChecks,
+  checkElectionNotFrozen,
   createBallotPaper,
 );
 electionsRouter.get(
