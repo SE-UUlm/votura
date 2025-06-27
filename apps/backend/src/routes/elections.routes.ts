@@ -50,7 +50,8 @@ electionsRouter.put(
 electionsRouter.delete(
   `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(true),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
   deleteElection,
 );
 
