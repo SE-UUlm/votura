@@ -13,6 +13,7 @@ dotenv.config();
 
 export const app = express();
 
+app.disable('x-powered-by');
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
