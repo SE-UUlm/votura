@@ -52,13 +52,14 @@ electionsRouter.put(
 electionsRouter.put(
   `/:${parameter.electionId}/freeze`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(true),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
   freezeElection,
 );
 electionsRouter.put(
   `/:${parameter.electionId}/unfreeze`,
   acceptHeaderCheck(MimeType.ApplicationJson),
-  electionIdCheck(false),
+  ...defaultElectionChecks,
   unfreezeElection,
 );
 
