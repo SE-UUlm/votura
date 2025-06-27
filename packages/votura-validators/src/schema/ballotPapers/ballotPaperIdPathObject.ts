@@ -91,7 +91,8 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Deletes the requested ballot paper.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'A ballot paper can only be deleted if the linked election is not frozen.',
+      'A deletion can only be performed if the parent election is not frozen.' +
+      'Be aware that deleting a ballot paper will also trigger a deletion of all associated ballot paper sections.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteBallotPaperById',
     responses: {
