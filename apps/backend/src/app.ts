@@ -1,7 +1,7 @@
-import { response400Object } from '@repo/votura-validators';
+import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express from 'express';
+import express, { type NextFunction, type Request, type Response } from 'express';
 import pinoHttp from 'pino-http';
 import { HttpStatusCode } from './httpStatusCode.js';
 import logger from './logger.js';
@@ -28,4 +28,12 @@ app.use((_req, res) => {
     .json(
       response400Object.parse({ message: 'Invalid request! The requested route does not exist.' }),
     );
+});
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
+  logger.error({ err }, 'An error occurred in the request handler');
+  res
+    .status(HttpStatusCode.InternalServerError)
+    .json(response500Object.parse({ message: undefined }));
 });
