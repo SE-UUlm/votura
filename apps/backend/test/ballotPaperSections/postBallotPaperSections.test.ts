@@ -55,7 +55,9 @@ describe(`POST /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId
       expect(parseResult.data.name).toBe(demoBallotPaperSection.name);
       expect(parseResult.data.description).toBe(demoBallotPaperSection.description);
       expect(parseResult.data.maxVotes).toBe(demoBallotPaperSection.maxVotes);
-      expect(parseResult.data.maxVotesPerCandidate).toBe(demoBallotPaperSection.maxVotesPerCandidate);
+      expect(parseResult.data.maxVotesPerCandidate).toBe(
+        demoBallotPaperSection.maxVotesPerCandidate,
+      );
     }
   });
   it('400: should throw error missing fields', async () => {
