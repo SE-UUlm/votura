@@ -3,10 +3,7 @@ import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { electionObject } from './election.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
-
-const maxVotesRefinement = (data: { maxVotes: number; maxVotesPerCandidate: number }): boolean =>
-  data.maxVotes >= data.maxVotesPerCandidate;
-const maxVotesRefinementMessage = 'maxVotes must be greater than or equal to maxVotesPerCandidate';
+import { maxVotesRefinement, maxVotesRefinementMessage } from './refines.js';
 
 export const ballotPaperObject = z.object({
   ...identifiableTimestampedObject.shape,
