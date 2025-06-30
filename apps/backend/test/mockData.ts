@@ -67,6 +67,12 @@ export const demoBallotPaperSection = insertableBallotPaperSectionObject.parse({
   maxVotes: 30,
   maxVotesPerCandidate: 20,
 });
+export const demoBallotPaperSection2 = insertableBallotPaperSectionObject.parse({
+  name: 'Test ballot paper section 2',
+  description: 'Test ballot paper section description 2',
+  maxVotes: 5,
+  maxVotesPerCandidate: 1,
+});
 export const brokenBallotPaperSection = {
   XYZ: 'Test broken ballot paper section',
   description: 'Test broken ballot paper section description',
