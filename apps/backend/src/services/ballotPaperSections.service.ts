@@ -1,6 +1,5 @@
 import type {
   BallotPaper,
-  BallotPaperSection,
   InsertableBallotPaperSection,
   SelectableBallotPaperSection,
 } from '@repo/votura-validators';
@@ -11,7 +10,7 @@ import { spreadableOptional } from '../utils.js';
 
 const ballotPaperSectionTransformer = (
   ballotPaperSection: Selectable<KyselyBallotPaperSection>,
-): BallotPaperSection => {
+): SelectableBallotPaperSection => {
   return {
     id: ballotPaperSection.id,
     modifiedAt: ballotPaperSection.modifiedAt.toISOString(),
