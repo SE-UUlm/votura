@@ -40,3 +40,17 @@ export const createBallotPaperSection = async (
 
   return ballotPaperSectionTransformer(ballotPaperSection);
 };
+
+export const getBallotPaperSections = async (
+  ballotPaperId: BallotPaper['id'],
+): Promise<SelectableBallotPaperSection[]> => {
+  const ballotPaperSections = await db
+    .selectFrom('BallotPaperSection')
+    .selectAll()
+    .where('ballotPaperId', '=', ballotPaperId)
+    .execute();
+
+  return ballotPaperSections.map((ballotPaperSection) =>
+    ballotPaperSectionTransformer(ballotPaperSection),
+  );
+};

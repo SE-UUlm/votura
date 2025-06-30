@@ -9,7 +9,10 @@ import {
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { createBallotPaperSection as createPersistentBallotPaperSection } from '../services/ballotPaperSections.service.js';
+import {
+  createBallotPaperSection as createPersistentBallotPaperSection,
+  getBallotPaperSections as getPersistentBallotPaperSections,
+} from '../services/ballotPaperSections.service.js';
 
 export const createBallotPaperSection = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
@@ -31,4 +34,12 @@ export const createBallotPaperSection = async (
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaperSection);
+};
+
+export const getBallotPaperSections = async (
+  req: Request<{ ballotPaperId: BallotPaper['id'] }>,
+  res: Response<SelectableBallotPaperSection[]>,
+): Promise<void> => {
+  const ballotPaperSections = await getPersistentBallotPaperSections(req.params.ballotPaperId);
+  res.status(HttpStatusCode.Ok).json(ballotPaperSections);
 };

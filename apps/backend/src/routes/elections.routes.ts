@@ -7,7 +7,10 @@ import {
   getBallotPapers,
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
-import { createBallotPaperSection } from '../controllers/ballotPaperSections.controllers.js';
+import {
+  createBallotPaperSection,
+  getBallotPaperSections,
+} from '../controllers/ballotPaperSections.controllers.js';
 import {
   createElection,
   getElection,
@@ -95,4 +98,11 @@ electionsRouter.post(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   createBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  getBallotPaperSections,
 );
