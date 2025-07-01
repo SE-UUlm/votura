@@ -3,35 +3,77 @@ name: Testing
 on:
   workflow_dispatch:
   push:
+  merge_group:
 
 jobs:
   test:
-    name: Test and Lint
+    name: Lint, Build & Test
     runs-on:
       labels: ubuntu-latest
     container:
-      image: ubuntu:22.04
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 15
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Update & install apt packages
+        run: |
+          apt-get update
+          apt-get install -y wget unzip
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
-      - uses: actions/setup-node@v4
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
         with:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Install dependencies
+      - name: Install npm dependencies
         run: npm ci
+      - name: Generate .env file
+        run: |
+          cd apps/backend
+          echo "PEPPER=12a34" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
-        run: npm run check-format
-      - name: Run build
-        run: | # TODO; currently only build votura-crypto, docs need SVGs...
+        # first check files in workspaces & second the root directory
+        run: |
+          npm run check-format
+      - name: Check linting
+        run: |
+          npm run lint
+          npx eslint
+      - name: Check code spell
+        run: npx cspell lint **
+      - name: Build votura-crypto
+        run: |
           cd packages/votura-crypto
+          npm run build
+      - name: Build votura-validators
+        run: |
+          cd packages/votura-validators
+          npm run build
+      - name: Build backend
+        run: |
+          cd apps/backend
+          npm run build
+      - name: Build frontend
+        run: |
+          cd apps/frontend
           npm run build
       - name: Run tests
         run: npm run test
+      - name: Teamscale Upload
+        uses: cqse/teamscale-upload-action@v2.9.6
+        with:
+          server: 'https://exia.informatik.uni-ulm.de/teamscale'
+          project: 'b3ef710d-5a48-4918-9383-7381b21e45e2'
+          user: 'thorbencarl'
+          accesskey: ${{ secrets.TEAMSCALE_ACCESS_KEY }}
+          partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
+          format: CLOVER
+          message: 'Code coverage from GitHub Actions'
+          files: './packages/votura-crypto/coverage/clover.xml apps/backend/coverage/clover.xml'

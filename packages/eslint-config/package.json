@@ -1,14 +1,13 @@
 {
   "name": "@repo/eslint-config",
   "version": "0.0.0",
-  "main": "eslint.config.js",
   "type": "module",
   "private": true,
   "exports": {
-    "./base": "./base-eslint-config.js",
-    "./browser": "./browser-eslint-config.js",
-    "./node": "./node-eslint-config.js",
-    "./base-prettier": "./base-prettier-config.js"
+    "./base": "./base-eslint-config.mjs",
+    "./browser": "./browser-eslint-config.mjs",
+    "./node": "./node-eslint-config.mjs",
+    "./base-prettier": "./base-prettier-config.mjs"
   },
   "scripts": {
     "format": "prettier --write .",

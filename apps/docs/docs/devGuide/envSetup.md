@@ -45,7 +45,7 @@ We are using one monorepo (with the help of [turborepo](https://turborepo.com)) 
 
 The following image gives a brief overview of the structure of the repository:
 
-![the cryptographic workflow of votura](../../static/uml/repoStructure.svg)
+![folder structure of the repository](../../static/uml/repoStructure.svg)
 
 The votura repository is a npm project (sometimes also called as workspace).
 In the `apps` folder you can find all the applications of votura that can run independently, like the documentation,
@@ -61,7 +61,7 @@ npm install
 
 ### Turborepo
 
-All these sub-projects are independent npm projects, but they some dependencies and configuration to each other.
+All these sub-projects are independent npm projects, but they have some dependencies and configuration to each other.
 You can navigate to the sub-projects and test, build or run them on their own.
 But the main advantage of turborepo is that you can run all the commands in the root folder, and you can run, test or
 build all the sub-projects at once.
@@ -104,10 +104,34 @@ turbo docs#build
 
 The same applies to all other following commands.
 
+Turborepo automatically detects the dependencies between the sub-projects and builds them in the correct order.
+You can check the order for a specific task in the generated SVG by typing:
+
+```bash
+npx turbo run build --graph=graph.svg
+```
+
 #### Typecheck votura
 
 ```bash
 turbo typecheck
+```
+
+#### Linting votura
+
+##### Teamscale
+
+We are using a [Teamscale](https://exia.informatik.uni-ulm.de/teamscale) server to run linting and static analysis on the votura codebase.
+You can connect your IDE (e.g. with the VSC Extension) to the Teamscale server to get real-time feedback on your code.
+
+1. Please check all findings that Teamscale reports in our PR in GitHub and fix them.
+2. If you think there is a rule activated that is not useful for the votura project at all, please bring this discussion to the next technical meeting, so that we can discuss it with the whole team and can reconfigure Teamscale if necessary.
+3. If you think the complaining rule is useful in general, but not for your specific case, you can add tolerate this finding with a comment in the Teamscale UI.
+
+##### ESLint
+
+```bash
+npm run lint
 ```
 
 #### Format votura

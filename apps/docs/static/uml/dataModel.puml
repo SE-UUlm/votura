@@ -1,127 +1,194 @@
 @startuml dataModel
 
-note as N1
-TODO: add correct POSTGRESQL types
+entity "User" as user #006b75 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * email : VARCHAR(256) <<UK>>
+    * passwordHash : VARCHAR(256)
+    * verified : BOOLEAN
+    lastLoginAt : TIMESTAMPTZ(6) | NULL
+    ' failed login attempts get reset on successful login
+    * failedLoginAttempts : INTEGER
+    emailVerificationTokenHash : VARCHAR(64) | NULL
+    emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    passwordResetTokenHash : VARCHAR(64) | NULL
+    passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    refreshTokenHash : VARCHAR(64) | NULL
+    refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    --
+}
+
+entity "AccessTokenBlacklist" as jwtBlacklist #006b75 {
+    ' this table is used to store blacklisted access tokens
+    ' The jti is 36 characters long if we use UUIDv4
+    * id : UUID <<PK>>
+    * id : UUID <<PK>>
+    --
+    * accessTokenId : UUID <<UK>>
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * expiresAt : TIMESTAMPTZ(6)
+    --
+}
+
+entity "Election" as elections #b60205 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * private : BOOLEAN
+    * votingStartAt : TIMESTAMPTZ(6)
+    * votingEndAt : TIMESTAMPTZ(6)
+    * configFrozen : BOOLEAN
+    * allowInvalidVote : BOOLEAN
+    ' Is there a use case for `votesCounted`?
+    ' * votesCounted : BOOLEAN
+    ' * votesCounted : BOOLEAN
+    ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
+    ' validVotes : NUMERIC | NULL
+    ' invalidVotes : NUMERIC | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
+    primeP : NUMERIC | NULL
+    primeQ : NUMERIC | NULL
+    generator : NUMERIC | NULL
+    --
+    * electionCreatorId : User.id <<FK>>
+}
+
+note as N2
+The result of one election is intended 
+to be a singular decision, we 
+do not support multiple questions 
+(e.g. Vote for Admin and Vote for Treasurer) 
+in one election.
 end note
 
-entity "elections" as elections {
-    * id : INT <<PK>>
+entity "BallotPaper" as ballotPapers #fbca04 {
+    * id : UUID <<PK>>
     --
-    * created : DATE
-    * modified : DATE
-    * name : VARCHAR(255)
-    description : TEXT
-    * votingStart : DATE
-    * votingEnd : DATE
-    * freezeConfig : BOOLEAN
-    * votesCounted : BOOLEAN
-    ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
-    validVotes : INT | NULL
-    invalidVotes : INT | NULL
-    * pubKey: INT(2048)
-    * privKey: INT(2048)
-    * prime_p: INT(2048) 
-    * prime_q: INT(512)
-    * generator: INT(2048)
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
+    --
+    * electionId : Election.id <<FK>>
+}
+
+entity "BallotPaperSection" as ballotPaperSections #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
+    --
+    * ballotPaperId : BallotPaper.id <<FK>>
+}
+
+entity "BallotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    --
+    * ballotPaperSectionId : BallotPaperSection.id <<FK>>
+    * candidateId : Candidate.id <<FK>>
+}
+
+entity "Candidate" as candidates #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * title : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    --
+    * electionId : Election.id <<FK>>
+}
+
+entity "Vote" as votes #728376 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    alpha : NUMERIC | NULL
+    beta : NUMERIC | NULL
+    commitmentPart1 : NUMERIC | NULL
+    commitmentPart2 : NUMERIC | NULL
+    challenge : NUMERIC | NULL
+    response : NUMERIC | NULL
+    --
+    * electionId : Election.id <<FK>>
+    ' if the vote isn't secret, voter can be saved
+    voterId : voter.id <<FK>> | NULL
+}
+note as N4
+A vote is an encoded json object containing the entire filled in ballot paper.
+end note
+
+entity "VoterRegister" as voterRegisters #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * voted : BOOLEAN
+    --
+    * ballotPaperId : BallotPaper.id <<FK>>
+    * voterId : Voter.id <<FK>>
+}
+
+entity "Voter" as voters #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    --
+    voterGroupId: VoterGroup.id <<FK>>
+}
+note as N3
+A voter can only get one ballot paper,
+and with this one vote per election.
+end note
+
+entity "VoterGroup" as voterGroups #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    pubKey : TEXT | NULL
+    privKey : TEXT | NULL
+    * voterTokensGenerated : BOOLEAN
     --
 }
 
-entity "ballotPapers" as ballotPapers {
-    * id : INT <<PK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * name : VARCHAR(255)
-    description : TEXT | NULL
-    * maxVotes : INT
-    * maxVotesPerCandidate : INT
-    * allowInvalidVote : BOOLEAN
-    --
-    * elections : elections.id <<FK>>
-}
+note as N1
+Timestamps are stored in UTC.
+end note
 
-entity "ballotPaperSections" as ballotPaperSections {
-    * id : INT <<PK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * name : VARCHAR(255)
-    description : TEXT | NULL
-    * maxVotes : INT
-    * maxVotesPerCandidate : INT
-    --
-    * ballotPapers : ballotPapers.id <<FK>>
-}
-' note as C_2
-' If at least two ballotPapers sections are created for one ballotPapers, 
-' the name field of the ballotPapers section is mandatory.
-' end note
-
-entity "ballotPaperSectionCandidates" as ballotPaperSectionCandidates {
-    * ballotPaperSection : ballotPaperSection.id <<PK>> <<FK>>
-    * candidate : candidate.id <<PK>> <<FK>>
-    --
-    * created : DATE
-    * modified : DATE
-    --
-}
-
-entity "candidates" as candidates {
-    * id : INT <<PK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * title : VARCHAR(255)
-    description : TEXT | NULL
-    votes : INT | NULL
-    --
-}
-
-entity "votes" as votes {
-    * id : INT <<PK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * alpha: INT(2048) | NULL
-    * beta: INT(2048) | NULL
-    * commitment_part1: INT(2048) | NULL
-    * commitment_part2: INT(2048) | NULL
-    * challenge: INT(512) | NULL
-    * response: INT(512) | NULL
-    --
-    * elections : elections.id <<FK>>
-    ' if the vote isn't secret voter can be saved
-    voter: voters.id <<FK>>
-}
-
-entity "voterRegisters" as voterRegisters {
-    * ballotPaper : ballotPaper.id <<PK>> <<FK>>
-    * voter : voter.id <<PK>> <<FK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * voted: BOOLEAN
-}
-
-entity "voters" as voters {
-    * id : INT <<PK>>
-    --
-    * created : DATE
-    * modified : DATE
-    * tokenHash : VARCHAR(255)
-    --
-}
-
-
-elections ||--o{ ballotPapers
-ballotPapers ||--o{ voterRegisters
-voterRegisters }o--|| voters
-ballotPapers ||--o{ ballotPaperSections
-' ballotPaperSections -- C_2
-ballotPaperSections ||--o{ ballotPaperSectionCandidates
-ballotPaperSectionCandidates }o--|| candidates
-votes }o--|| elections
-voters |o--o{ votes
-
+user "1"--"*" elections : belongs to <
+elections "1"--"*" ballotPapers : contains >
+elections -- N2
+elections "1"--"*" candidates : belongs to <
+ballotPapers "1"--"*" voterRegisters
+voterRegisters "1..*"--"1" voters
+ballotPapers "1"--"*" ballotPaperSections : contains >
+ballotPaperSections "1"--"*" ballotPaperSectionCandidates
+ballotPaperSectionCandidates "*"--"1" candidates
+votes "*"--"1" elections
+voters "1"--"*" votes
+voterGroups "1"--"1..*" voters : contains >
+voters -- N3
+votes -- N4
 
 @enduml

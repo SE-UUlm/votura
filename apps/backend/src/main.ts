@@ -1,18 +1,29 @@
-import { PrismaClient, type User } from '../generated/prisma/index.js';
+import dotenv from 'dotenv';
+import { app } from './app.js';
+import { db } from './db/database.js';
+import logger from './logger.js';
 
-const prisma = new PrismaClient();
+dotenv.config();
 
-async function main() {
-  const allUsers: User[] = await prisma.user.findMany();
-  console.log(allUsers);
+const defaultPort = 4000;
+const port = process.env.PORT ?? defaultPort;
+
+function main(): void {
+  logger.debug('Starting server.');
+  app.listen(port, () => {
+    logger.info({ port: port }, 'Server is listening.');
+  });
 }
 
-main()
+Promise.resolve()
+  .then(() => {
+    main();
+  })
   .then(async () => {
-    await prisma.$disconnect();
+    await db.destroy();
   })
   .catch(async (e) => {
-    console.error(e);
-    await prisma.$disconnect();
+    logger.error(e);
+    await db.destroy();
     process.exit(1);
   });

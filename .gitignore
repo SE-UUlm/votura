@@ -1,8 +1,14 @@
+### http for requests
+*.http
+
 ### VS-Code ###
 .vscode
 
 ### turborepo ###
 .turbo
+
+### sql sessions ###
+*.session.sql
 
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains+all,macos,windows,linux,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=jetbrains+all,macos,windows,linux,node
@@ -12,6 +18,8 @@
 # Reference: https://intellij-support.jetbrains.com/hc/en-us/articles/206544839
 
 .idea
+
+.42c
 
 # User-specific stuff
 .idea/**/workspace.xml

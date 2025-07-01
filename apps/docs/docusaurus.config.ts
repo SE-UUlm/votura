@@ -1,8 +1,15 @@
-import { themes as prismThemes } from 'prism-react-renderer';
+import type {
+  Options as PresetOptions,
+  ThemeConfig as PresetThemeConfig,
+} from '@docusaurus/preset-classic';
 import type { Config } from '@docusaurus/types';
-import type * as Preset from '@docusaurus/preset-classic';
+import type { Options as OpenApiPluginOptions } from 'docusaurus-plugin-openapi-docs';
+import { themes as prismThemes } from 'prism-react-renderer';
+import remarkDefList from 'remark-deflist';
 
-const config: Config = {
+const GITHUB_URL = 'https://github.com/SE-UUlm/votura';
+
+const CONFIG: Config = {
   title: 'votura',
   tagline: 'Setup online votes and polls in that your users trust!',
   favicon: 'img/logo.svg',
@@ -25,16 +32,50 @@ const config: Config = {
       {
         docs: {
           sidebarPath: './sidebars.ts',
-          editUrl: 'https://github.com/SE-UUlm/votura',
+          editUrl: GITHUB_URL,
+          docItemComponent: '@theme/ApiItem',
+          remarkPlugins: [remarkDefList],
         },
         theme: {
           customCss: './src/css/custom.css',
         },
-      } satisfies Preset.Options,
+      } satisfies PresetOptions,
     ],
   ],
 
+  plugins: [
+    [
+      'docusaurus-plugin-openapi-docs',
+      {
+        id: 'api',
+        docsPluginId: 'classic',
+        config: {
+          backend: {
+            specPath: '../../packages/votura-validators/generated/voturaApiSchema.json',
+            outputDir: 'docs/api',
+            sidebarOptions: {
+              groupPathsBy: 'tag',
+              categoryLinkSource: 'tag',
+              sidebarCollapsible: true,
+              sidebarCollapsed: true,
+            },
+            showSchemas: true,
+          } satisfies OpenApiPluginOptions,
+        },
+      },
+    ],
+  ],
+
+  markdown: {
+    mermaid: true,
+  },
+
+  themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
+
   themeConfig: {
+    mermaid: {
+      theme: { light: 'neutral', dark: 'forest' },
+    },
     image: 'img/votura_logo_3l.svg',
     navbar: {
       //title: 'votura',
@@ -62,12 +103,18 @@ const config: Config = {
         },
         {
           type: 'docSidebar',
+          sidebarId: 'apiSidebar',
+          position: 'left',
+          label: 'API',
+        },
+        {
+          type: 'docSidebar',
           sidebarId: 'aboutSidebar',
           position: 'left',
           label: 'About',
         },
         {
-          href: 'https://github.com/SE-UUlm/votura',
+          href: GITHUB_URL,
           label: 'GitHub',
           position: 'right',
         },
@@ -94,15 +141,15 @@ const config: Config = {
           items: [
             {
               label: 'Community Support',
-              href: 'https://github.com/SE-UUlm/votura/discussions',
+              href: `${GITHUB_URL}/discussions`,
             },
             {
               label: 'Issue Tracker',
-              href: 'https://github.com/SE-UUlm/votura/issues',
+              href: `${GITHUB_URL}/issues`,
             },
             {
               label: 'Security Issues',
-              href: 'https://github.com/SE-UUlm/votura/security',
+              href: `${GITHUB_URL}/security`,
             },
           ],
         },
@@ -119,16 +166,8 @@ const config: Config = {
             },
             {
               label: 'GitHub',
-              href: 'https://github.com/SE-UUlm/votura',
+              href: GITHUB_URL,
             },
-            // {
-            //   label: 'Docker Hub',
-            //   href: 'TODO',
-            // },
-            // {
-            //   label: 'NPM',
-            //   href: 'TODO',
-            // },
             {
               label: 'University of Ulm',
               href: 'https://www.uni-ulm.de',
@@ -142,7 +181,7 @@ const config: Config = {
       theme: prismThemes.github,
       darkTheme: prismThemes.dracula,
     },
-  } satisfies Preset.ThemeConfig,
+  } satisfies PresetThemeConfig,
 };
 
-export default config;
+export default CONFIG;

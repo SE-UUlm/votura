@@ -17,5 +17,7 @@
     "noUncheckedIndexedAccess": true,
     "noImplicitOverride": true,
     "skipLibCheck": true,
+    "exactOptionalPropertyTypes": true,
+    "strictNullChecks": true,
   }
 }
