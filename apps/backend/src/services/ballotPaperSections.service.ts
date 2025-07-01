@@ -73,3 +73,19 @@ export const updateBallotPaperSection = async (
 
   return ballotPaperSectionTransformer(ballotPaperSection);
 };
+
+export const getBallotPaperSection = async (
+  ballotPaperSectionId: BallotPaperSection['id'],
+): Promise<SelectableBallotPaperSection | null> => {
+  const ballotPaperSection = await db
+    .selectFrom('BallotPaperSection')
+    .selectAll()
+    .where('id', '=', ballotPaperSectionId)
+    .executeTakeFirst();
+
+  if (ballotPaperSection === undefined) {
+    return null;
+  }
+
+  return ballotPaperSectionTransformer(ballotPaperSection);
+};

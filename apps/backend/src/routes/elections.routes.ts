@@ -9,6 +9,7 @@ import {
 } from '../controllers/ballotPapers.controllers.js';
 import {
   createBallotPaperSection,
+  getBallotPaperSection,
   getBallotPaperSections,
   updateBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
@@ -117,4 +118,12 @@ electionsRouter.put(
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
   updateBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  getBallotPaperSection,
 );
