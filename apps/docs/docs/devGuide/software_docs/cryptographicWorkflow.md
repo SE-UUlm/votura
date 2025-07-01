@@ -4,6 +4,9 @@ description: The cryptographic workflow and design of votura.
 tags:
   - Design
   - Cryptography
+  - Encryption
+  - Decryption
+  - ElGamal
 hide_table_of_contents: false
 # sidebar_position: 1
 draft: false
@@ -70,6 +73,40 @@ On the server side, at first it is checked if the incoming proofs are valid. The
 Note that the plaintext `m` does not need to be decrypted from its ciphertext `(alpha, beta)`. The server already knows every possible option the voter can chose (`Enc(0)` or `Enc(1)`). With one of these possible options the last statement must hold.
 
 If all statements above hold for every ciphertext and its proof, then all the ciphertexts will be placed in the "ballot box".
+
+### 1d Generalization for multi-section elections
+
+The encryption and proof mechanisms described above can be generalized to support elections that consit of multiple sections, whrere each section allows for the selection of more than one option - up to a predefined maximum number of votes per section.
+
+To ensure that the encryption remains verifiable and the zero-knowlegde proofs applicable, a fixed number of ciphertexts is always generated per section. For each section, the number of encrypted values is equal to the maximum number allowed in that section. This holds regardless of how many options the voter actually selects.
+
+For example, if a selection allows up to 3 selections, then exactly 3 votes will be encrypted and processed, whether the voter selects 0, 1, 2 or 3 options. The same applies independently to each section of the election.
+
+In order to preserve the semantic meaning of the encrypted votes and allow for consistent proof generation, two implicit options are introduced:
+
+- An implicit `no option`-choice, which absorbs any unused votes if the voter selects fewer than the maximum allowed number of options.
+- An implicit `invalid`-choice, which replaces all actual votes in the case where the voter's input is flagged as invalid through client-side validation and the voter confirms submission regardless (see section 1e).
+
+Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by a disjunctive zero-knowledge proof as described in section 1b. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
+
+This generalization maintains the privacy, integrity, and verifiability guarantees of the voting process, even in complex multi-section elections with variable numbers of allowable votes.
+
+### 1e Client- and server-side ballot validation
+
+_Before encryption begins,_ the voting client performs a complete validation of the voter's selections against all election rules defined in the configurations. These rules include, but are not limited to, a maximum number of votes per candidate or a maximum number of votes per sections. If any violations are detected - such as selecting too many options - the client alerts the voter with a corresponding message.
+
+The voter may then correct the input or, after acknowledging the warning, choose to submit the ballot as invalid. In this case, as described in section 1d, all votes on the ballot are replaced by encryptions of the implicit `invalid`-option. This approach ensures that even invalid ballots remains structurally cocnsistent and provably formed, while being semantically marked as invalid.
+
+_After submission,_ the server independently revalidates all election constraints. This step is necessary, as neither the integrity of the client nor the communication channel can be fully guaranteed.
+
+To verify that the ballot complies with all configured constraints, the server performs a homomorphic tallying of the encrypted votes (see section 2a). This enables detection of any violations of configured limits across sections, without decrypting individual votes. Adiotionally, the server verifies that the implicit `invalid`-option appears in one of the following two consistent patterns:
+
+- Either _all_ encrypted votes are for the `invalid`-option (in case of a consciously submitted invalid ballot), or
+- _none_ of the encrypted votes are for the `invalid`-option (in case od a valid submission).
+
+Any deviation from these expectations, or failure of the accompanying zero-knowledge proofs, leads to rejection of the ballot. In this case, the voter is informed that the submitted ballot appears to be corrupted or malformed and has therefore been rejected. The voter is then offered the opportunity to complete and submit a new ballot.
+
+This two-layered validation - first client-side, then independently server-side - ensures the integrity of the election process even in the presence of unreliable or potentially compromised environments.
 
 ### 2a Homomorphic vote tallying
 
