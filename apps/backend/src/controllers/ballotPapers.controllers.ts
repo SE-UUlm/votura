@@ -83,13 +83,11 @@ export const deleteBallotPaper = async (
 ): Promise<void> => {
   const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
   if (result.numDeletedRows < 1n) {
-    res
-      .status(HttpStatusCode.NotFound)
-      .json(
-        response404Object.parse({
-          message: 'The provided ballot paper for deletion was not found.',
-        }),
-      );
+    res.status(HttpStatusCode.NotFound).json(
+      response404Object.parse({
+        message: 'The provided ballot paper for deletion was not found.',
+      }),
+    );
     return;
   }
   res.sendStatus(HttpStatusCode.NoContent);
