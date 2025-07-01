@@ -1,7 +1,9 @@
 import type {
   BallotPaper,
+  BallotPaperSection,
   InsertableBallotPaperSection,
   SelectableBallotPaperSection,
+  UpdateableBallotPaperSection,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { db } from '../db/database.js';
@@ -52,4 +54,22 @@ export const getBallotPaperSections = async (
   return ballotPaperSections.map((ballotPaperSection) =>
     ballotPaperSectionTransformer(ballotPaperSection),
   );
+};
+
+export const updateBallotPaperSection = async (
+  updateableBallotPaperSection: UpdateableBallotPaperSection,
+  ballotPaperSectionId: BallotPaperSection['id'],
+): Promise<SelectableBallotPaperSection | null> => {
+  const ballotPaperSection = await db
+    .updateTable('BallotPaperSection')
+    .set({ ...updateableBallotPaperSection })
+    .where('id', '=', ballotPaperSectionId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (ballotPaperSection === undefined) {
+    return null;
+  }
+
+  return ballotPaperSectionTransformer(ballotPaperSection);
 };

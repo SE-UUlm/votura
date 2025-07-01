@@ -1,8 +1,10 @@
 import {
   insertableBallotPaperSectionObject,
   response404Object,
+  updateableBallotPaperSectionObject,
   zodErrorToResponse400,
   type BallotPaper,
+  type BallotPaperSection,
   type Response400,
   type Response404,
   type SelectableBallotPaperSection,
@@ -12,6 +14,7 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createBallotPaperSection as createPersistentBallotPaperSection,
   getBallotPaperSections as getPersistentBallotPaperSections,
+  updateBallotPaperSection as updatePersistentBallotPaperSection,
 } from '../services/ballotPaperSections.service.js';
 
 export const createBallotPaperSection = async (
@@ -42,4 +45,26 @@ export const getBallotPaperSections = async (
 ): Promise<void> => {
   const ballotPaperSections = await getPersistentBallotPaperSections(req.params.ballotPaperId);
   res.status(HttpStatusCode.Ok).json(ballotPaperSections);
+};
+
+export const updateBallotPaperSection = async (
+  req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
+  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+): Promise<void> => {
+  const body: unknown = req.body;
+  const { data, error, success } = await updateableBallotPaperSectionObject.safeParseAsync(body);
+  if (success === false) {
+    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    return;
+  }
+
+  const selectableBallotPaperSection = await updatePersistentBallotPaperSection(
+    data,
+    req.params.ballotPaperSectionId,
+  );
+  if (selectableBallotPaperSection === null) {
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    return;
+  }
+  res.status(HttpStatusCode.Ok).json(selectableBallotPaperSection);
 };
