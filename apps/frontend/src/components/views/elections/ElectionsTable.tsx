@@ -11,6 +11,7 @@ import {
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
+import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
@@ -28,69 +29,67 @@ const TableText = ({ children }: PropsWithChildren) => (
 export const ElectionsTable = ({ data }: ElectionsTableProps) => {
   const navigate = useNavigate();
 
-  const onDelete = (election: SelectableElection) => () => {
-    // deleteElection(election.id); TODO: implement delete election
-    notifications.show(getDeleteSuccessElectionConfig(election.name));
-  };
+  const rows = data.map((election) => {
+    const { trigger, isMutating } = useUpdateElection(election.id);
 
-  const onMutate = (election: SelectableElection): MutateElectionModalProps['onMutate'] => {
-    const { trigger } = useUpdateElection(election.id);
-
-    return async (mutatedElection) => {
+    const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
       await trigger(mutatedElection);
       notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
     };
-  };
 
-  const onToggleFreeze =
-    (election: SelectableElection): ToggleFreezeElectionModalProps['onToggleFreeze'] =>
-    () => {
+    const onDelete: DeleteElectionModalProps['onDelete'] = () => {
+      // deleteElection(election.id); TODO: implement delete election
+      notifications.show(getDeleteSuccessElectionConfig(election.name));
+    };
+
+    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
       notifications.show(
         getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen),
       );
     };
 
-  const rows = data.map((election) => (
-    <Table.Tr key={election.id}>
-      <Table.Td>
-        <TableText>{election.name}</TableText>
-      </Table.Td>
-      <Table.Td>
-        <TableText>{election.description}</TableText>
-      </Table.Td>
-      <Table.Td>
-        <TableText>{new Date(election.createdAt).toLocaleString('en-US')}</TableText>
-      </Table.Td>
-      <Table.Td>
-        <BooleanBadge isTrue={election.configFrozen} />
-      </Table.Td>
-      <Table.Td>
-        <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
-          <ElectionsSettingsMenu
-            election={election}
-            targetElement={
-              <ActionIcon variant="subtle" aria-label="Settings">
-                <IconDots size={14} />
-              </ActionIcon>
-            }
-            onDelete={onDelete(election)}
-            onMutate={onMutate(election)}
-            onToggleFreeze={onToggleFreeze(election)}
-            isMutating={false} // TODO: Implement update election
-          />
-          <ActionIcon
-            variant="subtle"
-            aria-label="Settings"
-            onClick={() => {
-              navigate(`/elections/${election.id}`);
-            }}
-          >
-            <IconArrowRight size={14} />
-          </ActionIcon>
-        </Group>
-      </Table.Td>
-    </Table.Tr>
-  ));
+    return (
+      <Table.Tr key={election.id}>
+        <Table.Td>
+          <TableText>{election.name}</TableText>
+        </Table.Td>
+        <Table.Td>
+          <TableText>{election.description}</TableText>
+        </Table.Td>
+        <Table.Td>
+          <TableText>{new Date(election.createdAt).toLocaleString('en-US')}</TableText>
+        </Table.Td>
+        <Table.Td>
+          <BooleanBadge isTrue={election.configFrozen} />
+        </Table.Td>
+        <Table.Td>
+          <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
+            <ElectionsSettingsMenu
+              election={election}
+              targetElement={
+                <ActionIcon variant="subtle" aria-label="Settings">
+                  <IconDots size={14} />
+                </ActionIcon>
+              }
+              onDelete={onDelete}
+              onMutate={onMutate}
+              onToggleFreeze={onToggleFreeze}
+              isMutating={isMutating}
+            />
+            <ActionIcon
+              variant="subtle"
+              aria-label="Settings"
+              onClick={() => {
+                navigate(`/elections/${election.id}`);
+              }}
+            >
+              <IconArrowRight size={14} />
+            </ActionIcon>
+          </Group>
+        </Table.Td>
+      </Table.Tr>
+    );
+  });
 
   return (
     <Table highlightOnHover={true}>
