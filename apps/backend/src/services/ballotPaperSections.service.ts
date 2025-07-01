@@ -5,7 +5,7 @@ import type {
   SelectableBallotPaperSection,
   UpdateableBallotPaperSection,
 } from '@repo/votura-validators';
-import type { Selectable } from 'kysely';
+import type { DeleteResult, Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { BallotPaperSection as KyselyBallotPaperSection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
@@ -88,4 +88,15 @@ export const getBallotPaperSection = async (
   }
 
   return ballotPaperSectionTransformer(ballotPaperSection);
+};
+
+export const deleteBallotPaperSection = async (
+  ballotPaperSectionId: BallotPaperSection['id'],
+): Promise<DeleteResult> => {
+  const result = await db
+    .deleteFrom('BallotPaperSection')
+    .where('id', '=', ballotPaperSectionId)
+    .executeTakeFirst();
+
+  return result;
 };

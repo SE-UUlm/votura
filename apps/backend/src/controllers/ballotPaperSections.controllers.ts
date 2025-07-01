@@ -13,6 +13,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createBallotPaperSection as createPersistentBallotPaperSection,
+  deleteBallotPaperSection as deletePersistentBallotPaperSection,
   getBallotPaperSection as getPersistentBallotPaperSection,
   getBallotPaperSections as getPersistentBallotPaperSections,
   updateBallotPaperSection as updatePersistentBallotPaperSection,
@@ -80,4 +81,16 @@ export const getBallotPaperSection = async (
     return;
   }
   res.status(HttpStatusCode.Ok).json(ballotPaperSection);
+};
+
+export const deleteBallotPaperSection = async (
+  req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
+  res: Response<Response404>,
+): Promise<void> => {
+  const result = await deletePersistentBallotPaperSection(req.params.ballotPaperSectionId);
+  if (result.numDeletedRows < 1n) {
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    return;
+  }
+  res.sendStatus(HttpStatusCode.NoContent);
 };
