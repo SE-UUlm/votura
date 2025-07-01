@@ -23,7 +23,6 @@ import { createElection } from './../../src/services/elections.service.js';
 
 describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`, () => {
   let requestPath = '';
-  let requestPath2 = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
