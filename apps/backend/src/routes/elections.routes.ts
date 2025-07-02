@@ -8,6 +8,10 @@ import {
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import {
+  createBallotPaperSection,
+  getBallotPaperSections,
+} from '../controllers/ballotPaperSections.controllers.js';
+import {
   createElection,
   deleteElection,
   getElection,
@@ -91,4 +95,22 @@ electionsRouter.delete(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   deleteBallotPaper,
+);
+
+// Ballot paper section
+electionsRouter.post(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  createBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  getBallotPaperSections,
 );

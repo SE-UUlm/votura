@@ -10,7 +10,7 @@ import { db } from '../db/database.js';
 import type { Election as KyselyElection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
-export const electionTransformer = (election: Selectable<KyselyElection>): Election => {
+const electionTransformer = (election: Selectable<KyselyElection>): SelectableElection => {
   return {
     id: election.id,
     createdAt: election.createdAt.toISOString(),
