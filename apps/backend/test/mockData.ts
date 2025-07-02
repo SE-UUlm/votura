@@ -5,7 +5,9 @@ import {
   insertableUserObject,
 } from '@repo/votura-validators';
 
-// User and authentication
+/*
+ * User and authentication
+ */
 export const DEMO_TOKEN = '1234';
 const STRONG_PWD = 'MyStrong!Password123';
 export const demoUser = insertableUserObject.parse({
@@ -17,7 +19,9 @@ export const demoUser2 = insertableUserObject.parse({
   password: STRONG_PWD,
 });
 
-// Elections
+/*
+ * Elections
+ */
 export const demoElection = insertableElectionObject.parse({
   name: 'My test election',
   private: true,
@@ -41,7 +45,9 @@ export const brokenElection = {
   allowInvalidVotes: 'false',
 };
 
-// Ballot papers
+/*
+ * Ballot papers
+ */
 export const demoBallotPaper = insertableBallotPaperObject.parse({
   name: 'Test ballot paper',
   description: 'Test ballot paper description',
@@ -60,7 +66,9 @@ export const brokenDemoBallotPaper = {
   maxVotesPerCandidate: 7,
 };
 
-// Ballot paper sections
+/*
+ * Ballot paper sections
+ */
 export const demoBallotPaperSection = insertableBallotPaperSectionObject.parse({
   name: 'Test ballot paper section',
   description: 'Test ballot paper section description',

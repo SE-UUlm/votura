@@ -52,7 +52,7 @@ export const insertableBallotPaperSectionObject = ballotPaperSectionObject
   })
   .refine(maxVotesRefinement, {
     message: maxVotesRefinementMessage,
-    path: ['maxVotes', 'maxVotesPerCandidate'],
+    path: ['maxVotes'],
   });
 
 export type InsertableBallotPaperSection = z.infer<typeof insertableBallotPaperSectionObject>;
@@ -89,7 +89,7 @@ export const updateableBallotPaperSectionObject = ballotPaperSectionObject
   })
   .refine(maxVotesRefinement, {
     message: maxVotesRefinementMessage,
-    path: ['maxVotes', 'maxVotesPerCandidate'],
+    path: ['maxVotes'],
   });
 
 export type UpdateableBallotPaperSection = z.infer<typeof updateableBallotPaperSectionObject>;
