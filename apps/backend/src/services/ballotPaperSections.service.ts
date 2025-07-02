@@ -93,10 +93,8 @@ export const getBallotPaperSection = async (
 export const deleteBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
 ): Promise<DeleteResult> => {
-  const result = await db
+  return db
     .deleteFrom('BallotPaperSection')
     .where('id', '=', ballotPaperSectionId)
     .executeTakeFirst();
-
-  return result;
 };
