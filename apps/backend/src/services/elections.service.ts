@@ -122,7 +122,5 @@ export const setElectionFrozenState = async (
 };
 
 export const deleteElection = async (electionId: Election['id']): Promise<DeleteResult> => {
-  const result = await db.deleteFrom('Election').where('id', '=', electionId).executeTakeFirst();
-
-  return result;
+  return db.deleteFrom('Election').where('id', '=', electionId).executeTakeFirst();
 };
