@@ -5,12 +5,14 @@ import type {
   SelectableBallotPaper,
   UpdateableBallotPaper,
 } from '@repo/votura-validators';
-import type { Selectable } from 'kysely';
+import type { DeleteResult, Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { BallotPaper as KyselyBallotPaper } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
-export const ballotPaperTransformer = (ballotPaper: Selectable<KyselyBallotPaper>): BallotPaper => {
+const ballotPaperTransformer = (
+  ballotPaper: Selectable<KyselyBallotPaper>,
+): SelectableBallotPaper => {
   return {
     id: ballotPaper.id,
     modifiedAt: ballotPaper.modifiedAt.toISOString(),
@@ -86,14 +88,13 @@ export const updateBallotPaper = async (
   return ballotPaperTransformer(ballotPaper);
 };
 
-export const deleteBallotPaper = async (ballotPaperId: BallotPaper['id']): Promise<boolean> => {
+export const deleteBallotPaper = async (
+  ballotPaperId: BallotPaper['id'],
+): Promise<DeleteResult> => {
   const result = await db
     .deleteFrom('BallotPaper')
     .where('id', '=', ballotPaperId)
     .executeTakeFirst();
 
-  if (result.numDeletedRows !== 1n) {
-    return false;
-  }
-  return true;
+  return result;
 };

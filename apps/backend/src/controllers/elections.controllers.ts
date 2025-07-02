@@ -13,6 +13,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createElection as createPersistentElection,
+  deleteElection as deletePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
   setElectionFrozenState,
@@ -124,4 +125,20 @@ export const unfreezeElection = async (
   // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #201)
 
   res.status(HttpStatusCode.Ok).json(election);
+};
+
+export const deleteElection = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<void | Response404>,
+): Promise<void> => {
+  const result = await deletePersistentElection(req.params.electionId);
+  if (result.numDeletedRows < 1n) {
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(
+        response404Object.parse({ message: 'The provided election for deletion was not found.' }),
+      );
+    return;
+  }
+  res.sendStatus(HttpStatusCode.NoContent);
 };

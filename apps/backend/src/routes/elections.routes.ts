@@ -8,8 +8,13 @@ import {
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import {
+  createBallotPaperSection,
+  getBallotPaperSections,
+} from '../controllers/ballotPaperSections.controllers.js';
+import {
   createElection,
   freezeElection,
+  deleteElection,
   getElection,
   getElections,
   unfreezeElection,
@@ -63,6 +68,14 @@ electionsRouter.put(
 );
 
 // Ballot Papers routes
+electionsRouter.delete(
+  `/:${parameter.electionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  deleteElection,
+);
+
 electionsRouter.post(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.ApplicationJson),
@@ -100,4 +113,22 @@ electionsRouter.delete(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   deleteBallotPaper,
+);
+
+// Ballot paper section
+electionsRouter.post(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  createBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  getBallotPaperSections,
 );

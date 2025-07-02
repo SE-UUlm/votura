@@ -5,12 +5,12 @@ import type {
   UpdateableElection,
   User,
 } from '@repo/votura-validators';
-import type { Selectable } from 'kysely';
+import type { DeleteResult, Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { Election as KyselyElection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
-export const electionTransformer = (election: Selectable<KyselyElection>): Election => {
+const electionTransformer = (election: Selectable<KyselyElection>): SelectableElection => {
   return {
     id: election.id,
     createdAt: election.createdAt.toISOString(),
@@ -119,4 +119,10 @@ export const setElectionFrozenState = async (
   }
 
   return electionTransformer(election);
+};
+
+export const deleteElection = async (electionId: Election['id']): Promise<DeleteResult> => {
+  const result = await db.deleteFrom('Election').where('id', '=', electionId).executeTakeFirst();
+
+  return result;
 };
