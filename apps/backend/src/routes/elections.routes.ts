@@ -13,8 +13,8 @@ import {
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
   createElection,
-  freezeElection,
   deleteElection,
+  freezeElection,
   getElection,
   getElections,
   unfreezeElection,
