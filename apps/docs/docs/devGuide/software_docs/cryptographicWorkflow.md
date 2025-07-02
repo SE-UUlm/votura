@@ -126,7 +126,6 @@ This step does not reveal any vote content, but it guarantees that only valid, c
 
 ### Decryption
 
-
 Recap: After the homomorphic vote tallying in 2a, there are only `n` ciphertexts left, each containing the encrypted sum of votes for the corresponding option.
 
 To decrypt a ciphertext `(alpha, beta)`, a decryption factor is computed as follows:
