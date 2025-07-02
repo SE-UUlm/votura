@@ -23,7 +23,7 @@ When an administrative user "freezes" an election (i.e. when the election config
   - `y` - public key with `y = g^x mod p`
 - and a secret key `x`, randomly chosen such that `1 < x < p`.
 
-### El Gamal Encryption
+### El Gamal encryption
 
 Encryption starts when the voter confirms their choices and _before_ any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not. With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
 
