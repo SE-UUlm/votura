@@ -12,12 +12,6 @@ hide_table_of_contents: false
 draft: false
 ---
 
-:::warning
-
-This page is still under construction and will be updated soon.
-
-:::
-
 ## Voting Process and Cryptographic Maths
 
 When an administrative user "freezes" an election (i.e. when the election configurations e.g. start and end dates etc. are set and become immutable), a key pair for the El Gamal algorithm is generated. This key pair consists of:
@@ -29,7 +23,7 @@ When an administrative user "freezes" an election (i.e. when the election config
   - `y` - public key with `y = g^x mod p`
 - and a secret key `x`, randomly chosen such that `1 < x < p`.
 
-### 1a El Gamal encryption
+### El Gamal Encryption
 
 Encryption starts when the voter confirms their choices and _before_ any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not. With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
 
@@ -40,7 +34,7 @@ The value of `m` is actually never `0`, which would be not cryptographically sec
 
 At this point, an audit option is available to the voter. If this was done, the ciphertexts and the randomness used to create them are displayed, so the voter can verify, if the ballot system had encrypted the answers correctly. Then, the revealed randomness and its ciphertexts are discarded and a new randomness `r < q` is chosen to generate a new ciphertext `(alpha, beta)` for each option - like before.
 
-### 1b Proof of correct encryption
+#### Proof of correct encryption
 
 Next, a disjunctive zero-knowledge proof is performed. Its core idea is the creation of multiple parallel proofs. There is one real proof for the actual vote cast (`Enc(1)`), and there is one simulated proof for each option that was not chosen by the voter (`Enc(0)`). These proofs are indistinguishable from each other by a verifier, but together they show:
 
@@ -62,7 +56,7 @@ The value of `randomness` has to be the randomness `r` that was used in 1a to cr
 
 Only the list of ciphertexts `[(alpha_1, beta_1), (alpha_2, beta_2), ..., (alpha_n, beta_n)]` and the corresponding list of their proofs `[proof_1, proof_2, ..., proof_n]` are left and sent to the server side.
 
-### 1c Verification of encryption proof
+#### Verification of encryption proof
 
 On the server side, at first it is checked if the incoming proofs are valid. Therefore, the following statements have to be true for every ciphertext `(alpha, beta)` and its proof `{commitment, challenge, response}`, with `commitment` consisting of `(A, B)`:
 
@@ -74,7 +68,7 @@ Note that the plaintext `m` does not need to be decrypted from its ciphertext `(
 
 If all statements above hold for every ciphertext and its proof, then all the ciphertexts will be placed in the "ballot box".
 
-### 1d Generalization for multi-section elections
+#### Generalization for multi-section elections
 
 The encryption and proof mechanisms described above can be generalized to support elections that consist of multiple sections, where each section allows for the selection of more than one option - up to a predefined maximum number of votes per section.
 
@@ -91,7 +85,7 @@ Each of these encrypted votes - whether for a selected option or one of the impl
 
 This generalization maintains the privacy, integrity, and verifiability guarantees of the voting process, even in complex multi-section elections with variable numbers of allowable votes.
 
-### 1e Client- and server-side ballot validation
+#### Client- and server-side ballot validation
 
 _Before encryption begins,_ the voting client performs a complete validation of the voter's selections against all election rules defined in the configurations. These rules include, but are not limited to, a maximum number of votes per candidate or a maximum number of votes per sections. If any violations are detected - such as selecting too many options - the client alerts the voter with a corresponding message.
 
@@ -108,7 +102,7 @@ Any deviation from these expectations, or failure of the accompanying zero-knowl
 
 This two-layered validation - first client-side, then independently server-side - ensures the integrity of the election process even in the presence of unreliable or potentially compromised environments.
 
-### 2a Homomorphic vote tallying
+### Homomorphic vote tallying
 
 When the election is over and closed, the tallying phase begins. At this point, it would be possible to shuffle all ciphertexts, decrypt them individually, and then count the votes - all accompanied by cryptographic proofs. In this case, however, the homomorphic property of the El Gamal encryption scheme is utilized. Instead of decrypting each individual ciphertext, all ciphertexts are multiplicatively combined.
 
@@ -121,7 +115,7 @@ Now, in the "ballot box" there is a set of encrypted votes with each vote consis
 
 The resulting ciphertext `(alpha, beta)` now contains the encrypted sum of votes for option `i`. Any information about each voter's selection is thus lost. Instead, there are only `n` ciphertexts left, each containing the encrypted sum of votes for the corresponding option.
 
-### 2b Public verifiability
+#### Public verifiability
 
 Before decryption takes place, public verifiability ensures that the set of encrypted votes used in the homomorphic tally is complete and unmodified. This includes two main components:
 
@@ -130,7 +124,8 @@ Before decryption takes place, public verifiability ensures that the set of encr
 
 This step does not reveal any vote content, but it guarantees that only valid, correctly encrypted votes were included in the tally and that the homomorphic computations were performed without manipulation. It is skipped if it was deselected in the election configuration.
 
-### 3a Decryption
+### Decryption
+
 
 Recap: After the homomorphic vote tallying in 2a, there are only `n` ciphertexts left, each containing the encrypted sum of votes for the corresponding option.
 
@@ -144,7 +139,7 @@ Then, the modular inverse of this factor is computed with `dec_factor^(-1) mod p
 
 With this, all `n` ciphertexts are decrypted and the election results can be published.
 
-### 3b Proof of Decryption
+#### Proof of Decryption
 
 The proof of decryption follows the Chaum-Pedersen protocol and is used to verify the correctness of the El Gamal decryption, without revealing the secret key `x` or randomness `r` used in the encryption process.
 
@@ -161,7 +156,7 @@ With a ciphertext `(alpha, beta)` and a random value `w < q`, the proof is calcu
 - `challenge` - hash value over the commitment (Fiat-Shamir hash)
 - `response = w + challenge * x mod q`.
 
-### 3c Verification of decryption proof
+#### Verification of decryption proof
 
 To verify the proof of decryption the following statements have to be true for the ciphertext `(alpha, beta)`, its decryption `m` and the above proof `{commitment, challenge, response}`, with `commitment` consisting of `(A, B)`:
 
@@ -174,4 +169,4 @@ If both equations hold the verifier can be convinced that the prover knows the s
 
 The following diagram shows the cryptographic workflow of votura:
 
-![the cryptographic workflow of votura](../../../static/img/cryptoWorkflow.png)
+![the cryptographic workflow of votura](../../../static/drawio/cryptoWorkflow.svg)
