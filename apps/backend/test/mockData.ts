@@ -95,6 +95,10 @@ export const demoCandidate = insertableCandidateObject.parse({
   title: 'Test candidate',
   description: 'Test candidate description',
 });
+export const demoCandidate2 = insertableCandidateObject.parse({
+  title: 'Test candidate 2',
+  description: 'Test candidate description 2',
+});
 export const brokenCandidate = {
   title: '',
   description: 'Broken candidate description',

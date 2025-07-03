@@ -34,3 +34,13 @@ export const createCandidate = async (
 
   return candidateTransformer(candidate);
 };
+
+export const getCandidates = async (electionId: Election['id']): Promise<SelectableCandidate[]> => {
+  const candidates = await db
+    .selectFrom('Candidate')
+    .selectAll()
+    .where('electionId', '=', electionId)
+    .execute();
+
+  return candidates.map((candidate) => candidateTransformer(candidate));
+};

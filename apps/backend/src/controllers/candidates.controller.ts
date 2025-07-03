@@ -9,7 +9,10 @@ import {
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { createCandidate as createPersistentCandidate } from '../services/candidates.service.js';
+import {
+  createCandidate as createPersistentCandidate,
+  getCandidates as getPersistentCandidates,
+} from '../services/candidates.service.js';
 
 export const createCandidate = async (
   req: Request<{ electionId: Election['id'] }>,
@@ -28,4 +31,12 @@ export const createCandidate = async (
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableCandidate);
+};
+
+export const getCandidates = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<SelectableCandidate[]>,
+): Promise<void> => {
+  const candidates = await getPersistentCandidates(req.params.electionId);
+  res.status(HttpStatusCode.Ok).json(candidates);
 };
