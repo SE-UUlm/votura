@@ -16,6 +16,7 @@ import {
   deleteElection as deletePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
+  setElectionFrozenState,
   updateElection as updatePersistentElection,
 } from '../services/elections.service.js';
 
@@ -86,6 +87,42 @@ export const getElection = async (
     res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
+
+  res.status(HttpStatusCode.Ok).json(election);
+};
+
+export const freezeElection = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<SelectableElection | Response400 | Response404>,
+): Promise<void> => {
+  const election = await setElectionFrozenState(req.params.electionId, true);
+
+  if (election === null) {
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: 'The election to freeze was not found.' }));
+    return;
+  }
+
+  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #198)
+
+  res.status(HttpStatusCode.Ok).json(election);
+};
+
+export const unfreezeElection = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<SelectableElection | Response400 | Response404>,
+): Promise<void> => {
+  const election = await setElectionFrozenState(req.params.electionId, false);
+
+  if (election === null) {
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: 'The election to unfreeze was not found.' }));
+    return;
+  }
+
+  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #201)
 
   res.status(HttpStatusCode.Ok).json(election);
 };
