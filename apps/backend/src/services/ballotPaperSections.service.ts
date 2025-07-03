@@ -19,6 +19,7 @@ const ballotPaperSectionTransformer = (
     ...spreadableOptional(ballotPaperSection, 'description'),
     maxVotes: ballotPaperSection.maxVotes,
     maxVotesPerCandidate: ballotPaperSection.maxVotesPerCandidate,
+    candidateIds: [], // TODO
     ballotPaperId: ballotPaperSection.ballotPaperId,
   };
 };
