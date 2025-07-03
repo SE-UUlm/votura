@@ -26,7 +26,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     'Adds a new candidate or removes an existing candidate from the specified ballot paper section.',
   parameters: [electionIdParameter, ballotPaperIdParameter, ballotPaperSectionIdParameter],
   put: {
-    tags: [Tag.BallotPaperSections, Tag.Candidates],
+    tags: [Tag.BallotPaperSections],
     summary: 'Add a candidate to a ballot paper section',
     description:
       'Adds an existing candidate to the specified ballot paper section. ' +
@@ -67,7 +67,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.BallotPaperSections, Tag.Candidates],
+    tags: [Tag.BallotPaperSections],
     summary: 'Remove a candidate from a ballot paper section',
     description:
       'Removes an existing candidate from the specified ballot paper section.\n' +
