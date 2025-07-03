@@ -19,7 +19,7 @@ import {
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`POST /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`, () => {
+describe(`POST /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`, () => {
   let requestPath = '';
 
   beforeAll(async () => {
