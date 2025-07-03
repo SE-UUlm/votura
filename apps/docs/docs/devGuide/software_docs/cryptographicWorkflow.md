@@ -18,7 +18,7 @@ When an administrative user "freezes" an election (i.e. when the election config
 
 - a public key with values
   - `p` - a large prime number (2048 bits or more) that defines the group
-  - `q` - prime number that divides `(p-1)`, often chosen as `(p-1)/2`
+  - `q` - prime number that divides `(p-1)`, often chosen as `q = (p-1)/2`
   - `g` - generator of the multiplicative group modulo `p`
   - `y` - public key with `y = g^x mod p`
 - and a secret key `x`, randomly chosen such that `1 < x < p`.
@@ -52,7 +52,7 @@ Then, using a random value `w < q`, the real proof for the actual vote cast is c
 - `challenge` - hash value over a list of all (simulated and real) commitments, reduced by subtracting all simulated challenges, modulo `q`
 - `response = w + randomness * challenge mod q`.
 
-The value of `randomness` has to be the randomness `r` that was used in 1a to create the ciphertexts with El Gamal algorithm. In the end, every plaintext and randomness is now discarded.
+The value of `randomness` has to be the randomness `r` that was used in the previous section to create the ciphertexts with El Gamal algorithm. In the end, every plaintext and randomness is now discarded.
 
 Only the list of ciphertexts `[(alpha_1, beta_1), (alpha_2, beta_2), ..., (alpha_n, beta_n)]` and the corresponding list of their proofs `[proof_1, proof_2, ..., proof_n]` are left and sent to the server side.
 
@@ -79,9 +79,9 @@ For example, if a selection allows up to 3 selections, then exactly 3 votes will
 In order to preserve the semantic meaning of the encrypted votes and allow for consistent proof generation, two implicit options are introduced:
 
 - An implicit `no option`-choice, which absorbs any unused votes if the voter selects fewer than the maximum allowed number of options.
-- An implicit `invalid`-choice, which replaces all actual votes in the case where the voter's input is flagged as invalid through client-side validation and the voter confirms submission regardless (see section 1e).
+- An implicit `invalid`-choice, which replaces all actual votes in the case where the voter's input is flagged as invalid through client-side validation and the voter confirms submission regardless (see following section).
 
-Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by a disjunctive zero-knowledge proof as described in section 1b. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
+Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by a disjunctive zero-knowledge proof as described in the proof of correct encryption-section earlier. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
 
 This generalization maintains the privacy, integrity, and verifiability guarantees of the voting process, even in complex multi-section elections with variable numbers of allowable votes.
 
@@ -89,11 +89,11 @@ This generalization maintains the privacy, integrity, and verifiability guarante
 
 _Before encryption begins,_ the voting client performs a complete validation of the voter's selections against all election rules defined in the configurations. These rules include, but are not limited to, a maximum number of votes per candidate or a maximum number of votes per sections. If any violations are detected - such as selecting too many options - the client alerts the voter with a corresponding message.
 
-The voter may then correct the input or, after acknowledging the warning, choose to submit the ballot as invalid. In this case, as described in section 1d, all votes on the ballot are replaced by encryptions of the implicit `invalid`-option. This approach ensures that even invalid ballots remains structurally consistent and provably formed, while being semantically marked as invalid.
+The voter may then correct the input or, after acknowledging the warning, choose to submit the ballot as invalid. In this case, as described in the previous section, all votes on the ballot are replaced by encryptions of the implicit `invalid`-option. This approach ensures that even invalid ballots remains structurally consistent and provably formed, while being semantically marked as invalid.
 
 _After submission,_ the server independently revalidates all election constraints. This step is necessary, as neither the integrity of the client nor the communication channel can be fully guaranteed.
 
-To verify that the ballot complies with all configured constraints, the server performs a homomorphic tallying of the encrypted votes (see section 2a). This enables detection of any violations of configured limits across sections, without decrypting individual votes. Additionally, the server verifies that the implicit `invalid`-option appears in one of the following two consistent patterns:
+To verify that the ballot complies with all configured constraints, the server performs a homomorphic tallying of the encrypted votes (see following section). This enables detection of any violations of configured limits across sections, without decrypting individual votes. Additionally, the server verifies that the implicit `invalid`-option appears in one of the following two consistent patterns:
 
 - Either _all_ encrypted votes are for the `invalid`-option (in case of a consciously submitted invalid ballot), or
 - _none_ of the encrypted votes are for the `invalid`-option (in case od a valid submission).
@@ -106,7 +106,7 @@ This two-layered validation - first client-side, then independently server-side 
 
 When the election is over and closed, the tallying phase begins. At this point, it would be possible to shuffle all ciphertexts, decrypt them individually, and then count the votes - all accompanied by cryptographic proofs. In this case, however, the homomorphic property of the El Gamal encryption scheme is utilized. Instead of decrypting each individual ciphertext, all ciphertexts are multiplicatively combined.
 
-Recap: The proof of correct encryption in 1b showed for every voter that in an election with multiple options, exactly one option was selected, without revealing which one.
+Recap: The proof of correct encryption (see earlier section) showed for every voter that in an election with multiple options, exactly one option was selected, without revealing which one.
 
 Now, in the "ballot box" there is a set of encrypted votes with each vote consisting of a list of ciphertexts `[(alpha_1, beta_1), (alpha_2, beta_2), ..., (alpha_n, beta_n)]` and each of these `n` ciphertexts containing the information whether or not the voter selected the corresponding option (`Enc(1)` or `Enc(0)`). With this in mind, for each ciphertext `(alpha_i, beta_i)` of all votes:
 
@@ -126,7 +126,7 @@ This step does not reveal any vote content, but it guarantees that only valid, c
 
 ### Decryption
 
-Recap: After the homomorphic vote tallying in 2a, there are only `n` ciphertexts left, each containing the encrypted sum of votes for the corresponding option.
+Recap: After the homomorphic vote tallying (see earlier section), there are only `n` ciphertexts left, each containing the encrypted sum of votes for the corresponding option.
 
 To decrypt a ciphertext `(alpha, beta)`, a decryption factor is computed as follows:
 
