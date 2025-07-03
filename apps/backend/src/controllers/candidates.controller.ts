@@ -2,6 +2,7 @@ import {
   insertableCandidateObject,
   response404Object,
   zodErrorToResponse400,
+  type Candidate,
   type Election,
   type Response400,
   type Response404,
@@ -11,6 +12,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createCandidate as createPersistentCandidate,
+  getCandidate as getPersistentCandidate,
   getCandidates as getPersistentCandidates,
 } from '../services/candidates.service.js';
 
@@ -39,4 +41,16 @@ export const getCandidates = async (
 ): Promise<void> => {
   const candidates = await getPersistentCandidates(req.params.electionId);
   res.status(HttpStatusCode.Ok).json(candidates);
+};
+
+export const getCandidate = async (
+  req: Request<{ candidateId: Candidate['id'] }>,
+  res: Response<SelectableCandidate | Response404>,
+): Promise<void> => {
+  const candidate = await getPersistentCandidate(req.params.candidateId);
+  if (candidate === null) {
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    return;
+  }
+  res.status(HttpStatusCode.Ok).json(candidate);
 };

@@ -1,4 +1,9 @@
-import type { Election, InsertableCandidate, SelectableCandidate } from '@repo/votura-validators';
+import type {
+  Candidate,
+  Election,
+  InsertableCandidate,
+  SelectableCandidate,
+} from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { Candidate as KyselyCandidate } from '../db/types/db.js';
@@ -43,4 +48,20 @@ export const getCandidates = async (electionId: Election['id']): Promise<Selecta
     .execute();
 
   return candidates.map((candidate) => candidateTransformer(candidate));
+};
+
+export const getCandidate = async (
+  candidateId: Candidate['id'],
+): Promise<SelectableCandidate | null> => {
+  const candidate = await db
+    .selectFrom('Candidate')
+    .selectAll()
+    .where('id', '=', candidateId)
+    .executeTakeFirst();
+
+  if (candidate === undefined) {
+    return null;
+  }
+
+  return candidateTransformer(candidate);
 };

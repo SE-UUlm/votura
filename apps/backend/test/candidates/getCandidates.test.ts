@@ -8,7 +8,7 @@ import { DEMO_TOKEN, demoCandidate, demoCandidate2, demoElection, demoUser } fro
 import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
+describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
   let requestPath = '';
 
   beforeAll(async () => {
