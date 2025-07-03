@@ -9,7 +9,10 @@ import {
 } from '../controllers/ballotPapers.controllers.js';
 import {
   createBallotPaperSection,
+  deleteBallotPaperSection,
+  getBallotPaperSection,
   getBallotPaperSections,
+  updateBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
   createElection,
@@ -23,6 +26,7 @@ import {
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
+import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import {
   checkElectionNotFrozen,
   defaultElectionChecks,
@@ -131,4 +135,31 @@ electionsRouter.get(
   ...defaultElectionChecks,
   ...defaultBallotPaperChecks,
   getBallotPaperSections,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  updateBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  getBallotPaperSection,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  deleteBallotPaperSection,
 );

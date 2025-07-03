@@ -71,7 +71,7 @@ export async function checkBallotPaperExists(
  *
  * @param req The request object containing the ballot paper and election ID as a path parameter.
  * @param res The response object to send errors to.
- * @param next The next middleware function to call if the ballot paper exists.
+ * @param next The next middleware function to call if the ballot paper belongs to the election.
  */
 export async function checkElectionIsParent(
   req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,

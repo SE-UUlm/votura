@@ -10,12 +10,12 @@ toc_min_heading_level: 2
 toc_max_heading_level: 3
 ---
 
-Ballot paper
+Ballot paper (BP)
 : A document that contains the options or candidates for which a voter can cast their vote.
 A ballot paper is associated with exactly one specific election.
 A ballot paper needs to have at least one ballot paper section but can also have multiple ballot paper sections.
 
-Ballot paper section
+Ballot paper section (BPS)
 : A part of a ballot paper that contains a specific set of candidates.
 May be used to divide a ballot paper in multiple parts, each with its own limit of how many votes may be cast in it.
 
