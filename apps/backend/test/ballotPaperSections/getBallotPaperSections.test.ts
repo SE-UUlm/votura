@@ -1,0 +1,73 @@
+import { parameter, selectableBallotPaperSectionObject } from '@repo/votura-validators';
+import request from 'supertest';
+import { beforeAll, describe, expect, it } from 'vitest';
+import { app } from '../../src/app.js';
+import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { createBallotPaperSection } from '../../src/services/ballotPaperSections.service.js';
+import { createUser, findUserBy } from '../../src/services/users.service.js';
+import {
+  DEMO_TOKEN,
+  demoBallotPaper,
+  demoBallotPaperSection,
+  demoBallotPaperSection2,
+  demoElection,
+  demoUser,
+} from '../mockData.js';
+import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
+import { createElection } from './../../src/services/elections.service.js';
+
+describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
+  let requestPath = '';
+
+  beforeAll(async () => {
+    await createUser(demoUser);
+    const user = await findUserBy({ email: demoUser.email });
+    if (user === null) {
+      throw new Error('Failed to find test user');
+    }
+
+    const election = await createElection(demoElection, user.id);
+    if (election === null) {
+      throw new Error('Failed to create test election');
+    }
+
+    const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
+    if (ballotPaper === null) {
+      throw new Error('Failed to create test ballot paper');
+    }
+
+    const ballotPaperSection = await createBallotPaperSection(
+      demoBallotPaperSection,
+      ballotPaper.id,
+    );
+    const ballotPaperSection2 = await createBallotPaperSection(
+      demoBallotPaperSection2,
+      ballotPaper.id,
+    );
+    if (ballotPaperSection === null || ballotPaperSection2 === null) {
+      throw new Error('Failed to create test ballot paper section');
+    }
+
+    requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections`;
+  });
+
+  it('200: should get all ballot papers sections for an election', async () => {
+    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
+    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.type).toBe('application/json');
+
+    const arrBody = res.body as unknown[];
+    expect(arrBody).toBeInstanceOf(Array);
+    expect(arrBody.length).toBe(2);
+
+    const ballotPaperSections = await Promise.all(
+      arrBody.map((ballotPaperSection) =>
+        selectableBallotPaperSectionObject.safeParseAsync(ballotPaperSection),
+      ),
+    );
+
+    ballotPaperSections.forEach((ballotPaperSection) => {
+      expect(ballotPaperSection.success).toBe(true);
+    });
+  });
+});
