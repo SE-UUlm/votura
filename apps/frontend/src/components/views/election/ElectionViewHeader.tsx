@@ -23,7 +23,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const { trigger, isMutating } = useUpdateElection(election.id);
 
   const onDelete = () => {
-    // deleteElection(election.id); TODO: Implement election deletion
+    // deleteElection(election.id); TODO: Implement election deletion (see #147)
     notifications.show(getDeleteSuccessElectionConfig(election.name));
     navigate('/elections');
     return;
@@ -35,7 +35,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update
+    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
