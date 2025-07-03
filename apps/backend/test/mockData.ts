@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperObject,
   insertableBallotPaperSectionObject,
+  insertableCandidateObject,
   insertableElectionObject,
   insertableUserObject,
 } from '@repo/votura-validators';
@@ -85,4 +86,16 @@ export const brokenBallotPaperSection = {
   XYZ: 'Test broken ballot paper section',
   description: 'Test broken ballot paper section description',
   maxVotesPerCandidate: 20,
+};
+
+/*
+ * Candidates
+ */
+export const demoCandidate = insertableCandidateObject.parse({
+  title: 'Test candidate',
+  description: 'Test candidate description',
+});
+export const brokenCandidate = {
+  title: '',
+  description: 'Broken candidate description',
 };

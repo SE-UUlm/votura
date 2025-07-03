@@ -11,6 +11,7 @@ import {
   createBallotPaperSection,
   getBallotPaperSections,
 } from '../controllers/ballotPaperSections.controllers.js';
+import { createCandidate } from '../controllers/candidates.controller.js';
 import {
   createElection,
   deleteElection,
@@ -113,4 +114,14 @@ electionsRouter.get(
   ...defaultElectionChecks,
   ...defaultBallotPaperChecks,
   getBallotPaperSections,
+);
+
+// Candidates
+electionsRouter.post(
+  `/:${parameter.electionId}/candidates`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  createCandidate,
 );
