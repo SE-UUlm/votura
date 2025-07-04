@@ -32,7 +32,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
     requestPath = `/elections/${election.id}/candidates`;
   });
 
-  it('200: should get all ballot papers sections for an election', async () => {
+  it('200: should get all candidates for an election', async () => {
     const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
