@@ -22,9 +22,6 @@ import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}/candidates/:${parameter.candidateId}`, () => {
   let requestPath = '';
-  let invalidUuidPath = '';
-  let noExistingCandidatePath = '';
-  let wrongOwnerPath = '';
   let candidate: SelectableCandidate | null = null;
 
   beforeAll(async () => {
