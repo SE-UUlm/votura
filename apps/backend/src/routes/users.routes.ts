@@ -1,15 +1,15 @@
 import { Router } from 'express';
 import {
+  createUser,
   getUserById,
   getUsers,
-  createUser,
   login,
-  refreshTokens,
   logout,
+  refreshTokens,
 } from '../controllers/users.controllers.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import { MimeType } from '../middlewares/utils.js';
 import { authenticateAccessToken } from '../middlewares/auth.js';
+import { MimeType } from '../middlewares/utils.js';
 
 export const usersRouter: Router = Router();
 

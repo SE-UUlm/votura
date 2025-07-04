@@ -22,13 +22,13 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
+import { authenticateAccessToken } from '../middlewares/auth.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import {
   checkElectionNotFrozen,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionChecks.js';
 import { MimeType } from '../middlewares/utils.js';
-import { authenticateAccessToken } from '../middlewares/auth.js';
 
 export const electionsRouter: Router = Router();
 

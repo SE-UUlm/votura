@@ -5,7 +5,6 @@ import type {
   SelectableUser,
   User,
 } from '@repo/votura-validators';
-import { db } from '../db/database.js';
 import argon2 from 'argon2';
 import {
   generateUserTokens,
@@ -13,6 +12,7 @@ import {
   hashRefreshToken,
   verifyToken,
 } from '../auth/utils.js';
+import { db } from '../db/database.js';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,

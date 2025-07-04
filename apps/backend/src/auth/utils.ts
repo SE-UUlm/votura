@@ -1,10 +1,10 @@
-import type { ApiTokenUser, InsertableUser } from '@repo/votura-validators';
-import { db } from '../db/database.js';
-import jwt from 'jsonwebtoken';
+import type { ApiTokenUser } from '@repo/votura-validators';
 import crypto from 'crypto';
+import jwt from 'jsonwebtoken';
+import ms from 'ms';
 import { JWT_CONFIG } from '../auth/jwtConfig.js';
 import type { JwtPayload } from '../auth/types.js';
-import ms from 'ms';
+import { db } from '../db/database.js';
 
 let jwtKeys: { privateKey: string; publicKey: string } | null = null;
 

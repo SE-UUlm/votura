@@ -1,6 +1,5 @@
-import type { Response401 } from '@repo/votura-validators';
+import { response401Object, response500Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
-import { response500Object, response401Object } from '@repo/votura-validators';
 import { isTokenBlacklisted, verifyToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { findUserBy } from '../services/users.service.js';
