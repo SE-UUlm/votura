@@ -1,7 +1,8 @@
 import {
   parameter,
   response400Object,
-  selectableBallotPaperSectionObject,
+  selectableCandidateObject,
+  type SelectableCandidate,
 } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -9,18 +10,19 @@ import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import {
-  brokenBallotPaperSection,
+  brokenCandidate,
   DEMO_TOKEN,
-  demoBallotPaper,
-  demoBallotPaperSection,
+  demoCandidate,
+  demoCandidate2,
   demoElection,
   demoUser,
 } from '../mockData.js';
-import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
+import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`POST /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections`, () => {
+describe(`PUT /elections/:${parameter.electionId}/candidates/:${parameter.candidateId}`, () => {
   let requestPath = '';
+  let candidate: SelectableCandidate | null = null;
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -34,37 +36,35 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers/:${parameter.bal
       throw new Error('Failed to create test election');
     }
 
-    const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
+    candidate = await createCandidate(demoCandidate, election.id);
+    if (candidate === null) {
+      throw new Error('Failed to create test candidate');
     }
 
-    requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections`;
+    requestPath = `/elections/${election.id}/candidates/${candidate.id}`;
   });
 
-  it('200: should create a ballot paper section', async () => {
+  it('200: should update a candidate for an election', async () => {
     const res = await request(app)
-      .post(requestPath)
+      .put(requestPath)
       .set('Authorization', DEMO_TOKEN)
-      .send(demoBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.Created);
+      .send(demoCandidate2);
+    expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
-    const parseResult = selectableBallotPaperSectionObject.safeParse(res.body);
+    const parseResult = selectableCandidateObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     if (parseResult.success === true) {
-      expect(parseResult.data.name).toBe(demoBallotPaperSection.name);
-      expect(parseResult.data.description).toBe(demoBallotPaperSection.description);
-      expect(parseResult.data.maxVotes).toBe(demoBallotPaperSection.maxVotes);
-      expect(parseResult.data.maxVotesPerCandidate).toBe(
-        demoBallotPaperSection.maxVotesPerCandidate,
-      );
+      expect(parseResult.data.id).toBe(candidate?.id);
+      expect(parseResult.data.electionId).toBe(candidate?.electionId);
+      expect(parseResult.data.title).toBe(demoCandidate2.title);
+      expect(parseResult.data.description).toBe(demoCandidate2.description);
     }
   });
-  it('400: should throw error missing fields', async () => {
+  it('400: should return 400 when candidate input is invalid', async () => {
     const res = await request(app)
-      .post(requestPath)
+      .put(requestPath)
       .set('Authorization', DEMO_TOKEN)
-      .send(brokenBallotPaperSection);
+      .send(brokenCandidate);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
