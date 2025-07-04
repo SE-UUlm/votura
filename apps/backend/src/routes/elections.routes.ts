@@ -13,6 +13,7 @@ import {
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
   createCandidate,
+  deleteCandidate,
   getCandidate,
   getCandidates,
   updateCandidate,
@@ -170,4 +171,12 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultCandidateChecks,
   updateCandidate,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultCandidateChecks,
+  deleteCandidate,
 );

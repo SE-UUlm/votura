@@ -13,6 +13,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createCandidate as createPersistentCandidate,
+  deleteCandidate as deletePersistentCandidate,
   getCandidate as getPersistentCandidate,
   getCandidates as getPersistentCandidates,
   updateCandidate as updatePersistentCandidate,
@@ -74,4 +75,20 @@ export const updateCandidate = async (
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableCandidate);
+};
+
+export const deleteCandidate = async (
+  req: Request<{ candidateId: Candidate['id'] }>,
+  res: Response<Response404>,
+): Promise<void> => {
+  const result = await deletePersistentCandidate(req.params.candidateId);
+  if (result.numDeletedRows < 1n) {
+    res.status(HttpStatusCode.NotFound).json(
+      response404Object.parse({
+        message: undefined,
+      }),
+    );
+    return;
+  }
+  res.sendStatus(HttpStatusCode.NoContent);
 };

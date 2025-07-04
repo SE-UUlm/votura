@@ -5,7 +5,7 @@ import type {
   SelectableCandidate,
   UpdateableCandidate,
 } from '@repo/votura-validators';
-import type { Selectable } from 'kysely';
+import type { DeleteResult, Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { Candidate as KyselyCandidate } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
@@ -83,4 +83,8 @@ export const updateCandidate = async (
   }
 
   return candidateTransformer(candidate);
+};
+
+export const deleteCandidate = async (candidateId: Candidate['id']): Promise<DeleteResult> => {
+  return db.deleteFrom('Candidate').where('id', '=', candidateId).executeTakeFirst();
 };
