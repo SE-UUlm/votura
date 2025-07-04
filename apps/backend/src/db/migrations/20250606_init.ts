@@ -456,10 +456,34 @@ export async function up(db: Kysely<any>): Promise<void> {
 
   await createTables(db);
   await addForeignKeys(db);
+
+  // initialize pg_cron and create a cron job to delete expired access tokens from the blacklist
+  // This job runs every hour at 0 minutes (e.g 00:00, 01:00, 02:00, etc.)
+  await sql`
+        CREATE EXTENSION IF NOT EXISTS pg_cron
+    `.execute(db);
+
+  await sql`
+        SELECT cron.schedule(
+            'delete_expired_access_tokens_cron_job',
+            '0 * * * *',
+            $$DELETE FROM ${sql.table(TableName.AccessTokenBlacklist)} WHERE ${sql.raw(`"${AccessTokenBlacklistColumnName.expiresAt}"`)} < NOW()$$
+        );
+    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
+  // Drop the cron job that deletes expired access tokens
+  await sql`
+        SELECT cron.unschedule('delete_expired_access_tokens_cron_job');
+    `.execute(db);
+
+  // Drop the pg_cron extension
+  await sql`
+        DROP EXTENSION IF EXISTS pg_cron;
+    `.execute(db);
+
   // Drop the update_modified_at_column function
   await sql`
         DROP FUNCTION IF EXISTS update_modified_at_column();
