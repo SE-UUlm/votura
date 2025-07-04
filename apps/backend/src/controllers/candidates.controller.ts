@@ -83,11 +83,7 @@ export const deleteCandidate = async (
 ): Promise<void> => {
   const result = await deletePersistentCandidate(req.params.candidateId);
   if (result.numDeletedRows < 1n) {
-    res.status(HttpStatusCode.NotFound).json(
-      response404Object.parse({
-        message: undefined,
-      }),
-    );
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
     return;
   }
   res.sendStatus(HttpStatusCode.NoContent);
