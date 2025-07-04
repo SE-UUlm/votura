@@ -1,6 +1,7 @@
 import {
   insertableCandidateObject,
   response404Object,
+  updateableCandidateObject,
   zodErrorToResponse400,
   type Candidate,
   type Election,
@@ -14,6 +15,7 @@ import {
   createCandidate as createPersistentCandidate,
   getCandidate as getPersistentCandidate,
   getCandidates as getPersistentCandidates,
+  updateCandidate as updatePersistentCandidate,
 } from '../services/candidates.service.js';
 
 export const createCandidate = async (
@@ -53,4 +55,23 @@ export const getCandidate = async (
     return;
   }
   res.status(HttpStatusCode.Ok).json(candidate);
+};
+
+export const updateCandidate = async (
+  req: Request<{ candidateId: Candidate['id'] }>,
+  res: Response<SelectableCandidate | Response400 | Response404>,
+): Promise<void> => {
+  const body: unknown = req.body;
+  const { data, error, success } = await updateableCandidateObject.safeParseAsync(body);
+  if (success === false) {
+    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    return;
+  }
+
+  const selectableCandidate = await updatePersistentCandidate(data, req.params.candidateId);
+  if (selectableCandidate === null) {
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    return;
+  }
+  res.status(HttpStatusCode.Ok).json(selectableCandidate);
 };

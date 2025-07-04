@@ -15,6 +15,7 @@ import {
   createCandidate,
   getCandidate,
   getCandidates,
+  updateCandidate,
 } from '../controllers/candidates.controller.js';
 import {
   createElection,
@@ -160,4 +161,13 @@ electionsRouter.get(
   ...defaultElectionChecks,
   ...defaultCandidateChecks,
   getCandidate,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultCandidateChecks,
+  updateCandidate,
 );
