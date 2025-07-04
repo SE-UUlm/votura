@@ -3,6 +3,7 @@ import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.
 import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
 import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
 import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
+import { candidatePathObject } from './ballotPaperSections/candidatePathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { electionIdPathObject } from './elections/electionIdPathObject.js';
@@ -110,6 +111,8 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
       ballotPaperSectionsPathObject,
     [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}`]:
       ballotPaperSectionIdPathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}/candidates`]:
+      candidatePathObject,
     [`/elections/{${parameter.electionId}}/candidates`]: candidatesPathObject,
     [`/elections/{${parameter.electionId}}/candidates/{${parameter.candidateId}}`]:
       candidateIdPathObject,

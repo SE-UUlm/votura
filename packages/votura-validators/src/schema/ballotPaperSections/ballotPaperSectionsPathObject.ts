@@ -30,7 +30,11 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Creates a ballot paper section with a link to a ballot paper.\n' +
       'The user of the API access token needs access to the linked ballot paper (election).\n' +
-      'A ballot paper can only be created if the election of the linked ballot paper is not frozen.',
+      'A ballot paper can only be created if the election of the linked ballot paper is not frozen.\n' +
+      '\n' +
+      'This endpoint is currently only a preview and not fully implemented!\n' +
+      'You will get no linked candidates!\n' +
+      'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createBallotPaperSection',
     requestBody: {
@@ -66,7 +70,11 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all ballot paper section for a ballot paper',
     description:
       'Returns all ballot paper sections with the public information fields, that are linked to the specified ballot paper. \n' +
-      'The user of the API access token needs the access rights to the ballot paper / election to read the ballot paper section.',
+      'The user of the API access token needs the access rights to the ballot paper / election to read the ballot paper section.\n' +
+      '\n' +
+      'This endpoint is currently only a preview and not fully implemented!\n' +
+      'You will get no linked candidates!\n' +
+      'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapersSections',
     responses: {

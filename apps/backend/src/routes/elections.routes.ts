@@ -12,6 +12,11 @@ import {
   getBallotPaperSections,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
+  createCandidate,
+  getCandidate,
+  getCandidates,
+} from '../controllers/candidates.controller.js';
+import {
   createElection,
   deleteElection,
   freezeElection,
@@ -23,6 +28,7 @@ import {
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
+import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
   defaultElectionChecks,
@@ -131,4 +137,27 @@ electionsRouter.get(
   ...defaultElectionChecks,
   ...defaultBallotPaperChecks,
   getBallotPaperSections,
+);
+
+// Candidates
+electionsRouter.post(
+  `/:${parameter.electionId}/candidates`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  createCandidate,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/candidates`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  getCandidates,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultCandidateChecks,
+  getCandidate,
 );
