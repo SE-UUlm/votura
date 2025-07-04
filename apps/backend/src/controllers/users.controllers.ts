@@ -192,7 +192,7 @@ export const logout = async (_req: Request, res: LogoutResponse): Promise<void> 
   if (!logoutResult) {
     res
       .status(HttpStatusCode.Unauthorized)
-      .json(response500Object.parse({ message: 'Failed to log out due to interal server error' }));
+      .json(response500Object.parse({ message: 'Failed to log out due to internal server error' }));
     return;
   }
 
