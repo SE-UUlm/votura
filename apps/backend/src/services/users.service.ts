@@ -6,6 +6,7 @@ import type {
   User,
 } from '@repo/votura-validators';
 import argon2 from 'argon2';
+import type { AccessTokenPayload } from '../auth/types.js';
 import {
   generateUserTokens,
   getTokenExpiration,
@@ -64,9 +65,7 @@ const getPepper = (): string => {
 };
 
 export async function createUser(insertableUser: InsertableUser): Promise<boolean> {
-  const pepper = getPepper();
-
-  const hashedPassword = await argon2.hash(insertableUser.password + pepper);
+  const hashedPassword = await argon2.hash(insertableUser.password + getPepper());
 
   const user = await db
     .insertInto('User')
@@ -104,7 +103,10 @@ export const loginUser = async (
   }
 
   // Verify password
-  const isValidPassword: boolean = await argon2.verify(user.passwordHash, credentials.password);
+  const isValidPassword: boolean = await argon2.verify(
+    user.passwordHash,
+    credentials.password + getPepper(),
+  );
   if (!isValidPassword) {
     return loginError.InvalidCredentials; // Invalid password
   }
@@ -115,7 +117,7 @@ export const loginUser = async (
   }
 
   // Generate new token pair
-  const tokens = await generateUserTokens(user.id);
+  const tokens = generateUserTokens(user.id);
 
   const updatedUser = await db
     .updateTable('User')
@@ -174,7 +176,7 @@ export const refreshUserTokens = async (
   }
 
   // Generate new token pair
-  const newTokens = await generateUserTokens(user.id);
+  const newTokens = generateUserTokens(user.id);
 
   const updatedUser = await db
     .updateTable('User')
@@ -193,37 +195,24 @@ export const refreshUserTokens = async (
   return newTokens;
 };
 
-enum logoutError {
-  InvalidToken = 'Invalid access token',
-  UserNotFound = 'User not found',
-  Internal = 'User could not be logged out due to internal errors',
-}
-
 export const logoutUser = async (
-  accessToken: string,
+  accessTokenPayload: AccessTokenPayload,
   userId: string,
-): Promise<void | logoutError> => {
-  // Verify and decode access token
-  const decodedToken = verifyToken(accessToken);
-
-  if (decodedToken === null || decodedToken.type !== 'access' || decodedToken.jti === undefined) {
-    return logoutError.InvalidToken;
-  }
-
+): Promise<boolean> => {
   // Add access token to blacklist
-  const expiresAt = new Date(decodedToken.exp * 1000);
+  const expiresAt = new Date(accessTokenPayload.exp * 1000);
 
   const blacklistEntry = await db
     .insertInto('AccessTokenBlacklist')
     .values({
-      accessTokenId: decodedToken.jti,
+      accessTokenId: accessTokenPayload.jti,
       expiresAt: expiresAt,
     })
     .returningAll()
     .executeTakeFirst();
 
   if (blacklistEntry === undefined) {
-    return logoutError.Internal;
+    return false; // Failed to blacklist token
   }
 
   // Clear refresh token from user record
@@ -238,6 +227,7 @@ export const logoutUser = async (
     .execute();
 
   if (updatedUser === undefined) {
-    return logoutError.Internal;
+    return false; // Failed to clear refresh token
   }
+  return true; // User logged out successfully
 };

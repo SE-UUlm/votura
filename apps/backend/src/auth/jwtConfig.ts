@@ -1,4 +1,4 @@
-import ms from 'ms';
+import type ms from 'ms';
 
 export const JWT_CONFIG = {
   ACCESS_TOKEN_EXPIRES_IN: '15m' as ms.StringValue,

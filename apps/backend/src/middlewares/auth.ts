@@ -1,25 +1,20 @@
 import { response401Object, response500Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
+import type { AccessTokenPayload } from '../auth/types.js';
 import { isTokenBlacklisted, verifyToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { findUserBy } from '../services/users.service.js';
 
-export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-  };
-}
-
 // Middleware to authenticate requests using JWT access tokens
 // Also checks if the user exists in the database
 export const authenticateAccessToken = async (
-  req: AuthenticatedRequest,
+  req: Request,
   res: Response,
   next: NextFunction,
 ): Promise<void> => {
   try {
     const authHeader = req.headers.authorization;
-    const token = authHeader && authHeader.split(' ')[1]; // Bearer token
+    const token = authHeader?.split(' ')[1]; // Bearer token
 
     if (token === undefined) {
       res
@@ -29,7 +24,7 @@ export const authenticateAccessToken = async (
     }
 
     // Verify token
-    const decodedToken = verifyToken(token);
+    const decodedToken = verifyToken(token) as AccessTokenPayload | null;
 
     if (decodedToken === null || decodedToken.type !== 'access' || decodedToken.jti === undefined) {
       res
@@ -59,12 +54,11 @@ export const authenticateAccessToken = async (
       return;
     }
 
-    req.user = {
-      id: decodedToken.sub,
-    };
+    res.locals.user = user;
+    res.locals.accessTokenPayload = decodedToken;
 
     next();
-  } catch (error) {
+  } catch {
     res
       .status(HttpStatusCode.InternalServerError)
       .json(response500Object.parse({ message: 'Internal server error during authentication.' }));

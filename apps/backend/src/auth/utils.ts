@@ -3,7 +3,7 @@ import crypto from 'crypto';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { JWT_CONFIG } from '../auth/jwtConfig.js';
-import type { JwtPayload } from '../auth/types.js';
+import type { AccessTokenPayload, JwtPayload, RefreshTokenPayload } from '../auth/types.js';
 import { db } from '../db/database.js';
 
 let jwtKeys: { privateKey: string; publicKey: string } | null = null;
@@ -28,30 +28,28 @@ const getKeys = (): { privateKey: string; publicKey: string } => {
   return jwtKeys;
 };
 
-export const generateUserTokens = async (userid: string): Promise<ApiTokenUser> => {
-  jwtKeys = getKeys();
-
+export const generateUserTokens = (userid: string): ApiTokenUser => {
   // Access token with JTI for blacklisting
   const accessTokenId = crypto.randomUUID();
-  const accessPayload: JwtPayload = {
+  const accessPayload: AccessTokenPayload = {
     sub: userid,
     type: 'access' as const,
     exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.ACCESS_TOKEN_EXPIRES_IN) / 1000,
     jti: accessTokenId,
   };
 
-  const accessToken = jwt.sign(accessPayload, jwtKeys.privateKey, {
+  const accessToken = jwt.sign(accessPayload, getKeys().privateKey, {
     algorithm: JWT_CONFIG.ALGORITHM,
   });
 
   // Refresh token without JTI
-  const refreshPayload: JwtPayload = {
+  const refreshPayload: RefreshTokenPayload = {
     sub: userid,
     type: 'refresh' as const,
     exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.REFRESH_TOKEN_EXPIRES_IN) / 1000,
   };
 
-  const refreshToken = jwt.sign(refreshPayload, jwtKeys.privateKey, {
+  const refreshToken = jwt.sign(refreshPayload, getKeys().privateKey, {
     algorithm: JWT_CONFIG.ALGORITHM,
   });
 
@@ -68,16 +66,13 @@ export const getTokenExpiration = (token: string): Date => {
 };
 
 export const verifyToken = (token: string): JwtPayload | null => {
-  jwtKeys = getKeys();
   try {
     const verifyOptions: jwt.VerifyOptions = {
       algorithms: [JWT_CONFIG.ALGORITHM],
     };
 
-    const decoded = jwt.verify(token, jwtKeys.publicKey, verifyOptions) as JwtPayload;
-
-    return decoded;
-  } catch (error) {
+    return jwt.verify(token, getKeys().publicKey, verifyOptions) as JwtPayload;
+  } catch {
     return null; // Token is invalid or expired
   }
 };

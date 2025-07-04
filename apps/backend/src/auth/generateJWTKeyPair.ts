@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 // Generate RSA key pair for JWT signing (run this once and save to .env)
-export const generateKeyPair = () => {
+export const generateKeyPair = (): { privateKey: string; publicKey: string } => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 4096,
     publicKeyEncoding: {

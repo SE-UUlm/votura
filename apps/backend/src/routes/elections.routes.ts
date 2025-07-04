@@ -22,7 +22,6 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import { authenticateAccessToken } from '../middlewares/auth.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import {
   checkElectionNotFrozen,
@@ -37,7 +36,6 @@ electionsRouter.post(
   '/',
   acceptHeaderCheck(MimeType.ApplicationJson),
   acceptBodyCheck(MimeType.ApplicationJson),
-  authenticateAccessToken,
   createElection,
 );
 electionsRouter.get('/', acceptHeaderCheck(MimeType.ApplicationJson), getElections);

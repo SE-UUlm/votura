@@ -12,10 +12,11 @@ import {
   type Response403,
   type Response409,
   type Response500,
+  type SelectableUser,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
+import type { AccessTokenPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import type { AuthenticatedRequest } from '../middlewares/auth.js';
 import {
   createUser as createPersistentUser,
   findUserBy,
@@ -123,15 +124,16 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
           .status(HttpStatusCode.InternalServerError)
           .json(response500Object.parse({ message: loginError.Internal }));
         break;
-      default:
+      default: {
         const tokens: ApiTokenUser = loginResult;
         res.status(HttpStatusCode.Ok).json(tokens);
         break;
+      }
     }
     return;
-  } else {
-    res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
   }
+
+  res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
 };
 
 export type RefreshTokensResponse = Response<
@@ -167,36 +169,32 @@ export const refreshTokens = async (req: Request, res: Response): Promise<void> 
           .status(HttpStatusCode.InternalServerError)
           .json(response500Object.parse({ message: refreshTokenError.Internal }));
         break;
-      default:
+      default: {
         const newTokens: ApiTokenUser = refreshResults;
         res.status(HttpStatusCode.Ok).json(newTokens);
         break;
+      }
     }
     return;
-  } else {
-    res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
   }
+
+  res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
 };
 
-export const logout = async (req: AuthenticatedRequest, res: Response): Promise<void> => {
-  if (req.user === undefined) {
-    res.status(401).send({ message: 'User not authenticated.' });
+export type LogoutResponse = Response<
+  void | Response401 | Response500,
+  { user: SelectableUser; accessTokenPayload: AccessTokenPayload }
+>;
+
+export const logout = async (_req: Request, res: LogoutResponse): Promise<void> => {
+  const logoutResult = await logoutUser(res.locals.accessTokenPayload, res.locals.user.id);
+
+  if (!logoutResult) {
+    res
+      .status(HttpStatusCode.Unauthorized)
+      .json(response500Object.parse({ message: 'Failed to log out due to interal server error' }));
     return;
   }
 
-  try {
-    const authHeader = req.headers.authorization;
-    const accessToken = authHeader && authHeader.split(' ')[1];
-
-    if (accessToken === undefined) {
-      res.status(401).json({ error: 'Authentication required' }); // should not happen
-      return;
-    }
-    // Logout user
-    await logoutUser(accessToken, req.user.id);
-
-    res.sendStatus(204); // No Content
-  } catch (error) {
-    res.status(500).json({ error: 'Internal server error while logging out' });
-  }
+  res.sendStatus(HttpStatusCode.NoContent);
 };

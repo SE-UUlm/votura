@@ -7,6 +7,7 @@ import {
   logout,
   refreshTokens,
 } from '../controllers/users.controllers.js';
+import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { authenticateAccessToken } from '../middlewares/auth.js';
 import { MimeType } from '../middlewares/utils.js';

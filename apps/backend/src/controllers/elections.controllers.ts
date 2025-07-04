@@ -25,20 +25,13 @@ export type CreateElectionResponse = Response<
   { user: SelectableUser }
 >;
 
-export const createElection = async (
-  req: AuthenticatedRequest,
-  res: CreateElectionResponse,
-): Promise<void> => {
-  if (req.user === undefined) {
-    res.status(401).send({ message: 'User not authenticated.' });
-    return;
-  }
+export const createElection = async (req: Request, res: CreateElectionResponse): Promise<void> => {
   const body: unknown = req.body;
 
   const { data, error, success } = await insertableElectionObject.safeParseAsync(body);
 
   if (success) {
-    const selectableElection = await createPersistentElection(data, req.user.id);
+    const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
       res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));

@@ -3,5 +3,10 @@ export interface JwtPayload {
   type: 'access' | 'refresh';
   iat?: number; // added by jwt.sign automatically
   exp: number;
-  jti?: string; // JWT ID for access tokens (used for blacklisting)
+}
+
+export type RefreshTokenPayload = JwtPayload;
+
+export interface AccessTokenPayload extends JwtPayload {
+  jti: string; // JWT ID used for blacklisting
 }
