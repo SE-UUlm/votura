@@ -7,6 +7,7 @@
     "./**/results/**",
     "./**/coverage/**",
     "./**/generated/**",
+    "./**/logs/**",
     "**/prisma/migrations/**",
     "**/package.json",
     "apps/docs/docs/api/**",
@@ -16,12 +17,14 @@
   "words": [
     "accesskey",
     "Avenir",
+    "Chaum",
     "deflist",
     "Gamal",
     "Gamals",
     "Hoffmann",
     "Infima",
     "Kortmann",
+    "Pedersen",
     "Raschke",
     "Shamir",
     "Sievers",
@@ -38,6 +41,8 @@
     "cofactor",
     "dsiev",
     "enduml",
+    "homomorphic",
+    "multiplicatively",
     "plaintexts",
     "shoffma",
     "smallint",
@@ -58,6 +63,7 @@
     "fkey",
     "hashedpassword",
     "codegen",
-    "plpgsql"
+    "plpgsql",
+    "Millis"
   ]
 }

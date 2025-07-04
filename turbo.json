@@ -1,60 +1,71 @@
 {
   "$schema": "https://turborepo.com/schema.json",
-  "globalEnv": ["DATABASE_URL"],
+  "globalDependencies": [".env", "vitest.config.ts", "tsconfig.json"],
+  "globalEnv": [],
   "ui": "stream",
   "concurrency": "100%",
   "cacheDir": ".turbo/cache",
   "envMode": "strict",
   "tasks": {
     "lint": {
-      "dependsOn": ["^lint"],
+      "dependsOn": [],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
-      "interactive": false
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "format": {
-      "dependsOn": ["^format"],
+      "dependsOn": [],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
-      "interactive": false
+      "interactive": false,
+      "outputs": [],
+      "env": []
     },
     "check-format": {
-      "dependsOn": ["^check-format"],
+      "dependsOn": [],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
-      "interactive": false
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "check-types": {
-      "dependsOn": ["^check-types"],
+      "dependsOn": [],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
-      "interactive": false
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "build": {
       "dependsOn": ["^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
-      "env": ["PORT", "TERMINAL_LOG_LEVEL"],
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
-      "outputs": ["build/**", "dist/**"]
+      "outputs": ["build/**", "dist/**"],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "test": {
-      "dependsOn": ["^test"],
+      "dependsOn": [],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
-      "interactive": false
+      "interactive": false,
+      "outputs": ["coverage/**", "results/**", "logs/**"],
+      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "start": {
       "dependsOn": ["^start"],
@@ -62,7 +73,9 @@
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": true,
-      "interactive": false
+      "interactive": false,
+      "outputs": ["logs/**"],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     }
   }
 }

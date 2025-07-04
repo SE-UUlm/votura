@@ -1,6 +1,4 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   selectableElectionObjectSchema,
   updateableElectionObjectSchema,
@@ -15,6 +13,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 import { electionIdParameter } from './electionIdParameter.js';
 
 export const electionIdPathObject: OpenAPIV3.PathItemObject = {
@@ -84,7 +84,9 @@ export const electionIdPathObject: OpenAPIV3.PathItemObject = {
     tags: [Tag.Elections],
     summary: 'Delete a specific election',
     description:
-      'Deletes the requested election. The election will be deleted from the database. Note that also all linked data (like votes) will be removed.',
+      'Deletes the requested election.' +
+      'A deletion can only be performed if the election is not frozen.' +
+      'Be aware that deleting an election will also trigger a deletion of all associated candidates, ballot papers, and votes.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteElectionById',
     responses: {

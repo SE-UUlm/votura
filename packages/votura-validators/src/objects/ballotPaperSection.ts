@@ -1,8 +1,9 @@
 import { z } from 'zod/v4';
-import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { ballotPaperObject } from './ballotPaper.js';
-import { toJsonSchemaParams } from '../parserParams.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
+import { maxVotesRefinement, maxVotesRefinementMessage } from './refines.js';
 
 export const ballotPaperSectionObject = z.object({
   ...identifiableTimestampedObject.shape,
@@ -42,13 +43,17 @@ export const ballotPaperSectionObject = z.object({
 
 export type BallotPaperSection = z.infer<typeof ballotPaperSectionObject>;
 
-export const insertableBallotPaperSectionObject = ballotPaperSectionObject.pick({
-  name: true,
-  description: true,
-  maxVotes: true,
-  maxVotesPerCandidate: true,
-  ballotPaperId: true,
-});
+export const insertableBallotPaperSectionObject = ballotPaperSectionObject
+  .pick({
+    name: true,
+    description: true,
+    maxVotes: true,
+    maxVotesPerCandidate: true,
+  })
+  .refine(maxVotesRefinement, {
+    message: maxVotesRefinementMessage,
+    path: ['maxVotes'],
+  });
 
 export type InsertableBallotPaperSection = z.infer<typeof insertableBallotPaperSectionObject>;
 
@@ -75,12 +80,17 @@ export const selectableBallotPaperSectionObjectSchema = z.toJSONSchema(
   toJsonSchemaParams,
 );
 
-export const updateableBallotPaperSectionObject = ballotPaperSectionObject.pick({
-  name: true,
-  description: true,
-  maxVotes: true,
-  maxVotesPerCandidate: true,
-});
+export const updateableBallotPaperSectionObject = ballotPaperSectionObject
+  .pick({
+    name: true,
+    description: true,
+    maxVotes: true,
+    maxVotesPerCandidate: true,
+  })
+  .refine(maxVotesRefinement, {
+    message: maxVotesRefinementMessage,
+    path: ['maxVotes'],
+  });
 
 export type UpdateableBallotPaperSection = z.infer<typeof updateableBallotPaperSectionObject>;
 

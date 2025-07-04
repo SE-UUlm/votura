@@ -32,13 +32,16 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
+      - name: Generate .env file
+        run: |
+          cd apps/backend
+          echo "PEPPER=12a34" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
         # first check files in workspaces & second the root directory
         run: |
           npm run check-format
-          npx prettier --check .
       - name: Check linting
         run: |
           npm run lint
@@ -48,6 +51,10 @@ jobs:
       - name: Build votura-crypto
         run: |
           cd packages/votura-crypto
+          npm run build
+      - name: Build votura-validators
+        run: |
+          cd packages/votura-validators
           npm run build
       - name: Build backend
         run: |
@@ -69,4 +76,4 @@ jobs:
           partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
           format: CLOVER
           message: 'Code coverage from GitHub Actions'
-          files: './packages/votura-crypto/coverage/clover.xml'
+          files: './packages/votura-crypto/coverage/clover.xml apps/backend/coverage/clover.xml'

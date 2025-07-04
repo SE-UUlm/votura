@@ -1,7 +1,11 @@
 import { z } from 'zod/v4';
+import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
-import { toJsonSchemaParams } from '../parserParams.js';
+
+const votingTimelineRefinement = (data: { votingStartAt: string; votingEndAt: string }): boolean =>
+  new Date(data.votingStartAt).getTime() < new Date(data.votingEndAt).getTime();
+const votingTimelineRefinementMessage = 'votingStartAt must be before votingEndAt';
 
 export const electionObject = z.object({
   ...identifiableTimestampedObject.shape,
@@ -60,8 +64,8 @@ export const insertableElectionObject = electionObject
     votingEndAt: true,
     allowInvalidVotes: true,
   })
-  .refine((data) => data.votingStartAt < data.votingEndAt, {
-    error: 'votingStartAt must be before votingEndAt',
+  .refine(votingTimelineRefinement, {
+    error: votingTimelineRefinementMessage,
     path: ['votingEndAt'],
   });
 
@@ -96,14 +100,19 @@ export const selectableElectionObjectSchema = z.toJSONSchema(
   toJsonSchemaParams,
 );
 
-export const updateableElectionObject = electionObject.pick({
-  name: true,
-  description: true,
-  votingStartAt: true,
-  votingEndAt: true,
-  allowInvalidVotes: true,
-  private: true,
-});
+export const updateableElectionObject = electionObject
+  .pick({
+    name: true,
+    description: true,
+    votingStartAt: true,
+    votingEndAt: true,
+    allowInvalidVotes: true,
+    private: true,
+  })
+  .refine(votingTimelineRefinement, {
+    error: votingTimelineRefinementMessage,
+    path: ['votingEndAt'],
+  });
 
 export type UpdateableElection = z.infer<typeof updateableElectionObject>;
 

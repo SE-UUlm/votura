@@ -1,15 +1,13 @@
-import type { MockElection } from '../store/useStore.ts';
+import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 
-export const getDefaultMockElection = (partial: Partial<MockElection>): MockElection => {
+export const getDefaultElection = (partial: Partial<SelectableElection>): UpdateableElection => {
   return {
-    id: crypto.randomUUID(),
     name: 'Default Election Name',
-    votingStart: new Date(),
-    votingEnd: new Date(),
-    immutableConfig: false,
+    votingStartAt: new Date().toISOString(),
+    votingEndAt: new Date().toISOString(),
+    configFrozen: false,
     allowInvalidVotes: false,
-    createdAt: new Date(),
-    updatedAt: new Date(),
+    private: true,
     ...partial,
   };
 };

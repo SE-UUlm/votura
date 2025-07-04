@@ -1,7 +1,7 @@
 import { z } from 'zod/v4';
-import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
+import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 export const userObject = z.object({
   ...identifiableTimestampedObject.shape,

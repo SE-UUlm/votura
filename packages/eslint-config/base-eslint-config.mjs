@@ -1,10 +1,10 @@
+import { includeIgnoreFile } from '@eslint/compat';
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
 import json from '@eslint/json';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import turboPlugin from 'eslint-plugin-turbo';
+import tseslint from 'typescript-eslint';
 import { fileURLToPath } from 'url';
-import { includeIgnoreFile } from '@eslint/compat';
 
 const gitignorePath = fileURLToPath(new URL('../../.gitignore', import.meta.url));
 
@@ -30,6 +30,10 @@ export default tseslint.config(
       '@typescript-eslint/no-confusing-void-expression': 'error',
       '@typescript-eslint/no-non-null-assertion': 'error',
       '@typescript-eslint/explicit-function-return-type': 'error',
+      '@typescript-eslint/restrict-plus-operands': 'error',
+      '@typescript-eslint/no-misused-promises': 'error',
+      '@typescript-eslint/no-floating-promises': 'error',
+      '@typescript-eslint/consistent-type-imports': 'error',
     },
   },
   eslintConfigPrettier,

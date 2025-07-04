@@ -1,11 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import {
   selectableBallotPaperObjectSchema,
   updateableBallotPaperObjectSchema,
 } from '../../objects/ballotPaper.js';
+import { electionIdParameter } from '../elections/electionIdParameter.js';
 import {
   response400,
   response401,
@@ -16,7 +14,9 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
-import { electionIdParameter } from '../elections/electionIdParameter.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { ballotPaperIdParameter } from './ballotPaperIdParameter.js';
 
 export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Manage a specific ballot paper',
@@ -28,10 +28,7 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Updates the configuration of the requested ballot paper with the provided information.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'A ballot paper can only be updated if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A ballot paper can only be updated if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateBallotPaperById',
     requestBody: {
@@ -66,10 +63,7 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get a specific ballot paper',
     description:
       'Returns the requested ballot paper with all public information fields.\n' +
-      'The user of the API access token needs access to the linked election.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs access to the linked election.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPaperById',
     responses: {
@@ -97,10 +91,8 @@ export const ballotPaperIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Deletes the requested ballot paper.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'A ballot paper can only be deleted if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A deletion can only be performed if the parent election is not frozen.' +
+      'Be aware that deleting a ballot paper will also trigger a deletion of all associated ballot paper sections.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteBallotPaperById',
     responses: {

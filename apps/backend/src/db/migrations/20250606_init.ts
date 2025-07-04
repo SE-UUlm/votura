@@ -1,24 +1,24 @@
 import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
 import {
+  AccessTokenBlacklistColumnName,
+  BallotPaperColumnName,
+  BallotPaperFKName,
+  BallotPaperSectionCandidateColumnName,
+  BallotPaperSectionCandidateFKName,
+  BallotPaperSectionColumnName,
+  BallotPaperSectionFKName,
+  CandidateColumnName,
+  CandidateFKName,
+  DefaultColumnName,
+  ElectionColumnName,
+  ElectionFKName,
   RegexPattern,
   TableName,
-  DefaultColumnName,
   UserColumnName,
-  AccessTokenBlacklistColumnName,
-  ElectionColumnName,
-  BallotPaperColumnName,
-  BallotPaperSectionColumnName,
-  BallotPaperSectionCandidateColumnName,
-  CandidateColumnName,
-  VoterGroupColumnName,
   VoterColumnName,
-  VoterRegisterColumnName,
-  ElectionFKName,
-  BallotPaperFKName,
-  BallotPaperSectionFKName,
-  BallotPaperSectionCandidateFKName,
-  CandidateFKName,
   VoterFKName,
+  VoterGroupColumnName,
+  VoterRegisterColumnName,
   VoterRegisterFKName,
 } from '../nameEnums.js';
 
@@ -315,7 +315,7 @@ async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
       [ElectionColumnName.electionCreatorId],
       TableName.User,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -329,7 +329,7 @@ async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
       [BallotPaperColumnName.electionId],
       TableName.Election,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -343,7 +343,7 @@ async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> 
       [BallotPaperSectionColumnName.ballotPaperId],
       TableName.BallotPaper,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -357,7 +357,7 @@ async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promi
       [BallotPaperSectionCandidateColumnName.ballotPaperSectionId],
       TableName.BallotPaperSection,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 
@@ -368,7 +368,7 @@ async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promi
       [BallotPaperSectionCandidateColumnName.candidateId],
       TableName.Candidate,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -382,7 +382,7 @@ async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
       [CandidateColumnName.electionId],
       TableName.Election,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -396,7 +396,7 @@ async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
       [VoterColumnName.voterGroupId],
       TableName.VoterGroup,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }
@@ -410,7 +410,7 @@ async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
       [VoterRegisterColumnName.ballotPaperId],
       TableName.BallotPaper,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 
@@ -421,7 +421,7 @@ async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
       [VoterRegisterColumnName.voterId],
       TableName.Voter,
       [DefaultColumnName.id],
-      (cb) => cb.onDelete('restrict').onUpdate('cascade'),
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 }

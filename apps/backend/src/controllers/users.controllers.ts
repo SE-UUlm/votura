@@ -1,4 +1,3 @@
-import type { Request, Response } from 'express';
 import {
   insertableUserObject,
   response409Object,
@@ -14,6 +13,7 @@ import {
   response403Object,
   refreshRequestUserObject,
 } from '@repo/votura-validators';
+import type { Request, Response } from 'express';
 import {
   findUserBy,
   createUser as createPersistentUser,
@@ -30,7 +30,7 @@ export interface GetUserByIdParams {
   id: string;
 }
 
-export const getUsers = (req: Request, res: Response): void => {
+export const getUsers = (_req: Request, res: Response): void => {
   res.sendStatus(501);
 };
 

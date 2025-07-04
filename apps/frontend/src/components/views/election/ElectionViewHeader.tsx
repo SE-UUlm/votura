@@ -1,44 +1,42 @@
 import { ActionIcon, Button, Group, Title } from '@mantine/core';
-import { HEADER_HEIGHT } from '../../utils.ts';
-import { IconArrowLeft, IconDots } from '@tabler/icons-react';
-import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import { useNavigate } from 'react-router';
 import { notifications } from '@mantine/notifications';
+import type { SelectableElection } from '@repo/votura-validators';
+import { IconArrowLeft, IconDots } from '@tabler/icons-react';
+import { useNavigate } from 'react-router';
+import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
-import { type MockElection, useStore } from '../../../store/useStore.ts';
+import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
+import { HEADER_HEIGHT } from '../../utils.ts';
 
 export interface ElectionViewHeaderProps {
-  election: MockElection;
+  election: SelectableElection;
 }
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
   const navigate = useNavigate();
-  const deleteElection = useStore((state) => state.deleteElection);
-  const updateElection = useStore((state) => state.updateElection);
+  const { trigger, isMutating } = useUpdateElection(election.id);
 
   const onDelete = () => {
-    deleteElection(election.id);
+    // deleteElection(election.id); TODO: Implement election deletion (see #147)
     notifications.show(getDeleteSuccessElectionConfig(election.name));
     navigate('/elections');
     return;
   };
 
-  const onMutate: MutateElectionModalProps['onMutate'] = (mutatedElection) => {
-    updateElection(election.id, mutatedElection);
-    notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name || election.name));
+  const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
+    await trigger(mutatedElection);
+    notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    updateElection(election.id, { immutableConfig: !election.immutableConfig });
-    notifications.show(
-      getToggleFreezeSuccessElectionConfig(election.name, !election.immutableConfig),
-    );
+    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
+    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
   return (
@@ -66,6 +64,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
+          isMutating={isMutating}
         />
       </Group>
     </>

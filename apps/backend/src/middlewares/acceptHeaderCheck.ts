@@ -1,4 +1,6 @@
+import { response406Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
+import { HttpStatusCode } from './../httpStatusCode.js';
 import { MimeType } from './utils.js';
 
 export const acceptHeaderCheck =
@@ -7,7 +9,7 @@ export const acceptHeaderCheck =
     const acceptsMimeType = req.accepts(mimeType) === mimeType;
 
     if (!acceptsMimeType) {
-      res.sendStatus(406);
+      res.status(HttpStatusCode.NotAcceptable).json(response406Object.parse({}));
       return;
     }
 

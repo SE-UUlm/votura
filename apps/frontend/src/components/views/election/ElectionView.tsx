@@ -1,20 +1,32 @@
+import { Container, Divider, Loader, Space, ThemeIcon } from '@mantine/core';
+import { parameter } from '@repo/votura-validators';
+import { IconBug } from '@tabler/icons-react';
 import { Navigate, useParams } from 'react-router';
-import { Container, Divider, Loader, Space } from '@mantine/core';
-import { useStore } from '../../../store/useStore.ts';
-import { ElectionViewHeader } from './ElectionViewHeader.tsx';
+import { useGetElection } from '../../../swr/elections/useGetElection.ts';
 import { ElectionStats } from './ElectionStats.tsx';
+import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 
-export type ElectionViewRouteParams = Record<'id', string>;
+export interface ElectionViewRouteParams extends Record<string, string> {
+  [parameter.electionId]: string;
+}
 
 export const ElectionView = () => {
   const params = useParams<ElectionViewRouteParams>();
-  const election = useStore((state) => state.elections.find((e) => e.id === params.id));
+  const { data, isLoading, error } = useGetElection({ electionId: params.electionId });
 
-  if (!params.id) {
+  if (!params.electionId) {
     return <Navigate to={'/elections'} />;
   }
 
-  if (!election) {
+  if (error) {
+    return (
+      <ThemeIcon size="xl" color="red">
+        <IconBug style={{ width: '70%', height: '70%' }} />
+      </ThemeIcon>
+    );
+  }
+
+  if (isLoading || data === undefined) {
     return (
       <Container>
         <Loader color="blue" />
@@ -24,10 +36,10 @@ export const ElectionView = () => {
 
   return (
     <Container fluid>
-      <ElectionViewHeader election={election} />
+      <ElectionViewHeader election={data} />
       <Divider />
       <Space h={'md'} />
-      <ElectionStats election={election} />
+      <ElectionStats election={data} />
       <Space h={'md'} />
       <Divider />
       <Space h={'md'} />

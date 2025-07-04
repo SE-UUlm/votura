@@ -1,9 +1,9 @@
 import { Menu } from '@mantine/core';
-import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import { useDisclosure } from '@mantine/hooks';
-import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
-import type { MockElection } from '../store/useStore.ts';
+import type { SelectableElection } from '@repo/votura-validators';
+import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
+import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
 import { MutateElectionModal, type MutateElectionModalProps } from './MutateElectionModal.tsx';
 import {
   ToggleFreezeElectionModal,
@@ -11,10 +11,11 @@ import {
 } from './ToggleFreezeElectionModal.tsx';
 
 export interface ElectionsTableMenuProps {
-  election: MockElection;
+  election: SelectableElection;
   targetElement: ReactNode;
   onDelete: DeleteElectionModalProps['onDelete'];
   onMutate: MutateElectionModalProps['onMutate'];
+  isMutating: MutateElectionModalProps['isMutating'];
   onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'];
 }
 
@@ -24,18 +25,19 @@ export const ElectionsSettingsMenu = ({
   onDelete,
   onMutate,
   onToggleFreeze,
+  isMutating,
 }: ElectionsTableMenuProps) => {
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [toggleFreezeModalOpened, toggleFreezeModalActions] = useDisclosure(false);
 
-  const freezeIcon = election.immutableConfig ? (
+  const freezeIcon = election.configFrozen ? (
     <IconSnowflakeOff size={14} />
   ) : (
     <IconSnowflake size={14} />
   );
 
-  const toggleFreezeText = election.immutableConfig ? 'Unfreeze config' : 'Freeze config';
+  const toggleFreezeText = election.configFrozen ? 'Unfreeze config' : 'Freeze config';
 
   return (
     <>
@@ -52,6 +54,7 @@ export const ElectionsSettingsMenu = ({
         onMutate={onMutate}
         onClose={mutateModalActions.close}
         mutateButtonText={'Save changes'}
+        isMutating={isMutating}
       />
       <ToggleFreezeElectionModal
         election={election}
@@ -66,7 +69,7 @@ export const ElectionsSettingsMenu = ({
             {toggleFreezeText}
           </Menu.Item>
           <Menu.Item
-            disabled={election.immutableConfig}
+            disabled={election.configFrozen}
             leftSection={<IconEdit size={14} />}
             onClick={mutateModalActions.open}
           >

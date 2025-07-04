@@ -18,12 +18,15 @@
     "@mantine/form": "^8.0.1",
     "@mantine/hooks": "^8.0.0",
     "@mantine/notifications": "^8.0.1",
+    "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
+    "@votura/votura-crypto": "^0.0.3",
     "dayjs": "^1.11.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
     "react-router": "^7.6.0",
     "swr": "^2.3.3",
+    "zod": "3.25.57",
     "zustand": "^5.0.4"
   },
   "devDependencies": {

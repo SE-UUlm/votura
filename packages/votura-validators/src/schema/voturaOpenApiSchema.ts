@@ -1,34 +1,35 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { electionsPathObject } from './elections/electionsPathObject.js';
-import { Tag } from './globals/tag.js';
-import { SecuritySchemaName } from './globals/securitySchemaName.js';
+import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
+import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
+import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
+import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
+import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
+import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { electionIdPathObject } from './elections/electionIdPathObject.js';
+import { electionsPathObject } from './elections/electionsPathObject.js';
 import { freezePathObject } from './elections/freezePathObject.js';
 import { unfreezePathObject } from './elections/unfreezePathObject.js';
+import { parameter } from './globals/parameter.js';
+import { SecuritySchemaName } from './globals/securitySchemaName.js';
+import { Tag } from './globals/tag.js';
+import { loginPathObject } from './users/loginPathObject.js';
+import { logoutPathObject } from './users/logoutPathObject.js';
+import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
+import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
+import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
 import { usersPathObject } from './users/usersPathObject.js';
 import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
-import { loginPathObject } from './users/loginPathObject.js';
-import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
-import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
-import { logoutPathObject } from './users/logoutPathObject.js';
-import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
-import { ballotPapersPathObject } from './elections/ballotPapersPathObject.js';
-import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.js';
-import { ballotPaperSectionsPathObject } from './ballotPapers/ballotPaperSectionsPathObject.js';
-import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
-import { candidatesPathObject } from './candidates/candidatesPathObject.js';
-import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
-import { Parameter } from './globals/parameter.js';
-import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
-import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
 import { getVoterTokensPathObject } from './voterGroups/getVoterTokensPathObject.js';
+import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
+import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
   info: {
-    title: 'Votura backend HTTP-API definition',
+    title: 'Votura-API',
     description:
-      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.',
+      'This is the OpenAPI specification for the communication to the votura backend via the REST-API. The votura frontend and backend communicate via this API.\n\n' +
+      'If a request body object contains more than the required properties, the additional properties will be ignored without throwing an error.',
     termsOfService: 'https://github.com/SE-UUlm/votura?tab=coc-ov-file',
     contact: {
       name: 'Votura Dev-Team',
@@ -99,18 +100,18 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   ],
   paths: {
     [`/elections`]: electionsPathObject,
-    [`/elections/{${Parameter.electionId}}`]: electionIdPathObject,
-    [`/elections/{${Parameter.electionId}}/freeze`]: freezePathObject,
-    [`/elections/{${Parameter.electionId}}/unfreeze`]: unfreezePathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers`]: ballotPapersPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}`]:
+    [`/elections/{${parameter.electionId}}`]: electionIdPathObject,
+    [`/elections/{${parameter.electionId}}/freeze`]: freezePathObject,
+    [`/elections/{${parameter.electionId}}/unfreeze`]: unfreezePathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers`]: ballotPapersPathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}`]:
       ballotPaperIdPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}/ballotPaperSections`]:
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections`]:
       ballotPaperSectionsPathObject,
-    [`/elections/{${Parameter.electionId}}/ballotPapers/{${Parameter.ballotPaperId}}/ballotPaperSections/{${Parameter.ballotPaperSectionId}}`]:
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}`]:
       ballotPaperSectionIdPathObject,
-    [`/elections/{${Parameter.electionId}}/candidates`]: candidatesPathObject,
-    [`/elections/{${Parameter.electionId}}/candidates/{${Parameter.candidateId}}`]:
+    [`/elections/{${parameter.electionId}}/candidates`]: candidatesPathObject,
+    [`/elections/{${parameter.electionId}}/candidates/{${parameter.candidateId}}`]:
       candidateIdPathObject,
     [`/users`]: usersPathObject,
     [`/users/verifyEmail`]: verifyEmailPathObject,
@@ -120,7 +121,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/resetPassword`]: resetPasswordPathObject,
     [`/users/logout`]: logoutPathObject,
     [`/voterGroups`]: voterGroupsPathObject,
-    [`/voterGroups/{${Parameter.voterGroupId}}`]: voterGroupIdPathObject,
-    [`/voterGroups/{${Parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
+    [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
+    [`/voterGroups/{${parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
   },
 };

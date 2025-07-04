@@ -1,9 +1,9 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
-import { type MockElection } from '../store/useStore.ts';
+import type { SelectableElection } from '@repo/votura-validators';
 import type { MouseEventHandler } from 'react';
 
 export interface DeleteElectionModalProps {
-  election: MockElection;
+  election: SelectableElection;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   onDelete: MouseEventHandler<HTMLButtonElement>;

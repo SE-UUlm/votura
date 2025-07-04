@@ -1,6 +1,4 @@
-import { OpenAPIV3 } from 'openapi-types';
-import { Tag } from '../globals/tag.js';
-import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import type { OpenAPIV3 } from 'openapi-types';
 import {
   selectableElectionObjectSchema,
   updateableElectionObjectSchema,
@@ -15,6 +13,8 @@ import {
   response429,
   responseDefault,
 } from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
 import { electionIdParameter } from './electionIdParameter.js';
 
 export const electionPathObject: OpenAPIV3.PathItemObject = {
