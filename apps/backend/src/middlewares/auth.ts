@@ -24,17 +24,18 @@ export const authenticateAccessToken = async (
     }
 
     // Verify token
-    const decodedToken = verifyToken(token) as AccessTokenPayload | null;
+    const decodedToken = verifyToken(token);
 
-    if (decodedToken === null || decodedToken.type !== 'access' || decodedToken.jti === undefined) {
+    if (decodedToken === null || decodedToken.type !== 'access') {
       res
         .status(HttpStatusCode.Unauthorized)
         .json(response401Object.parse({ message: 'Invalid access token.' }));
       return;
     }
+    const decodedAccessToken = decodedToken as AccessTokenPayload;
 
     // Check if token is blacklisted
-    const isBlacklisted: boolean = await isTokenBlacklisted(decodedToken.jti);
+    const isBlacklisted: boolean = await isTokenBlacklisted(decodedAccessToken.jti);
     if (isBlacklisted) {
       res
         .status(HttpStatusCode.Unauthorized)
@@ -45,7 +46,7 @@ export const authenticateAccessToken = async (
     }
 
     // Check if the user exists in the database
-    const user = await findUserBy({ id: decodedToken.sub });
+    const user = await findUserBy({ id: decodedAccessToken.sub });
 
     if (user === null) {
       res
@@ -55,7 +56,7 @@ export const authenticateAccessToken = async (
     }
 
     res.locals.user = user;
-    res.locals.accessTokenPayload = decodedToken;
+    res.locals.accessTokenPayload = decodedAccessToken;
 
     next();
   } catch {

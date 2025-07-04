@@ -132,7 +132,6 @@ export const loginUser = async (
   if (updatedUser === undefined) {
     return loginError.Internal;
   }
-
   return tokens;
 };
 
