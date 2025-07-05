@@ -104,10 +104,11 @@ export class PrivateKey extends PublicKey {
 }
 
 export class KeyPair {
-  publicKey: PublicKey;
-  privateKey: PrivateKey;
+  public publicKey: PublicKey;
 
-  constructor(
+  public privateKey: PrivateKey;
+
+  public constructor(
     primeP: bigint,
     primeQ: bigint,
     generator: bigint,
