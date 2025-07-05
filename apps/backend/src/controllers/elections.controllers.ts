@@ -104,7 +104,7 @@ export const freezeElection = async (
     return;
   }
 
-  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #198)
+  // TODO: Add here the functionality to generate the keys for the election. (see #198)
 
   res.status(HttpStatusCode.Ok).json(election);
 };
@@ -122,7 +122,7 @@ export const unfreezeElection = async (
     return;
   }
 
-  // TODO: Add here the functionality to generate the keys and tokens for the election and the voters. (see #201)
+  // TODO: Add here the functionality to delete the keys for the election and the voters. (see #201 & #214)
 
   res.status(HttpStatusCode.Ok).json(election);
 };
