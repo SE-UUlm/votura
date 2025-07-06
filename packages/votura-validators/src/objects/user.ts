@@ -23,8 +23,8 @@ export const userObject = z.object({
   refreshToken: z
     .string()
     .min(1)
-    .max(1)
-    .regex(/^[a-zA-Z0-9.-_]$/)
+    .max(2000)
+    .regex(/^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/)
     .register(voturaMetadataRegistry, {
       description:
         'The refresh token of the user. This token is used to generate a new access and refresh token. The refresh token is valid for 7 days.',
@@ -33,8 +33,8 @@ export const userObject = z.object({
   accessToken: z
     .string()
     .min(1)
-    .max(1)
-    .regex(/^[a-zA-Z0-9.-_]$/)
+    .max(2000)
+    .regex(/^[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+\.[a-zA-Z0-9-_]+$/)
     .register(voturaMetadataRegistry, {
       description:
         'The access token of the user. This token is used to authenticate the user. The access token is valid for 15 minutes.',

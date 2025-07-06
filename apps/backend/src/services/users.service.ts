@@ -82,6 +82,52 @@ export async function createUser(insertableUser: InsertableUser): Promise<boolea
   return true; // User created successfully
 }
 
+export async function verifyUser(userId: string): Promise<boolean> {
+  const updatedUser = await db
+    .updateTable('User')
+    .set({ verified: true })
+    .where('id', '=', userId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (updatedUser === undefined) {
+    return false; // Failed to verify user
+  }
+  return true; // User verified successfully
+}
+
+export async function deleteUser(userId: string): Promise<boolean> {
+  const deletedUser = await db
+    .deleteFrom('User')
+    .where('id', '=', userId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (deletedUser === undefined) {
+    return false; // Failed to delete user
+  }
+  return true; // User deleted successfully
+}
+
+export async function blacklistAccessToken(
+  accessTokenId: string,
+  expiresAt: Date,
+): Promise<boolean> {
+  const blacklistEntry = await db
+    .insertInto('AccessTokenBlacklist')
+    .values({
+      accessTokenId,
+      expiresAt,
+    })
+    .returningAll()
+    .executeTakeFirst();
+
+  if (blacklistEntry === undefined) {
+    return false; // Failed to blacklist token
+  }
+  return true; // Token blacklisted successfully
+}
+
 export enum loginError {
   InvalidCredentials = 'Invalid credentials',
   UserNotVerified = 'User is not verified',
@@ -201,17 +247,10 @@ export const logoutUser = async (
   // Add access token to blacklist
   const expiresAt = new Date(accessTokenPayload.exp * 1000);
 
-  const blacklistEntry = await db
-    .insertInto('AccessTokenBlacklist')
-    .values({
-      accessTokenId: accessTokenPayload.jti,
-      expiresAt: expiresAt,
-    })
-    .returningAll()
-    .executeTakeFirst();
+  const blacklisted = await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
 
-  if (blacklistEntry === undefined) {
-    return false; // Failed to blacklist token
+  if (!blacklisted) {
+    return false; // Failed to blacklist access token
   }
 
   // Clear refresh token from user record

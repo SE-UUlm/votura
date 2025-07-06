@@ -37,7 +37,6 @@ usersRouter.post(
 usersRouter.post(
   '/logout',
   acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
   authenticateAccessToken,
   logout,
 );
