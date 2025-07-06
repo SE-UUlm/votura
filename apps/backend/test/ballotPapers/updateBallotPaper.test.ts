@@ -2,6 +2,7 @@ import {
   parameter,
   response400Object,
   selectableBallotPaperObject,
+  type ApiTokenUser,
   type SelectableBallotPaper,
   type SelectableElection,
 } from '@repo/votura-validators';
@@ -12,7 +13,6 @@ import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import {
   brokenDemoBallotPaper,
-  DEMO_TOKEN,
   demoBallotPaper,
   demoBallotPaper2,
   demoElection,
@@ -20,11 +20,13 @@ import {
 } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -44,12 +46,14 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should update a ballot paper for an election', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaper2);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
@@ -65,7 +69,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('400: should complain about wrong input data', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenDemoBallotPaper);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');

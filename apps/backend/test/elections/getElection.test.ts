@@ -1,4 +1,5 @@
 import {
+  type ApiTokenUser,
   response404Object,
   response406Object,
   type SelectableElection,
@@ -11,13 +12,14 @@ import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createElection } from '../../src/services/elections.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe('GET /elections/:electionId', () => {
-  const AUTH_TOKEN = '1234';
   const ELECTIONS_SLUG = '/elections';
 
   let user: SelectableUser | null = null;
   let election: SelectableElection | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser({
@@ -48,12 +50,14 @@ describe('GET /elections/:electionId', () => {
     if (election === null) {
       throw new Error('Election not found!');
     }
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should get a specific election', async () => {
     const res = await request(app)
       .get(`${ELECTIONS_SLUG}/${election?.id}`)
-      .set('Authorization', AUTH_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send();
 
     expect(res.status).toBe(HttpStatusCode.Ok);
@@ -65,7 +69,7 @@ describe('GET /elections/:electionId', () => {
   it('should return 406 Not Acceptable when Accept header is not application/json', async () => {
     const res = await request(app)
       .get(`${ELECTIONS_SLUG}/${election?.id}`)
-      .set('Authorization', AUTH_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .set('Accept', 'text/plain')
       .send();
 
@@ -78,7 +82,7 @@ describe('GET /elections/:electionId', () => {
   it('should return 404 Not Found when there is no election', async () => {
     const res = await request(app)
       .get(`${ELECTIONS_SLUG}/2085733f-4862-4028-93ac-851a51b2c95b`)
-      .set('Authorization', AUTH_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send();
 
     expect(res.status).toBe(HttpStatusCode.NotFound);

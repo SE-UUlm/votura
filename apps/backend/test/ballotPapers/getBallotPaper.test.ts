@@ -3,6 +3,7 @@ import {
   response400Object,
   response404Object,
   selectableBallotPaperObject,
+  type ApiTokenUser,
   type SelectableBallotPaper,
   type SelectableElection,
 } from '@repo/votura-validators';
@@ -11,15 +12,17 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { DEMO_TOKEN, demoBallotPaper, demoElection, demoElection2, demoUser } from '../mockData.js';
+import { demoBallotPaper, demoElection, demoElection2, demoUser } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let requestPath2 = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -41,10 +44,12 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
     requestPath2 = `/elections/${election2.id}/ballotPapers/${ballotPaper.id}`;
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should get a ballot paper for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
+    const res = await request(app).get(requestPath).set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperObject.safeParse(res.body);
@@ -59,7 +64,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('400: should return 400 when ballot paper id is invalid', async () => {
     const res = await request(app)
       .get(`/elections/${election?.id}/ballotPapers/noUUID`)
-      .set('Authorization', DEMO_TOKEN);
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
@@ -68,14 +73,14 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('404: should return 404 when ballot paper not exists', async () => {
     const res = await request(app)
       .get(`/elections/${election?.id}/ballotPapers/fe592288-a169-4be0-9c3d-789237d3f075`)
-      .set('Authorization', DEMO_TOKEN);
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.NotFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
   it('400: should return 400 when election is not the parent of ballot paper', async () => {
-    const res = await request(app).get(requestPath2).set('Authorization', DEMO_TOKEN);
+    const res = await request(app).get(requestPath2).set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);

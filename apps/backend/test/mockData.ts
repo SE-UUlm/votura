@@ -8,7 +8,6 @@ import {
 /*
  * User and authentication
  */
-export const DEMO_TOKEN = '1234';
 const STRONG_PWD = 'MyStrong!Password123';
 export const demoUser = insertableUserObject.parse({
   email: 'user@votura.org',

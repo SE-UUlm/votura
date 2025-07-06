@@ -2,6 +2,7 @@ import {
   parameter,
   response400Object,
   selectableElectionObject,
+  type ApiTokenUser,
   type SelectableElection,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -9,12 +10,14 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { brokenElection, DEMO_TOKEN, demoElection, demoElection2, demoUser } from '../mockData.js';
+import { brokenElection, demoElection, demoElection2, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`PUT /elections/:${parameter.electionId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -29,12 +32,14 @@ describe(`PUT /elections/:${parameter.electionId}`, () => {
     }
 
     requestPath = `/elections/${election.id}`;
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should update an election', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoElection2);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
@@ -50,7 +55,7 @@ describe(`PUT /elections/:${parameter.electionId}`, () => {
   it('400: should complain about wrong input data', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenElection);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
