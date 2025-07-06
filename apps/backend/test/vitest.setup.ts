@@ -1,8 +1,7 @@
-import { GenericContainer } from 'testcontainers';
-import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { Kysely, PostgresDialect } from 'kysely';
 import path from 'path';
 import { Pool } from 'pg';
+import { GenericContainer } from 'testcontainers';
 import { fileURLToPath } from 'url';
 import { vi } from 'vitest';
 import { migrateToLatest } from '../src/db/migrateToLatest.js';
@@ -12,9 +11,10 @@ import { kyselyLogger } from '../src/logger.js';
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
-const builtContainer = await GenericContainer
-  .fromDockerfile(path.join(DIRNAME, '../'), 'dockerfile')
-  .build();
+const builtContainer = await GenericContainer.fromDockerfile(
+  path.join(DIRNAME, '../'),
+  'dockerfile',
+).build();
 
 // Now configure and start the container
 const container = await builtContainer

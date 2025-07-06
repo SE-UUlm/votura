@@ -10,12 +10,12 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection, demoElection2, demoUser } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
@@ -49,7 +49,9 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   });
 
   it('200: should get a ballot paper for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', `Bearer ${tokens.accessToken}`);
+    const res = await request(app)
+      .get(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperObject.safeParse(res.body);
@@ -80,7 +82,9 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     expect(parseResult.success).toBe(true);
   });
   it('400: should return 400 when election is not the parent of ballot paper', async () => {
-    const res = await request(app).get(requestPath2).set('Authorization', `Bearer ${tokens.accessToken}`);
+    const res = await request(app)
+      .get(requestPath2)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);

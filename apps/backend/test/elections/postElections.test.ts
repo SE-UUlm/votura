@@ -9,9 +9,9 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 const REQUEST = '/elections';
 const demoElection = insertableElectionObject.parse({
@@ -44,7 +44,10 @@ describe('POST /elections', () => {
   });
 
   it('should create an election when authorized and body is valid', async () => {
-    const res = await request(app).post(REQUEST).set('Authorization', `Bearer ${tokens.accessToken}`).send(demoElection);
+    const res = await request(app)
+      .post(REQUEST)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send(demoElection);
     expect(res.status).toBe(HttpStatusCode.Created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableElectionObject.safeParse(res.body);
@@ -52,13 +55,16 @@ describe('POST /elections', () => {
   });
 
   it('should throw error missing fields', async () => {
-    const res = await request(app).post(REQUEST).set('Authorization', `Bearer ${tokens.accessToken}`).send({
-      name: 'My test election',
-      description: 'My description',
-      private: true,
-      votingStartAt: '2025-06-16T14:30:00Z',
-      allowInvalidVotes: false,
-    });
+    const res = await request(app)
+      .post(REQUEST)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        name: 'My test election',
+        description: 'My description',
+        private: true,
+        votingStartAt: '2025-06-16T14:30:00Z',
+        allowInvalidVotes: false,
+      });
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);

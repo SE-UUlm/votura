@@ -9,10 +9,10 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createElection } from '../../src/services/elections.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe('GET /elections/:electionId', () => {
   const ELECTIONS_SLUG = '/elections';

@@ -11,11 +11,11 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection, demoUser, demoUser2 } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
@@ -54,11 +54,14 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
     expect(parseResult.success).toBe(true);
   });
   it('400: should throw error missing fields', async () => {
-    const res = await request(app).post(requestPath).set('Authorization', `Bearer ${tokens.accessToken}`).send({
-      description: 'Test description',
-      maxVotes: 5,
-      maxVotesPerCandidate: 3,
-    });
+    const res = await request(app)
+      .post(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        description: 'Test description',
+        maxVotes: 5,
+        maxVotesPerCandidate: 3,
+      });
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);

@@ -1,11 +1,15 @@
-import { response406Object, selectableElectionObject, type ApiTokenUser } from '@repo/votura-validators';
+import {
+  response406Object,
+  selectableElectionObject,
+  type ApiTokenUser,
+} from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createElection } from '../../src/services/elections.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe('GET /elections', () => {
   const ELECTIONS_SLUG = '/elections';
@@ -45,7 +49,10 @@ describe('GET /elections', () => {
   });
 
   it('should get all elections', async () => {
-    const res = await request(app).get(ELECTIONS_SLUG).set('Authorization', `Bearer ${tokens.accessToken}`).send();
+    const res = await request(app)
+      .get(ELECTIONS_SLUG)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send();
 
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');

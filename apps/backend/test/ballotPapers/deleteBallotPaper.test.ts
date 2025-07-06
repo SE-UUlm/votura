@@ -7,12 +7,12 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection, demoUser } from '../mockData.js';
 import { createBallotPaper, getBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
@@ -43,7 +43,9 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   });
 
   it('204: should delete a ballot paper', async () => {
-    const res = await request(app).delete(requestPath).set('Authorization', `Bearer ${tokens.accessToken}`);
+    const res = await request(app)
+      .delete(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.NoContent);
     if (ballotPaper?.id === undefined) {
       throw new Error('Ballot paper ID is undefined');

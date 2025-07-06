@@ -2,12 +2,12 @@ import { parameter, selectableBallotPaperObject, type ApiTokenUser } from '@repo
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoBallotPaper, demoElection, demoUser } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection } from './../../src/services/elections.service.js';
-import { generateUserTokens } from '../../src/auth/utils.js';
 
 describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
@@ -37,7 +37,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   });
 
   it('200: should get all ballot papers for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', `Bearer ${tokens.accessToken}`);
+    const res = await request(app)
+      .get(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
 
