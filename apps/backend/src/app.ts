@@ -1,10 +1,10 @@
+import { logger } from '@repo/logger';
 import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import pinoHttp from 'pino-http';
 import { HttpStatusCode } from './httpStatusCode.js';
-import logger from './logger.js';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
 import { usersRouter } from './routes/users.routes.js';

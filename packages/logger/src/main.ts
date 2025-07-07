@@ -36,7 +36,7 @@ const transport = pino.transport({
   ],
 }) as pino.DestinationStream;
 
-const logger = pino.pino(
+export const logger = pino.pino(
   {
     level: 'debug',
     redact: { paths: ['email', 'password'], censor: '***', remove: false },
@@ -68,4 +68,3 @@ export const kyselyLogger = (event: LogEvent): void => {
     );
   }
 };
-export default logger;

@@ -1,7 +1,7 @@
+import { logger } from '@repo/logger';
 import dotenv from 'dotenv';
 import { app } from './app.js';
 import { db } from './db/database.js';
-import logger from './logger.js';
 
 dotenv.config();
 
