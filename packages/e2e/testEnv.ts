@@ -17,7 +17,7 @@ export const startTestEnv = async (): Promise<void> => {
   dbContainer = await new PostgreSqlContainer('postgres:17.4').start();
   const dbConnectionUri = dbContainer.getConnectionUri();
   process.env.DATABASE_URL = dbConnectionUri;
-  process.env.HOME = '/root'
+  process.env.HOME = '/root';
   logger.info('Postgres container created.');
 
   logger.info('Running migration...');
