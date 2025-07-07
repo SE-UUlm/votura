@@ -65,7 +65,7 @@
       "persistent": false,
       "interactive": false,
       "outputs": ["coverage/**", "results/**", "logs/**"],
-      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "CI"]
     },
     "start": {
       "dependsOn": ["^start"],
