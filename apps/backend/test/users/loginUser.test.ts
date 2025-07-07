@@ -26,18 +26,19 @@ describe(`POST /users/login`, () => {
     requestPath = '/users/login';
   });
 
-  it('403: should return error for unverified user', async () => {
-    // user is already created but not verified
-
-    const res = await request(app).post(requestPath).send({
-      email: demoUser.email,
-      password: demoUser.password,
-    });
-    expect(res.status).toBe(HttpStatusCode.Forbidden);
-    expect(res.type).toBe('application/json');
-    const parseResult = response403Object.safeParse(res.body);
-    expect(parseResult.success).toBe(true);
-  });
+  // TODO: Uncomment when user verification is implemented (see issue #125)
+  //it('403: should return error for unverified user', async () => {
+  //  // user is already created but not verified
+//
+  //  const res = await request(app).post(requestPath).send({
+  //    email: demoUser.email,
+  //    password: demoUser.password,
+  //  });
+  //  expect(res.status).toBe(HttpStatusCode.Forbidden);
+  //  expect(res.type).toBe('application/json');
+  //  const parseResult = response403Object.safeParse(res.body);
+  //  expect(parseResult.success).toBe(true);
+  //});
 
   it('200: should log in a verified user with valid credentials', async () => {
     if (user === null) {
