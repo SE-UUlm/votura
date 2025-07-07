@@ -1,7 +1,4 @@
-import {
-  response400Object,
-  response409Object,
-} from '@repo/votura-validators';
+import { response400Object, response409Object } from '@repo/votura-validators';
 import request from 'supertest';
 import { describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -14,7 +11,7 @@ describe(`POST /users`, () => {
   it('201: should create a new user with valid data', async () => {
     const res = await request(app).post(requestPath).send(demoUser);
     expect(res.status).toBe(HttpStatusCode.NoContent);
-    expect(res.type).toBe("");
+    expect(res.type).toBe('');
   });
 
   it('400: should return error for invalid user data', async () => {

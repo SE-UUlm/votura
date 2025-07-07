@@ -2,7 +2,6 @@ import {
   apiTokenUserObject,
   response400Object,
   response401Object,
-  response403Object,
   type SelectableUser,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -29,7 +28,7 @@ describe(`POST /users/login`, () => {
   // TODO: Uncomment when user verification is implemented (see issue #125)
   //it('403: should return error for unverified user', async () => {
   //  // user is already created but not verified
-//
+  //
   //  const res = await request(app).post(requestPath).send({
   //    email: demoUser.email,
   //    password: demoUser.password,
