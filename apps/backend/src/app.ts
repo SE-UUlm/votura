@@ -3,6 +3,7 @@ import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
 import pinoHttp from 'pino-http';
+import { generateJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
 import logger from './logger.js';
 import { authenticateAccessToken } from './middlewares/auth.js';
@@ -10,6 +11,7 @@ import { electionsRouter } from './routes/elections.routes.js';
 import { usersRouter } from './routes/users.routes.js';
 
 dotenv.config();
+generateJWTKeyPair();
 
 export const app = express();
 

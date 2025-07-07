@@ -1,7 +1,9 @@
 import crypto from 'crypto';
 
-// Generate RSA key pair for JWT signing (run this once and save to .env)
-export const generateKeyPair = (): { privateKey: string; publicKey: string } => {
+/**
+ * Generate RSA key pair for JWT signing (run this once and save to .env)
+ */
+export const generateJWTKeyPair = (): void => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 4096,
     publicKeyEncoding: {
@@ -14,11 +16,12 @@ export const generateKeyPair = (): { privateKey: string; publicKey: string } => 
     },
   });
 
-  console.info('Add these to your .env file:');
-  console.info('JWT_PRIVATE_KEY=' + Buffer.from(privateKey).toString('base64'));
-  console.info('JWT_PUBLIC_KEY=' + Buffer.from(publicKey).toString('base64'));
+  // load keys into environment variables
+  process.env.JWT_PRIVATE_KEY = Buffer.from(privateKey).toString('base64');
+  process.env.JWT_PUBLIC_KEY = Buffer.from(publicKey).toString('base64');
 
-  return { privateKey, publicKey };
+  // make sure the keys are set
+  if (process.env.JWT_PRIVATE_KEY === undefined || process.env.JWT_PUBLIC_KEY === undefined) {
+    throw new Error('Failed to generate JWT key pair. Check your environment variables.');
+  }
 };
-
-generateKeyPair();

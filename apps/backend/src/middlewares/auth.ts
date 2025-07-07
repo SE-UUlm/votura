@@ -5,8 +5,10 @@ import { isTokenBlacklisted, verifyToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { findUserBy } from '../services/users.service.js';
 
-// Middleware to authenticate requests using JWT access tokens
-// Also checks if the user exists in the database
+/**
+ * Middleware to authenticate requests using JWT access tokens
+ * Also checks if the user exists in the database
+ */
 export const authenticateAccessToken = async (
   req: Request,
   res: Response,
