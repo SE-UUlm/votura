@@ -157,10 +157,11 @@ export const loginUser = async (
     return loginError.InvalidCredentials; // Invalid password
   }
 
+  // TODO: Uncomment when user verification is implemented (see issue #125)
   // Check if user is verified
-  if (!user.verified) {
-    return loginError.UserNotVerified; // User not verified
-  }
+  //if (!user.verified) {
+  //  return loginError.UserNotVerified; // User not verified
+  //}
 
   // Generate new token pair
   const tokens = generateUserTokens(user.id);
