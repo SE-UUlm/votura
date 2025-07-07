@@ -45,7 +45,7 @@ export const logger = pino.pino(
   transport,
 );
 
-export const httpLogger = pinoHttp.pinoHttp({ logger })
+export const httpLogger = pinoHttp.pinoHttp({ logger });
 
 export const kyselyLogger = (event: LogEvent): void => {
   if (event.level === 'error') {

@@ -64,7 +64,7 @@
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
-      "outputs": ["coverage/**", "results/**", "logs/**"],
+      "outputs": ["coverage/**", "results/**", "logs/**", "test-results/**"],
       "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "CI"]
     },
     "start": {

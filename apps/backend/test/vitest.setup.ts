@@ -1,3 +1,5 @@
+import { migrateToLatest } from '@repo/db/migateToLatest';
+import type { DB } from '@repo/db/types';
 import { kyselyLogger } from '@repo/logger';
 import { PostgreSqlContainer } from '@testcontainers/postgresql';
 import { Kysely, PostgresDialect } from 'kysely';
@@ -5,8 +7,6 @@ import path from 'path';
 import { Pool } from 'pg';
 import { fileURLToPath } from 'url';
 import { vi } from 'vitest';
-import { migrateToLatest } from '@repo/db/migateToLatest';
-import type { DB } from '@repo/db/types';
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
