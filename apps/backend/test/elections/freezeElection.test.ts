@@ -12,13 +12,13 @@ import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { DEMO_TOKEN, demoElection, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-async function sleep(ms: number): Promise<void> {
-  return new Promise((resolve) => setTimeout(resolve, ms));
-}
-
 describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
+
+  async function sleep(ms: number): Promise<void> {
+    return new Promise((resolve) => setTimeout(resolve, ms));
+  }
 
   beforeAll(async () => {
     await createUser(demoUser);
