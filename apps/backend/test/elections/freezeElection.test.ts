@@ -12,6 +12,10 @@ import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { DEMO_TOKEN, demoElection, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
+async function sleep(ms: number): Promise<void> {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
 describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
@@ -31,16 +35,28 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     requestPath = `/elections/${election.id}/freeze`;
   });
 
-  it('200: should freeze an election', async () => {
+  it('200: should freeze an election & generate keys', { timeout: 120000 }, async () => {
     const res = await request(app).put(requestPath).set('Authorization', DEMO_TOKEN);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
-    const parseResult = selectableElectionObject.safeParse(res.body);
+    let parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    if (parseResult.success === true) {
-      expect(parseResult.data.id).toBe(election?.id);
-      expect(parseResult.data.configFrozen).toBe(true);
+
+    expect(parseResult.data?.id).toBe(election?.id);
+    expect(parseResult.data?.configFrozen).toBe(true);
+
+    while (parseResult.data?.pubKey === undefined) {
+      await sleep(5000);
+      const res2 = await request(app)
+        .get(`/elections/${election?.id}`)
+        .set('Authorization', DEMO_TOKEN);
+      parseResult = selectableElectionObject.safeParse(res2.body);
     }
+
+    expect(parseResult.data?.pubKey).toBeTypeOf('string');
+    expect(parseResult.data?.primeP).toBeTypeOf('string');
+    expect(parseResult.data?.primeQ).toBeTypeOf('string');
+    expect(parseResult.data?.generator).toBeTypeOf('string');
   });
   it('403: should not allow freezing a second time', async () => {
     const res = await request(app).put(requestPath).set('Authorization', DEMO_TOKEN);

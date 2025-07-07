@@ -36,6 +36,8 @@ jobs:
         run: |
           cd apps/backend
           echo "PEPPER=12a34" > .env
+          echo "TERMINAL_LOG_LEVEL=\"debug\"" >> .env
+          echo "BITS_PRIME_P=20" >> .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
