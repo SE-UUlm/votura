@@ -4,7 +4,8 @@
   "type": "module",
   "scripts": {
     "format": "prettier --write .",
-    "check-format": "prettier --check ."
+    "check-format": "prettier --check .",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "dotenv": "^16.5.0",

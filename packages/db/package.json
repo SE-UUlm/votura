@@ -9,7 +9,8 @@
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
     "migrate": "tsx ./src/migrate.ts",
-    "seed": "tsx ./src/seed.ts"
+    "seed": "tsx ./src/seed.ts",
+    "check-types": "tsc --noEmit"
   },
   "dependencies": {
     "dotenv": "^16.5.0",
