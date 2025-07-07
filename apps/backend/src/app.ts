@@ -1,9 +1,8 @@
-import { logger } from '@repo/logger';
+import { httpLogger, logger } from '@repo/logger';
 import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
-import pinoHttp from 'pino-http';
 import { HttpStatusCode } from './httpStatusCode.js';
 import { auth } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
@@ -17,7 +16,7 @@ app.disable('x-powered-by');
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
-app.use(pinoHttp.pinoHttp({ logger }));
+app.use(httpLogger);
 
 app.use('/users', usersRouter);
 app.use('/elections', [auth, electionsRouter]);
