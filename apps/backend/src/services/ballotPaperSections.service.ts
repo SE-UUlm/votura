@@ -4,8 +4,8 @@ import type {
   SelectableBallotPaperSection,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
-import { db } from '../db/database.js';
-import type { BallotPaperSection as KyselyBallotPaperSection } from '../db/types/db.js';
+import { db } from '@repo/db';
+import type { BallotPaperSection as KyselyBallotPaperSection } from '@repo/db/types';
 import { spreadableOptional } from '../utils.js';
 
 const ballotPaperSectionTransformer = (

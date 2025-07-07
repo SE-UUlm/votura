@@ -6,8 +6,8 @@ import type {
   User,
 } from '@repo/votura-validators';
 import type { DeleteResult, Selectable } from 'kysely';
-import { db } from '../db/database.js';
-import type { Election as KyselyElection } from '../db/types/db.js';
+import { db } from '@repo/db';
+import type { Election as KyselyElection } from '@repo/db/types';
 import { spreadableOptional } from '../utils.js';
 
 const electionTransformer = (election: Selectable<KyselyElection>): SelectableElection => {

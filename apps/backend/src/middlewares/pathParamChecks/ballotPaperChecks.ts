@@ -9,7 +9,7 @@ import {
   type Response404,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
-import { db } from '../../db/database.js';
+import { db } from '@repo/db';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 
 /**

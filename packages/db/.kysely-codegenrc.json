@@ -9,7 +9,7 @@
   "includePattern": null,
   "logLevel": "warn",
   "numericParser": "string",
-  "outFile": "./src/db/types/db.d.ts",
+  "outFile": "./src/types/db.d.ts",
   "overrides": {},
   "partitions": false,
   "print": false,
