@@ -7,12 +7,16 @@ dotenv.config({ path: fileURLToPath(new URL('.env', import.meta.url)) });
 
 export default defineConfig({
   testDir: './tests',
+  globalSetup: './globalSetup',
+  globalTeardown: './globalTeardown',
+  timeout: 30000,
   fullyParallel: true,
   forbidOnly: !(process.env.CI == null),
   retries: process.env.CI != null ? 2 : 0,
   workers: process.env.CI != null ? 1 : os.availableParallelism(),
   reporter: 'html',
   use: {
+    baseURL: 'http://localhost:5173',
     trace: 'on-first-retry',
   },
   projects: [

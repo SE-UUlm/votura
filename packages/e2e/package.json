@@ -18,6 +18,7 @@
     "@repo/typescript-config": "*",
     "@testcontainers/postgresql": "^11.0.3",
     "@types/node": "^24.0.10",
+    "@types/wait-on": "^5.3.4",
     "eslint": "^9.25.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
