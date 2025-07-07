@@ -1,4 +1,4 @@
-import { migrateToLatest } from '@repo/db/migateToLatest';
+import { migrateToLatest } from '@repo/db/migrateToLatest';
 import type { DB } from '@repo/db/types';
 import { kyselyLogger, logger } from '@repo/logger';
 import { PostgreSqlContainer, type StartedPostgreSqlContainer } from '@testcontainers/postgresql';
