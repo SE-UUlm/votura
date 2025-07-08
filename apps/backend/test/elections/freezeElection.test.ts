@@ -56,7 +56,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
       await sleep(5000);
       const res2 = await request(app)
         .get(`/elections/${election?.id}`)
-        .set('Authorization', DEMO_TOKEN);
+        .set('Authorization', `Bearer ${tokens.accessToken}`);
       parseResult = selectableElectionObject.safeParse(res2.body);
     }
 
