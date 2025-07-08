@@ -15,7 +15,7 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Login a user',
   description: 'Login a user with the given credentials.',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Login a user',
     description: 'Login a user with the given credentials.',
     security: [],

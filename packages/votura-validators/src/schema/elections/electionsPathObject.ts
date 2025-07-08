@@ -19,7 +19,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
   description:
     'A election is always at least linked to one user. You can create a new one ore read the existing ones.',
   get: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Get all elections',
     description:
       'Returns all elections with the public information fields, that are linked to user of the API access token.',
@@ -49,7 +49,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   post: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Create a new election',
     description: 'Creates a new election with a link to the user of the API access token.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],

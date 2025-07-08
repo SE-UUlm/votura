@@ -19,7 +19,7 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
   description: 'Unfreezes the requested election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Unfreeze a specific election',
     description:
       'Unfreezes the requested election.\n' +

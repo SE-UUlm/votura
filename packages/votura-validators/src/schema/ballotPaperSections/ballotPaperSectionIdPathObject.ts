@@ -24,7 +24,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
   description: 'Read, update or delete a specific ballot paper section.',
   parameters: [electionIdParameter, ballotPaperIdParameter, ballotPaperSectionIdParameter],
   put: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Update a specific ballot paper section',
     description:
       'Updates the configuration of the requested ballot paper section with the provided information.\n' +
@@ -64,7 +64,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Get a specific ballot paper section',
     description:
       'Returns the requested ballot paper section with all public information fields.\n' +
@@ -94,7 +94,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Delete a specific ballot paper section',
     description:
       'Deletes the requested ballot paper section.\n' +

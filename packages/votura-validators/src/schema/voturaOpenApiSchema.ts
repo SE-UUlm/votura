@@ -74,27 +74,27 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   },
   tags: [
     {
-      name: Tag.Elections,
+      name: Tag.elections,
       description: 'Managing CRUD operations for elections.',
     },
     {
-      name: Tag.Users,
+      name: Tag.users,
       description: 'Managing CRUD operations for users and sessions.',
     },
     {
-      name: Tag.BallotPapers,
+      name: Tag.ballotPapers,
       description: 'Managing CRUD operations for ballot papers.',
     },
     {
-      name: Tag.BallotPaperSections,
+      name: Tag.ballotPaperSections,
       description: 'Managing CRUD operations for ballot paper sections.',
     },
     {
-      name: Tag.Candidates,
+      name: Tag.candidates,
       description: 'Managing CRUD operations for candidates.',
     },
     {
-      name: Tag.VoterGroups,
+      name: Tag.voterGroups,
       description: 'Managing CRUD operations for voter groups.',
     },
   ],

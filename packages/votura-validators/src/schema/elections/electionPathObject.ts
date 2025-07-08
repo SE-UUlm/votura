@@ -22,7 +22,7 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
   description: 'Read, update or delete a specific election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Update a specific election',
     description:
       'Updates the configuration of the requested election with the provided information. The election can only be updated if the election is not frozen.',
@@ -56,7 +56,7 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Get a specific election',
     description: 'Returns the requested election with all public information fields.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
@@ -81,7 +81,7 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Delete a specific election',
     description:
       'Deletes the requested election. The election will be deleted from the database. Note that also all linked data (like votes) will be removed.',

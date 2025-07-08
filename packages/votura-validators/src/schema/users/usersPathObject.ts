@@ -16,7 +16,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Creating and deleting a user',
   description: 'Creating and deleting a user in the votura backend.',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Create a new user',
     description: 'Creates a new user in the votura backend.',
     security: [],
@@ -43,7 +43,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Delete a user',
     description:
       'Deletes a user in the votura backend.\n' +

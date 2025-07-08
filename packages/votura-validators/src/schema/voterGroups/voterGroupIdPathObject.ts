@@ -22,7 +22,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
   description: 'Read, update or delete a specific voter group.',
   parameters: [voterGroupIdParameter],
   put: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Update a specific voter group',
     description:
       'Updates the configuration of the requested voter group with the provided information.\n' +
@@ -61,7 +61,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Get a specific voter group',
     description:
       'Returns the requested voter group with all public information fields.\n' +
@@ -91,7 +91,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Delete a specific voter group',
     description:
       'Deletes the requested voter group.\n' +

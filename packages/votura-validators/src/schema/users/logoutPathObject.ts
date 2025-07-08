@@ -13,7 +13,7 @@ export const logoutPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Logout user',
   description: 'Logout user (blacklist access and refresh token)',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Logout user',
     description: 'Logout user (blacklist access and refresh token)',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],

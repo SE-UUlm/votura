@@ -24,7 +24,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     'You can create a new one or read all the existing ones for an election.',
   parameters: [electionIdParameter],
   post: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Create a candidate',
     description:
       'Creates a candidate with a link to a ballot paper sections.\n' +
@@ -64,7 +64,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Get all candidates for an election',
     description:
       'Returns all candidates with the public information fields, that are linked to the specified election. \n' +

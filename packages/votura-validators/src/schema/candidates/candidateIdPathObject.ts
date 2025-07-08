@@ -23,7 +23,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
   description: 'Read, update or delete a specific candidate.',
   parameters: [electionIdParameter, candidateIdParameter],
   put: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Update a specific candidate',
     description:
       'Updates the configuration of the requested candidate with the provided information.\n' +
@@ -62,7 +62,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Get a specific candidate',
     description:
       'Returns the requested candidate with all public information fields.\n' +
@@ -92,7 +92,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Delete a specific candidate',
     description:
       'Deletes the requested candidate.\n' +

@@ -19,7 +19,7 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
   description: 'Freezes the requested election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Freeze a specific election',
     description:
       'Freezes the requested election.\n' +

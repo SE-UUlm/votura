@@ -7,7 +7,7 @@ export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Request a password reset email',
   description: 'Request a password reset email sent to the email associated with the user account.',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Request a password reset email',
     description:
       'Request a password reset email sent to the email associated with the user account.\n' +

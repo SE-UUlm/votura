@@ -17,7 +17,7 @@ export const getVoterTokensPathObject: OpenAPIV3.PathItemObject = {
   description: 'Create voter tokens for a specific voter group.',
   parameters: [voterGroupIdParameter],
   get: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Create voter tokens for a specific voter group',
     description:
       'Creates and returns voter tokens for every voter in the requested voter group.\n' +
