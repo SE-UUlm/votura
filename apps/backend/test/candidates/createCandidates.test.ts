@@ -33,7 +33,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
     tokens = generateUserTokens(user.id);
   });
 
-  it('200: should create a candidate', async () => {
+  it('201: should create a candidate', async () => {
     const res = await request(app)
       .post(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
