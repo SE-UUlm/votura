@@ -5,6 +5,7 @@ import type {
   UpdateableElection,
   User,
 } from '@repo/votura-validators';
+import type { KeyPair } from '@votura/votura-crypto/index';
 import type { DeleteResult, Selectable } from 'kysely';
 import { db } from '../db/database.js';
 import type { Election as KyselyElection } from '../db/types/db.js';
@@ -84,6 +85,30 @@ export const updateElection = async (
   const election = await db
     .updateTable('election')
     .set({ ...updateableElection })
+    .where('id', '=', electionId)
+    .returningAll()
+    .executeTakeFirst();
+
+  if (election === undefined) {
+    return null;
+  }
+
+  return electionTransformer(election);
+};
+
+export const setElectionKeys = async (
+  keyPair: KeyPair,
+  electionId: Election['id'],
+): Promise<SelectableElection | null> => {
+  const election = await db
+    .updateTable('Election')
+    .set({
+      pubKey: keyPair.publicKey.publicKey.toString(),
+      privKey: keyPair.privateKey.privateKey.toString(),
+      primeP: keyPair.publicKey.primeP.toString(),
+      primeQ: keyPair.publicKey.primeQ.toString(),
+      generator: keyPair.publicKey.generator.toString(),
+    })
     .where('id', '=', electionId)
     .returningAll()
     .executeTakeFirst();
