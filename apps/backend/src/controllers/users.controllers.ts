@@ -26,7 +26,7 @@ export const getUserById = async (
   const id = req.params.id;
 
   if (id === '') {
-    res.status(HttpStatusCode.BadRequest).json({ message: 'Invalid user id.' });
+    res.status(HttpStatusCode.badRequest).json({ message: 'Invalid user id.' });
     return;
   }
 
@@ -35,11 +35,11 @@ export const getUserById = async (
   });
 
   if (!user) {
-    res.status(HttpStatusCode.NotFound).json({ message: 'User not found' });
+    res.status(HttpStatusCode.notFound).json({ message: 'User not found' });
     return;
   }
 
-  res.status(HttpStatusCode.Ok).json(user);
+  res.status(HttpStatusCode.ok).json(user);
 };
 
 export type CreateUserResponse = Response<void | Response400 | Response409 | Response500>;
@@ -55,7 +55,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       email: data.email,
     });
     if (user !== null) {
-      res.status(HttpStatusCode.Conflict).json(
+      res.status(HttpStatusCode.conflict).json(
         response409Object.parse({
           message: 'User with the provided email address already exists.',
         }),
@@ -67,15 +67,15 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
 
     if (!createdUser) {
       res
-        .status(HttpStatusCode.InternalServerError)
+        .status(HttpStatusCode.internalServerError)
         .json(
           response500Object.parse({ message: 'Failed to create user due to internal errors.' }),
         );
       return;
     }
 
-    res.sendStatus(HttpStatusCode.NoContent);
+    res.sendStatus(HttpStatusCode.noContent);
   } else {
-    res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
   }
 };

@@ -40,7 +40,7 @@ describe('POST /elections', () => {
 
   it('should create an election when authorized and body is valid', async () => {
     const res = await request(app).post(REQUEST).set('Authorization', TOKEN).send(demoElection);
-    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.status).toBe(HttpStatusCode.created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -54,7 +54,7 @@ describe('POST /elections', () => {
       votingStartAt: '2025-06-16T14:30:00Z',
       allowInvalidVotes: false,
     });
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -66,7 +66,7 @@ describe('POST /elections', () => {
       .send(
         '<election><name>My test election</name><description>My description</description><private>true</private><votingStartAt>2025-06-16T14:30:00Z</votingStartAt><votingEndAt>2025-06-18T14:30:00Z</votingEndAt><allowInvalidVotes>false</allowInvalidVotes></election>',
       );
-    expect(res.status).toBe(HttpStatusCode.UnsupportedMediaType);
+    expect(res.status).toBe(HttpStatusCode.unsupportedMediaType);
     expect(res.type).toBe('application/json');
     const parseResult = response415Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -77,7 +77,7 @@ describe('POST /elections', () => {
       .set('Authorization', TOKEN)
       .set('Accept', 'text/plain')
       .send(demoElection);
-    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.status).toBe(HttpStatusCode.notAcceptable);
     expect(res.type).toBe('application/json');
     const parseResult = response406Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

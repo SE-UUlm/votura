@@ -26,16 +26,16 @@ export const createBallotPaper = async (
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperObject.safeParseAsync(body);
   if (success === false) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
     return;
   }
 
   const selectableBallotPaper = await createPersistentBallotPaper(data, req.params.electionId);
   if (selectableBallotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
     return;
   }
-  res.status(HttpStatusCode.Created).json(selectableBallotPaper);
+  res.status(HttpStatusCode.created).json(selectableBallotPaper);
 };
 
 export const getBallotPapers = async (
@@ -43,7 +43,7 @@ export const getBallotPapers = async (
   res: Response<SelectableBallotPaper[]>,
 ): Promise<void> => {
   const ballotPapers = await getPersistentBallotPapers(req.params.electionId);
-  res.status(HttpStatusCode.Ok).json(ballotPapers);
+  res.status(HttpStatusCode.ok).json(ballotPapers);
 };
 
 export const getBallotPaper = async (
@@ -52,10 +52,10 @@ export const getBallotPaper = async (
 ): Promise<void> => {
   const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
   if (ballotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
     return;
   }
-  res.status(HttpStatusCode.Ok).json(ballotPaper);
+  res.status(HttpStatusCode.ok).json(ballotPaper);
 };
 
 export const updateBallotPaper = async (
@@ -65,16 +65,16 @@ export const updateBallotPaper = async (
   const body: unknown = req.body;
   const { data, error, success } = await updateableBallotPaperObject.safeParseAsync(body);
   if (success === false) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
     return;
   }
 
   const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
   if (selectableBallotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
     return;
   }
-  res.status(HttpStatusCode.Ok).json(selectableBallotPaper);
+  res.status(HttpStatusCode.ok).json(selectableBallotPaper);
 };
 
 export const deleteBallotPaper = async (
@@ -83,12 +83,12 @@ export const deleteBallotPaper = async (
 ): Promise<void> => {
   const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
   if (result.numDeletedRows < 1n) {
-    res.status(HttpStatusCode.NotFound).json(
+    res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided ballot paper for deletion was not found.',
       }),
     );
     return;
   }
-  res.sendStatus(HttpStatusCode.NoContent);
+  res.sendStatus(HttpStatusCode.noContent);
 };

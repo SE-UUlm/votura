@@ -10,7 +10,7 @@ usersRouter.get('/', [getUsers]);
 usersRouter.get('/:id', [getUserById]);
 usersRouter.post(
   '/',
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   createUser,
 );

@@ -24,7 +24,7 @@ app.use('/elections', [auth, electionsRouter]);
 // Fallback for unhandled routes
 app.use((_req, res) => {
   res
-    .status(HttpStatusCode.BadRequest)
+    .status(HttpStatusCode.badRequest)
     .json(
       response400Object.parse({ message: 'Invalid request! The requested route does not exist.' }),
     );
@@ -34,6 +34,6 @@ app.use((_req, res) => {
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   logger.error({ err }, 'An error occurred in the request handler');
   res
-    .status(HttpStatusCode.InternalServerError)
+    .status(HttpStatusCode.internalServerError)
     .json(response500Object.parse({ message: undefined }));
 });

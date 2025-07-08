@@ -35,7 +35,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
   it('200: should unfreeze a frozen election', async () => {
     await request(app).put(freezePath).set('Authorization', DEMO_TOKEN);
     const res = await request(app).put(unfreezePath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);

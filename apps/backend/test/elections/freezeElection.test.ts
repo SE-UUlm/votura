@@ -33,7 +33,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
 
   it('200: should freeze an election', async () => {
     const res = await request(app).put(requestPath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -44,7 +44,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   });
   it('403: should not allow freezing a second time', async () => {
     const res = await request(app).put(requestPath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.Forbidden);
+    expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

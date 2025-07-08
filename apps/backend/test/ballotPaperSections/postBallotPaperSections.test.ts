@@ -47,7 +47,7 @@ describe(`POST /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId
       .post(requestPath)
       .set('Authorization', DEMO_TOKEN)
       .send(demoBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.status).toBe(HttpStatusCode.created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperSectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -65,7 +65,7 @@ describe(`POST /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId
       .post(requestPath)
       .set('Authorization', DEMO_TOKEN)
       .send(brokenBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

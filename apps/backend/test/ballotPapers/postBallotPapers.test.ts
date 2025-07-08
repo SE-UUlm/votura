@@ -43,7 +43,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .post(requestPath)
       .set('Authorization', DEMO_TOKEN)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.status).toBe(HttpStatusCode.created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -54,7 +54,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       maxVotes: 5,
       maxVotesPerCandidate: 3,
     });
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -64,7 +64,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .post('/elections/invalid/ballotPapers')
       .set('Authorization', DEMO_TOKEN)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -74,7 +74,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .post(requestPath2)
       .set('Authorization', DEMO_TOKEN)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.Forbidden);
+    expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -84,7 +84,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .post('/elections/b3e3b70b-4008-4694-afc6-5e454ebcbd42/ballotPapers')
       .set('Authorization', DEMO_TOKEN)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -95,7 +95,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .set('Authorization', DEMO_TOKEN)
       .set('Accept', 'text/plain')
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.status).toBe(HttpStatusCode.notAcceptable);
     expect(res.type).toBe('application/json');
     const parseResult = response406Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -105,7 +105,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
       .post(requestPath)
       .set('Authorization', DEMO_TOKEN)
       .send('<name>My test ballot paper</name>');
-    expect(res.status).toBe(HttpStatusCode.UnsupportedMediaType);
+    expect(res.status).toBe(HttpStatusCode.unsupportedMediaType);
     expect(res.type).toBe('application/json');
     const parseResult = response415Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

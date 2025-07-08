@@ -41,7 +41,7 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
 
   it('203: should delete an election', async () => {
     const res = await request(app).delete(requestPath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     if (election?.id === undefined) {
       throw new Error('Election ID is undefined');
     }

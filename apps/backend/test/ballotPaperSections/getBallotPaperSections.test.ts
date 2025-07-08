@@ -53,7 +53,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
 
   it('200: should get all ballot papers sections for an election', async () => {
     const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
 
     const arrBody = res.body as unknown[];

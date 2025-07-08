@@ -39,7 +39,7 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
 
   it('204: should delete a ballot paper', async () => {
     const res = await request(app).delete(requestPath).set('Authorization', DEMO_TOKEN);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     if (ballotPaper?.id === undefined) {
       throw new Error('Ballot paper ID is undefined');
     }
