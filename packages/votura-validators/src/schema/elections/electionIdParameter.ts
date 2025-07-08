@@ -7,6 +7,7 @@ export const electionIdParameter: OpenAPIV3.ParameterObject = {
   in: 'path',
   description:
     'The unique identifier for the election. ' +
+    'The id must be a valid UUIDv4. ' +
     'The requested election must exist in the database. ' +
     'The requesting user must have access to this election.',
   required: true,
