@@ -36,7 +36,9 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
   });
 
   it('200: should get all candidates for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', tokens.accessToken);
+    const res = await request(app)
+      .get(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
 

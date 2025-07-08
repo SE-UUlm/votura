@@ -36,7 +36,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
   it('200: should create a candidate', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', tokens.accessToken)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoCandidate);
     expect(res.status).toBe(HttpStatusCode.Created);
     expect(res.type).toBe('application/json');
@@ -50,7 +50,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
   it('400: should throw error empty title fields', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', tokens.accessToken)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenCandidate);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
