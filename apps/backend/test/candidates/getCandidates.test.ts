@@ -1,15 +1,17 @@
-import { parameter, selectableCandidateObject } from '@repo/votura-validators';
+import { parameter, selectableCandidateObject, type ApiTokenUser } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { DEMO_TOKEN, demoCandidate, demoCandidate2, demoElection, demoUser } from '../mockData.js';
+import { demoCandidate, demoCandidate2, demoElection, demoUser } from '../mockData.js';
 import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
   let requestPath = '';
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -30,10 +32,13 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
     }
 
     requestPath = `/elections/${election.id}/candidates`;
+    tokens = generateUserTokens(user.id);
   });
 
-  it('200: should get all ballot papers sections for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
+  it('200: should get all candidates for an election', async () => {
+    const res = await request(app)
+      .get(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
 

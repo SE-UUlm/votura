@@ -35,7 +35,7 @@ jobs:
       - name: Generate .env file
         run: |
           cd apps/backend
-          echo "PEPPER=12a34" > .env
+          echo "PEPPER=\"3107ee33f20c08c08e902974f845e1347d01ebf14aae9369c8700bf51688d107\"" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats

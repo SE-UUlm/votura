@@ -1,14 +1,21 @@
-import { parameter, response400Object, selectableCandidateObject } from '@repo/votura-validators';
+import {
+  parameter,
+  response400Object,
+  selectableCandidateObject,
+  type ApiTokenUser,
+} from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { brokenCandidate, DEMO_TOKEN, demoCandidate, demoElection, demoUser } from '../mockData.js';
+import { brokenCandidate, demoCandidate, demoElection, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
   let requestPath = '';
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -23,12 +30,13 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
     }
 
     requestPath = `/elections/${election.id}/candidates`;
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should create a candidate', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoCandidate);
     expect(res.status).toBe(HttpStatusCode.Created);
     expect(res.type).toBe('application/json');
@@ -42,7 +50,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
   it('400: should throw error empty title fields', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenCandidate);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
