@@ -52,7 +52,9 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     tokens = generateUserTokens(user.id);
   });
   it('203: should delete a ballot paper section', async () => {
-    const res = await request(app).delete(requestPath).set('Authorization', tokens.accessToken);
+    const res = await request(app)
+      .delete(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.NoContent);
     if (ballotPaperSection?.id === undefined) {
       throw new Error('Ballot paper section ID is undefined');

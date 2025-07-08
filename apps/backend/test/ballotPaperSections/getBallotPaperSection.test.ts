@@ -51,7 +51,9 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   });
 
   it('200: should get a ballot paper section for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', tokens.accessToken);
+    const res = await request(app)
+      .get(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperSectionObject.safeParse(res.body);
