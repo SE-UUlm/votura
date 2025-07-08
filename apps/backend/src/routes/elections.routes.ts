@@ -9,12 +9,17 @@ import {
 } from '../controllers/ballotPapers.controllers.js';
 import {
   createBallotPaperSection,
+  deleteBallotPaperSection,
+  getBallotPaperSection,
   getBallotPaperSections,
+  updateBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
   createCandidate,
+  deleteCandidate,
   getCandidate,
   getCandidates,
+  updateCandidate,
 } from '../controllers/candidates.controller.js';
 import {
   createElection,
@@ -28,6 +33,7 @@ import {
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
+import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
@@ -138,6 +144,33 @@ electionsRouter.get(
   ...defaultBallotPaperChecks,
   getBallotPaperSections,
 );
+electionsRouter.put(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  updateBallotPaperSection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  getBallotPaperSection,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  deleteBallotPaperSection,
+);
 
 // Candidates
 electionsRouter.post(
@@ -160,4 +193,21 @@ electionsRouter.get(
   ...defaultElectionChecks,
   ...defaultCandidateChecks,
   getCandidate,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptBodyCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultCandidateChecks,
+  updateCandidate,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
+  acceptHeaderCheck(MimeType.ApplicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultCandidateChecks,
+  deleteCandidate,
 );
