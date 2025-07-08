@@ -8,7 +8,7 @@ export const toJsonSchemaParams: Parameters<typeof z.toJSONSchema>[1] = {
     const def = ctx.zodSchema._zod.def;
 
     if (def.type === 'bigint') {
-      ctx.jsonSchema.type = 'integer';
+      ctx.jsonSchema.type = 'string';
     }
   },
 };

@@ -34,20 +34,20 @@ export const electionObject = z.object({
     description:
       'Define if a voter is allowed to submit a invalid Vote. There will always a warning message shown to the voter that his vote will be invalid.',
   }),
-  pubKey: z.bigint().optional().register(voturaMetadataRegistry, {
+  pubKey: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'The public key to encrypt the vote of the voter. `pubKeyVotes = generator ^ privKeyVotes mod primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
-  privKey: z.bigint().optional(),
-  primeP: z.bigint().optional().register(voturaMetadataRegistry, {
+  privKey: z.string().regex(/^\d+$/).optional(),
+  primeP: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'A large prime number that defines the group. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
-  primeQ: z.bigint().optional().register(voturaMetadataRegistry, {
+  primeQ: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'A prime number that divides `(primeP-1)`, often chosen as `primeQ=(primeP-1)/2`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
-  generator: z.bigint().optional().register(voturaMetadataRegistry, {
+  generator: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'The generator of the multiplicative group modulo `primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
