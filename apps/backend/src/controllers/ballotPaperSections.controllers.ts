@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperSectionObject,
   response404Object,
+  response500Object,
   updateableBallotPaperSectionObject,
   zodErrorToResponse400,
   type BallotPaper,
@@ -36,8 +37,8 @@ export const createBallotPaperSection = async (
   );
   if (selectableBallotPaperSection === null) {
     res
-      .status(HttpStatusCode.NotFound)
-      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaperSection);

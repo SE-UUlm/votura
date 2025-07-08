@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperObject,
   response404Object,
+  response500Object,
   updateableBallotPaperObject,
   zodErrorToResponse400,
   type BallotPaper,
@@ -32,7 +33,9 @@ export const createBallotPaper = async (
 
   const selectableBallotPaper = await createPersistentBallotPaper(data, req.params.electionId);
   if (selectableBallotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaper);
@@ -52,7 +55,9 @@ export const getBallotPaper = async (
 ): Promise<void> => {
   const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
   if (ballotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find ballot paper." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(ballotPaper);
@@ -71,7 +76,9 @@ export const updateBallotPaper = async (
 
   const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
   if (selectableBallotPaper === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find ballot paper." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableBallotPaper);
