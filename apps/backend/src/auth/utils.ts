@@ -99,7 +99,8 @@ export const getBearerToken = (req: Request): string | null => {
     return null;
   }
 
-  const [scheme, token] = authHeader.split(' ');
+  const scheme = authHeader.split(' ')[0];
+  const token = authHeader.split(' ').pop();
 
   if (scheme?.toLowerCase() !== 'bearer' || token === undefined) {
     return null;
