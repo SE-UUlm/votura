@@ -146,8 +146,8 @@ electionsRouter.get(
 );
 electionsRouter.put(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
@@ -156,7 +156,7 @@ electionsRouter.put(
 );
 electionsRouter.get(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
@@ -164,7 +164,7 @@ electionsRouter.get(
 );
 electionsRouter.delete(
   `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
@@ -196,8 +196,8 @@ electionsRouter.get(
 );
 electionsRouter.put(
   `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultCandidateChecks,
@@ -205,7 +205,7 @@ electionsRouter.put(
 );
 electionsRouter.delete(
   `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultCandidateChecks,

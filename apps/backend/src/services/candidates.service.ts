@@ -72,7 +72,7 @@ export const updateCandidate = async (
   candidateId: Candidate['id'],
 ): Promise<SelectableCandidate | null> => {
   const candidate = await db
-    .updateTable('Candidate')
+    .updateTable('candidate')
     .set({ ...updateableCandidate })
     .where('id', '=', candidateId)
     .returningAll()
@@ -86,5 +86,5 @@ export const updateCandidate = async (
 };
 
 export const deleteCandidate = async (candidateId: Candidate['id']): Promise<DeleteResult> => {
-  return db.deleteFrom('Candidate').where('id', '=', candidateId).executeTakeFirst();
+  return db.deleteFrom('candidate').where('id', '=', candidateId).executeTakeFirst();
 };

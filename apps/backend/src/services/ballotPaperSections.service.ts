@@ -62,7 +62,7 @@ export const updateBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
 ): Promise<SelectableBallotPaperSection | null> => {
   const ballotPaperSection = await db
-    .updateTable('BallotPaperSection')
+    .updateTable('ballotPaperSection')
     .set({ ...updateableBallotPaperSection })
     .where('id', '=', ballotPaperSectionId)
     .returningAll()
@@ -79,7 +79,7 @@ export const getBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
 ): Promise<SelectableBallotPaperSection | null> => {
   const ballotPaperSection = await db
-    .selectFrom('BallotPaperSection')
+    .selectFrom('ballotPaperSection')
     .selectAll()
     .where('id', '=', ballotPaperSectionId)
     .executeTakeFirst();
@@ -95,7 +95,7 @@ export const deleteBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
 ): Promise<DeleteResult> => {
   return db
-    .deleteFrom('BallotPaperSection')
+    .deleteFrom('ballotPaperSection')
     .where('id', '=', ballotPaperSectionId)
     .executeTakeFirst();
 };
