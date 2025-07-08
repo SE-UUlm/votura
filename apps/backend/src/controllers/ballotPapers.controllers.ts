@@ -64,7 +64,7 @@ export const getBallotPaper = async (
 };
 
 export const updateBallotPaper = async (
-  req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
+  req: Request<{ ballotPaperId: BallotPaper['id'] }>,
   res: Response<SelectableBallotPaper | Response400 | Response404>,
 ): Promise<void> => {
   const body: unknown = req.body;
@@ -85,7 +85,7 @@ export const updateBallotPaper = async (
 };
 
 export const deleteBallotPaper = async (
-  req: Request<{ electionId: Election['id']; ballotPaperId: BallotPaper['id'] }>,
+  req: Request<{ ballotPaperId: BallotPaper['id'] }>,
   res: Response<void | Response404>,
 ): Promise<void> => {
   const result = await deletePersistentBallotPaper(req.params.ballotPaperId);
