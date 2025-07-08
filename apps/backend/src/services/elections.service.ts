@@ -101,7 +101,7 @@ export const setElectionKeys = async (
   electionId: Election['id'],
 ): Promise<SelectableElection | null> => {
   const election = await db
-    .updateTable('Election')
+    .updateTable('election')
     .set({
       pubKey: keyPair.publicKey.publicKey.toString(),
       privKey: keyPair.privateKey.privateKey.toString(),
