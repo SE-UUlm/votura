@@ -51,7 +51,6 @@
     "postgres-up": "docker compose up -d",
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
-    "gen-keys": "tsx ./src/auth/generateJWTKeyPair.ts",
     "migrate": "tsx ./src/db/migrate.ts",
     "seed": "tsx ./src/db/seed.ts",
     "lint": "eslint"

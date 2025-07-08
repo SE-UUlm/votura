@@ -1,7 +1,7 @@
 import crypto from 'crypto';
 
 /**
- * Generate RSA key pair for JWT signing (run this once and save to .env)
+ * Generate RSA key pair for JWT signing and stores them in the environment
  */
 export const generateJWTKeyPair = (): void => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {

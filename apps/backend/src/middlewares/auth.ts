@@ -1,7 +1,7 @@
 import { response401Object, response500Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
-import { isTokenBlacklisted, verifyToken } from '../auth/utils.js';
+import { getBearerToken, isTokenBlacklisted, verifyToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { findUserBy } from '../services/users.service.js';
 
@@ -15,10 +15,9 @@ export const authenticateAccessToken = async (
   next: NextFunction,
 ): Promise<void> => {
   try {
-    const authHeader = req.headers.authorization;
-    const token = authHeader?.split(' ')[1]; // Bearer token
+    const bearerToken = getBearerToken(req);
 
-    if (token === undefined) {
+    if (bearerToken === null) {
       res
         .status(HttpStatusCode.Unauthorized)
         .json(response401Object.parse({ message: 'Access token is required. Are you logged in?' }));
@@ -26,7 +25,7 @@ export const authenticateAccessToken = async (
     }
 
     // Verify token
-    const decodedToken = verifyToken(token);
+    const decodedToken = verifyToken(bearerToken);
 
     if (decodedToken === null || decodedToken.type !== 'access') {
       res

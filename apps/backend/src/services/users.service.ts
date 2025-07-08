@@ -116,8 +116,8 @@ export async function blacklistAccessToken(
   const blacklistEntry = await db
     .insertInto('AccessTokenBlacklist')
     .values({
-      accessTokenId,
-      expiresAt,
+      accessTokenId: accessTokenId,
+      expiresAt: expiresAt,
     })
     .returningAll()
     .executeTakeFirst();
@@ -232,7 +232,7 @@ export const refreshUserTokens = async (
     })
     .where('id', '=', user.id)
     .returningAll()
-    .execute();
+    .executeTakeFirst();
 
   if (updatedUser === undefined) {
     return refreshTokenError.Internal;

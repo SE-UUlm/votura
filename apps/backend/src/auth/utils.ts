@@ -1,5 +1,6 @@
 import type { ApiTokenUser } from '@repo/votura-validators';
 import crypto from 'crypto';
+import type { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { JWT_CONFIG } from '../auth/jwtConfig.js';
@@ -89,4 +90,20 @@ export const isTokenBlacklisted = async (tokenId: string): Promise<boolean> => {
     return false; // Token is not blacklisted
   }
   return true; // Token is blacklisted
+};
+
+export const getBearerToken = (req: Request): string | null => {
+  const authHeader = req.headers.authorization;
+
+  if (authHeader === undefined) {
+    return null;
+  }
+
+  const [scheme, token] = authHeader.split(' ');
+
+  if (scheme?.toLowerCase() !== 'bearer' || token === undefined) {
+    return null;
+  }
+
+  return token;
 };
