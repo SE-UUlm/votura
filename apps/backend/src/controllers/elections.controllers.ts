@@ -1,6 +1,7 @@
 import {
   insertableElectionObject,
   response404Object,
+  response500Object,
   updateableElectionObject,
   zodErrorToResponse400,
   type Election,
@@ -34,7 +35,9 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
 
     if (selectableElection === null) {
-      res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
+      res
+        .status(HttpStatusCode.internalServerError)
+        .json(response500Object.parse({ message: undefined }));
       return;
     }
 
@@ -65,7 +68,9 @@ export const updateElection = async (
 
   const selectableElection = await updatePersistentElection(data, req.params.electionId);
   if (selectableElection === null) {
-    res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: "Can't find election." }));
     return;
   }
   res.status(HttpStatusCode.ok).json(selectableElection);
@@ -84,7 +89,9 @@ export const getElection = async (
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
 
   if (election === null) {
-    res.status(HttpStatusCode.notFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: "Can't find election." }));
     return;
   }
 
