@@ -30,7 +30,7 @@ export const createBallotPaper = async (
   electionId: Election['id'],
 ): Promise<SelectableBallotPaper | null> => {
   const ballotPaper = await db
-    .insertInto('BallotPaper')
+    .insertInto('ballotPaper')
     .values({ ...insertableBallotPaper, electionId: electionId })
     .returningAll()
     .executeTakeFirst();
@@ -46,7 +46,7 @@ export const getBallotPapers = async (
   electionId: Election['id'],
 ): Promise<SelectableBallotPaper[]> => {
   const ballotPapers = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .selectAll()
     .where('electionId', '=', electionId)
     .execute();
@@ -58,7 +58,7 @@ export const getBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<SelectableBallotPaper | null> => {
   const ballotPaper = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .selectAll()
     .where('id', '=', ballotPaperId)
     .executeTakeFirst();
@@ -75,7 +75,7 @@ export const updateBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<SelectableBallotPaper | null> => {
   const ballotPaper = await db
-    .updateTable('BallotPaper')
+    .updateTable('ballotPaper')
     .set({ ...updateableBallotPaper })
     .where('id', '=', ballotPaperId)
     .returningAll()
@@ -91,5 +91,5 @@ export const updateBallotPaper = async (
 export const deleteBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<DeleteResult> => {
-  return db.deleteFrom('BallotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
+  return db.deleteFrom('ballotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
 };

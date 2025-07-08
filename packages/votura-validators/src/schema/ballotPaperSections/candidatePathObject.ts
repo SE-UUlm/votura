@@ -26,7 +26,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     'Adds a new candidate or removes an existing candidate from the specified ballot paper section.',
   parameters: [electionIdParameter, ballotPaperIdParameter, ballotPaperSectionIdParameter],
   put: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Add a candidate to a ballot paper section',
     description:
       'Adds an existing candidate to the specified ballot paper section. ' +
@@ -40,17 +40,20 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableBallotPaperSectionCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. ' +
           'The candidate is now added to the ballot paper section.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -67,7 +70,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     },
   },
   delete: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Remove a candidate from a ballot paper section',
     description:
       'Removes an existing candidate from the specified ballot paper section.\n' +
@@ -81,17 +84,20 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: removableBallotPaperSectionCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. ' +
           'The candidate was removed from the ballot paper section.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },

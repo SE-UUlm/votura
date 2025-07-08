@@ -19,8 +19,11 @@ const builtContainer = await GenericContainer.fromDockerfile(
 // Now configure and start the container
 const container = await builtContainer
   .withEnvironment({
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     POSTGRES_DB: 'votura',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     POSTGRES_USER: 'test',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     POSTGRES_PASSWORD: 'test',
   })
   .withExposedPorts(5432)

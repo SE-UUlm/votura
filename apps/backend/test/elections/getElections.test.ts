@@ -54,7 +54,7 @@ describe('GET /elections', () => {
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send();
 
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     expect(res.body).toBeInstanceOf(Array);
     const arrBody = res.body as unknown[];
@@ -76,7 +76,7 @@ describe('GET /elections', () => {
       .set('Accept', 'text/plain')
       .send();
 
-    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.status).toBe(HttpStatusCode.notAcceptable);
     expect(res.type).toBe('application/json');
     const parseResult = await response406Object.safeParseAsync(res.body);
     expect(parseResult.success).toBe(true);

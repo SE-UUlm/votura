@@ -27,7 +27,7 @@ export const createBallotPaperSection = async (
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperSectionObject.safeParseAsync(body);
   if (success === false) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
     return;
   }
 
@@ -37,11 +37,11 @@ export const createBallotPaperSection = async (
   );
   if (selectableBallotPaperSection === null) {
     res
-      .status(HttpStatusCode.InternalServerError)
+      .status(HttpStatusCode.internalServerError)
       .json(response500Object.parse({ message: undefined }));
     return;
   }
-  res.status(HttpStatusCode.Created).json(selectableBallotPaperSection);
+  res.status(HttpStatusCode.created).json(selectableBallotPaperSection);
 };
 
 export const getBallotPaperSections = async (
@@ -49,7 +49,7 @@ export const getBallotPaperSections = async (
   res: Response<SelectableBallotPaperSection[]>,
 ): Promise<void> => {
   const ballotPaperSections = await getPersistentBallotPaperSections(req.params.ballotPaperId);
-  res.status(HttpStatusCode.Ok).json(ballotPaperSections);
+  res.status(HttpStatusCode.ok).json(ballotPaperSections);
 };
 
 export const updateBallotPaperSection = async (
@@ -59,7 +59,7 @@ export const updateBallotPaperSection = async (
   const body: unknown = req.body;
   const { data, error, success } = await updateableBallotPaperSectionObject.safeParseAsync(body);
   if (success === false) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
     return;
   }
 
@@ -69,11 +69,11 @@ export const updateBallotPaperSection = async (
   );
   if (selectableBallotPaperSection === null) {
     res
-      .status(HttpStatusCode.NotFound)
+      .status(HttpStatusCode.notFound)
       .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
-  res.status(HttpStatusCode.Ok).json(selectableBallotPaperSection);
+  res.status(HttpStatusCode.ok).json(selectableBallotPaperSection);
 };
 
 export const getBallotPaperSection = async (
@@ -83,11 +83,11 @@ export const getBallotPaperSection = async (
   const ballotPaperSection = await getPersistentBallotPaperSection(req.params.ballotPaperSectionId);
   if (ballotPaperSection === null) {
     res
-      .status(HttpStatusCode.NotFound)
+      .status(HttpStatusCode.notFound)
       .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
-  res.status(HttpStatusCode.Ok).json(ballotPaperSection);
+  res.status(HttpStatusCode.ok).json(ballotPaperSection);
 };
 
 export const deleteBallotPaperSection = async (
@@ -97,9 +97,9 @@ export const deleteBallotPaperSection = async (
   const result = await deletePersistentBallotPaperSection(req.params.ballotPaperSectionId);
   if (result.numDeletedRows < 1n) {
     res
-      .status(HttpStatusCode.NotFound)
+      .status(HttpStatusCode.notFound)
       .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
-  res.sendStatus(HttpStatusCode.NoContent);
+  res.sendStatus(HttpStatusCode.noContent);
 };

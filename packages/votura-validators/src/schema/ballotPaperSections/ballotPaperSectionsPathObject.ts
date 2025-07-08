@@ -25,7 +25,7 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     'You can get and create ballot paper sections for a ballot paper.',
   parameters: [electionIdParameter, ballotPaperIdParameter],
   post: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Create a ballot paper section',
     description:
       'Creates a ballot paper section with a link to a ballot paper.\n' +
@@ -40,16 +40,19 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       201: {
         description:
           'Created. The request was successfully executed. Successfully created a new ballot paper section.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -66,7 +69,7 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.BallotPaperSections],
+    tags: [Tag.ballotPaperSections],
     summary: 'Get all ballot paper section for a ballot paper',
     description:
       'Returns all ballot paper sections with the public information fields, that are linked to the specified ballot paper. \n' +
@@ -78,10 +81,12 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapersSections',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns ballot paper sections for the requested election.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',

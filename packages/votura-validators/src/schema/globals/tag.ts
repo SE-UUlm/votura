@@ -1,8 +1,8 @@
 export enum Tag {
-  Elections = 'Elections',
-  Users = 'Users',
-  BallotPapers = 'BallotPapers',
-  BallotPaperSections = 'BallotPaperSections',
-  Candidates = 'Candidates',
-  VoterGroups = 'VoterGroups',
+  elections = 'Elections',
+  users = 'Users',
+  ballotPapers = 'BallotPapers',
+  ballotPaperSections = 'BallotPaperSections',
+  candidates = 'Candidates',
+  voterGroups = 'VoterGroups',
 }

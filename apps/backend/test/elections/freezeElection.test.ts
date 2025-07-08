@@ -44,7 +44,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     let parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -69,7 +69,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Forbidden);
+    expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

@@ -62,7 +62,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
     const res = await request(app)
       .get(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
 
     const arrBody = res.body as unknown[];

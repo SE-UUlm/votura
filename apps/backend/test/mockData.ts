@@ -82,7 +82,7 @@ export const demoBallotPaperSection2 = insertableBallotPaperSectionObject.parse(
   maxVotesPerCandidate: 1,
 });
 export const brokenBallotPaperSection = {
-  XYZ: 'Test broken ballot paper section',
+  xxx: 'Test broken ballot paper section',
   description: 'Test broken ballot paper section description',
   maxVotesPerCandidate: 20,
 };

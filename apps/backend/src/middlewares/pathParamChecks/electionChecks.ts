@@ -30,7 +30,7 @@ export async function checkElectionUuid(
   const parsedUuid = await uuidObject.safeParseAsync(req.params.electionId);
 
   if (!parsedUuid.success) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(parsedUuid.error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(parsedUuid.error));
   } else {
     next();
   }
@@ -50,13 +50,13 @@ export async function checkElectionExists(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id'])
     .where('id', '=', req.params.electionId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.NotFound).json(
+    res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided election does not exist!',
       }),
@@ -81,14 +81,14 @@ export async function checkUserOwnerOfElection(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id', 'electionCreatorId'])
     .where('id', '=', req.params.electionId)
     .where('electionCreatorId', '=', res.locals.user.id)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.Forbidden).json(
+    res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'You do not have the permission to access or modify this election.',
       }),
@@ -113,19 +113,19 @@ export async function checkElectionNotFrozen(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id', 'configFrozen'])
     .where('id', '=', req.params.electionId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.NotFound).json(
+    res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided election does not exist!',
       }),
     );
   } else if (result.configFrozen) {
-    res.status(HttpStatusCode.Forbidden).json(
+    res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'The election is frozen and cannot be modified.',
       }),

@@ -14,7 +14,7 @@ export const resetPasswordPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Reset user password with token',
   description: 'Reset user password with token provided to the user via email.',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Reset user password with token',
     description:
       'Reset user password with token provided to the user via email.\n' +
@@ -26,12 +26,14 @@ export const resetPasswordPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: passwordResetUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description: 'OK. The request was successfully executed. Password successfully reset.',
       },

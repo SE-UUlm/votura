@@ -19,7 +19,7 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
   description: 'Unfreezes the requested election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Unfreeze a specific election',
     description:
       'Unfreezes the requested election.\n' +
@@ -31,10 +31,12 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'unfreezeElectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK.\n' + 'The request was successfully executed.\n' + 'The election was unfrozen.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },

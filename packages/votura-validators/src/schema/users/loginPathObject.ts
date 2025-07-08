@@ -15,22 +15,25 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Login a user',
   description: 'Login a user with the given credentials.',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Login a user',
     description: 'Login a user with the given credentials.',
     security: [],
     operationId: 'loginUser',
     requestBody: {
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description: 'OK. The request was successfully executed. User was verified.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: apiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
           },

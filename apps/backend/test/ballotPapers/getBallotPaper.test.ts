@@ -52,7 +52,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const res = await request(app)
       .get(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -67,7 +67,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const res = await request(app)
       .get(`/elections/${election?.id}/ballotPapers/noUUID`)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -76,7 +76,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const res = await request(app)
       .get(`/elections/${election?.id}/ballotPapers/fe592288-a169-4be0-9c3d-789237d3f075`)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -85,7 +85,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const res = await request(app)
       .get(requestPath2)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

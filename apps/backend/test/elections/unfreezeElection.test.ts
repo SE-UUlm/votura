@@ -42,7 +42,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
     const res = await request(app)
       .put(unfreezePath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableElectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);

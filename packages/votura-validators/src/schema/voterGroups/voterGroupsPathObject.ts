@@ -22,7 +22,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
     'A voter group is always linked to at least one user and at least one ballot paper.\n' +
     'You can create a new one ore read all the existing ones for a user.',
   post: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Create a voter group',
     description:
       'Creates a voter group with a link to at least one ballot paper.\n' +
@@ -38,16 +38,19 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       201: {
         description:
           'Created. The request was successfully executed. Successfully created a new voter group.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -64,7 +67,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Get all voter groups for the user',
     description:
       'Returns all voter groups with the public information fields, that are linked to the requesting user.\n' +
@@ -75,10 +78,12 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterGroups',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns voter groups for the requested user.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',

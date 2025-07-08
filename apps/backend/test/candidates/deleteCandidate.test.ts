@@ -39,7 +39,7 @@ describe(`DELETE /elections/:${parameter.electionId}/candidates/:${parameter.can
     const res = await request(app)
       .delete(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     if (candidate?.id === undefined) {
       throw new Error('Candidate ID is undefined');
     }

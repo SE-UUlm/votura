@@ -75,7 +75,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaperSection2);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperSectionObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -94,7 +94,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       .put(invalidUuidRequestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -104,7 +104,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -114,7 +114,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       .put(notExistingRequestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -124,7 +124,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       .put(wrongParentPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaperSection);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

@@ -20,10 +20,10 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createUser as createPersistentUser,
   findUserBy,
-  loginError,
+  LoginError,
   loginUser,
   logoutUser,
-  refreshTokenError,
+  RefreshTokenError,
   refreshUserTokens,
 } from '../services/users.service.js';
 
@@ -40,7 +40,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       email: data.email,
     });
     if (user !== null) {
-      res.status(HttpStatusCode.Conflict).json(
+      res.status(HttpStatusCode.conflict).json(
         response409Object.parse({
           message: 'User with the provided email address already exists.',
         }),
@@ -52,16 +52,16 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
 
     if (!createdUser) {
       res
-        .status(HttpStatusCode.InternalServerError)
+        .status(HttpStatusCode.internalServerError)
         .json(
           response500Object.parse({ message: 'Failed to create user due to internal errors.' }),
         );
       return;
     }
 
-    res.sendStatus(HttpStatusCode.NoContent);
+    res.sendStatus(HttpStatusCode.noContent);
   } else {
-    res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
   }
 };
 
@@ -78,31 +78,31 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
     const loginResult = await loginUser(data);
 
     switch (loginResult) {
-      case loginError.InvalidCredentials:
+      case LoginError.invalidCredentials:
         res
-          .status(HttpStatusCode.Unauthorized)
-          .json(response401Object.parse({ message: loginError.InvalidCredentials }));
+          .status(HttpStatusCode.unauthorized)
+          .json(response401Object.parse({ message: LoginError.invalidCredentials }));
         break;
-      case loginError.UserNotVerified:
+      case LoginError.userNotVerified:
         res
-          .status(HttpStatusCode.Forbidden)
-          .json(response403Object.parse({ message: loginError.UserNotVerified }));
+          .status(HttpStatusCode.forbidden)
+          .json(response403Object.parse({ message: LoginError.userNotVerified }));
         break;
-      case loginError.Internal:
+      case LoginError.internal:
         res
-          .status(HttpStatusCode.InternalServerError)
-          .json(response500Object.parse({ message: loginError.Internal }));
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: LoginError.internal }));
         break;
       default: {
         const tokens: ApiTokenUser = loginResult;
-        res.status(HttpStatusCode.Ok).json(tokens);
+        res.status(HttpStatusCode.ok).json(tokens);
         break;
       }
     }
     return;
   }
 
-  res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
+  res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
 };
 
 export type RefreshTokensResponse = Response<
@@ -118,36 +118,36 @@ export const refreshTokens = async (req: Request, res: Response): Promise<void> 
     const refreshResults = await refreshUserTokens(data);
 
     switch (refreshResults) {
-      case refreshTokenError.InvalidToken:
+      case RefreshTokenError.invalidToken:
         res
-          .status(HttpStatusCode.Unauthorized)
-          .json(response401Object.parse({ message: refreshTokenError.InvalidToken }));
+          .status(HttpStatusCode.unauthorized)
+          .json(response401Object.parse({ message: RefreshTokenError.invalidToken }));
         break;
-      case refreshTokenError.UserNotFound:
+      case RefreshTokenError.userNotFound:
         res
-          .status(HttpStatusCode.Unauthorized)
-          .json(response401Object.parse({ message: refreshTokenError.UserNotFound }));
+          .status(HttpStatusCode.unauthorized)
+          .json(response401Object.parse({ message: RefreshTokenError.userNotFound }));
         break;
-      case refreshTokenError.TokenExpired:
+      case RefreshTokenError.tokenExpired:
         res
-          .status(HttpStatusCode.Unauthorized)
-          .json(response401Object.parse({ message: refreshTokenError.TokenExpired }));
+          .status(HttpStatusCode.unauthorized)
+          .json(response401Object.parse({ message: RefreshTokenError.tokenExpired }));
         break;
-      case refreshTokenError.Internal:
+      case RefreshTokenError.internal:
         res
-          .status(HttpStatusCode.InternalServerError)
-          .json(response500Object.parse({ message: refreshTokenError.Internal }));
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: RefreshTokenError.internal }));
         break;
       default: {
         const newTokens: ApiTokenUser = refreshResults;
-        res.status(HttpStatusCode.Ok).json(newTokens);
+        res.status(HttpStatusCode.ok).json(newTokens);
         break;
       }
     }
     return;
   }
 
-  res.status(HttpStatusCode.BadRequest).json(zodErrorToResponse400(error));
+  res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
 };
 
 export type LogoutResponse = Response<
@@ -160,10 +160,10 @@ export const logout = async (_req: Request, res: LogoutResponse): Promise<void> 
 
   if (!logoutResult) {
     res
-      .status(HttpStatusCode.Unauthorized)
+      .status(HttpStatusCode.unauthorized)
       .json(response500Object.parse({ message: 'Failed to log out due to internal server error' }));
     return;
   }
 
-  res.sendStatus(HttpStatusCode.NoContent);
+  res.sendStatus(HttpStatusCode.noContent);
 };

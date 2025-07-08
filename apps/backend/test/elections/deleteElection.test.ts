@@ -48,7 +48,7 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
     const res = await request(app)
       .delete(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     if (election?.id === undefined) {
       throw new Error('Election ID is undefined');
     }

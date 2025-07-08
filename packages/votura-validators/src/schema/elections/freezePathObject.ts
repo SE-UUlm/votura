@@ -19,7 +19,7 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
   description: 'Freezes the requested election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Freeze a specific election',
     description:
       'Freezes the requested election.\n' +
@@ -35,10 +35,12 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'freezeElectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK.\n' + 'The request was successfully executed.\n' + 'The election is now frozen.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },

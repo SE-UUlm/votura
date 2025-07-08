@@ -29,7 +29,7 @@ export async function checkBallotPaperUuid(
   const parsedUuid = await uuidObject.safeParseAsync(req.params.ballotPaperId);
 
   if (!parsedUuid.success) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(parsedUuid.error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(parsedUuid.error));
   } else {
     next();
   }
@@ -49,13 +49,13 @@ export async function checkBallotPaperExists(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .select(['id'])
     .where('id', '=', req.params.ballotPaperId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.NotFound).json(
+    res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided ballot paper does not exist!',
       }),
@@ -79,14 +79,14 @@ export async function checkElectionIsParent(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .select(['id', 'electionId'])
     .where('id', '=', req.params.ballotPaperId)
     .where('electionId', '=', req.params.electionId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.BadRequest).json(
+    res.status(HttpStatusCode.badRequest).json(
       response400Object.parse({
         message: 'The provided ballot paper does not belong to the provided election.',
       }),

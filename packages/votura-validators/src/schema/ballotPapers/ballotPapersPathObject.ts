@@ -24,7 +24,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     'You can get and create ballot papers for an election.',
   parameters: [electionIdParameter],
   post: {
-    tags: [Tag.BallotPapers],
+    tags: [Tag.ballotPapers],
     summary: 'Create a ballot paper',
     description:
       'Creates a ballot paper with a link to an election.\n' +
@@ -35,16 +35,19 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       201: {
         description:
           'Created. The request was successfully executed. Successfully created a new ballot paper.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -61,7 +64,7 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.BallotPapers],
+    tags: [Tag.ballotPapers],
     summary: 'Get all ballot papers for an election',
     description:
       'Returns all ballot papers with the public information fields, that are linked to the specified election. \n' +
@@ -69,10 +72,12 @@ export const ballotPapersPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapers',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns ballot papers for the requested election.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',
