@@ -2,6 +2,7 @@ import { z } from 'zod/v4';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 import { ballotPaperObject } from './ballotPaper.js';
+import { candidateObject } from './candidate.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 import { maxVotesRefinement, maxVotesRefinementMessage } from './refines.js';
 
@@ -35,6 +36,9 @@ export const ballotPaperSectionObject = z.object({
         'If the ballot paper section contains more votes on one candidate than the `maxVotesPerCandidate` value, the whole vote / ballot paper will be invalid.',
       example: 42,
     }),
+  candidateIds: z.array(candidateObject.shape.id).min(0).register(voturaMetadataRegistry, {
+    description: 'The IDs of the candidates that are part of this ballot paper section.',
+  }),
   ballotPaperId: ballotPaperObject.shape.id.register(voturaMetadataRegistry, {
     description: 'The ID of the ballot paper to which this ballot paper section belongs.',
     example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
@@ -70,6 +74,7 @@ export const selectableBallotPaperSectionObject = ballotPaperSectionObject.pick(
   description: true,
   maxVotes: true,
   maxVotesPerCandidate: true,
+  candidateIds: true,
   ballotPaperId: true,
 });
 
@@ -96,5 +101,35 @@ export type UpdateableBallotPaperSection = z.infer<typeof updateableBallotPaperS
 
 export const updateableBallotPaperSectionObjectSchema = z.toJSONSchema(
   updateableBallotPaperSectionObject,
+  toJsonSchemaParams,
+);
+
+export const insertableBallotPaperSectionCandidateObject = z.object({
+  candidateId: candidateObject.shape.id.register(voturaMetadataRegistry, {
+    description: 'The ID of the candidate that should be part of this ballot paper section.',
+  }),
+});
+
+export type InsertableBallotPaperSectionCandidate = z.infer<
+  typeof insertableBallotPaperSectionCandidateObject
+>;
+
+export const insertableBallotPaperSectionCandidateObjectSchema = z.toJSONSchema(
+  insertableBallotPaperSectionCandidateObject,
+  toJsonSchemaParams,
+);
+
+export const removableBallotPaperSectionCandidateObject = z.object({
+  candidateId: candidateObject.shape.id.register(voturaMetadataRegistry, {
+    description: 'The ID of the candidate that should be removed from this ballot paper section.',
+  }),
+});
+
+export type RemovableBallotPaperSectionCandidate = z.infer<
+  typeof removableBallotPaperSectionCandidateObject
+>;
+
+export const removableBallotPaperSectionCandidateObjectSchema = z.toJSONSchema(
+  removableBallotPaperSectionCandidateObject,
   toJsonSchemaParams,
 );
