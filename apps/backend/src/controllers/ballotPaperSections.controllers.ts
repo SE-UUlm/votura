@@ -35,7 +35,9 @@ export const createBallotPaperSection = async (
     req.params.ballotPaperId,
   );
   if (selectableBallotPaperSection === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableBallotPaperSection);
@@ -79,7 +81,9 @@ export const getBallotPaperSection = async (
 ): Promise<void> => {
   const ballotPaperSection = await getPersistentBallotPaperSection(req.params.ballotPaperSectionId);
   if (ballotPaperSection === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(ballotPaperSection);
@@ -91,7 +95,9 @@ export const deleteBallotPaperSection = async (
 ): Promise<void> => {
   const result = await deletePersistentBallotPaperSection(req.params.ballotPaperSectionId);
   if (result.numDeletedRows < 1n) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
   res.sendStatus(HttpStatusCode.NoContent);
