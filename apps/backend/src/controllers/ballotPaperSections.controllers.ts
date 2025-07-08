@@ -65,7 +65,7 @@ export const updateBallotPaperSection = async (
     req.params.ballotPaperSectionId,
   );
   if (selectableBallotPaperSection === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: "Can't find ballot paper section." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableBallotPaperSection);
