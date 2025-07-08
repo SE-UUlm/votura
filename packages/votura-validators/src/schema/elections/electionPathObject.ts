@@ -31,15 +31,18 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: updateableElectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description: 'OK. The request was successfully executed. The election was updated.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -62,10 +65,12 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getElectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns the requested election with all public information fields.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -88,6 +93,7 @@ export const electionPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteElectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description: 'No Content. The request was successfully executed. The election was deleted.',
       },

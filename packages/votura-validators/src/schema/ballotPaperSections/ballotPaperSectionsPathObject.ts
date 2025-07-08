@@ -36,16 +36,19 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       201: {
         description:
           'Created. The request was successfully executed. Successfully created a new ballot paper section.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -70,10 +73,12 @@ export const ballotPaperSectionsPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPapersSections',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns ballot paper sections for the requested election.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',

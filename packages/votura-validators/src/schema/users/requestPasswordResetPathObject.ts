@@ -19,12 +19,14 @@ export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: requestPasswordResetUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description:
           'No Content. The request was successfully executed. Email sent if user exists.',

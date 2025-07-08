@@ -36,15 +36,18 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description: 'OK. The request was successfully executed. The voter group was updated.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -72,10 +75,12 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterGroupById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns the requested voter group with all public information fields.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -103,6 +108,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteVoterGroupById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description:
           'No Content. The request was successfully executed. The voter group was deleted.',

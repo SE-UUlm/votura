@@ -38,16 +38,19 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: updateableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. The ballot paper section was updated.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -75,10 +78,12 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPaperSectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns the requested ballot paper section with all public information fields.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -106,6 +111,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteBallotPaperSectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description:
           'No Content. The request was successfully executed. The ballot paper section was deleted.',

@@ -22,15 +22,18 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
     operationId: 'loginUser',
     requestBody: {
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description: 'OK. The request was successfully executed. User was verified.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: apiTokenUserObjectSchema as OpenAPIV3.SchemaObject,
           },
