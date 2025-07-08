@@ -1,4 +1,4 @@
-import { parameter, selectableCandidateObject } from '@repo/votura-validators';
+import { parameter, selectableCandidateObject, type ApiTokenUser } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -36,7 +36,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
   });
 
   it('200: should get all candidates for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
+    const res = await request(app).get(requestPath).set('Authorization', tokens.accessToken);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
 

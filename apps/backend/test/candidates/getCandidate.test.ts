@@ -3,6 +3,7 @@ import {
   response400Object,
   response404Object,
   selectableCandidateObject,
+  type ApiTokenUser,
   type SelectableCandidate,
 } from '@repo/votura-validators';
 import request from 'supertest';

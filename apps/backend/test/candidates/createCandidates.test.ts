@@ -1,4 +1,9 @@
-import { parameter, response400Object, selectableCandidateObject } from '@repo/votura-validators';
+import {
+  parameter,
+  response400Object,
+  selectableCandidateObject,
+  type ApiTokenUser,
+} from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
