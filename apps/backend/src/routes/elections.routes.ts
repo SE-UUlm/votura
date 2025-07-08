@@ -142,21 +142,21 @@ electionsRouter.get(
 // Candidates
 electionsRouter.post(
   `/:${parameter.electionId}/candidates`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   createCandidate,
 );
 electionsRouter.get(
   `/:${parameter.electionId}/candidates`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   getCandidates,
 );
 electionsRouter.get(
   `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   ...defaultCandidateChecks,
   getCandidate,

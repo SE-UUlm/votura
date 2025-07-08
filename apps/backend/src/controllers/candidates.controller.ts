@@ -24,18 +24,18 @@ export const createCandidate = async (
   const body: unknown = req.body;
   const { data, error, success } = await insertableCandidateObject.safeParseAsync(body);
   if (success === false) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
     return;
   }
 
   const selectableCandidate = await createPersistentCandidate(data, req.params.electionId);
   if (selectableCandidate === null) {
     res
-      .status(HttpStatusCode.InternalServerError)
+      .status(HttpStatusCode.internalServerError)
       .json(response500Object.parse({ message: undefined }));
     return;
   }
-  res.status(HttpStatusCode.Created).json(selectableCandidate);
+  res.status(HttpStatusCode.created).json(selectableCandidate);
 };
 
 export const getCandidates = async (
@@ -43,7 +43,7 @@ export const getCandidates = async (
   res: Response<SelectableCandidate[]>,
 ): Promise<void> => {
   const candidates = await getPersistentCandidates(req.params.electionId);
-  res.status(HttpStatusCode.Ok).json(candidates);
+  res.status(HttpStatusCode.ok).json(candidates);
 };
 
 export const getCandidate = async (
@@ -53,9 +53,9 @@ export const getCandidate = async (
   const candidate = await getPersistentCandidate(req.params.candidateId);
   if (candidate === null) {
     res
-      .status(HttpStatusCode.NotFound)
+      .status(HttpStatusCode.notFound)
       .json(response404Object.parse({ message: 'Cannot find candidate.' }));
     return;
   }
-  res.status(HttpStatusCode.Ok).json(candidate);
+  res.status(HttpStatusCode.ok).json(candidate);
 };

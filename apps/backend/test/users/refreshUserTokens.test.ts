@@ -46,7 +46,7 @@ describe(`POST /users/refreshTokens`, () => {
       email: demoUser.email,
       password: demoUser.password,
     });
-    if (loginResponse.status !== Number(HttpStatusCode.Ok)) {
+    if (loginResponse.status !== Number(HttpStatusCode.ok)) {
       throw new Error('Failed to log in test user');
     }
     const parseResult = apiTokenUserObject.safeParse(loginResponse.body);
@@ -68,7 +68,7 @@ describe(`POST /users/refreshTokens`, () => {
 
     const res = await request(app).post(requestPath).send({ refreshToken: refreshToken });
 
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = apiTokenUserObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -85,7 +85,7 @@ describe(`POST /users/refreshTokens`, () => {
   it('401: should return error for invalid refresh token', async () => {
     const res = await request(app).post(requestPath).send({ refreshToken: 'invalid.token.test' });
 
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -98,7 +98,7 @@ describe(`POST /users/refreshTokens`, () => {
 
     const res = await request(app).post(requestPath).send({ refreshToken: accessToken });
 
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -113,11 +113,11 @@ describe(`POST /users/refreshTokens`, () => {
     // wait for a bit to ensure the new refresh token has a different expiresAt
     await new Promise((resolve) => setTimeout(resolve, 1500));
     const res = await request(app).post(requestPath).send({ refreshToken: refreshToken });
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
 
     // Attempt to use the old refresh token
     const expiredRes = await request(app).post(requestPath).send({ refreshToken: refreshToken });
-    expect(expiredRes.status).toBe(HttpStatusCode.Unauthorized);
+    expect(expiredRes.status).toBe(HttpStatusCode.unauthorized);
     expect(expiredRes.type).toBe('application/json');
     const parseResult = response401Object.safeParse(expiredRes.body);
     expect(parseResult.success).toBe(true);
@@ -126,7 +126,7 @@ describe(`POST /users/refreshTokens`, () => {
   it('400: should return error for missing refresh token', async () => {
     const res = await request(app).post(requestPath).send({});
 
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -146,7 +146,7 @@ describe(`POST /users/refreshTokens`, () => {
 
     const res = await request(app).post(requestPath).send({ refreshToken: refreshToken });
 
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

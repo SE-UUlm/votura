@@ -46,7 +46,7 @@ describe(`POST /users/logout`, () => {
       email: demoUser.email,
       password: demoUser.password,
     });
-    if (loginResponse.status !== Number(HttpStatusCode.Ok)) {
+    if (loginResponse.status !== Number(HttpStatusCode.ok)) {
       throw new Error('Failed to log in test user, status: ' + loginResponse.status);
     }
     const parseResult = apiTokenUserObject.safeParse(loginResponse.body);
@@ -64,14 +64,14 @@ describe(`POST /users/logout`, () => {
     }
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     expect(res.type).toBe('');
   });
 
   // Authentication middleware tests
   it('401: should return error because of missing access token', async () => {
     const res = await request(app).post(requestPath);
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -79,7 +79,7 @@ describe(`POST /users/logout`, () => {
 
   it('401: should return error because of invalid access token', async () => {
     const res = await request(app).post(requestPath).set('Authorization', 'Bearer invalid_token');
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -91,7 +91,7 @@ describe(`POST /users/logout`, () => {
     }
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${refreshToken}`);
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -111,7 +111,7 @@ describe(`POST /users/logout`, () => {
     }
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -132,7 +132,7 @@ describe(`POST /users/logout`, () => {
     }
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

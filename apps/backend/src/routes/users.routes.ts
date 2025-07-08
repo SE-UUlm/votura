@@ -15,19 +15,19 @@ usersRouter.post(
 );
 usersRouter.post(
   '/login',
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   login,
 );
 usersRouter.post(
   '/refreshTokens',
-  acceptHeaderCheck(MimeType.ApplicationJson),
-  acceptBodyCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   refreshTokens,
 );
 usersRouter.post(
   '/logout',
-  acceptHeaderCheck(MimeType.ApplicationJson),
+  acceptHeaderCheck(MimeType.applicationJson),
   authenticateAccessToken,
   logout,
 );

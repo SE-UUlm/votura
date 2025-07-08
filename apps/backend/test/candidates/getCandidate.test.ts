@@ -56,7 +56,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates/:${parameter.candid
     const res = await request(app)
       .get(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableCandidateObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -71,7 +71,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates/:${parameter.candid
     const res = await request(app)
       .get(invalidUuidPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -80,7 +80,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates/:${parameter.candid
     const res = await request(app)
       .get(noExistingCandidatePath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -89,7 +89,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates/:${parameter.candid
     const res = await request(app)
       .get(wrongOwnerPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

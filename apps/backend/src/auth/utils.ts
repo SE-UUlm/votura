@@ -35,23 +35,23 @@ export const generateUserTokens = (userid: string): ApiTokenUser => {
   const accessPayload: AccessTokenPayload = {
     sub: userid,
     type: 'access' as const,
-    exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.ACCESS_TOKEN_EXPIRES_IN) / 1000,
+    exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.accessTokenExpiresIn) / 1000,
     jti: accessTokenId,
   };
 
   const accessToken = jwt.sign(accessPayload, getKeys().privateKey, {
-    algorithm: JWT_CONFIG.ALGORITHM,
+    algorithm: JWT_CONFIG.algorithm,
   });
 
   // Refresh token without JTI
   const refreshPayload: RefreshTokenPayload = {
     sub: userid,
     type: 'refresh' as const,
-    exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.REFRESH_TOKEN_EXPIRES_IN) / 1000,
+    exp: Math.floor(Date.now() / 1000) + ms(JWT_CONFIG.refreshTokenExpiresIn) / 1000,
   };
 
   const refreshToken = jwt.sign(refreshPayload, getKeys().privateKey, {
-    algorithm: JWT_CONFIG.ALGORITHM,
+    algorithm: JWT_CONFIG.algorithm,
   });
 
   return { accessToken, refreshToken };
@@ -69,7 +69,7 @@ export const getTokenExpiration = (token: string): Date => {
 export const verifyToken = (token: string): JwtPayload | null => {
   try {
     const verifyOptions: jwt.VerifyOptions = {
-      algorithms: [JWT_CONFIG.ALGORITHM],
+      algorithms: [JWT_CONFIG.algorithm],
     };
 
     return jwt.verify(token, getKeys().publicKey, verifyOptions) as JwtPayload;
@@ -80,7 +80,7 @@ export const verifyToken = (token: string): JwtPayload | null => {
 
 export const isTokenBlacklisted = async (tokenId: string): Promise<boolean> => {
   const blacklistedToken = await db
-    .selectFrom('AccessTokenBlacklist')
+    .selectFrom('accessTokenBlacklist')
     .select('accessTokenId')
     .where('accessTokenId', '=', tokenId)
     .where('expiresAt', '>', new Date())

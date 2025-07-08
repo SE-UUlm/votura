@@ -84,7 +84,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<boolea
 
 export async function verifyUser(userId: string): Promise<boolean> {
   const updatedUser = await db
-    .updateTable('User')
+    .updateTable('user')
     .set({ verified: true })
     .where('id', '=', userId)
     .returningAll()
@@ -98,7 +98,7 @@ export async function verifyUser(userId: string): Promise<boolean> {
 
 export async function deleteUser(userId: string): Promise<boolean> {
   const deletedUser = await db
-    .deleteFrom('User')
+    .deleteFrom('user')
     .where('id', '=', userId)
     .returningAll()
     .executeTakeFirst();
@@ -114,7 +114,7 @@ export async function blacklistAccessToken(
   expiresAt: Date,
 ): Promise<boolean> {
   const blacklistEntry = await db
-    .insertInto('AccessTokenBlacklist')
+    .insertInto('accessTokenBlacklist')
     .values({
       accessTokenId: accessTokenId,
       expiresAt: expiresAt,
@@ -128,24 +128,24 @@ export async function blacklistAccessToken(
   return true; // Token blacklisted successfully
 }
 
-export enum loginError {
-  InvalidCredentials = 'Invalid credentials',
-  UserNotVerified = 'User is not verified',
-  Internal = 'User could not be logged in due to internal errors',
+export enum LoginError {
+  invalidCredentials = 'Invalid credentials',
+  userNotVerified = 'User is not verified',
+  internal = 'User could not be logged in due to internal errors',
 }
 
 export const loginUser = async (
   credentials: InsertableUser,
-): Promise<ApiTokenUser | loginError> => {
+): Promise<ApiTokenUser | LoginError> => {
   // Find user by email
   const user = await db
-    .selectFrom('User')
+    .selectFrom('user')
     .selectAll()
     .where('email', '=', credentials.email)
     .executeTakeFirst();
 
   if (user === undefined) {
-    return loginError.InvalidCredentials; // User not found
+    return LoginError.invalidCredentials; // User not found
   }
 
   // Verify password
@@ -154,7 +154,7 @@ export const loginUser = async (
     credentials.password + getPepper(),
   );
   if (!isValidPassword) {
-    return loginError.InvalidCredentials; // Invalid password
+    return LoginError.invalidCredentials; // Invalid password
   }
 
   // TODO: Uncomment when user verification is implemented (see issue #125)
@@ -167,7 +167,7 @@ export const loginUser = async (
   const tokens = generateUserTokens(user.id);
 
   const updatedUser = await db
-    .updateTable('User')
+    .updateTable('user')
     .set({
       refreshTokenHash: hashRefreshToken(tokens.refreshToken),
       refreshTokenExpiresAt: getTokenExpiration(tokens.refreshToken),
@@ -177,55 +177,55 @@ export const loginUser = async (
     .executeTakeFirst();
 
   if (updatedUser === undefined) {
-    return loginError.Internal;
+    return LoginError.internal;
   }
   return tokens;
 };
 
-export enum refreshTokenError {
-  InvalidToken = 'Invalid refresh token',
-  UserNotFound = 'User not found',
-  TokenExpired = 'Refresh token has expired',
-  Internal = 'Tokens could not be updated due to internal server error',
+export enum RefreshTokenError {
+  invalidToken = 'Invalid refresh token',
+  userNotFound = 'User not found',
+  tokenExpired = 'Refresh token has expired',
+  internal = 'Tokens could not be updated due to internal server error',
 }
 
 export const refreshUserTokens = async (
   refreshRequest: RefreshRequestUser,
-): Promise<ApiTokenUser | refreshTokenError> => {
+): Promise<ApiTokenUser | RefreshTokenError> => {
   // Verify refresh token
   const decodedToken = verifyToken(refreshRequest.refreshToken);
 
   if (decodedToken === null || decodedToken.type !== 'refresh') {
-    return refreshTokenError.InvalidToken;
+    return RefreshTokenError.invalidToken;
   }
 
   // Get user and verify stored refresh token
   const user = await db
-    .selectFrom('User')
+    .selectFrom('user')
     .selectAll()
     .where('id', '=', decodedToken.sub)
     .executeTakeFirst();
 
   if (user === undefined) {
-    return refreshTokenError.UserNotFound;
+    return RefreshTokenError.userNotFound;
   }
 
   // Check if refresh token matches stored hash
   const refreshTokenHash = hashRefreshToken(refreshRequest.refreshToken);
   if (user.refreshTokenHash !== refreshTokenHash) {
-    return refreshTokenError.InvalidToken;
+    return RefreshTokenError.invalidToken;
   }
 
   // Check if refresh token is expired
   if (!user.refreshTokenExpiresAt || user.refreshTokenExpiresAt < new Date()) {
-    return refreshTokenError.TokenExpired;
+    return RefreshTokenError.tokenExpired;
   }
 
   // Generate new token pair
   const newTokens = generateUserTokens(user.id);
 
   const updatedUser = await db
-    .updateTable('User')
+    .updateTable('user')
     .set({
       refreshTokenHash: hashRefreshToken(newTokens.refreshToken),
       refreshTokenExpiresAt: getTokenExpiration(newTokens.refreshToken),
@@ -235,7 +235,7 @@ export const refreshUserTokens = async (
     .executeTakeFirst();
 
   if (updatedUser === undefined) {
-    return refreshTokenError.Internal;
+    return RefreshTokenError.internal;
   }
 
   return newTokens;
@@ -256,7 +256,7 @@ export const logoutUser = async (
 
   // Clear refresh token from user record
   const updatedUser = await db
-    .updateTable('User')
+    .updateTable('user')
     .set({
       refreshTokenHash: null,
       refreshTokenExpiresAt: null,

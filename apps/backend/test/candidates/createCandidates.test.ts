@@ -38,7 +38,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
       .post(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoCandidate);
-    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.status).toBe(HttpStatusCode.created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableCandidateObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -52,7 +52,7 @@ describe(`POST /elections/:${parameter.electionId}/candidates`, () => {
       .post(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(brokenCandidate);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

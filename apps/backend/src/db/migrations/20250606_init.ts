@@ -467,7 +467,7 @@ export async function up(db: Kysely<any>): Promise<void> {
         SELECT cron.schedule(
             'delete_expired_access_tokens_cron_job',
             '0 * * * *',
-            $$DELETE FROM ${sql.table(TableName.AccessTokenBlacklist)} WHERE ${sql.raw(`"${AccessTokenBlacklistColumnName.expiresAt}"`)} < NOW()$$
+            $$DELETE FROM ${sql.table(TableName.accessTokenBlacklist)} WHERE ${sql.raw(`"${AccessTokenBlacklistColumnName.expiresAt}"`)} < NOW()$$
         );
     `.execute(db);
 }

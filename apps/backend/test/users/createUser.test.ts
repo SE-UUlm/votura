@@ -10,7 +10,7 @@ describe(`POST /users`, () => {
 
   it('201: should create a new user with valid data', async () => {
     const res = await request(app).post(requestPath).send(demoUser);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
+    expect(res.status).toBe(HttpStatusCode.noContent);
     expect(res.type).toBe('');
   });
 
@@ -19,7 +19,7 @@ describe(`POST /users`, () => {
       email: 'invalid-email',
       password: 'short',
     });
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -28,7 +28,7 @@ describe(`POST /users`, () => {
   it('409: should return error for duplicate email', async () => {
     // User is already created in the first test
     const res = await request(app).post(requestPath).send(demoUser);
-    expect(res.status).toBe(HttpStatusCode.Conflict);
+    expect(res.status).toBe(HttpStatusCode.conflict);
     expect(res.type).toBe('application/json');
     const parseResult = response409Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

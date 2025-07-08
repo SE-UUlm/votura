@@ -54,7 +54,7 @@ describe(`POST /users/login`, () => {
       email: demoUser.email,
       password: demoUser.password,
     });
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = apiTokenUserObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -64,7 +64,7 @@ describe(`POST /users/login`, () => {
     const res = await request(app).post(requestPath).send({
       email: demoUser.email,
     });
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -77,7 +77,7 @@ describe(`POST /users/login`, () => {
         email: demoUser.email,
         password: demoUser.password + 'invalid',
       });
-    expect(res.status).toBe(HttpStatusCode.Unauthorized);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);

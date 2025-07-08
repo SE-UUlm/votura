@@ -25,7 +25,7 @@ export const createCandidate = async (
   electionId: Election['id'],
 ): Promise<SelectableCandidate | null> => {
   const candidate = await db
-    .insertInto('Candidate')
+    .insertInto('candidate')
     .values({
       ...insertableCandidate,
       electionId: electionId,
@@ -42,7 +42,7 @@ export const createCandidate = async (
 
 export const getCandidates = async (electionId: Election['id']): Promise<SelectableCandidate[]> => {
   const candidates = await db
-    .selectFrom('Candidate')
+    .selectFrom('candidate')
     .selectAll()
     .where('electionId', '=', electionId)
     .execute();
@@ -54,7 +54,7 @@ export const getCandidate = async (
   candidateId: Candidate['id'],
 ): Promise<SelectableCandidate | null> => {
   const candidate = await db
-    .selectFrom('Candidate')
+    .selectFrom('candidate')
     .selectAll()
     .where('id', '=', candidateId)
     .executeTakeFirst();

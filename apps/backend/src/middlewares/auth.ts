@@ -19,7 +19,7 @@ export const authenticateAccessToken = async (
 
     if (bearerToken === null) {
       res
-        .status(HttpStatusCode.Unauthorized)
+        .status(HttpStatusCode.unauthorized)
         .json(response401Object.parse({ message: 'Access token is required. Are you logged in?' }));
       return;
     }
@@ -29,7 +29,7 @@ export const authenticateAccessToken = async (
 
     if (decodedToken === null || decodedToken.type !== 'access') {
       res
-        .status(HttpStatusCode.Unauthorized)
+        .status(HttpStatusCode.unauthorized)
         .json(response401Object.parse({ message: 'Invalid access token.' }));
       return;
     }
@@ -39,7 +39,7 @@ export const authenticateAccessToken = async (
     const isBlacklisted: boolean = await isTokenBlacklisted(decodedAccessToken.jti);
     if (isBlacklisted) {
       res
-        .status(HttpStatusCode.Unauthorized)
+        .status(HttpStatusCode.unauthorized)
         .json(
           response401Object.parse({ message: 'Invalid access token. Token has been revoked.' }),
         );
@@ -51,7 +51,7 @@ export const authenticateAccessToken = async (
 
     if (user === null) {
       res
-        .status(HttpStatusCode.Unauthorized)
+        .status(HttpStatusCode.unauthorized)
         .json(response401Object.parse({ message: 'User claimed by access token does not exist.' }));
       return;
     }
@@ -62,7 +62,7 @@ export const authenticateAccessToken = async (
     next();
   } catch {
     res
-      .status(HttpStatusCode.InternalServerError)
+      .status(HttpStatusCode.internalServerError)
       .json(response500Object.parse({ message: 'Internal server error during authentication.' }));
   }
 };

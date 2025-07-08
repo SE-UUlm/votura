@@ -29,7 +29,7 @@ export async function checkCandidateUuid(
   const parsedUuid = await uuidObject.safeParseAsync(req.params.candidateId);
 
   if (!parsedUuid.success) {
-    res.status(HttpStatusCode.BadRequest).send(zodErrorToResponse400(parsedUuid.error));
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(parsedUuid.error));
   } else {
     next();
   }
@@ -49,13 +49,13 @@ export async function checkCandidateExists(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Candidate')
+    .selectFrom('candidate')
     .select(['id'])
     .where('id', '=', req.params.candidateId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.NotFound).json(
+    res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided candidate does not exist!',
       }),
@@ -79,14 +79,14 @@ export async function checkElectionIsParent(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Candidate')
+    .selectFrom('candidate')
     .select(['id', 'electionId'])
     .where('id', '=', req.params.candidateId)
     .where('electionId', '=', req.params.electionId)
     .executeTakeFirst();
 
   if (result === undefined) {
-    res.status(HttpStatusCode.BadRequest).json(
+    res.status(HttpStatusCode.badRequest).json(
       response400Object.parse({
         message: 'The provided candidate does not belong to the provided election.',
       }),
