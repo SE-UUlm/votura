@@ -1,5 +1,6 @@
 import {
   parameter,
+  type ApiTokenUser,
   type SelectableBallotPaper,
   type SelectableElection,
   type SelectableUser,
@@ -7,9 +8,10 @@ import {
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser } from '../mockData.js';
+import { demoBallotPaper, demoElection, demoUser } from '../mockData.js';
 import { createBallotPaper, getBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createElection, getElection } from './../../src/services/elections.service.js';
 
@@ -18,6 +20,7 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
   let user: SelectableUser | null = null;
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -37,10 +40,14 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
     }
 
     requestPath = `/elections/${election.id}`;
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('203: should delete an election', async () => {
-    const res = await request(app).delete(requestPath).set('Authorization', DEMO_TOKEN);
+    const res = await request(app)
+      .delete(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.noContent);
     if (election?.id === undefined) {
       throw new Error('Election ID is undefined');

@@ -29,10 +29,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Creates a candidate with a link to a ballot paper sections.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'The candidate can only be created if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The candidate can only be created if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createCandidate',
     requestBody: {
@@ -71,10 +68,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all candidates for an election',
     description:
       'Returns all candidates with the public information fields, that are linked to the specified election. \n' +
-      'The user of the API access token needs the access rights to the election to read the candidate.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs the access rights to the election to read the candidate.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getCandidates',
     responses: {

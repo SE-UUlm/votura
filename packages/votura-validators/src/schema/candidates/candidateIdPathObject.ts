@@ -69,10 +69,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get a specific candidate',
     description:
       'Returns the requested candidate with all public information fields.\n' +
-      'The user of the API access token needs access to the linked election.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs access to the linked election.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getCandidateById',
     responses: {

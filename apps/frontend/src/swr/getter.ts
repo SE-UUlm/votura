@@ -1,4 +1,5 @@
 import { apiRoutes } from './apiRoutes.ts';
+import { hasMessage } from './hasMessage.ts';
 
 export const getter = async (url: string): Promise<unknown> => {
   const response = await fetch(apiRoutes.base + url, {
@@ -9,9 +10,14 @@ export const getter = async (url: string): Promise<unknown> => {
     },
   });
 
+  const data: unknown = await response.json();
+
   if (!response.ok) {
-    throw new Error(response.statusText);
+    const errorMessage = hasMessage(data)
+      ? data.message
+      : 'We encountered an unexpected error while fetching a resource. Please try again later or get in contact with us.';
+    throw new Error(errorMessage);
   }
 
-  return response.json();
+  return data;
 };

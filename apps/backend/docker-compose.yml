@@ -1,6 +1,8 @@
 services:
   postgres:
-    image: postgres:17.4
+    build:
+      context: .
+      dockerfile: Dockerfile
     restart: always
     shm_size: 128mb
     ports:
