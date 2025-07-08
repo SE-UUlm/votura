@@ -1,7 +1,7 @@
-import type { User } from "@repo/votura-validators";
+import type { User } from '@repo/votura-validators';
 
 export interface JwtPayload {
-  sub: User["id"];
+  sub: User['id'];
   iat?: number; // added by jwt.sign automatically
   type: 'refresh' | 'access';
   exp: number;
