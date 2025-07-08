@@ -1,6 +1,7 @@
 import {
   insertableCandidateObject,
   response404Object,
+  response500Object,
   zodErrorToResponse400,
   type Candidate,
   type Election,
@@ -29,7 +30,9 @@ export const createCandidate = async (
 
   const selectableCandidate = await createPersistentCandidate(data, req.params.electionId);
   if (selectableCandidate === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: 'undefined' }));
+    res
+      .status(HttpStatusCode.InternalServerError)
+      .json(response500Object.parse({ message: undefined }));
     return;
   }
   res.status(HttpStatusCode.Created).json(selectableCandidate);
@@ -49,7 +52,9 @@ export const getCandidate = async (
 ): Promise<void> => {
   const candidate = await getPersistentCandidate(req.params.candidateId);
   if (candidate === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: 'Cannot find candidate.' }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(candidate);
