@@ -28,7 +28,7 @@ export const createBallotPaperSection = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<SelectableBallotPaperSection | null> => {
   const ballotPaperSection = await db
-    .insertInto('BallotPaperSection')
+    .insertInto('ballotPaperSection')
     .values({ ...insertableBallotPaperSection, ballotPaperId: ballotPaperId })
     .returningAll()
     .executeTakeFirst();
@@ -44,7 +44,7 @@ export const getBallotPaperSections = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<SelectableBallotPaperSection[]> => {
   const ballotPaperSections = await db
-    .selectFrom('BallotPaperSection')
+    .selectFrom('ballotPaperSection')
     .selectAll()
     .where('ballotPaperId', '=', ballotPaperId)
     .execute();

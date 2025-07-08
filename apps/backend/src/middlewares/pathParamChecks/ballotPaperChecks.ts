@@ -49,7 +49,7 @@ export async function checkBallotPaperExists(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .select(['id'])
     .where('id', '=', req.params.ballotPaperId)
     .executeTakeFirst();
@@ -79,7 +79,7 @@ export async function checkElectionIsParent(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('BallotPaper')
+    .selectFrom('ballotPaper')
     .select(['id', 'electionId'])
     .where('id', '=', req.params.ballotPaperId)
     .where('electionId', '=', req.params.electionId)

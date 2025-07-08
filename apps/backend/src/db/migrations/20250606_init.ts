@@ -47,7 +47,7 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilde
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createUserTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.User)
+    .createTable(TableName.user)
     .$call(addDefaultColumns)
     .addColumn(UserColumnName.email, 'varchar(256)', (col) => col.notNull().unique())
     .addColumn(UserColumnName.passwordHash, 'varchar(256)', (col) => col.notNull())
@@ -62,15 +62,15 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
       'valid_email',
       sql`"email"
         ~
-        ${sql.lit(RegexPattern.Email)}`,
+        ${sql.lit(RegexPattern.email)}`,
     )
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.User)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.user)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.User)}
+            ON ${sql.table(TableName.user)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -79,7 +79,7 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.AccessTokenBlacklist)
+    .createTable(TableName.accessTokenBlacklist)
     .$call(addDefaultColumns)
     .addColumn(AccessTokenBlacklistColumnName.accessTokenId, 'uuid', (col) =>
       col.notNull().unique(),
@@ -89,9 +89,9 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.AccessTokenBlacklist)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.accessTokenBlacklist)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.AccessTokenBlacklist)}
+            ON ${sql.table(TableName.accessTokenBlacklist)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -100,7 +100,7 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createElectionTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.Election)
+    .createTable(TableName.election)
     .$call(addDefaultColumns)
     .addColumn(ElectionColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(ElectionColumnName.description, 'varchar(256)')
@@ -126,9 +126,9 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.Election)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.election)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.Election)}
+            ON ${sql.table(TableName.election)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -137,7 +137,7 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.BallotPaper)
+    .createTable(TableName.ballotPaper)
     .$call(addDefaultColumns)
     .addColumn(BallotPaperColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(BallotPaperColumnName.description, 'varchar(256)')
@@ -153,9 +153,9 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.BallotPaper)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.ballotPaper)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.BallotPaper)}
+            ON ${sql.table(TableName.ballotPaper)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -164,7 +164,7 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.BallotPaperSection)
+    .createTable(TableName.ballotPaperSection)
     .$call(addDefaultColumns)
     .addColumn(BallotPaperSectionColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(BallotPaperSectionColumnName.description, 'varchar(256)')
@@ -180,9 +180,9 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.BallotPaperSection)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.ballotPaperSection)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.BallotPaperSection)}
+            ON ${sql.table(TableName.ballotPaperSection)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -191,7 +191,7 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.BallotPaperSectionCandidate)
+    .createTable(TableName.ballotPaperSectionCandidate)
     .$call(addDefaultColumns)
     .addColumn(BallotPaperSectionCandidateColumnName.ballotPaperSectionId, 'uuid', (col) =>
       col.notNull(),
@@ -201,9 +201,9 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.BallotPaperSectionCandidate)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.ballotPaperSectionCandidate)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.BallotPaperSectionCandidate)}
+            ON ${sql.table(TableName.ballotPaperSectionCandidate)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -212,7 +212,7 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createCandidateTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.Candidate)
+    .createTable(TableName.candidate)
     .$call(addDefaultColumns)
     .addColumn(CandidateColumnName.title, 'varchar(256)', (col) => col.notNull())
     .addColumn(CandidateColumnName.description, 'varchar(256)')
@@ -221,9 +221,9 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.Candidate)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.candidate)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.Candidate)}
+            ON ${sql.table(TableName.candidate)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -232,7 +232,7 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.VoterGroup)
+    .createTable(TableName.voterGroup)
     .$call(addDefaultColumns)
     .addColumn(VoterGroupColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(VoterGroupColumnName.description, 'varchar(256)')
@@ -245,9 +245,9 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.VoterGroup)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.voterGroup)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.VoterGroup)}
+            ON ${sql.table(TableName.voterGroup)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -256,16 +256,16 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.Voter)
+    .createTable(TableName.voter)
     .$call(addDefaultColumns)
     .addColumn(VoterColumnName.voterGroupId, 'uuid', (col) => col.notNull())
     .execute();
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.Voter)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.voter)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.Voter)}
+            ON ${sql.table(TableName.voter)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -274,7 +274,7 @@ async function createVoterTable(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
   await db.schema
-    .createTable(TableName.VoterRegister)
+    .createTable(TableName.voterRegister)
     .$call(addDefaultColumns)
     .addColumn(VoterRegisterColumnName.voted, 'boolean', (col) => col.notNull().defaultTo(false))
     .addColumn(VoterRegisterColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
@@ -283,9 +283,9 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
 
   // Add a trigger to update modifiedAt on row updates
   await sql`
-        CREATE TRIGGER ${sql.raw(TableName.VoterRegister)}_modified_at_trigger
+        CREATE TRIGGER ${sql.raw(TableName.voterRegister)}_modified_at_trigger
             BEFORE UPDATE
-            ON ${sql.table(TableName.VoterRegister)}
+            ON ${sql.table(TableName.voterRegister)}
             FOR EACH ROW
             EXECUTE FUNCTION update_modified_at_column();
     `.execute(db);
@@ -309,11 +309,11 @@ async function createTables(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.Election)
+    .alterTable(TableName.election)
     .addForeignKeyConstraint(
       ElectionFKName.electionCreatorId,
       [ElectionColumnName.electionCreatorId],
-      TableName.User,
+      TableName.user,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -323,11 +323,11 @@ async function addElectionForeignKeys(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.BallotPaper)
+    .alterTable(TableName.ballotPaper)
     .addForeignKeyConstraint(
       BallotPaperFKName.electionId,
       [BallotPaperColumnName.electionId],
-      TableName.Election,
+      TableName.election,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -337,11 +337,11 @@ async function addBallotPaperForeignKeys(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.BallotPaperSection)
+    .alterTable(TableName.ballotPaperSection)
     .addForeignKeyConstraint(
       BallotPaperSectionFKName.ballotPaperId,
       [BallotPaperSectionColumnName.ballotPaperId],
-      TableName.BallotPaper,
+      TableName.ballotPaper,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -351,22 +351,22 @@ async function addBallotPaperSectionForeignKeys(db: Kysely<any>): Promise<void> 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.BallotPaperSectionCandidate)
+    .alterTable(TableName.ballotPaperSectionCandidate)
     .addForeignKeyConstraint(
       BallotPaperSectionCandidateFKName.ballotPaperSectionId,
       [BallotPaperSectionCandidateColumnName.ballotPaperSectionId],
-      TableName.BallotPaperSection,
+      TableName.ballotPaperSection,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 
   await db.schema
-    .alterTable(TableName.BallotPaperSectionCandidate)
+    .alterTable(TableName.ballotPaperSectionCandidate)
     .addForeignKeyConstraint(
       BallotPaperSectionCandidateFKName.candidateId,
       [BallotPaperSectionCandidateColumnName.candidateId],
-      TableName.Candidate,
+      TableName.candidate,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -376,11 +376,11 @@ async function addBallotPaperSectionCandidateForeignKeys(db: Kysely<any>): Promi
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.Candidate)
+    .alterTable(TableName.candidate)
     .addForeignKeyConstraint(
       CandidateFKName.electionId,
       [CandidateColumnName.electionId],
-      TableName.Election,
+      TableName.election,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -390,11 +390,11 @@ async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.Voter)
+    .alterTable(TableName.voter)
     .addForeignKeyConstraint(
       VoterFKName.voterGroupId,
       [VoterColumnName.voterGroupId],
-      TableName.VoterGroup,
+      TableName.voterGroup,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -404,22 +404,22 @@ async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
-    .alterTable(TableName.VoterRegister)
+    .alterTable(TableName.voterRegister)
     .addForeignKeyConstraint(
       VoterRegisterFKName.ballotPaperId,
       [VoterRegisterColumnName.ballotPaperId],
-      TableName.BallotPaper,
+      TableName.ballotPaper,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
     .execute();
 
   await db.schema
-    .alterTable(TableName.VoterRegister)
+    .alterTable(TableName.voterRegister)
     .addForeignKeyConstraint(
       VoterRegisterFKName.voterId,
       [VoterRegisterColumnName.voterId],
-      TableName.Voter,
+      TableName.voter,
       [DefaultColumnName.id],
       (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
@@ -466,14 +466,14 @@ export async function down(db: Kysely<any>): Promise<void> {
     `.execute(db);
 
   // Drop tables in reverse order of creation to handle foreign key dependencies
-  await db.schema.dropTable(TableName.VoterRegister).ifExists().execute();
-  await db.schema.dropTable(TableName.Voter).ifExists().execute();
-  await db.schema.dropTable(TableName.VoterGroup).ifExists().execute();
-  await db.schema.dropTable(TableName.Candidate).ifExists().execute();
-  await db.schema.dropTable(TableName.BallotPaperSectionCandidate).ifExists().execute();
-  await db.schema.dropTable(TableName.BallotPaperSection).ifExists().execute();
-  await db.schema.dropTable(TableName.BallotPaper).ifExists().execute();
-  await db.schema.dropTable(TableName.Election).ifExists().execute();
-  await db.schema.dropTable(TableName.AccessTokenBlacklist).ifExists().execute();
-  await db.schema.dropTable(TableName.User).ifExists().execute();
+  await db.schema.dropTable(TableName.voterRegister).ifExists().execute();
+  await db.schema.dropTable(TableName.voter).ifExists().execute();
+  await db.schema.dropTable(TableName.voterGroup).ifExists().execute();
+  await db.schema.dropTable(TableName.candidate).ifExists().execute();
+  await db.schema.dropTable(TableName.ballotPaperSectionCandidate).ifExists().execute();
+  await db.schema.dropTable(TableName.ballotPaperSection).ifExists().execute();
+  await db.schema.dropTable(TableName.ballotPaper).ifExists().execute();
+  await db.schema.dropTable(TableName.election).ifExists().execute();
+  await db.schema.dropTable(TableName.accessTokenBlacklist).ifExists().execute();
+  await db.schema.dropTable(TableName.user).ifExists().execute();
 }

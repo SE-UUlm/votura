@@ -5,13 +5,13 @@ import { MimeType } from './utils.js';
 
 export const acceptBodyCheck =
   (mimeType = MimeType.applicationJson) =>
-    (req: Request, res: Response, next: NextFunction): void => {
-      const bodyMimeType = req.get('content-type');
+  (req: Request, res: Response, next: NextFunction): void => {
+    const bodyMimeType = req.get('content-type');
 
-      if (bodyMimeType !== mimeType) {
-        res.status(HttpStatusCode.unsupportedMediaType).json(response415Object.parse({}));
-        return;
-      }
+    if (bodyMimeType !== mimeType) {
+      res.status(HttpStatusCode.unsupportedMediaType).json(response415Object.parse({}));
+      return;
+    }
 
-      next();
-    };
+    next();
+  };

@@ -1,20 +1,20 @@
 // --- Regex patterns ---
 export enum RegexPattern {
-  Email = '^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,4}$',
+  email = '^[A-Za-z0-9._%+\\-]+@[A-Za-z0-9-]+\\.[A-Za-z]{2,4}$',
 }
 
 // --- Table names ---
 export enum TableName {
-  User = 'User',
-  AccessTokenBlacklist = 'AccessTokenBlacklist',
-  Election = 'Election',
-  BallotPaper = 'BallotPaper',
-  BallotPaperSection = 'BallotPaperSection',
-  BallotPaperSectionCandidate = 'BallotPaperSectionCandidate',
-  Candidate = 'Candidate',
-  VoterGroup = 'VoterGroup',
-  Voter = 'Voter',
-  VoterRegister = 'VoterRegister',
+  user = 'user',
+  accessTokenBlacklist = 'accessTokenBlacklist',
+  election = 'election',
+  ballotPaper = 'ballotPaper',
+  ballotPaperSection = 'ballotPaperSection',
+  ballotPaperSectionCandidate = 'ballotPaperSectionCandidate',
+  candidate = 'candidate',
+  voterGroup = 'voterGroup',
+  voter = 'voter',
+  voterRegister = 'voterRegister',
 }
 
 // --- Column names ---

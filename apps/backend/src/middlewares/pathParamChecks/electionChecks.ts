@@ -50,7 +50,7 @@ export async function checkElectionExists(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id'])
     .where('id', '=', req.params.electionId)
     .executeTakeFirst();
@@ -81,7 +81,7 @@ export async function checkUserOwnerOfElection(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id', 'electionCreatorId'])
     .where('id', '=', req.params.electionId)
     .where('electionCreatorId', '=', res.locals.user.id)
@@ -113,7 +113,7 @@ export async function checkElectionNotFrozen(
   next: NextFunction,
 ): Promise<void> {
   const result = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .select(['id', 'configFrozen'])
     .where('id', '=', req.params.electionId)
     .executeTakeFirst();

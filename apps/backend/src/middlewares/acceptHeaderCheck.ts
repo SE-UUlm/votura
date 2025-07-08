@@ -5,13 +5,13 @@ import { MimeType } from './utils.js';
 
 export const acceptHeaderCheck =
   (mimeType = MimeType.applicationJson) =>
-    (req: Request, res: Response, next: NextFunction): void => {
-      const acceptsMimeType = req.accepts(mimeType) === mimeType;
+  (req: Request, res: Response, next: NextFunction): void => {
+    const acceptsMimeType = req.accepts(mimeType) === mimeType;
 
-      if (!acceptsMimeType) {
-        res.status(HttpStatusCode.notAcceptable).json(response406Object.parse({}));
-        return;
-      }
+    if (!acceptsMimeType) {
+      res.status(HttpStatusCode.notAcceptable).json(response406Object.parse({}));
+      return;
+    }
 
-      next();
-    };
+    next();
+  };

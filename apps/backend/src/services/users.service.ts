@@ -9,7 +9,7 @@ export async function findUserBy(
     return null;
   }
 
-  let query = db.selectFrom('User');
+  let query = db.selectFrom('user');
 
   if (criteria.id !== undefined) {
     query = query.where('id', '=', criteria.id);
@@ -42,7 +42,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<boolea
   const hashedPassword = await argon2.hash(insertableUser.password + pepper);
 
   const user = await db
-    .insertInto('User')
+    .insertInto('user')
     .values({
       email: insertableUser.email,
       passwordHash: hashedPassword,

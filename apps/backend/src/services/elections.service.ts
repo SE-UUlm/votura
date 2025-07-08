@@ -34,7 +34,7 @@ export const createElection = async (
   userId: User['id'],
 ): Promise<SelectableElection | null> => {
   const election = await db
-    .insertInto('Election')
+    .insertInto('election')
     .values({
       ...insertableElection,
       electionCreatorId: userId,
@@ -51,7 +51,7 @@ export const createElection = async (
 
 export const getElections = async (userId: User['id']): Promise<SelectableElection[]> => {
   const elections = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .selectAll()
     .where('electionCreatorId', '=', userId)
     .execute();
@@ -64,7 +64,7 @@ export const getElection = async (
   userId: User['id'],
 ): Promise<SelectableElection | null> => {
   const election = await db
-    .selectFrom('Election')
+    .selectFrom('election')
     .where('id', '=', electionId)
     .where('electionCreatorId', '=', userId)
     .selectAll()
@@ -82,7 +82,7 @@ export const updateElection = async (
   electionId: Election['id'],
 ): Promise<SelectableElection | null> => {
   const election = await db
-    .updateTable('Election')
+    .updateTable('election')
     .set({ ...updateableElection })
     .where('id', '=', electionId)
     .returningAll()
@@ -108,7 +108,7 @@ export const setElectionFrozenState = async (
   configFrozen: boolean,
 ): Promise<SelectableElection | null> => {
   const election = await db
-    .updateTable('Election')
+    .updateTable('election')
     .set({ configFrozen: configFrozen })
     .where('id', '=', electionId)
     .returningAll()
@@ -122,5 +122,5 @@ export const setElectionFrozenState = async (
 };
 
 export const deleteElection = async (electionId: Election['id']): Promise<DeleteResult> => {
-  return db.deleteFrom('Election').where('id', '=', electionId).executeTakeFirst();
+  return db.deleteFrom('election').where('id', '=', electionId).executeTakeFirst();
 };
