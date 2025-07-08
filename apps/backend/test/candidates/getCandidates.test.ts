@@ -2,14 +2,16 @@ import { parameter, selectableCandidateObject } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { DEMO_TOKEN, demoCandidate, demoCandidate2, demoElection, demoUser } from '../mockData.js';
+import { demoCandidate, demoCandidate2, demoElection, demoUser } from '../mockData.js';
 import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
   let requestPath = '';
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -30,6 +32,7 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
     }
 
     requestPath = `/elections/${election.id}/candidates`;
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should get all candidates for an election', async () => {
