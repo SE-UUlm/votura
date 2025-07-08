@@ -1,8 +1,8 @@
 import {
   insertableCandidateObject,
   response404Object,
-  updateableCandidateObject,
   response500Object,
+  updateableCandidateObject,
   zodErrorToResponse400,
   type Candidate,
   type Election,
@@ -57,7 +57,7 @@ export const getCandidate = async (
   if (candidate === null) {
     res
       .status(HttpStatusCode.NotFound)
-      .json(response404Object.parse({ message: 'Cannot find candidate.' }));
+      .json(response404Object.parse({ message: "Can't find candidate." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(candidate);
@@ -76,7 +76,9 @@ export const updateCandidate = async (
 
   const selectableCandidate = await updatePersistentCandidate(data, req.params.candidateId);
   if (selectableCandidate === null) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find candidate." }));
     return;
   }
   res.status(HttpStatusCode.Ok).json(selectableCandidate);
@@ -88,7 +90,9 @@ export const deleteCandidate = async (
 ): Promise<void> => {
   const result = await deletePersistentCandidate(req.params.candidateId);
   if (result.numDeletedRows < 1n) {
-    res.status(HttpStatusCode.NotFound).json(response404Object.parse({ message: undefined }));
+    res
+      .status(HttpStatusCode.NotFound)
+      .json(response404Object.parse({ message: "Can't find candidate." }));
     return;
   }
   res.sendStatus(HttpStatusCode.NoContent);
