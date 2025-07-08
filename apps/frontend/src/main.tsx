@@ -13,12 +13,11 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <SWRConfig
       value={{
-        onError: (err) => {
-          console.error(err);
+        onError: (err: Error): void => {
+          console.error(err.message);
           notifications.show({
             title: 'Error',
-            message:
-              'We encountered a networking issue. Please try again or get in contact with us',
+            message: err.message,
             autoClose: 10000,
             color: 'red',
           });
