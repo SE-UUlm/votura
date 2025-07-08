@@ -91,10 +91,5 @@ export const updateBallotPaper = async (
 export const deleteBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<DeleteResult> => {
-  const result = await db
-    .deleteFrom('BallotPaper')
-    .where('id', '=', ballotPaperId)
-    .executeTakeFirst();
-
-  return result;
+  return db.deleteFrom('BallotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
 };

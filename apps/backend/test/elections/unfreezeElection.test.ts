@@ -1,7 +1,7 @@
 import {
   parameter,
+  selectableElectionObject,
   type ApiTokenUser,
-  type SelectableBallotPaper,
   type SelectableElection,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -10,14 +10,13 @@ import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { demoBallotPaper, demoElection, demoUser } from '../mockData.js';
-import { createBallotPaper, getBallotPaper } from './../../src/services/ballotPapers.service.js';
+import { demoElection, demoUser } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
-describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
-  let requestPath = '';
+describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
+  let freezePath = '';
+  let unfreezePath = '';
   let election: SelectableElection | null = null;
-  let ballotPaper: SelectableBallotPaper | null = null;
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
@@ -32,25 +31,24 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       throw new Error('Failed to create test election');
     }
 
-    ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
-
-    requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
+    freezePath = `/elections/${election.id}/freeze`;
+    unfreezePath = `/elections/${election.id}/unfreeze`;
 
     tokens = generateUserTokens(user.id);
   });
 
-  it('204: should delete a ballot paper', async () => {
+  it('200: should unfreeze a frozen election', async () => {
+    await request(app).put(freezePath).set('Authorization', `Bearer ${tokens.accessToken}`);
     const res = await request(app)
-      .delete(requestPath)
+      .put(unfreezePath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(res.status).toBe(HttpStatusCode.NoContent);
-    if (ballotPaper?.id === undefined) {
-      throw new Error('Ballot paper ID is undefined');
+    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.type).toBe('application/json');
+    const parseResult = selectableElectionObject.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.id).toBe(election?.id);
+      expect(parseResult.data.configFrozen).toBe(false);
     }
-    const dbResult = await getBallotPaper(ballotPaper?.id);
-    expect(dbResult).toBeNull();
   });
 });

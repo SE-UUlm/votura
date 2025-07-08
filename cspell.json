@@ -17,12 +17,14 @@
   "words": [
     "accesskey",
     "Avenir",
+    "Chaum",
     "deflist",
     "Gamal",
     "Gamals",
     "Hoffmann",
     "Infima",
     "Kortmann",
+    "Pedersen",
     "Raschke",
     "Shamir",
     "Sievers",
@@ -39,6 +41,8 @@
     "cofactor",
     "dsiev",
     "enduml",
+    "homomorphic",
+    "multiplicatively",
     "plaintexts",
     "shoffma",
     "smallint",
@@ -60,6 +64,8 @@
     "hashedpassword",
     "codegen",
     "plpgsql",
-    "Millis"
+    "Millis",
+    "XVCJ",
+    "Vomg"
   ]
 }
