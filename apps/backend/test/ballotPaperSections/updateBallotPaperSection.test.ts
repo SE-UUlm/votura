@@ -3,6 +3,7 @@ import {
   response400Object,
   response404Object,
   selectableBallotPaperSectionObject,
+  type ApiTokenUser,
   type SelectableBallotPaper,
   type SelectableBallotPaperSection,
   type SelectableElection,
@@ -12,9 +13,9 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import {
   brokenBallotPaperSection,
-  DEMO_TOKEN,
   demoBallotPaper,
   demoBallotPaper2,
   demoBallotPaperSection,
@@ -35,6 +36,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -65,12 +67,13 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     invalidUuidRequestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/No-UUID`;
     notExistingRequestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/130b189b-0627-4dec-b928-169146a2931b`;
     wrongParentPath = `/elections/${election.id}/ballotPapers/${ballotPaper2.id}/ballotPaperSections/${ballotPaperSection.id}`;
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should update a ballot paper section', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', tokens.accessToken)
       .send(demoBallotPaperSection2);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
@@ -89,7 +92,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('400: should complain about wrong UUID', async () => {
     const res = await request(app)
       .put(invalidUuidRequestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', tokens.accessToken)
       .send(demoBallotPaperSection);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
@@ -99,7 +102,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('400: should complain about wrong input data', async () => {
     const res = await request(app)
       .put(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', tokens.accessToken)
       .send(brokenBallotPaperSection);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');
@@ -109,7 +112,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('404: should complain about non-existing ballot paper section', async () => {
     const res = await request(app)
       .put(notExistingRequestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', tokens.accessToken)
       .send(demoBallotPaperSection);
     expect(res.status).toBe(HttpStatusCode.NotFound);
     expect(res.type).toBe('application/json');
@@ -119,7 +122,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   it('404: when BP is not the parent of BPS', async () => {
     const res = await request(app)
       .put(wrongParentPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', tokens.accessToken)
       .send(demoBallotPaperSection);
     expect(res.status).toBe(HttpStatusCode.BadRequest);
     expect(res.type).toBe('application/json');

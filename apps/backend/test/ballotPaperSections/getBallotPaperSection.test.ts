@@ -1,6 +1,7 @@
 import {
   parameter,
   selectableBallotPaperSectionObject,
+  type ApiTokenUser,
   type SelectableBallotPaper,
   type SelectableBallotPaperSection,
   type SelectableElection,
@@ -10,13 +11,8 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import {
-  DEMO_TOKEN,
-  demoBallotPaper,
-  demoBallotPaperSection,
-  demoElection,
-  demoUser,
-} from '../mockData.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
+import { demoBallotPaper, demoBallotPaperSection, demoElection, demoUser } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import { createBallotPaperSection } from './../../src/services/ballotPaperSections.service.js';
 import { createElection } from './../../src/services/elections.service.js';
@@ -26,6 +22,7 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -50,10 +47,11 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}`;
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should get a ballot paper section for an election', async () => {
-    const res = await request(app).get(requestPath).set('Authorization', DEMO_TOKEN);
+    const res = await request(app).get(requestPath).set('Authorization', tokens.accessToken);
     expect(res.status).toBe(HttpStatusCode.Ok);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperSectionObject.safeParse(res.body);
