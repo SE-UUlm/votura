@@ -1,0 +1,40 @@
+{
+  "name": "@repo/db",
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "format": "prettier --write .",
+    "check-format": "prettier --check .",
+    "postgres-up": "docker compose up -d",
+    "postgres-down": "docker compose down",
+    "gen-types": "kysely-codegen",
+    "migrate": "tsx ./src/migrate.ts",
+    "seed": "tsx ./src/seed.ts",
+    "check-types": "tsc --noEmit"
+  },
+  "dependencies": {
+    "dotenv": "^16.5.0",
+    "kysely": "^0.28.2",
+    "pg": "^8.16.0",
+    "@repo/logger": "*"
+  },
+  "devDependencies": {
+    "@eslint/compat": "^1.3.0",
+    "@repo/eslint-config": "*",
+    "@repo/typescript-config": "*",
+    "@tsconfig/node22": "^22.0.1",
+    "eslint": "^9.25.1",
+    "prettier": "^3.5.3",
+    "typescript": "^5.8.2",
+    "typescript-eslint": "^8.31.0",
+    "@types/pg": "^8.15.4",
+    "kysely-codegen": "^0.18.5",
+    "@testcontainers/postgresql": "^11.0.3"
+  },
+  "exports": {
+    ".": "./src/main.ts",
+    "./types": "./src/types/db.d.ts",
+    "./migrateToLatest": "./src/migrateToLatest.ts",
+    "./genericContainer": "./src/genericContainer.ts"
+  }
+}
