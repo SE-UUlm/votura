@@ -3,7 +3,6 @@ import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
-import pinoHttp from 'pino-http';
 import { generateJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
 import { authenticateAccessToken } from './middlewares/auth.js';
