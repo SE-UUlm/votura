@@ -1,6 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 import dotenv from 'dotenv';
-import * as os from 'node:os';
+import { availableParallelism } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
 
@@ -16,7 +16,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: !(process.env.CI == null),
   retries: process.env.CI != null ? 2 : 0,
-  workers: process.env.CI != null ? 1 : os.availableParallelism(),
+  workers: process.env.CI != null ? 1 : availableParallelism(),
   reporter: 'html',
   webServer: [
     {

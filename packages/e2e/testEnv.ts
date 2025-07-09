@@ -8,7 +8,7 @@ import { Pool } from 'pg';
 import type { StartedTestContainer } from 'testcontainers';
 import { fileURLToPath } from 'url';
 
-let dbContainer: StartedTestContainer;
+let dbContainer: StartedTestContainer | null = null;
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
