@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperObject,
   insertableBallotPaperSectionObject,
+  insertableCandidateObject,
   insertableElectionObject,
   insertableUserObject,
 } from '@repo/votura-validators';
@@ -8,7 +9,6 @@ import {
 /*
  * User and authentication
  */
-export const DEMO_TOKEN = '1234';
 const STRONG_PWD = 'MyStrong!Password123';
 export const demoUser = insertableUserObject.parse({
   email: 'user@votura.org',
@@ -82,7 +82,23 @@ export const demoBallotPaperSection2 = insertableBallotPaperSectionObject.parse(
   maxVotesPerCandidate: 1,
 });
 export const brokenBallotPaperSection = {
-  XYZ: 'Test broken ballot paper section',
+  xxx: 'Test broken ballot paper section',
   description: 'Test broken ballot paper section description',
   maxVotesPerCandidate: 20,
+};
+
+/*
+ * Candidates
+ */
+export const demoCandidate = insertableCandidateObject.parse({
+  title: 'Test candidate',
+  description: 'Test candidate description',
+});
+export const demoCandidate2 = insertableCandidateObject.parse({
+  title: 'Test candidate 2',
+  description: 'Test candidate description 2',
+});
+export const brokenCandidate = {
+  title: '',
+  description: 'Broken candidate description',
 };

@@ -4,10 +4,9 @@ import { dirname } from 'path';
 import { fileURLToPath } from 'url';
 import { voturaOpenApiSchema } from './voturaOpenApiSchema.js';
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
-
-const path = Path.join(__dirname, '/../../generated/');
+const fileName = fileURLToPath(import.meta.url);
+const directoryName = dirname(fileName);
+const path = Path.join(directoryName, '/../../generated/');
 
 if (!fs.existsSync(path)) {
   fs.mkdirSync(path);

@@ -17,7 +17,7 @@ export const getVoterTokensPathObject: OpenAPIV3.PathItemObject = {
   description: 'Create voter tokens for a specific voter group.',
   parameters: [voterGroupIdParameter],
   get: {
-    tags: [Tag.VoterGroups],
+    tags: [Tag.voterGroups],
     summary: 'Create voter tokens for a specific voter group',
     description:
       'Creates and returns voter tokens for every voter in the requested voter group.\n' +
@@ -30,10 +30,12 @@ export const getVoterTokensPathObject: OpenAPIV3.PathItemObject = {
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterTokensForId',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns the requested voter tokens for the requested voter group.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',

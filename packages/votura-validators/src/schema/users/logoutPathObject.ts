@@ -13,12 +13,13 @@ export const logoutPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Logout user',
   description: 'Logout user (blacklist access and refresh token)',
   post: {
-    tags: [Tag.Users],
+    tags: [Tag.users],
     summary: 'Logout user',
     description: 'Logout user (blacklist access and refresh token)',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'userLogout',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       204: {
         description: 'No Content. The request was successfully executed. User logged out.',
       },

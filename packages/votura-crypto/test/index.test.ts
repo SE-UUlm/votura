@@ -172,10 +172,10 @@ describe('Tallying', () => {
     const lenA = votesA1[0]!.length;
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const lenB = votesB1[0]!.length;
-    const votesA1_0 = votesA1.map((row) => [...row, ...zeroRow(lenB)]);
-    const votes0_B1 = votesB1.map((row) => [...zeroRow(lenA), ...row]);
+    const votesA10 = votesA1.map((row) => [...row, ...zeroRow(lenB)]);
+    const votes0B1 = votesB1.map((row) => [...zeroRow(lenA), ...row]);
 
-    const votesTemp = votesA1_0.concat(votes0_B1); // only different choices
+    const votesTemp = votesA10.concat(votes0B1); // only different choices
     const votes1 = votesTemp.map((row, index) => {
       expect(row).toHaveLength(7);
       expect(row).not.toContain(undefined);
@@ -183,7 +183,7 @@ describe('Tallying', () => {
       const newRow: Ciphertext[] = []; // sec A choice 4 = sec B choice 2
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       newRow.push(row[0]!, row[1]!, row[2]!);
-      if (index < votesA1_0.length) {
+      if (index < votesA10.length) {
         // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
         newRow.push(row[3]!);
       } else {

@@ -24,30 +24,30 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     'You can create a new one or read all the existing ones for an election.',
   parameters: [electionIdParameter],
   post: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Create a candidate',
     description:
       'Creates a candidate with a link to a ballot paper sections.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'The candidate can only be created if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The candidate can only be created if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createCandidate',
     requestBody: {
       required: true,
       content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
           schema: insertableCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       201: {
         description:
           'Created. The request was successfully executed. Successfully created a new candidate.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableCandidateObjectSchema as OpenAPIV3.SchemaObject,
           },
@@ -64,21 +64,20 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     },
   },
   get: {
-    tags: [Tag.Candidates],
+    tags: [Tag.candidates],
     summary: 'Get all candidates for an election',
     description:
       'Returns all candidates with the public information fields, that are linked to the specified election. \n' +
-      'The user of the API access token needs the access rights to the election to read the candidate.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs the access rights to the election to read the candidate.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getCandidates',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK. The request was successfully executed. Returns candidates for the requested election.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: {
               type: 'array',

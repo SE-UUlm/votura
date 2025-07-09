@@ -123,14 +123,14 @@ export interface VoterRegister {
 }
 
 export interface DB {
-  AccessTokenBlacklist: AccessTokenBlacklist;
-  BallotPaper: BallotPaper;
-  BallotPaperSection: BallotPaperSection;
-  BallotPaperSectionCandidate: BallotPaperSectionCandidate;
-  Candidate: Candidate;
-  Election: Election;
-  User: User;
-  Voter: Voter;
-  VoterGroup: VoterGroup;
-  VoterRegister: VoterRegister;
+  accessTokenBlacklist: AccessTokenBlacklist;
+  ballotPaper: BallotPaper;
+  ballotPaperSection: BallotPaperSection;
+  ballotPaperSectionCandidate: BallotPaperSectionCandidate;
+  candidate: Candidate;
+  election: Election;
+  user: User;
+  voter: Voter;
+  voterGroup: VoterGroup;
+  voterRegister: VoterRegister;
 }

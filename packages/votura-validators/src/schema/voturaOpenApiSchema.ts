@@ -3,6 +3,7 @@ import { ballotPaperIdPathObject } from './ballotPapers/ballotPaperIdPathObject.
 import { ballotPapersPathObject } from './ballotPapers/ballotPapersPathObject.js';
 import { ballotPaperSectionIdPathObject } from './ballotPaperSections/ballotPaperSectionIdPathObject.js';
 import { ballotPaperSectionsPathObject } from './ballotPaperSections/ballotPaperSectionsPathObject.js';
+import { candidatePathObject } from './ballotPaperSections/candidatePathObject.js';
 import { candidateIdPathObject } from './candidates/candidateIdPathObject.js';
 import { candidatesPathObject } from './candidates/candidatesPathObject.js';
 import { electionIdPathObject } from './elections/electionIdPathObject.js';
@@ -74,27 +75,27 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
   },
   tags: [
     {
-      name: Tag.Elections,
+      name: Tag.elections,
       description: 'Managing CRUD operations for elections.',
     },
     {
-      name: Tag.Users,
+      name: Tag.users,
       description: 'Managing CRUD operations for users and sessions.',
     },
     {
-      name: Tag.BallotPapers,
+      name: Tag.ballotPapers,
       description: 'Managing CRUD operations for ballot papers.',
     },
     {
-      name: Tag.BallotPaperSections,
+      name: Tag.ballotPaperSections,
       description: 'Managing CRUD operations for ballot paper sections.',
     },
     {
-      name: Tag.Candidates,
+      name: Tag.candidates,
       description: 'Managing CRUD operations for candidates.',
     },
     {
-      name: Tag.VoterGroups,
+      name: Tag.voterGroups,
       description: 'Managing CRUD operations for voter groups.',
     },
   ],
@@ -110,6 +111,8 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
       ballotPaperSectionsPathObject,
     [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}`]:
       ballotPaperSectionIdPathObject,
+    [`/elections/{${parameter.electionId}}/ballotPapers/{${parameter.ballotPaperId}}/ballotPaperSections/{${parameter.ballotPaperSectionId}}/candidates`]:
+      candidatePathObject,
     [`/elections/{${parameter.electionId}}/candidates`]: candidatesPathObject,
     [`/elections/{${parameter.electionId}}/candidates/{${parameter.candidateId}}`]:
       candidateIdPathObject,

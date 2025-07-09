@@ -19,7 +19,7 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
   description: 'Freezes the requested election.',
   parameters: [electionIdParameter],
   put: {
-    tags: [Tag.Elections],
+    tags: [Tag.elections],
     summary: 'Freeze a specific election',
     description:
       'Freezes the requested election.\n' +
@@ -29,15 +29,18 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
       '\n' +
       'After the election is frozen, the key pair for the election will be generated.\n' +
       'The access tokens for your voters can be generated after that.\n' +
-      'Note that it will take some time until the generated keys are available.\n' +
-      'After that, you can distribute the generated voting tokens to your voters.',
+      'Note that depending on the load of the system it will take some time until the generated keys are available.\n' +
+      'You will get a response quickly without the keys, but the keys will be generated in the background.\n' +
+      'If the keys are available, you will get them in your normal GET request for the election.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'freezeElectionById',
     responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
         description:
           'OK.\n' + 'The request was successfully executed.\n' + 'The election is now frozen.',
         content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
             schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
           },

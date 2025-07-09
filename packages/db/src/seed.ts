@@ -3,7 +3,7 @@ import { db } from './database.js';
 
 async function seed(): Promise<void> {
   const user = await db
-    .insertInto('User')
+    .insertInto('user')
     .values({
       email: 'user@votura.org',
       passwordHash: 'hashedpassword',
@@ -16,7 +16,7 @@ async function seed(): Promise<void> {
   }
 
   await db
-    .insertInto('Election')
+    .insertInto('election')
     .values({
       electionCreatorId: user.id,
       name: 'Election 1',

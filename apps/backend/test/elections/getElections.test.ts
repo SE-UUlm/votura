@@ -1,14 +1,19 @@
-import { response406Object, selectableElectionObject } from '@repo/votura-validators';
+import {
+  response406Object,
+  selectableElectionObject,
+  type ApiTokenUser,
+} from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createElection } from '../../src/services/elections.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 
 describe('GET /elections', () => {
-  const AUTH_TOKEN = '1234';
   const ELECTIONS_SLUG = '/elections';
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser({
@@ -39,12 +44,17 @@ describe('GET /elections', () => {
     if (election === null) {
       throw new Error('Election not found!');
     }
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('should get all elections', async () => {
-    const res = await request(app).get(ELECTIONS_SLUG).set('Authorization', AUTH_TOKEN).send();
+    const res = await request(app)
+      .get(ELECTIONS_SLUG)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send();
 
-    expect(res.status).toBe(HttpStatusCode.Ok);
+    expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     expect(res.body).toBeInstanceOf(Array);
     const arrBody = res.body as unknown[];
@@ -62,11 +72,11 @@ describe('GET /elections', () => {
   it('should return 406 Not Acceptable when Accept header is not application/json', async () => {
     const res = await request(app)
       .get(ELECTIONS_SLUG)
-      .set('Authorization', AUTH_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .set('Accept', 'text/plain')
       .send();
 
-    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.status).toBe(HttpStatusCode.notAcceptable);
     expect(res.type).toBe('application/json');
     const parseResult = await response406Object.safeParseAsync(res.body);
     expect(parseResult.success).toBe(true);

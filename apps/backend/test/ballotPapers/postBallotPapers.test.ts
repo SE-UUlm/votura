@@ -6,18 +6,21 @@ import {
   response406Object,
   response415Object,
   selectableBallotPaperObject,
+  type ApiTokenUser,
 } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { DEMO_TOKEN, demoBallotPaper, demoElection, demoUser, demoUser2 } from '../mockData.js';
+import { demoBallotPaper, demoElection, demoUser, demoUser2 } from '../mockData.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
   let requestPath2 = '';
+  let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -36,25 +39,30 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
 
     requestPath = `/elections/${election.id}/ballotPapers`;
     requestPath2 = `/elections/${election2.id}/ballotPapers`;
+
+    tokens = generateUserTokens(user.id);
   });
 
   it('200: should create an election when authorized and body is valid', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.Created);
+    expect(res.status).toBe(HttpStatusCode.created);
     expect(res.type).toBe('application/json');
     const parseResult = selectableBallotPaperObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
   it('400: should throw error missing fields', async () => {
-    const res = await request(app).post(requestPath).set('Authorization', DEMO_TOKEN).send({
-      description: 'Test description',
-      maxVotes: 5,
-      maxVotesPerCandidate: 3,
-    });
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    const res = await request(app)
+      .post(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        description: 'Test description',
+        maxVotes: 5,
+        maxVotesPerCandidate: 3,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -62,9 +70,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   it('400: when no valid election uuid is provided', async () => {
     const res = await request(app)
       .post('/elections/invalid/ballotPapers')
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.BadRequest);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -72,9 +80,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   it('403: when user is not the owner of the election', async () => {
     const res = await request(app)
       .post(requestPath2)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.Forbidden);
+    expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -82,9 +90,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   it('404: when election uuid does not exist', async () => {
     const res = await request(app)
       .post('/elections/b3e3b70b-4008-4694-afc6-5e454ebcbd42/ballotPapers')
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.NotFound);
+    expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -92,10 +100,10 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   it('406: when Accept header is not application/json', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .set('Accept', 'text/plain')
       .send(demoBallotPaper);
-    expect(res.status).toBe(HttpStatusCode.NotAcceptable);
+    expect(res.status).toBe(HttpStatusCode.notAcceptable);
     expect(res.type).toBe('application/json');
     const parseResult = response406Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
@@ -103,9 +111,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   it('415: should throw error on wrong body type xml', async () => {
     const res = await request(app)
       .post(requestPath)
-      .set('Authorization', DEMO_TOKEN)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send('<name>My test ballot paper</name>');
-    expect(res.status).toBe(HttpStatusCode.UnsupportedMediaType);
+    expect(res.status).toBe(HttpStatusCode.unsupportedMediaType);
     expect(res.type).toBe('application/json');
     const parseResult = response415Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
