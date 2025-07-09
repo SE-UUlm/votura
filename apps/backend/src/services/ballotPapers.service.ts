@@ -1,3 +1,5 @@
+import { db } from '@repo/db';
+import type { BallotPaper as KyselyBallotPaper } from '@repo/db/types';
 import type {
   BallotPaper,
   Election,
@@ -6,8 +8,6 @@ import type {
   UpdateableBallotPaper,
 } from '@repo/votura-validators';
 import type { DeleteResult, Selectable } from 'kysely';
-import { db } from '../db/database.js';
-import type { BallotPaper as KyselyBallotPaper } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
 const ballotPaperTransformer = (

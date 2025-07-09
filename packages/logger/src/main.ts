@@ -1,6 +1,7 @@
 import dotenv from 'dotenv';
 import type { LogEvent } from 'kysely';
 import pino from 'pino';
+import pinoHttp from 'pino-http';
 
 dotenv.config();
 
@@ -36,13 +37,15 @@ const transport = pino.transport({
   ],
 }) as pino.DestinationStream;
 
-const logger = pino.pino(
+export const logger = pino.pino(
   {
     level: 'debug',
     redact: { paths: ['email', 'password'], censor: '***', remove: false },
   },
   transport,
 );
+
+export const httpLogger = pinoHttp.pinoHttp({ logger });
 
 export const kyselyLogger = (event: LogEvent): void => {
   if (event.level === 'error') {
@@ -68,4 +71,3 @@ export const kyselyLogger = (event: LogEvent): void => {
     );
   }
 };
-export default logger;

@@ -32,6 +32,10 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
+      - name: Install Playwright Browsers
+        run: |
+          cd packages/e2e
+          npx playwright install --with-deps
       - name: Generate .env file
         run: |
           cd apps/backend

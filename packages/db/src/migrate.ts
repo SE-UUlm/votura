@@ -1,6 +1,6 @@
+import { logger } from '@repo/logger';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import logger from '../logger.js';
 import { db } from './database.js';
 import { migrateToLatest } from './migrateToLatest.js';
 

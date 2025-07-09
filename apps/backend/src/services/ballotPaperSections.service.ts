@@ -1,3 +1,5 @@
+import { db } from '@repo/db';
+import type { BallotPaperSection as KyselyBallotPaperSection } from '@repo/db/types';
 import type {
   BallotPaper,
   BallotPaperSection,
@@ -6,8 +8,6 @@ import type {
   UpdateableBallotPaperSection,
 } from '@repo/votura-validators';
 import type { DeleteResult, Selectable } from 'kysely';
-import { db } from '../db/database.js';
-import type { BallotPaperSection as KyselyBallotPaperSection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
 const ballotPaperSectionTransformer = (

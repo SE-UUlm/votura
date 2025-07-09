@@ -8,6 +8,8 @@
     "./**/coverage/**",
     "./**/generated/**",
     "./**/logs/**",
+    "./**/test-results/**",
+    "./**/playwright-report/**",
     "**/prisma/migrations/**",
     "**/package.json",
     "apps/docs/docs/api/**",

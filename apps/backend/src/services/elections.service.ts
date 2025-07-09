@@ -1,3 +1,5 @@
+import { db } from '@repo/db';
+import type { Election as KyselyElection } from '@repo/db/types';
 import type {
   Election,
   InsertableElection,
@@ -7,8 +9,6 @@ import type {
 } from '@repo/votura-validators';
 import type { KeyPair } from '@votura/votura-crypto/index';
 import type { DeleteResult, Selectable } from 'kysely';
-import { db } from '../db/database.js';
-import type { Election as KyselyElection } from '../db/types/db.js';
 import { spreadableOptional } from '../utils.js';
 
 const electionTransformer = (election: Selectable<KyselyElection>): SelectableElection => {

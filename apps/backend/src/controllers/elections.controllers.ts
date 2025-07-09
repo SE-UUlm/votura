@@ -1,3 +1,4 @@
+import { logger } from '@repo/logger';
 import {
   insertableElectionObject,
   response404Object,
@@ -13,7 +14,6 @@ import {
 import { getKeyPair } from '@votura/votura-crypto/index';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import logger from '../logger.js';
 import {
   createElection as createPersistentElection,
   deleteElection as deletePersistentElection,

@@ -1,11 +1,11 @@
+import { db } from '@repo/db';
 import type { ApiTokenUser } from '@repo/votura-validators';
 import crypto from 'crypto';
 import type { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
-import { JWT_CONFIG } from '../auth/jwtConfig.js';
-import type { AccessTokenPayload, JwtPayload, RefreshTokenPayload } from '../auth/types.js';
-import { db } from '../db/database.js';
+import { JWT_CONFIG } from './jwtConfig.js';
+import type { AccessTokenPayload, JwtPayload, RefreshTokenPayload } from './types.js';
 
 let jwtKeys: { privateKey: string; publicKey: string } | null = null;
 
