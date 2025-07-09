@@ -25,7 +25,9 @@ export default defineConfig({
       cwd: path.join(DIRNAME, '../../apps/backend'),
       env: {
         ...process.env,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         PORT: '4000',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         PEPPER: '1234',
       },
     },
@@ -35,6 +37,7 @@ export default defineConfig({
       cwd: path.join(DIRNAME, '../../apps/frontend'),
       env: {
         ...process.env,
+        // eslint-disable-next-line @typescript-eslint/naming-convention
         VITE_API_BASE_URL: 'http://localhost:4000',
       },
     },

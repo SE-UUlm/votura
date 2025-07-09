@@ -1,3 +1,4 @@
+import { db } from '@repo/db';
 import {
   response400Object,
   response404Object,
@@ -10,7 +11,6 @@ import {
   type Response404,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
-import { db } from '../../db/database.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 
 /**
