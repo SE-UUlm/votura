@@ -49,6 +49,10 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
     if (parseResult.success === true) {
       expect(parseResult.data.id).toBe(election?.id);
       expect(parseResult.data.configFrozen).toBe(false);
+      expect(parseResult.data.pubKey).toBe(undefined);
+      expect(parseResult.data.primeP).toBe(undefined);
+      expect(parseResult.data.primeQ).toBe(undefined);
+      expect(parseResult.data.generator).toBe(undefined);
     }
   });
 });
