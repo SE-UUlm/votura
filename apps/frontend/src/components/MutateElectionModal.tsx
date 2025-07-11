@@ -25,7 +25,8 @@ export interface MutateElectionModalProps {
 
 export interface MutateElectionFormValues
   extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
-  dateRange: [string, string];
+  startDateTime: string;
+  endDateTime: string;
 }
 
 export const MutateElectionModal = ({
@@ -42,13 +43,14 @@ export const MutateElectionModal = ({
     validate: {
       name: isNotEmpty('Name cannot be empty'),
       startDateTime: isNotEmpty('Start date is required'),
-      endDateTime: (value: Date | null, values: { startDateTime: Date | null }) =>
+      endDateTime: (value: string | null, values: { startDateTime: string }) =>
         value
-          ? values.startDateTime && value > values.startDateTime
+          ? new Date(value) > new Date(values.startDateTime)
             ? null
             : 'End has to be after start'
           : 'End date is required',
     },
+    validateInputOnBlur: true,
   });
 
   useEffect(() => {
@@ -61,7 +63,6 @@ export const MutateElectionModal = ({
         allowInvalidVotes: election.allowInvalidVotes,
         startDateTime: election.votingStartAt,
         endDateTime: election.votingEndAt,
-        dateRange: [election.votingStartAt, election.votingEndAt],
       });
     } else {
       form.reset();
