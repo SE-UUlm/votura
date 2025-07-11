@@ -33,7 +33,7 @@ const electionTransformer = (election: Selectable<KyselyElection>): SelectableEl
 export const createElection = async (
   insertableElection: InsertableElection,
   userId: User['id'],
-): Promise<SelectableElection | null> => {
+): Promise<SelectableElection> => {
   const election = await db
     .insertInto('election')
     .values({
@@ -41,11 +41,7 @@ export const createElection = async (
       electionCreatorId: userId,
     })
     .returningAll()
-    .executeTakeFirst();
-
-  if (election === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return electionTransformer(election);
 };
@@ -63,17 +59,13 @@ export const getElections = async (userId: User['id']): Promise<SelectableElecti
 export const getElection = async (
   electionId: Election['id'],
   userId: User['id'],
-): Promise<SelectableElection | null> => {
+): Promise<SelectableElection> => {
   const election = await db
     .selectFrom('election')
     .where('id', '=', electionId)
     .where('electionCreatorId', '=', userId)
     .selectAll()
-    .executeTakeFirst();
-
-  if (election === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return electionTransformer(election);
 };
@@ -81,17 +73,13 @@ export const getElection = async (
 export const updateElection = async (
   updateableElection: UpdateableElection,
   electionId: Election['id'],
-): Promise<SelectableElection | null> => {
+): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
     .set({ ...updateableElection })
     .where('id', '=', electionId)
     .returningAll()
-    .executeTakeFirst();
-
-  if (election === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return electionTransformer(election);
 };
@@ -99,7 +87,7 @@ export const updateElection = async (
 export const setElectionKeys = async (
   keyPair: KeyPair,
   electionId: Election['id'],
-): Promise<SelectableElection | null> => {
+): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
     .set({
@@ -111,37 +99,45 @@ export const setElectionKeys = async (
     })
     .where('id', '=', electionId)
     .returningAll()
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  if (election === undefined) {
-    return null;
-  }
+  return electionTransformer(election);
+};
+
+export const unfreezeElection = async (electionId: Election['id']): Promise<SelectableElection> => {
+  const election = await db
+    .updateTable('election')
+    .set({
+      configFrozen: false,
+      pubKey: null,
+      privKey: null,
+      primeP: null,
+      primeQ: null,
+      generator: null,
+    })
+    .where('id', '=', electionId)
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  // TODO: Add here the functionality to delete all voter tokens that have access to this election. (see #214)
+  // Thing about using a transaction here to ensure consistency.
 
   return electionTransformer(election);
 };
 
 /**
- * Sets the election to frozen or unfrozen state and returns the updated election.
- * If the election was not found, it returns null.
+ * Sets the election to frozen and returns the updated election.
  *
  * @param electionId The ID of the election to update.
- * @param configFrozen The new `configFrozen` state of the election.
- * @returns The updated election or null if not found.
+ * @returns The updated election.
  */
-export const setElectionFrozenState = async (
-  electionId: Election['id'],
-  configFrozen: boolean,
-): Promise<SelectableElection | null> => {
+export const freezeElection = async (electionId: Election['id']): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
-    .set({ configFrozen: configFrozen })
+    .set({ configFrozen: true })
     .where('id', '=', electionId)
     .returningAll()
-    .executeTakeFirst();
-
-  if (election === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return electionTransformer(election);
 };
