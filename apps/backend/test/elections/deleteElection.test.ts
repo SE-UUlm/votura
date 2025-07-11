@@ -55,8 +55,7 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
     if (user?.id === undefined) {
       throw new Error('User ID is undefined');
     }
-    const dbResult = await getElection(election?.id, user?.id);
-    expect(dbResult).toBeNull();
+    await expect(getElection(election.id, user.id)).rejects.toThrow();
 
     // Check cascade deletion of ballot paper
     if (ballotPaper?.id === undefined) {

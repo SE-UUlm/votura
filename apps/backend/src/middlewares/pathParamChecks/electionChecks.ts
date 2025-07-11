@@ -135,6 +135,40 @@ export async function checkElectionNotFrozen(
   }
 }
 
+/**
+ * Checks if a election is currently generating it's keys.
+ * If the config of the election is frozen but the public key is still null the generation process is not finished.
+ * If this is the case it sends a 403 else calls the next middleware function.
+ *
+ * @param req The request containing the validated election id.
+ * @param res The response object to send any error.
+ * @param next The next middleware function.
+ */
+export async function checkElectionNotGenerateKeys(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  const result = await db
+    .selectFrom('election')
+    .select(['id', 'configFrozen', 'pubKey'])
+    .where('id', '=', req.params.electionId)
+    .executeTakeFirstOrThrow();
+
+  if (!result.configFrozen || (result.configFrozen && result.pubKey !== null)) {
+    next();
+  } else {
+    res.status(HttpStatusCode.forbidden).json(
+      response403Object.parse({
+        message:
+          'Currently the generation of the election keys are running. ' +
+          'For consistency you are not allowed to do this action. ' +
+          'Please retry in some minutes.',
+      }),
+    );
+  }
+}
+
 export const defaultElectionChecks = [
   checkElectionUuid,
   checkElectionExists,
