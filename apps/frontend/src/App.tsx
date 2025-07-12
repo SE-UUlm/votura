@@ -1,34 +1,23 @@
-import { AppShell, Divider } from '@mantine/core';
 import { parameter } from '@repo/votura-validators';
-import { IconNotes } from '@tabler/icons-react';
 import { Navigate, Route, Routes } from 'react-router';
-import { NavbarHeader } from './components/navbar/NavbarHeader.tsx';
-import { RoutingNavbarLink } from './components/navbar/RoutingNavbarLink.tsx';
+import { AppShellLayout } from './components/AppShellLayout.tsx';
+import { AuthedRouterOutlet } from './components/AuthedRouterOutlet.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
+import { LoginView } from './components/views/login/LoginView.tsx';
 
 function App() {
   return (
-    <AppShell
-      navbar={{
-        width: 300,
-        breakpoint: 'sm',
-      }}
-    >
-      <AppShell.Navbar pr={'md'} pl={'md'}>
-        <NavbarHeader />
-        <Divider pb={'md'} />
-        <RoutingNavbarLink to={'/elections'} label={'Elections'} icon={<IconNotes size={16} />} />
-      </AppShell.Navbar>
-
-      <AppShell.Main>
-        <Routes>
+    <Routes>
+      <Route path="/login" element={<LoginView />} />
+      <Route element={<AuthedRouterOutlet />}>
+        <Route element={<AppShellLayout />}>
           <Route path={'/'} element={<Navigate to={'/elections'} replace />} />
           <Route path={'/elections'} element={<ElectionsView />} />
           <Route path={`/elections/:${parameter.electionId}`} element={<ElectionView />} />
-        </Routes>
-      </AppShell.Main>
-    </AppShell>
+        </Route>
+      </Route>
+    </Routes>
   );
 }
 
