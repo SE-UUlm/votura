@@ -6,4 +6,10 @@ export const apiRoutes = {
     base: '/elections',
     byId: (id: SelectableElection['id']): string => `/elections/${id}`,
   },
+  users: {
+    base: '/users',
+    login: '/users/login',
+    logout: '/users/logout',
+    refreshTokens: '/users/refreshTokens'
+  }
 };
