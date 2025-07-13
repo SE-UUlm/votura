@@ -65,15 +65,6 @@ async function createUserTable(db: Kysely<any>): Promise<void> {
         ${sql.lit(RegexPattern.email)}`,
     )
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.user)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.user)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -86,15 +77,6 @@ async function createAccessTokenBlacklistTable(db: Kysely<any>): Promise<void> {
     )
     .addColumn(AccessTokenBlacklistColumnName.expiresAt, 'timestamptz(6)', (col) => col.notNull())
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.accessTokenBlacklist)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.accessTokenBlacklist)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -123,15 +105,6 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
         > "votingStartAt"`,
     )
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.election)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.election)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -150,15 +123,6 @@ async function createBallotPaperTable(db: Kysely<any>): Promise<void> {
         >= "maxVotesPerCandidate"`,
     )
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.ballotPaper)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.ballotPaper)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -177,15 +141,6 @@ async function createBallotPaperSectionTable(db: Kysely<any>): Promise<void> {
         >= "maxVotesPerCandidate"`,
     )
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.ballotPaperSection)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.ballotPaperSection)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -198,15 +153,6 @@ async function createBallotPaperSectionCandidateTable(db: Kysely<any>): Promise<
     )
     .addColumn(BallotPaperSectionCandidateColumnName.candidateId, 'uuid', (col) => col.notNull())
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.ballotPaperSectionCandidate)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.ballotPaperSectionCandidate)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -218,15 +164,6 @@ async function createCandidateTable(db: Kysely<any>): Promise<void> {
     .addColumn(CandidateColumnName.description, 'varchar(256)')
     .addColumn(CandidateColumnName.electionId, 'uuid', (col) => col.notNull())
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.candidate)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.candidate)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -242,15 +179,6 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
       col.notNull().defaultTo(false),
     )
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.voterGroup)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.voterGroup)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -260,15 +188,6 @@ async function createVoterTable(db: Kysely<any>): Promise<void> {
     .$call(addDefaultColumns)
     .addColumn(VoterColumnName.voterGroupId, 'uuid', (col) => col.notNull())
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.voter)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.voter)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -280,15 +199,6 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
     .addColumn(VoterRegisterColumnName.ballotPaperId, 'uuid', (col) => col.notNull())
     .addColumn(VoterRegisterColumnName.voterId, 'uuid', (col) => col.notNull())
     .execute();
-
-  // Add a trigger to update modifiedAt on row updates
-  await sql`
-        CREATE TRIGGER ${sql.raw(TableName.voterRegister)}_modified_at_trigger
-            BEFORE UPDATE
-            ON ${sql.table(TableName.voterRegister)}
-            FOR EACH ROW
-            EXECUTE FUNCTION update_modified_at_column();
-    `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -437,58 +347,163 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addVoterRegisterForeignKeys(db);
 }
 
+// --- Modified At Helper Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function up(db: Kysely<any>): Promise<void> {
-  // Create the update_modified_at_column function to update modifiedAt on row updates
+async function createModifiedAtFunction(db: Kysely<any>): Promise<void> {
   await sql`
-        CREATE
-        OR REPLACE FUNCTION update_modified_at_column()
-    RETURNS TRIGGER AS $$
-        BEGIN
-        NEW.
-        ${sql.raw(`"${DefaultColumnName.modifiedAt}"`)}
-        = NOW();
-        RETURN NEW;
-        END;
-    $$
-        LANGUAGE plpgsql;
-    `.execute(db);
-
-  await createTables(db);
-  await addForeignKeys(db);
-
-  // initialize pg_cron and create a cron job to delete expired access tokens from the blacklist
-  // This job runs every hour at 0 minutes (e.g 00:00, 01:00, 02:00, etc.)
-  await sql`
-        CREATE EXTENSION IF NOT EXISTS pg_cron
-    `.execute(db);
-
-  await sql`
-        SELECT cron.schedule(
-            'delete_expired_access_tokens_cron_job',
-            '0 * * * *',
-            $$DELETE FROM ${sql.table(TableName.accessTokenBlacklist)} WHERE ${sql.raw(`"${AccessTokenBlacklistColumnName.expiresAt}"`)} < NOW()$$
-        );
-    `.execute(db);
+    CREATE OR REPLACE FUNCTION update_modified_at_column()
+    RETURNS TRIGGER AS $BODY$
+    BEGIN
+      NEW.${sql.raw(`"${DefaultColumnName.modifiedAt}"`)} = NOW();
+      RETURN NEW;
+    END;
+    $BODY$ LANGUAGE plpgsql;
+  `.execute(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export async function down(db: Kysely<any>): Promise<void> {
+async function addModifiedAtTriggers(db: Kysely<any>): Promise<void> {
+  const tables = [
+    TableName.user,
+    TableName.accessTokenBlacklist,
+    TableName.election,
+    TableName.ballotPaper,
+    TableName.ballotPaperSection,
+    TableName.ballotPaperSectionCandidate,
+    TableName.candidate,
+    TableName.voterGroup,
+    TableName.voter,
+    TableName.voterRegister,
+  ];
+
+  for (const tableName of tables) {
+    await sql`
+      CREATE TRIGGER ${sql.raw(tableName)}_modified_at_trigger
+        BEFORE UPDATE
+        ON ${sql.table(tableName)}
+        FOR EACH ROW
+        EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
+  }
+}
+
+// --- MaxVotes Validation Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createMaxVotesValidationFunction(db: Kysely<any>): Promise<void> {
+  await sql`
+    CREATE OR REPLACE FUNCTION validate_ballot_paper_max_votes()
+    RETURNS TRIGGER AS $BODY$
+    DECLARE
+        ballot_paper_max_votes INTEGER;
+        max_section_votes INTEGER;
+    BEGIN
+        -- Handle different trigger scenarios
+        IF TG_OP = 'UPDATE' AND TG_TABLE_NAME = ${sql.lit(TableName.ballotPaper)} THEN
+            -- Ballot paper is being updated
+            SELECT MAX(${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)}) INTO max_section_votes
+            FROM ${sql.table(TableName.ballotPaperSection)}
+            WHERE ${sql.raw(`"${BallotPaperSectionColumnName.ballotPaperId}"`)} = NEW.${sql.raw(`"${DefaultColumnName.id}"`)};
+            
+            IF max_section_votes IS NOT NULL AND NEW.${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)} < max_section_votes THEN
+                RAISE EXCEPTION 'Ballot paper maxVotes (%) cannot be less than maximum section maxVotes (%)', 
+                    NEW.${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)}, max_section_votes;
+            END IF;
+            
+        ELSIF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND TG_TABLE_NAME = ${sql.lit(TableName.ballotPaperSection)} THEN
+            -- Ballot paper section is being created or updated
+            SELECT ${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)} INTO ballot_paper_max_votes
+            FROM ${sql.table(TableName.ballotPaper)}
+            WHERE ${sql.raw(`"${DefaultColumnName.id}"`)} = NEW.${sql.raw(`"${BallotPaperSectionColumnName.ballotPaperId}"`)};
+            
+            IF ballot_paper_max_votes IS NOT NULL AND NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)} > ballot_paper_max_votes THEN
+                RAISE EXCEPTION 'Ballot paper section maxVotes (%) cannot be greater than ballot paper maxVotes (%)', 
+                    NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)}, ballot_paper_max_votes;
+            END IF;
+        END IF;
+        
+        RETURN NEW;
+    END;
+    $BODY$ LANGUAGE plpgsql;
+  `.execute(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function addMaxVotesTriggers(db: Kysely<any>): Promise<void> {
+  // Trigger for ballot paper updates
+  await sql`
+    CREATE TRIGGER ballot_paper_max_votes_validation_trigger
+      BEFORE UPDATE OF "maxVotes"
+      ON ${sql.table(TableName.ballotPaper)}
+      FOR EACH ROW
+      EXECUTE FUNCTION validate_ballot_paper_max_votes();
+  `.execute(db);
+
+  // Trigger for ballot paper section inserts
+  await sql`
+    CREATE TRIGGER ballot_paper_section_insert_max_votes_validation_trigger
+      BEFORE INSERT
+      ON ${sql.table(TableName.ballotPaperSection)}
+      FOR EACH ROW
+      EXECUTE FUNCTION validate_ballot_paper_max_votes();
+  `.execute(db);
+
+  // Trigger for ballot paper section updates
+  await sql`
+    CREATE TRIGGER ballot_paper_section_update_max_votes_validation_trigger
+      BEFORE UPDATE OF "maxVotes"
+      ON ${sql.table(TableName.ballotPaperSection)}
+      FOR EACH ROW
+      EXECUTE FUNCTION validate_ballot_paper_max_votes();
+  `.execute(db);
+}
+
+// --- Cron Job Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function setupCronExtensionAndJobs(db: Kysely<any>): Promise<void> {
+  // Initialize pg_cron extension
+  await sql`
+    CREATE EXTENSION IF NOT EXISTS pg_cron
+  `.execute(db);
+
+  // Create cron job to delete expired access tokens from the blacklist
+  // This job runs every hour at 0 minutes (e.g 00:00, 01:00, 02:00, etc.)
+  await sql`
+    SELECT cron.schedule(
+      'delete_expired_access_tokens_cron_job',
+      '0 * * * *',
+      $$DELETE FROM ${sql.table(TableName.accessTokenBlacklist)} WHERE ${sql.raw(`"${AccessTokenBlacklistColumnName.expiresAt}"`)} < NOW()$$
+    );
+  `.execute(db);
+}
+
+// --- Drop Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function dropCronJobsAndExtension(db: Kysely<any>): Promise<void> {
   // Drop the cron job that deletes expired access tokens
   await sql`
-        SELECT cron.unschedule('delete_expired_access_tokens_cron_job');
-    `.execute(db);
+    SELECT cron.unschedule('delete_expired_access_tokens_cron_job');
+  `.execute(db);
 
   // Drop the pg_cron extension
   await sql`
-        DROP EXTENSION IF EXISTS pg_cron;
-    `.execute(db);
+    DROP EXTENSION IF EXISTS pg_cron;
+  `.execute(db);
+}
 
-  // Drop the update_modified_at_column function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function dropFunctions(db: Kysely<any>): Promise<void> {
+  // Drop functions that exist independently of tables
   await sql`
-        DROP FUNCTION IF EXISTS update_modified_at_column();
-    `.execute(db);
+    DROP FUNCTION IF EXISTS validate_ballot_paper_max_votes();
+  `.execute(db);
 
+  await sql`
+    DROP FUNCTION IF EXISTS update_modified_at_column();
+  `.execute(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function dropTables(db: Kysely<any>): Promise<void> {
   // Drop tables in reverse order of creation to handle foreign key dependencies
   await db.schema.dropTable(TableName.voterRegister).ifExists().execute();
   await db.schema.dropTable(TableName.voter).ifExists().execute();
@@ -500,4 +515,27 @@ export async function down(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable(TableName.election).ifExists().execute();
   await db.schema.dropTable(TableName.accessTokenBlacklist).ifExists().execute();
   await db.schema.dropTable(TableName.user).ifExists().execute();
+}
+
+// --- Main Migration Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function up(db: Kysely<any>): Promise<void> {
+  await createModifiedAtFunction(db);
+  await createMaxVotesValidationFunction(db);
+
+  await createTables(db);
+  await addForeignKeys(db);
+
+  await addModifiedAtTriggers(db);
+  await addMaxVotesTriggers(db);
+
+  await setupCronExtensionAndJobs(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function down(db: Kysely<any>): Promise<void> {
+  await dropCronJobsAndExtension(db);
+  // Drop tables (this automatically drops all triggers, constraints, and indexes)
+  await dropTables(db);
+  await dropFunctions(db);
 }
