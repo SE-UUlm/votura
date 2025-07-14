@@ -3,6 +3,7 @@ import '@mantine/core/styles.css';
 import '@mantine/dates/styles.css';
 import { notifications, Notifications } from '@mantine/notifications';
 import '@mantine/notifications/styles.css';
+import { isAxiosError } from 'axios';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router';
@@ -13,14 +14,15 @@ createRoot(document.getElementById('root')!).render(
   <StrictMode>
     <SWRConfig
       value={{
-        onError: (err: Error): void => {
-          console.error(err.message);
-          notifications.show({
-            title: 'Error',
-            message: err.message,
-            autoClose: 10000,
-            color: 'red',
-          });
+        onError: (err): void => {
+          if (isAxiosError(err) && err.status !== 401) {
+            notifications.show({
+              title: 'Error',
+              message: err.message,
+              autoClose: 10000,
+              color: 'red',
+            });
+          }
         },
       }}
     >
