@@ -19,7 +19,7 @@ export const putter = async <T>(url: string, args: { arg: T }): Promise<unknown>
     });
 
     return response.data;
-  } catch (error) {
+  } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
       const errorMessage =
         error.response?.data !== undefined && hasMessage(error.response.data)

@@ -45,7 +45,7 @@ export const LoginView = () => {
       const response = await trigger(data);
       setAuthLocalStorage(response);
       navigate('/elections');
-    } catch (e) {
+    } catch (e: unknown) {
       notifications.show({
         title: 'Could not login',
         message: 'We do not know this combination of email and password. Please try again.',

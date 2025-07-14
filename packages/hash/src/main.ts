@@ -1,7 +1,7 @@
 import { logger } from '@repo/logger';
 import argon2 from 'argon2';
 
-export const getPepper = () => {
+export const getPepper = (): string => {
   const envPepper = process.env.PEPPER;
 
   if (envPepper === undefined) {
@@ -13,10 +13,10 @@ export const getPepper = () => {
   return envPepper;
 };
 
-export const hashPassword = (plaintext: string, pepper: string): Promise<string> => {
+export const hashPassword = async (plaintext: string, pepper: string): Promise<string> => {
   return argon2.hash(plaintext + pepper);
 };
 
-export const verifyPassword = (hash: string, plaintext: string, pepper: string) => {
+export const verifyPassword = async (hash: string, plaintext: string, pepper: string): Promise<boolean> => {
   return argon2.verify(hash, plaintext + pepper);
 };

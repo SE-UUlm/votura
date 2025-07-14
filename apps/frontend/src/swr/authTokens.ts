@@ -12,7 +12,9 @@ export const setAuthLocalStorage = (obj: AuthTokens): void => {
 export const getAuthLocalStorage = (): AuthTokens | null => {
   const storage = localStorage.getItem(AUTH_LOCAL_STORAGE_KEY);
 
-  if (storage === null) return null;
+  if (storage === null) {
+    return null;
+  }
 
   return JSON.parse(storage) as AuthTokens;
 };

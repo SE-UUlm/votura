@@ -19,7 +19,7 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
 
   if (!authToken) {
     clearAuthLocalStorage();
-    return;
+    return Promise.reject(new Error('Failed to get auth tokens from local storage.'));
   }
 
   const response = await api.post(
