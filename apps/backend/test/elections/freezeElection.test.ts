@@ -12,16 +12,13 @@ import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoElection, demoUser } from '../mockData.js';
+import { sleep } from '../utils.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
-
-  async function sleep(ms: number): Promise<void> {
-    return new Promise((resolve) => setTimeout(resolve, ms));
-  }
 
   beforeAll(async () => {
     await createUser(demoUser);

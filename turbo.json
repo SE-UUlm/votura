@@ -45,7 +45,7 @@
       "persistent": false,
       "interactive": false,
       "outputs": [],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
     },
     "build": {
       "dependsOn": ["^build"],
@@ -65,7 +65,7 @@
       "persistent": false,
       "interactive": false,
       "outputs": ["coverage/**", "results/**", "logs/**", "test-results/**"],
-      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "CI", "HOME"]
+      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "CI", "HOME", "BITS_PRIME_P"]
     },
     "start": {
       "dependsOn": ["^start"],
@@ -75,7 +75,7 @@
       "persistent": true,
       "interactive": false,
       "outputs": ["logs/**"],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
     }
   }
 }
