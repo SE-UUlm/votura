@@ -3,7 +3,6 @@ import type { BallotPaper as DBBallotPaper } from '@repo/db/types';
 import {
   insertableBallotPaperSectionObject,
   response400Object,
-  response404Object,
   updateableBallotPaperObject,
   updateableBallotPaperSectionObject,
   zodErrorToResponse400,
@@ -59,22 +58,13 @@ const parseRequestMaxVotes = async (
  */
 const getBallotPaperMaxVotes = async (
   ballotPaperId: BallotPaper['id'],
-  res: Response<Response400>,
 ): Promise<DBBallotPaper['maxVotes'] | null> => {
   const ballotPaper = await db
     .selectFrom('ballotPaper')
     .select(['maxVotes'])
     .where('id', '=', ballotPaperId)
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  if (ballotPaper === undefined) {
-    res.status(HttpStatusCode.notFound).json(
-      response404Object.parse({
-        message: `Ballot paper not found.`,
-      }),
-    );
-    return null;
-  }
   return ballotPaper.maxVotes;
 };
 
@@ -152,7 +142,7 @@ export const maxVotesCheckFor = (reqType: RequestTypeMaxVotesCheck) => {
     next: NextFunction,
   ): Promise<void> => {
     const ballotPaperId = req.params.ballotPaperId;
-    const ballotPaperMaxVotes = await getBallotPaperMaxVotes(ballotPaperId, res);
+    const ballotPaperMaxVotes = await getBallotPaperMaxVotes(ballotPaperId);
     if (ballotPaperMaxVotes === null) {
       return;
     }
