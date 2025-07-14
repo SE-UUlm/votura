@@ -36,12 +36,16 @@ jobs:
         run: |
           cd packages/e2e
           npx playwright install --with-deps
-      - name: Generate .env file
+      - name: Generate .env file in backend
         run: |
           cd apps/backend
           echo "PEPPER=\"3107ee33f20c08c08e902974f845e1347d01ebf14aae9369c8700bf51688d107\"" > .env
           echo "TERMINAL_LOG_LEVEL=\"debug\"" >> .env
           echo "BITS_PRIME_P=20" >> .env
+      - name: Generate .env file in e2e
+        run: |
+          cd packages/e2e
+          echo "PEPPER=\"3107ee33f20c08c08e902974f845e1347d01ebf14aae9369c8700bf51688d107\"" > .env
       - name: Check types
         run: npm run check-types
       - name: Check formats
