@@ -1,12 +1,13 @@
 import { logger } from '@repo/logger';
 import { db } from './database.js';
+import {getPepper, hashPassword} from '@repo/hash';
 
 async function seed(): Promise<void> {
   const user = await db
     .insertInto('user')
     .values({
       email: 'user@votura.org',
-      passwordHash: 'hashedpassword',
+      passwordHash: await hashPassword('HelloVotura1!', getPepper()),
     })
     .returningAll()
     .executeTakeFirst();
