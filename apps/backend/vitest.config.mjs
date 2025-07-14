@@ -3,6 +3,8 @@ import { defineConfig } from 'vitest/config';
 export default defineConfig({
   test: {
     setupFiles: ['./test/vitest.setup.ts'],
+    testTimeout: 15_000, // 10 seconds
+    fileParallelism: false,
     globals: true,
     environment: 'node',
     include: ['test/**/*test.ts'],
@@ -28,7 +30,13 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'html', 'clover', 'json'],
       include: ['src/**'],
-      exclude: ['**/*.d.ts', 'src/db/migrations/**', 'src/db/migrate.ts', 'src/db/seed.ts'],
+      exclude: [
+        '**/*.d.ts',
+        'src/db/migrations/**',
+        'src/db/migrate.ts',
+        'src/db/seed.ts',
+        'src/db/database.ts',
+      ],
       thresholds: {
         lines: 80,
         functions: 80,

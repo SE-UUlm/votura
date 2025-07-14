@@ -141,30 +141,31 @@ const checkBallotPaperSection = (
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the check passes.
  */
-export const maxVotesCheckFor = async (
-  reqType: RequestTypeMaxVotesCheck,
-  req: Request<{
-    electionId: Election['id'];
-    ballotPaperId: BallotPaper['id'];
-    ballotPaperSectionId?: BallotPaperSection['id'];
-  }>,
-  res: Response<Response400>,
-  next: NextFunction,
-): Promise<void> => {
-  const ballotPaperId = req.params.ballotPaperId;
-  const ballotPaperMaxVotes = await getBallotPaperMaxVotes(ballotPaperId, res);
-  if (ballotPaperMaxVotes === null) {
-    return;
-  }
+export const maxVotesCheckFor = (reqType: RequestTypeMaxVotesCheck) => {
+  return async (
+    req: Request<{
+      electionId: Election['id'];
+      ballotPaperId: BallotPaper['id'];
+      ballotPaperSectionId?: BallotPaperSection['id'];
+    }>,
+    res: Response<Response400>,
+    next: NextFunction,
+  ): Promise<void> => {
+    const ballotPaperId = req.params.ballotPaperId;
+    const ballotPaperMaxVotes = await getBallotPaperMaxVotes(ballotPaperId, res);
+    if (ballotPaperMaxVotes === null) {
+      return;
+    }
 
-  const requestMaxVotes = await parseRequestMaxVotes(reqType, req, res);
-  if (requestMaxVotes === null) {
-    return;
-  }
+    const requestMaxVotes = await parseRequestMaxVotes(reqType, req, res);
+    if (requestMaxVotes === null) {
+      return;
+    }
 
-  if (reqType === RequestTypeMaxVotesCheck.ballotPaperUpdate) {
-    await checkBallotPaperUpdate(ballotPaperId, ballotPaperMaxVotes, requestMaxVotes, res, next);
-  } else {
-    checkBallotPaperSection(ballotPaperMaxVotes, requestMaxVotes, res, next);
-  }
+    if (reqType === RequestTypeMaxVotesCheck.ballotPaperUpdate) {
+      await checkBallotPaperUpdate(ballotPaperId, ballotPaperMaxVotes, requestMaxVotes, res, next);
+    } else {
+      checkBallotPaperSection(ballotPaperMaxVotes, requestMaxVotes, res, next);
+    }
+  };
 };
