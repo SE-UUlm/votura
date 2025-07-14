@@ -2,7 +2,6 @@ import { logger } from '@repo/logger';
 import {
   insertableElectionObject,
   response404Object,
-  response500Object,
   updateableElectionObject,
   zodErrorToResponse400,
   type Election,
@@ -17,10 +16,11 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createElection as createPersistentElection,
   deleteElection as deletePersistentElection,
+  freezeElection as freezePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
-  setElectionFrozenState,
   setElectionKeys,
+  unfreezeElection as unfreezePersistentElection,
   updateElection as updatePersistentElection,
 } from '../services/elections.service.js';
 
@@ -36,13 +36,6 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
 
   if (success) {
     const selectableElection = await createPersistentElection(data, res.locals.user.id);
-
-    if (selectableElection === null) {
-      res
-        .status(HttpStatusCode.internalServerError)
-        .json(response500Object.parse({ message: undefined }));
-      return;
-    }
 
     res.status(HttpStatusCode.created).send(selectableElection);
   } else {
@@ -70,12 +63,6 @@ export const updateElection = async (
   }
 
   const selectableElection = await updatePersistentElection(data, req.params.electionId);
-  if (selectableElection === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find election." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(selectableElection);
 };
 
@@ -90,14 +77,6 @@ export const getElection = async (
   res: GetElectionResponse,
 ): Promise<void> => {
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
-
-  if (election === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find election." }));
-    return;
-  }
-
   res.status(HttpStatusCode.ok).json(election);
 };
 
@@ -105,15 +84,7 @@ export const freezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
-  let election = await setElectionFrozenState(req.params.electionId, true);
-
-  if (election === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'The election to freeze was not found.' }));
-    return;
-  }
-
+  let election = await freezePersistentElection(req.params.electionId);
   res.status(HttpStatusCode.ok).json(election);
 
   void (async (): Promise<void> => {
@@ -129,18 +100,7 @@ export const unfreezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection | Response400 | Response404>,
 ): Promise<void> => {
-  const election = await setElectionFrozenState(req.params.electionId, false);
-
-  if (election === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'The election to unfreeze was not found.' }));
-    return;
-  }
-
-  // TODO: Add here the functionality to delete the keys for the election. (see #201)
-  // TODO: Add here the functionality to delete the tokens for the voters. (see #214)
-
+  const election = await unfreezePersistentElection(req.params.electionId);
   res.status(HttpStatusCode.ok).json(election);
 };
 

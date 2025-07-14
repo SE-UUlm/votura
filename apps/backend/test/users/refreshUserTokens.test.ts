@@ -17,6 +17,7 @@ import {
   verifyUser,
 } from '../../src/services/users.service.js';
 import { demoUser } from '../mockData.js';
+import { sleep } from '../utils.js';
 
 describe(`POST /users/refreshTokens`, () => {
   let requestPath = '';
@@ -111,7 +112,7 @@ describe(`POST /users/refreshTokens`, () => {
 
     // refresh tokens once to expire the current refresh token
     // wait for a bit to ensure the new refresh token has a different expiresAt
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await sleep(1500);
     const res = await request(app).post(requestPath).send({ refreshToken: refreshToken });
     expect(res.status).toBe(HttpStatusCode.ok);
 
