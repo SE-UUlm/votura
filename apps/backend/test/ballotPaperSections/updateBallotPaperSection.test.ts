@@ -129,4 +129,30 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
+  it('400: should return error because updated max votes is higher than associated ballot paper', async () => {
+    // checks to satisfy typechecker
+    if (ballotPaper === null) {
+      throw new Error('Failed to create test ballot paper');
+    }
+    if (ballotPaper.maxVotes === undefined) {
+      throw new Error('Ballot paper maxVotes is undefined');
+    }
+
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        ...demoBallotPaperSection2,
+        maxVotes: ballotPaper.maxVotes + 1,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.message).toBe(
+        'The max votes for the ballot paper section cannot be greater than the max votes of the ballot paper.',
+      );
+    }
+  });
 });

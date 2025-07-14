@@ -12,6 +12,7 @@ import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { brokenElection, demoElection, demoElection2, demoUser } from '../mockData.js';
+import { sleep } from '../utils.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}`, () => {
@@ -36,7 +37,15 @@ describe(`PUT /elections/:${parameter.electionId}`, () => {
     tokens = generateUserTokens(user.id);
   });
 
-  it('200: should update an election', async () => {
+  it('200: should update an election and checks modifiedAt update', async () => {
+    // get the modifiedAt date before the update
+    if (election === null) {
+      throw new Error('Election is null, cannot proceed with test');
+    }
+    const initialModifiedAt = new Date(election.modifiedAt);
+
+    // Wait so that the modifiedAt date is different
+    await sleep(2000);
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
@@ -50,6 +59,10 @@ describe(`PUT /elections/:${parameter.electionId}`, () => {
       expect(parseResult.data.name).toBe(demoElection2.name);
       expect(parseResult.data.description).toBe(demoElection2.description);
       expect(parseResult.data.private).toBe(demoElection2.private);
+      expect(parseResult.data.modifiedAt).toBeDefined();
+      expect(new Date(parseResult.data.modifiedAt).getTime()).toBeGreaterThan(
+        initialModifiedAt.getTime(),
+      );
     }
   });
   it('400: should complain about wrong input data', async () => {
