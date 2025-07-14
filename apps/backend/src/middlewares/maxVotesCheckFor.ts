@@ -1,3 +1,5 @@
+import { db } from '@repo/db';
+import type { BallotPaper as DBBallotPaper } from '@repo/db/types';
 import {
   insertableBallotPaperSectionObject,
   response400Object,
@@ -11,8 +13,6 @@ import {
   type Response400,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
-import { db } from '../db/database.js';
-import type { BallotPaper as DBBallotPaper } from '../db/types/db.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 
 export enum RequestTypeMaxVotesCheck {
