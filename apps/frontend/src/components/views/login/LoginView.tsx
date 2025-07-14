@@ -39,16 +39,8 @@ export const LoginView = () => {
 
   const [isLoginIn, toggleIsLoginIn] = useToggle();
 
-  const onLogin = async () => {
+  const onLogin: Parameters<typeof form.onSubmit>[0] = async (data) => {
     toggleIsLoginIn();
-    const validationResult = form.validate();
-
-    if (validationResult.hasErrors) {
-      toggleIsLoginIn();
-      return;
-    }
-
-    const data = form.getValues();
     try {
       const response = await trigger(data);
       setAuthLocalStorage(response);
@@ -68,34 +60,37 @@ export const LoginView = () => {
   return (
     <Container fluid h={'100vh'}>
       <Center h={'100vh'}>
-        <Stack w={400}>
-          <Title>Votura</Title>
-          <TextInput
-            withAsterisk
-            label={'Email'}
-            placeholder={'user@votura.org'}
-            key={form.key('email')}
-            {...form.getInputProps('email')}
-          />
-          <PasswordInput
-            withAsterisk
-            label={'Password'}
-            placeholder={'My secure password...'}
-            key={form.key('password')}
-            {...form.getInputProps('password')}
-          />
-          <Button onClick={onLogin} loading={isLoginIn || isMutating}>
-            Login
-          </Button>
-          <Button variant="light">Sign Up</Button>
-          <Divider />
-          <Group justify="space-between">
-            <Text size={'sm'}>Can't login anymore?</Text>
-            <Anchor component={'button'} variant="transparent" size={'sm'}>
-              Reset password
-            </Anchor>
-          </Group>
-        </Stack>
+        <form onSubmit={form.onSubmit(onLogin)}>
+          <Stack w={400}>
+            <Title>Votura</Title>
+
+            <TextInput
+              withAsterisk
+              label={'Email'}
+              placeholder={'user@votura.org'}
+              key={form.key('email')}
+              {...form.getInputProps('email')}
+            />
+            <PasswordInput
+              withAsterisk
+              label={'Password'}
+              placeholder={'My secure password...'}
+              key={form.key('password')}
+              {...form.getInputProps('password')}
+            />
+            <Button type={'submit'} loading={isLoginIn || isMutating}>
+              Login
+            </Button>
+            <Button variant="light">Sign Up</Button>
+            <Divider />
+            <Group justify="space-between">
+              <Text size={'sm'}>Can't login anymore?</Text>
+              <Anchor component={'button'} variant="transparent" size={'sm'}>
+                Reset password
+              </Anchor>
+            </Group>
+          </Stack>
+        </form>
       </Center>
     </Container>
   );
