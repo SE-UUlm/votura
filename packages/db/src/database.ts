@@ -1,7 +1,7 @@
+import { kyselyLogger } from '@repo/logger';
 import dotenv from 'dotenv';
 import { Kysely, PostgresDialect } from 'kysely';
 import { Pool } from 'pg';
-import { kyselyLogger } from './../logger.js';
 import type { DB } from './types/db.js';
 
 dotenv.config();

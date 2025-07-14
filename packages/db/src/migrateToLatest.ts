@@ -1,7 +1,7 @@
+import { logger } from '@repo/logger';
 import { promises as fs } from 'fs';
 import { FileMigrationProvider, type Kysely, Migrator } from 'kysely';
 import path from 'path';
-import logger from '../logger.js';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const migrateToLatest = async (db: Kysely<any>, migrationFolder: string): Promise<void> => {

@@ -1,3 +1,4 @@
+import { db } from '@repo/db';
 import type {
   ApiTokenUser,
   InsertableUser,
@@ -13,7 +14,6 @@ import {
   hashRefreshToken,
   verifyToken,
 } from '../auth/utils.js';
-import { db } from '../db/database.js';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,

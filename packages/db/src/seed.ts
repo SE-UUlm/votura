@@ -1,4 +1,4 @@
-import logger from '../logger.js';
+import { logger } from '@repo/logger';
 import { db } from './database.js';
 
 async function seed(): Promise<void> {
