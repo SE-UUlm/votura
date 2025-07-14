@@ -58,7 +58,6 @@ export const startTestEnv = async (): Promise<void> => {
   });
 
   await seed(seedingClient);
-  await seedingClient.destroy();
 
   logger.info('Seeding completed.');
 };
