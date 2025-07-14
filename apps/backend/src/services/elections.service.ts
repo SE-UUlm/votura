@@ -120,7 +120,7 @@ export const unfreezeElection = async (electionId: Election['id']): Promise<Sele
     .executeTakeFirstOrThrow();
 
   // TODO: Add here the functionality to delete all voter tokens that have access to this election. (see #214)
-  // Thing about using a transaction here to ensure consistency.
+  // Think about using a transaction here to ensure consistency.
   // https://kysely.dev/docs/category/transactions
 
   return electionTransformer(election);
