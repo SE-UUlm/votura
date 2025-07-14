@@ -1,8 +1,8 @@
 import { getPepper, hashPassword } from '@repo/hash';
-import { logger } from '@repo/logger';
-import { db } from './database.js';
+import type { Kysely } from 'kysely';
+import type { DB } from './types/db.js';
 
-async function seed(): Promise<void> {
+export const seed = async (db: Kysely<DB>): Promise<void> => {
   const user = await db
     .insertInto('user')
     .values({
@@ -27,14 +27,4 @@ async function seed(): Promise<void> {
     })
     .returningAll()
     .executeTakeFirst();
-}
-
-seed()
-  .then(() => {
-    logger.info('Seeding completed.');
-    return db.destroy();
-  })
-  .catch((err: unknown) => {
-    logger.error({ err: err instanceof Error ? err.message : String(err) }, 'Seeding failed.');
-    return db.destroy();
-  });
+};

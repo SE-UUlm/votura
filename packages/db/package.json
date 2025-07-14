@@ -35,6 +35,7 @@
     ".": "./src/main.ts",
     "./types": "./src/types/db.d.ts",
     "./migrateToLatest": "./src/migrateToLatest.ts",
-    "./genericContainer": "./src/genericContainer.ts"
+    "./genericContainer": "./src/genericContainer.ts",
+    "./seed": "./src/seed.ts"
   }
 }

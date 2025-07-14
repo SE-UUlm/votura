@@ -1,5 +1,6 @@
 import { genericContainer } from '@repo/db/genericContainer';
 import { migrateToLatest } from '@repo/db/migrateToLatest';
+import { seed } from '@repo/db/seed';
 import type { DB } from '@repo/db/types';
 import { kyselyLogger, logger } from '@repo/logger';
 import { Kysely, PostgresDialect } from 'kysely';
@@ -44,6 +45,22 @@ export const startTestEnv = async (): Promise<void> => {
   const migrationPath = path.join(DIRNAME, '../db/src/migrations');
   await migrateToLatest(migrationClient, migrationPath);
   logger.info('Migration completed.');
+
+  logger.info('Running seed...');
+
+  const seedingClient = new Kysely<DB>({
+    dialect: new PostgresDialect({
+      pool: new Pool({
+        connectionString: dbConnectionUri,
+      }),
+    }),
+    log: kyselyLogger,
+  });
+
+  await seed(seedingClient);
+  await seedingClient.destroy();
+
+  logger.info('Seeding completed.');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
