@@ -10,7 +10,7 @@ export const AppShellLayout = () => {
 
   const onLogout = () => {
     clearAuthLocalStorage();
-    navigate('/login', {replace: true});
+    navigate('/login', { replace: true });
   };
 
   return (

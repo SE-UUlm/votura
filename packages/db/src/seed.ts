@@ -1,6 +1,6 @@
+import { getPepper, hashPassword } from '@repo/hash';
 import { logger } from '@repo/logger';
 import { db } from './database.js';
-import {getPepper, hashPassword} from '@repo/hash';
 
 async function seed(): Promise<void> {
   const user = await db

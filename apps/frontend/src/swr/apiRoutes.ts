@@ -10,6 +10,6 @@ export const apiRoutes = {
     base: '/users',
     login: '/users/login',
     logout: '/users/logout',
-    refreshTokens: '/users/refreshTokens'
-  }
+    refreshTokens: '/users/refreshTokens',
+  },
 };

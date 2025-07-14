@@ -1,4 +1,5 @@
 import { db } from '@repo/db';
+import { hashPassword, verifyPassword } from '@repo/hash';
 import type {
   ApiTokenUser,
   InsertableUser,
@@ -13,7 +14,6 @@ import {
   hashRefreshToken,
   verifyToken,
 } from '../auth/utils.js';
-import {hashPassword, verifyPassword} from '@repo/hash';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
@@ -149,7 +149,11 @@ export const loginUser = async (
   }
 
   // Verify password
-  const isValidPassword: boolean = await verifyPassword(user.passwordHash, credentials.password, getPepper());
+  const isValidPassword: boolean = await verifyPassword(
+    user.passwordHash,
+    credentials.password,
+    getPepper(),
+  );
   if (!isValidPassword) {
     return LoginError.invalidCredentials; // Invalid password
   }
