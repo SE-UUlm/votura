@@ -27,7 +27,7 @@ export default defineConfig({
     coverage: {
       provider: 'v8',
       reporter: ['text', 'html', 'clover', 'json'],
-      include: ['src/**', 'test/**'],
+      include: ['src/**'],
       exclude: ['**/*.d.ts', 'src/db/migrations/**', 'src/db/migrate.ts', 'src/db/seed.ts'],
       thresholds: {
         lines: 80,
