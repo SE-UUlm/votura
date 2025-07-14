@@ -76,7 +76,7 @@
     "@repo/votura-validators": "*",
     "@votura/votura-crypto": "^0.0.3",
     "@repo/logger": "*",
-    "argon2": "^0.43.0",
+    "@repo/hash": "*",
     "cors": "^2.8.5",
     "dotenv": "^17.1.0",
     "express": "^5.1.0",
