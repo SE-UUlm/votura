@@ -4,12 +4,16 @@ import { seed } from '@repo/db/seed';
 import type { DB } from '@repo/db/types';
 import { kyselyLogger, logger } from '@repo/logger';
 import { Kysely, PostgresDialect } from 'kysely';
+import { type ChildProcess, spawn } from 'node:child_process';
 import path from 'path';
 import { Pool } from 'pg';
 import type { StartedTestContainer } from 'testcontainers';
 import { fileURLToPath } from 'url';
+import waitOn from 'wait-on';
 
 let dbContainer: StartedTestContainer | null = null;
+let backendProcess: ChildProcess | null = null;
+let frontendProcess: ChildProcess | null = null;
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
@@ -29,7 +33,6 @@ export const startTestEnv = async (): Promise<void> => {
     .start();
 
   const dbConnectionUri = `postgresql://test:test@${dbContainer.getHost()}:${dbContainer.getMappedPort(5432)}/votura`;
-  process.env.DATABASE_URL = dbConnectionUri;
   logger.info('Postgres container created.');
 
   logger.info('Running migration...');
@@ -60,8 +63,50 @@ export const startTestEnv = async (): Promise<void> => {
   await seed(seedingClient);
 
   logger.info('Seeding completed.');
+
+  logger.info('Starting backend...');
+  backendProcess = spawn('npm', ['run', 'start'], {
+    cwd: path.join(DIRNAME, '../../apps/backend'),
+    env: {
+      ...process.env,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      PORT: '4000',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      PEPPER: '1234',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      DATABASE_URL: dbConnectionUri,
+    },
+    stdio: 'inherit',
+  });
+
+  await waitOn({
+    resources: ['http://localhost:4000/heart-beat'],
+    delay: 1000,
+    timeout: 30000,
+  });
+  logger.info('Backend started.');
+
+  logger.info('Starting frontend...');
+  frontendProcess = spawn('npm', ['run', 'start'], {
+    cwd: path.join(DIRNAME, '../../apps/frontend'),
+    env: {
+      ...process.env,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      VITE_API_BASE_URL: 'http://localhost:4000',
+    },
+    stdio: 'inherit',
+  });
+
+  await waitOn({
+    resources: ['http://localhost:5173'],
+    delay: 5000,
+    timeout: 30000,
+  });
+  logger.info('Frontend started.');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
   await dbContainer?.stop();
+  backendProcess?.kill();
+  frontendProcess?.kill();
 };
