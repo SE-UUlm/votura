@@ -33,7 +33,7 @@ test('should login', async ({ page }) => {
   await expect(page).toHaveURL('/elections');
   const tokens = await page.evaluate(() => {
     return localStorage.getItem('authTokens');
-  })
+  });
 
   expect(tokens).not.toBeNull();
 
@@ -42,9 +42,9 @@ test('should login', async ({ page }) => {
   }
 
   const parsedTokens: unknown = JSON.parse(tokens);
-  expect(parsedTokens).toHaveProperty('accessToken')
-  expect(parsedTokens).toHaveProperty('refreshToken')
-})
+  expect(parsedTokens).toHaveProperty('accessToken');
+  expect(parsedTokens).toHaveProperty('refreshToken');
+});
 
 test('should logout', async ({ page }) => {
   await page.goto('/login');
@@ -56,7 +56,7 @@ test('should logout', async ({ page }) => {
   await expect(page).toHaveURL('/login');
   const tokens = await page.evaluate(() => {
     return localStorage.getItem('authTokens');
-  })
+  });
 
   expect(tokens).toBeNull();
-})
+});
