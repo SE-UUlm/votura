@@ -35,7 +35,7 @@ jobs:
       - name: Install Playwright Browsers
         run: |
           cd packages/e2e
-          npm install-browsers
+          npm run install-browsers
       - name: Generate .env file
         run: |
           cd apps/backend
