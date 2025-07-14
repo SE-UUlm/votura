@@ -28,5 +28,5 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
     .returningAll()
     .executeTakeFirst();
 
-    await db.destroy()
+  await db.destroy();
 };
