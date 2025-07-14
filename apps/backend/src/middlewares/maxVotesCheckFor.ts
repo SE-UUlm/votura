@@ -58,7 +58,7 @@ const parseRequestMaxVotes = async (
  */
 const getBallotPaperMaxVotes = async (
   ballotPaperId: BallotPaper['id'],
-): Promise<DBBallotPaper['maxVotes'] | null> => {
+): Promise<DBBallotPaper['maxVotes']> => {
   const ballotPaper = await db
     .selectFrom('ballotPaper')
     .select(['maxVotes'])
@@ -143,9 +143,6 @@ export const maxVotesCheckFor = (reqType: RequestTypeMaxVotesCheck) => {
   ): Promise<void> => {
     const ballotPaperId = req.params.ballotPaperId;
     const ballotPaperMaxVotes = await getBallotPaperMaxVotes(ballotPaperId);
-    if (ballotPaperMaxVotes === null) {
-      return;
-    }
 
     const requestMaxVotes = await parseRequestMaxVotes(reqType, req, res);
     if (requestMaxVotes === null) {
