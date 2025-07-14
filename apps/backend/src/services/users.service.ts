@@ -6,7 +6,6 @@ import type {
   SelectableUser,
   User,
 } from '@repo/votura-validators';
-import argon2 from 'argon2';
 import type { AccessTokenPayload } from '../auth/types.js';
 import {
   generateUserTokens,
@@ -14,6 +13,7 @@ import {
   hashRefreshToken,
   verifyToken,
 } from '../auth/utils.js';
+import {hashPassword, verifyPassword} from '@repo/hash';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
@@ -65,7 +65,7 @@ const getPepper = (): string => {
 };
 
 export async function createUser(insertableUser: InsertableUser): Promise<boolean> {
-  const hashedPassword = await argon2.hash(insertableUser.password + getPepper());
+  const hashedPassword = await hashPassword(insertableUser.password, getPepper());
 
   const user = await db
     .insertInto('user')
@@ -149,10 +149,7 @@ export const loginUser = async (
   }
 
   // Verify password
-  const isValidPassword: boolean = await argon2.verify(
-    user.passwordHash,
-    credentials.password + getPepper(),
-  );
+  const isValidPassword: boolean = await verifyPassword(user.passwordHash, credentials.password, getPepper());
   if (!isValidPassword) {
     return LoginError.invalidCredentials; // Invalid password
   }
