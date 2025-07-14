@@ -38,6 +38,7 @@ import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
+  checkElectionNotGenerateKeys,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionChecks.js';
 import { MimeType } from '../middlewares/utils.js';
@@ -77,6 +78,7 @@ electionsRouter.put(
   `/:${parameter.electionId}/unfreeze`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
+  checkElectionNotGenerateKeys,
   unfreezeElection,
 );
 

@@ -13,7 +13,7 @@
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "kysely": "^0.28.2",
     "pg": "^8.16.0",
     "@repo/logger": "*"
