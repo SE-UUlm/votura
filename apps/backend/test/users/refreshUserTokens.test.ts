@@ -1,5 +1,6 @@
 import {
   apiTokenUserObject,
+  insertableUserObject,
   response400Object,
   response401Object,
   type SelectableUser,
@@ -16,17 +17,20 @@ import {
   findUserBy,
   verifyUser,
 } from '../../src/services/users.service.js';
-import { demoUser } from '../mockData.js';
 
 describe(`POST /users/refreshTokens`, () => {
   let requestPath = '';
   let user: SelectableUser | null = null;
   let accessToken: string | null = null;
   let refreshToken: string | null = null;
+  const refreshUser = insertableUserObject.parse({
+    email: 'refreshUser@votura.org',
+    password: 'MyStrong!Password123',
+  });
 
   beforeAll(async () => {
-    await createUser(demoUser);
-    user = await findUserBy({ email: demoUser.email });
+    await createUser(refreshUser);
+    user = await findUserBy({ email: refreshUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
     }
@@ -43,8 +47,8 @@ describe(`POST /users/refreshTokens`, () => {
   beforeEach(async () => {
     // Log in the user to create a session
     const loginResponse = await request(app).post('/users/login').send({
-      email: demoUser.email,
-      password: demoUser.password,
+      email: refreshUser.email,
+      password: refreshUser.password,
     });
     if (loginResponse.status !== Number(HttpStatusCode.ok)) {
       throw new Error('Failed to log in test user');
