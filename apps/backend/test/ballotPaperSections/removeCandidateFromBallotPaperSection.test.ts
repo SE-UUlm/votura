@@ -17,7 +17,9 @@ import {
   demoBallotPaper,
   demoBallotPaperSection,
   demoCandidate,
+  demoCandidate2,
   demoElection,
+  demoElection2,
   demoUser,
 } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
@@ -32,6 +34,7 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
   let requestPath = '';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
   let candidate: SelectableCandidate | null = null;
+  let candidate2: SelectableCandidate | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
 
   beforeAll(async () => {
@@ -44,6 +47,10 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const election = await createElection(demoElection, user.id);
     if (election === null) {
       throw new Error('Failed to create test election');
+    }
+    const election2 = await createElection(demoElection2, user.id);
+    if (election2 === null) {
+      throw new Error('Failed to create test election 2');
     }
 
     const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
@@ -60,13 +67,17 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     if (candidate === null) {
       throw new Error('Failed to create test candidate');
     }
+    candidate2 = await createCandidate(demoCandidate2, election2.id);
+    if (candidate2 === null) {
+      throw new Error('Failed to create test candidate 2');
+    }
 
     const addCandidateResult = await addCandidateToBallotPaperSection(
       ballotPaperSection.id,
       candidate.id,
     );
     // check if addCandidateResult is type of SelectableBallotPaperSection
-    if (typeof addCandidateResult === 'string') {
+    if (addCandidateResult === null) {
       throw new Error(`Failed to add candidate to ballot paper section`);
     }
     ballotPaperSection = addCandidateResult;
@@ -97,7 +108,21 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe('Candidate not found');
+    expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
+  });
+  it('400: should return error for cadidate not linked to election', async () => {
+    const res = await request(app)
+      .del(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({ candidateId: candidate2?.id });
+
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(
+      'The provided candidate does not belong to the provided election.',
+    );
   });
   it('200: should remove a candidate from a ballot paper section', async () => {
     //make sure candidate exists in the ballot paper section

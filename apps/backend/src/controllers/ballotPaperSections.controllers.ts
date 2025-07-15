@@ -15,7 +15,6 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
-  AddCandidateToBallotPaperSectionError,
   RemoveCandidateFromBallotPaperSectionError,
   addCandidateToBallotPaperSection as addPersistentCandidateToBallotPaperSection,
   createBallotPaperSection as createPersistentBallotPaperSection,
@@ -128,13 +127,7 @@ export const addCandidateToBallotPaperSection = async (
     req.params.ballotPaperSectionId,
     data.candidateId,
   );
-  if (result === AddCandidateToBallotPaperSectionError.candidateNotFound) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'Candidate not found' }));
-    return;
-  }
-  if (result === AddCandidateToBallotPaperSectionError.ballotPaperSectionNotFound) {
+  if (result === null) {
     res
       .status(HttpStatusCode.notFound)
       .json(response404Object.parse({ message: 'Ballot paper section not found' }));
@@ -161,12 +154,6 @@ export const removeCandidateFromBallotPaperSection = async (
     req.params.ballotPaperSectionId,
     data.candidateId,
   );
-  if (result === RemoveCandidateFromBallotPaperSectionError.candidateNotFound) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'Candidate not found' }));
-    return;
-  }
   if (result === RemoveCandidateFromBallotPaperSectionError.ballotPaperSectionNotFound) {
     res
       .status(HttpStatusCode.notFound)

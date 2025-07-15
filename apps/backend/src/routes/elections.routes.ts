@@ -37,7 +37,12 @@ import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { maxVotesCheckFor, RequestTypeMaxVotesCheck } from '../middlewares/maxVotesCheckFor.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
-import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
+import {
+  checkCandidateUuidBodyInsertable,
+  checkCandidateUuidBodyRemovable,
+  defaultCandidateChecksBody,
+  defaultCandidateChecksParam,
+} from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
   checkElectionNotGenerateKeys,
@@ -187,6 +192,8 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
+  checkCandidateUuidBodyInsertable,
+  ...defaultCandidateChecksBody,
   addCandidateToBallotPaperSection,
 );
 electionsRouter.delete(
@@ -197,6 +204,8 @@ electionsRouter.delete(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
+  checkCandidateUuidBodyRemovable,
+  ...defaultCandidateChecksBody,
   removeCandidateFromBallotPaperSection,
 );
 
@@ -219,7 +228,7 @@ electionsRouter.get(
   `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
-  ...defaultCandidateChecks,
+  ...defaultCandidateChecksParam,
   getCandidate,
 );
 electionsRouter.put(
@@ -228,7 +237,7 @@ electionsRouter.put(
   acceptBodyCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ...defaultCandidateChecks,
+  ...defaultCandidateChecksParam,
   updateCandidate,
 );
 electionsRouter.delete(
@@ -236,6 +245,6 @@ electionsRouter.delete(
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ...defaultCandidateChecks,
+  ...defaultCandidateChecksParam,
   deleteCandidate,
 );

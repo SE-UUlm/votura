@@ -110,27 +110,10 @@ export const deleteBallotPaperSection = async (
     .executeTakeFirst();
 };
 
-export enum AddCandidateToBallotPaperSectionError {
-  candidateNotFound = 'candidateNotFound',
-  ballotPaperSectionNotFound = 'ballotPaperSectionNotFound',
-}
-
 export const addCandidateToBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
   candidateId: Candidate['id'],
-): Promise<SelectableBallotPaperSection | AddCandidateToBallotPaperSectionError> => {
-  // make sure candidate exists
-  const candidate = await db
-    .selectFrom('candidate')
-    .selectAll()
-    .where('id', '=', candidateId)
-    .executeTakeFirst();
-
-  if (candidate === undefined) {
-    return AddCandidateToBallotPaperSectionError.candidateNotFound;
-  }
-
-  // add candidate to ballot paper section
+): Promise<SelectableBallotPaperSection | null> => {
   await db
     .insertInto('ballotPaperSectionCandidate')
     .values({ ballotPaperSectionId, candidateId })
@@ -140,14 +123,12 @@ export const addCandidateToBallotPaperSection = async (
   // get updated ballot paper section
   const ballotPaperSection = await getBallotPaperSection(ballotPaperSectionId);
   if (ballotPaperSection === null) {
-    return AddCandidateToBallotPaperSectionError.ballotPaperSectionNotFound;
+    return null;
   }
-
   return ballotPaperSection;
 };
 
 export enum RemoveCandidateFromBallotPaperSectionError {
-  candidateNotFound = 'candidateNotFound',
   ballotPaperSectionNotFound = 'ballotPaperSectionNotFound',
   candidateNotLinkedToBallotPaperSection = 'candidateNotLinkedToBallotPaperSection',
 }
@@ -156,18 +137,6 @@ export const removeCandidateFromBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
   candidateId: Candidate['id'],
 ): Promise<SelectableBallotPaperSection | RemoveCandidateFromBallotPaperSectionError> => {
-  // make sure candidate exists
-  const candidate = await db
-    .selectFrom('candidate')
-    .selectAll()
-    .where('id', '=', candidateId)
-    .executeTakeFirst();
-
-  if (candidate === undefined) {
-    return RemoveCandidateFromBallotPaperSectionError.candidateNotFound;
-  }
-
-  // remove candidate from ballot paper section
   const result = await db
     .deleteFrom('ballotPaperSectionCandidate')
     .where('ballotPaperSectionId', '=', ballotPaperSectionId)

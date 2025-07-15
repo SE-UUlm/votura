@@ -17,7 +17,9 @@ import {
   demoBallotPaper,
   demoBallotPaperSection,
   demoCandidate,
+  demoCandidate2,
   demoElection,
+  demoElection2,
   demoUser,
 } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
@@ -29,6 +31,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
   let requestPath = '';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
   let candidate: SelectableCandidate | null = null;
+  let candidate2: SelectableCandidate | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
 
   beforeAll(async () => {
@@ -42,6 +45,10 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     if (election === null) {
       throw new Error('Failed to create test election');
     }
+    const election2 = await createElection(demoElection2, user.id);
+    if (election2 === null) {
+      throw new Error('Failed to create test election 2');
+    }
 
     const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
     if (ballotPaper === null) {
@@ -54,6 +61,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     }
 
     candidate = await createCandidate(demoCandidate, election.id);
+    candidate2 = await createCandidate(demoCandidate2, election2.id);
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}/candidates/`;
 
@@ -100,6 +108,24 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe('Candidate not found');
+    expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
+  });
+  it('400: should return error for candidate not linked to election', async () => {
+    if (candidate2 === null) {
+      throw new Error('Failed to create test candidate 2');
+    }
+
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({ candidateId: candidate2.id });
+
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(
+      'The provided candidate does not belong to the provided election.',
+    );
   });
 });
