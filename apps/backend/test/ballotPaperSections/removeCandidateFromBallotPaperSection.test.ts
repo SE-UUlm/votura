@@ -110,7 +110,7 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
   });
-  it('400: should return error for cadidate not linked to election', async () => {
+  it('400: should return error for candidate not linked to election', async () => {
     const res = await request(app)
       .del(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
