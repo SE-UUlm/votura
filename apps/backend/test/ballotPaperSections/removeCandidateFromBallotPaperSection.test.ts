@@ -95,7 +95,7 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
 
     expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
-    const parseResult = response400Object.safeParse(res.body);
+    const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe('Candidate not found');
   });
