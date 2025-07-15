@@ -1,5 +1,7 @@
 import {
+  insertableBallotPaperSectionCandidateObject,
   insertableBallotPaperSectionObject,
+  removableBallotPaperSectionCandidateObject,
   response404Object,
   response500Object,
   updateableBallotPaperSectionObject,
@@ -13,10 +15,14 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
+  AddCandidateToBallotPaperSectionError,
+  RemoveCandidateFromBallotPaperSectionError,
+  addCandidateToBallotPaperSection as addPersistentCandidateToBallotPaperSection,
   createBallotPaperSection as createPersistentBallotPaperSection,
   deleteBallotPaperSection as deletePersistentBallotPaperSection,
   getBallotPaperSection as getPersistentBallotPaperSection,
   getBallotPaperSections as getPersistentBallotPaperSections,
+  removeCandidateFromBallotPaperSection as removePersistentCandidateFromBallotPaperSection,
   updateBallotPaperSection as updatePersistentBallotPaperSection,
 } from '../services/ballotPaperSections.service.js';
 
@@ -102,4 +108,78 @@ export const deleteBallotPaperSection = async (
     return;
   }
   res.sendStatus(HttpStatusCode.noContent);
+};
+
+export const addCandidateToBallotPaperSection = async (
+  req: Request<{
+    ballotPaperSectionId: BallotPaperSection['id'];
+  }>,
+  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+): Promise<void> => {
+  const { data, error, success } = await insertableBallotPaperSectionCandidateObject.safeParseAsync(
+    req.body,
+  );
+  if (success === false) {
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+    return;
+  }
+
+  const result = await addPersistentCandidateToBallotPaperSection(
+    req.params.ballotPaperSectionId,
+    data.candidateId,
+  );
+  if (result === AddCandidateToBallotPaperSectionError.candidateNotFound) {
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: 'Candidate not found' }));
+    return;
+  }
+  if (result === AddCandidateToBallotPaperSectionError.ballotPaperSectionNotFound) {
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: 'Ballot paper section not found' }));
+    return;
+  }
+  res.status(HttpStatusCode.ok).json(result);
+};
+
+export const removeCandidateFromBallotPaperSection = async (
+  req: Request<{
+    ballotPaperSectionId: BallotPaperSection['id'];
+  }>,
+  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+): Promise<void> => {
+  const { data, error, success } = await removableBallotPaperSectionCandidateObject.safeParseAsync(
+    req.body,
+  );
+  if (success === false) {
+    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+    return;
+  }
+
+  const result = await removePersistentCandidateFromBallotPaperSection(
+    req.params.ballotPaperSectionId,
+    data.candidateId,
+  );
+  if (result === RemoveCandidateFromBallotPaperSectionError.candidateNotFound) {
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: 'Candidate not found' }));
+    return;
+  }
+  if (result === RemoveCandidateFromBallotPaperSectionError.ballotPaperSectionNotFound) {
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: 'Ballot paper section not found' }));
+    return;
+  }
+  if (
+    result === RemoveCandidateFromBallotPaperSectionError.candidateNotLinkedToBallotPaperSection
+  ) {
+    res
+      .status(HttpStatusCode.notFound)
+      .json(response404Object.parse({ message: 'Candidate not linked to ballot paper section' }));
+    return;
+  }
+  res.status(HttpStatusCode.ok).json(result);
 };

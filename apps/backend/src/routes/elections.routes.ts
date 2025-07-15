@@ -8,10 +8,12 @@ import {
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import {
+  addCandidateToBallotPaperSection,
   createBallotPaperSection,
   deleteBallotPaperSection,
   getBallotPaperSection,
   getBallotPaperSections,
+  removeCandidateFromBallotPaperSection,
   updateBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
@@ -176,6 +178,26 @@ electionsRouter.delete(
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
   deleteBallotPaperSection,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  addCandidateToBallotPaperSection,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  removeCandidateFromBallotPaperSection,
 );
 
 // Candidates
