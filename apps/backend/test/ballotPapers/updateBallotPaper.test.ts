@@ -4,6 +4,7 @@ import {
   selectableBallotPaperObject,
   type ApiTokenUser,
   type SelectableBallotPaper,
+  type SelectableBallotPaperSection,
   type SelectableElection,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -16,16 +17,19 @@ import {
   brokenDemoBallotPaper,
   demoBallotPaper,
   demoBallotPaper2,
+  demoBallotPaperSection,
   demoElection,
   demoUser,
 } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
+import { createBallotPaperSection } from './../../src/services/ballotPaperSections.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
   let requestPath = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
+  let ballotPaperSection: SelectableBallotPaperSection | null = null;
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
@@ -43,6 +47,11 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
     if (ballotPaper === null) {
       throw new Error('Failed to create test ballot paper');
+    }
+
+    ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
+    if (ballotPaperSection === null) {
+      throw new Error('Failed to create test ballot paper section');
     }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
@@ -75,5 +84,23 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+  });
+  it('400: should return error because max votes is lower than associated ballot paper sections', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        ...demoBallotPaper2,
+        maxVotes: demoBallotPaperSection.maxVotes - 1,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.message).toBe(
+        'The max votes for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+      );
+    }
   });
 });

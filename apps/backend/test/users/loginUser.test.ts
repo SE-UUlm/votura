@@ -1,5 +1,6 @@
 import {
   apiTokenUserObject,
+  insertableUserObject,
   response400Object,
   response401Object,
   type SelectableUser,
@@ -9,15 +10,19 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy, verifyUser } from '../../src/services/users.service.js';
-import { demoUser } from '../mockData.js';
 
 describe(`POST /users/login`, () => {
   let requestPath = '';
   let user: SelectableUser | null = null;
+  // create a test user only for this test to not have race conditions with token refresh tests
+  const loginUser = insertableUserObject.parse({
+    email: 'loginUser@votura.org',
+    password: 'MyStrong!Password123',
+  });
 
   beforeAll(async () => {
-    await createUser(demoUser);
-    user = await findUserBy({ email: demoUser.email });
+    await createUser(loginUser);
+    user = await findUserBy({ email: loginUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
     }
@@ -51,8 +56,8 @@ describe(`POST /users/login`, () => {
     }
 
     const res = await request(app).post(requestPath).send({
-      email: demoUser.email,
-      password: demoUser.password,
+      email: loginUser.email,
+      password: loginUser.password,
     });
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
@@ -62,7 +67,7 @@ describe(`POST /users/login`, () => {
 
   it('400: should return error for missing credentials', async () => {
     const res = await request(app).post(requestPath).send({
-      email: demoUser.email,
+      email: loginUser.email,
     });
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
@@ -74,8 +79,8 @@ describe(`POST /users/login`, () => {
     const res = await request(app)
       .post(requestPath)
       .send({
-        email: demoUser.email,
-        password: demoUser.password + 'invalid',
+        email: loginUser.email,
+        password: loginUser.password + 'invalid',
       });
     expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
