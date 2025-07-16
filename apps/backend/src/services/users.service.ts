@@ -218,7 +218,7 @@ export const refreshUserTokens = async (
   }
 
   // Check if refresh token is expired
-  if (!user.refreshTokenExpiresAt || user.refreshTokenExpiresAt < new Date()) {
+  if (user.refreshTokenExpiresAt === null || user.refreshTokenExpiresAt < new Date()) {
     return RefreshTokenError.tokenExpired;
   }
 

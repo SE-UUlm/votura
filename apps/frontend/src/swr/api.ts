@@ -2,7 +2,7 @@ import { apiTokenUserObject } from '@repo/votura-validators';
 import axios, { type AxiosRequestConfig } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { apiRoutes } from './apiRoutes.ts';
-import { clearAuthLocalStorage, getAuthLocalStorage } from './authTokens.ts';
+import {clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage} from './authTokens.ts';
 
 interface FailedRequest {
   response: {
@@ -30,8 +30,6 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
     {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        Authorization: `Bearer ${authToken.accessToken}`,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
       },
     },
@@ -42,6 +40,8 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   if (!parsed.success) {
     throw new Error('Corrupted token refresh request body');
   }
+
+  setAuthLocalStorage(parsed.data)
 
   failedRequest.response.config.headers = {
     ...failedRequest.response.config.headers,
