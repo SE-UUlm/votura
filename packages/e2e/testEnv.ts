@@ -72,8 +72,6 @@ export const startTestEnv = async (): Promise<void> => {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       PORT: '4000',
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      PEPPER: '1234',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
       DATABASE_URL: dbConnectionUri,
     },
     stdio: 'inherit',
@@ -102,7 +100,7 @@ export const startTestEnv = async (): Promise<void> => {
   await waitOn({
     resources: ['http://localhost:5173'],
     delay: 5000,
-    timeout: 120000,
+    timeout: 240000,
   });
   logger.info('Frontend started.');
 };
