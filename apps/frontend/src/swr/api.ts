@@ -1,8 +1,9 @@
 import { apiTokenUserObject } from '@repo/votura-validators';
 import axios, { type AxiosRequestConfig } from 'axios';
 import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import { browserRouter } from '../browserRouter.ts';
 import { apiRoutes } from './apiRoutes.ts';
-import {clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage} from './authTokens.ts';
+import { clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage } from './authTokens.ts';
 
 interface FailedRequest {
   response: {
@@ -14,6 +15,10 @@ export const api = axios.create({
   baseURL: apiRoutes.base,
 });
 
+export const refreshApi = axios.create({
+  baseURL: apiRoutes.base,
+});
+
 createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   const authToken = getAuthLocalStorage();
 
@@ -22,7 +27,7 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
     return Promise.reject(new Error('Failed to get auth tokens from local storage.'));
   }
 
-  const response = await api.post(
+  const response = await refreshApi.post(
     apiRoutes.users.refreshTokens,
     {
       refreshToken: authToken.refreshToken,
@@ -38,10 +43,11 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   const parsed = await apiTokenUserObject.safeParseAsync(response.data);
 
   if (!parsed.success) {
-    throw new Error('Corrupted token refresh request body');
+    clearAuthLocalStorage();
+    return Promise.reject(parsed.error);
   }
 
-  setAuthLocalStorage(parsed.data)
+  setAuthLocalStorage(parsed.data);
 
   failedRequest.response.config.headers = {
     ...failedRequest.response.config.headers,
@@ -50,4 +56,14 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   };
 
   return Promise.resolve();
+});
+
+createAuthRefreshInterceptor(refreshApi, async () => {
+  try {
+    clearAuthLocalStorage();
+    await browserRouter.navigate('/login');
+    return Promise.resolve();
+  } catch {
+    return Promise.reject(new Error());
+  }
 });

@@ -6,9 +6,9 @@ import '@mantine/notifications/styles.css';
 import { isAxiosError } from 'axios';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
-import { BrowserRouter } from 'react-router';
+import { RouterProvider } from 'react-router';
 import { SWRConfig } from 'swr';
-import App from './App.tsx';
+import { browserRouter } from './browserRouter.ts';
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
@@ -28,9 +28,7 @@ createRoot(document.getElementById('root')!).render(
     >
       <MantineProvider>
         <Notifications />
-        <BrowserRouter>
-          <App />
-        </BrowserRouter>
+        <RouterProvider router={browserRouter} />
       </MantineProvider>
     </SWRConfig>
   </StrictMode>,
