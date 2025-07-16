@@ -9,7 +9,7 @@
     "build-and-preview": "npm run build && npm run preview",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
-    "preview": "vite preview --host 0.0.0.0",
+    "preview": "vite preview",
     "check-types": "tsc --noEmit",
     "lint": "eslint"
   },
