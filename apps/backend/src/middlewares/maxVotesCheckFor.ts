@@ -100,20 +100,14 @@ const checkBallotPaperUpdate = async (
     0,
   );
 
+  let message = '';
   if (maxVotesFromSections > requestMaxVotes) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: `The max votes for the ballot paper can not be lower than for any of the linked ballot paper sections.`,
-      }),
-    );
-    return;
+    message = `The max votes for the ballot paper can not be lower than for any of the linked ballot paper sections.`;
+  } else if (maxVotesPerCandidateFromSections > requestMaxVotesPerCandidate) {
+    message = `The max votes per candidate for the ballot paper can not be lower than for any of the linked ballot paper sections.`;
   }
-  if (maxVotesPerCandidateFromSections > requestMaxVotesPerCandidate) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: `The max votes per candidate for the ballot paper can not be lower than for any of the linked ballot paper sections.`,
-      }),
-    );
+  if (message !== '') {
+    res.status(HttpStatusCode.badRequest).json(response400Object.parse({ message }));
     return;
   }
   next();
@@ -127,20 +121,14 @@ const checkBallotPaperSection = (
   res: Response<Response400>,
   next: NextFunction,
 ): void => {
+  let message = '';
   if (requestMaxVotes > ballotPaperMaxVotes) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: `The max votes for the ballot paper section cannot be greater than the max votes of the ballot paper.`,
-      }),
-    );
-    return;
+    message = `The max votes for the ballot paper section cannot be greater than the max votes of the ballot paper.`;
+  } else if (requestMaxVotesPerCandidate > ballotPaperMaxVotesPerCandidate) {
+    message = `The max votes per candidate for the ballot paper section cannot be greater than the max votes per candidate of the ballot paper.`;
   }
-  if (requestMaxVotesPerCandidate > ballotPaperMaxVotesPerCandidate) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: `The max votes per candidate for the ballot paper section cannot be greater than the max votes per candidate of the ballot paper.`,
-      }),
-    );
+  if (message !== '') {
+    res.status(HttpStatusCode.badRequest).json(response400Object.parse({ message }));
     return;
   }
   next();
