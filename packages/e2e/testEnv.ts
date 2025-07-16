@@ -102,7 +102,7 @@ export const startTestEnv = async (): Promise<void> => {
   await waitOn({
     resources: ['http://localhost:5173'],
     delay: 5000,
-    timeout: 30000,
+    timeout: 60000,
   });
   logger.info('Frontend started.');
 };
