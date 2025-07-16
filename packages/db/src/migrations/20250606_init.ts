@@ -18,6 +18,7 @@ import {
   VoterColumnName,
   VoterFKName,
   VoterGroupColumnName,
+  VoterGroupFKName,
   VoterRegisterColumnName,
   VoterRegisterFKName,
 } from '../nameEnums.js';
@@ -178,6 +179,7 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     .addColumn(VoterGroupColumnName.voterTokensGenerated, 'boolean', (col) =>
       col.notNull().defaultTo(false),
     )
+    .addColumn(VoterGroupColumnName.voterGroupCreatorId, 'uuid', (col) => col.notNull())
     .execute();
 }
 
@@ -298,6 +300,20 @@ async function addCandidateForeignKeys(db: Kysely<any>): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function addVoterGroupForeignKeys(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .alterTable(TableName.voterGroup)
+    .addForeignKeyConstraint(
+      VoterGroupFKName.voterGroupCreatorId,
+      [VoterGroupColumnName.voterGroupCreatorId],
+      TableName.user,
+      [DefaultColumnName.id],
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
+    )
+    .execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addVoterForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.voter)
@@ -343,6 +359,7 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addBallotPaperSectionForeignKeys(db);
   await addBallotPaperSectionCandidateForeignKeys(db);
   await addCandidateForeignKeys(db);
+  await addVoterGroupForeignKeys(db);
   await addVoterForeignKeys(db);
   await addVoterRegisterForeignKeys(db);
 }

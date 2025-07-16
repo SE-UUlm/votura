@@ -90,6 +90,7 @@ export enum VoterGroupColumnName {
   pubKey = 'pubKey',
   privKey = 'privKey',
   voterTokensGenerated = 'voterTokensGenerated',
+  voterGroupCreatorId = 'voterGroupCreatorId',
 }
 
 export enum VoterColumnName {
@@ -122,6 +123,10 @@ export enum BallotPaperSectionCandidateFKName {
 
 export enum CandidateFKName {
   electionId = 'candidateElectionIdFK',
+}
+
+export enum VoterGroupFKName {
+  voterGroupCreatorId = 'voterGroupVoterGroupCreatorIdFK',
 }
 
 export enum VoterFKName {
