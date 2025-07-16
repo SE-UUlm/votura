@@ -37,16 +37,12 @@ const ballotPaperSectionTransformer = async (
 export const createBallotPaperSection = async (
   insertableBallotPaperSection: InsertableBallotPaperSection,
   ballotPaperId: BallotPaper['id'],
-): Promise<SelectableBallotPaperSection | null> => {
+): Promise<SelectableBallotPaperSection> => {
   const ballotPaperSection = await db
     .insertInto('ballotPaperSection')
     .values({ ...insertableBallotPaperSection, ballotPaperId: ballotPaperId })
     .returningAll()
-    .executeTakeFirst();
-
-  if (ballotPaperSection === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperSectionTransformer(ballotPaperSection);
 };
@@ -70,33 +66,25 @@ export const getBallotPaperSections = async (
 export const updateBallotPaperSection = async (
   updateableBallotPaperSection: UpdateableBallotPaperSection,
   ballotPaperSectionId: BallotPaperSection['id'],
-): Promise<SelectableBallotPaperSection | null> => {
+): Promise<SelectableBallotPaperSection> => {
   const ballotPaperSection = await db
     .updateTable('ballotPaperSection')
     .set({ ...updateableBallotPaperSection })
     .where('id', '=', ballotPaperSectionId)
     .returningAll()
-    .executeTakeFirst();
-
-  if (ballotPaperSection === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperSectionTransformer(ballotPaperSection);
 };
 
 export const getBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
-): Promise<SelectableBallotPaperSection | null> => {
+): Promise<SelectableBallotPaperSection> => {
   const ballotPaperSection = await db
     .selectFrom('ballotPaperSection')
     .selectAll()
     .where('id', '=', ballotPaperSectionId)
-    .executeTakeFirst();
-
-  if (ballotPaperSection === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperSectionTransformer(ballotPaperSection);
 };
@@ -113,7 +101,7 @@ export const deleteBallotPaperSection = async (
 export const addCandidateToBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
   candidateId: Candidate['id'],
-): Promise<SelectableBallotPaperSection | null> => {
+): Promise<SelectableBallotPaperSection> => {
   await db
     .insertInto('ballotPaperSectionCandidate')
     .values({ ballotPaperSectionId, candidateId })
@@ -121,22 +109,17 @@ export const addCandidateToBallotPaperSection = async (
     .executeTakeFirstOrThrow();
 
   // get updated ballot paper section
-  const ballotPaperSection = await getBallotPaperSection(ballotPaperSectionId);
-  if (ballotPaperSection === null) {
-    return null;
-  }
-  return ballotPaperSection;
+  return getBallotPaperSection(ballotPaperSectionId);
 };
 
 export enum RemoveCandidateFromBallotPaperSectionError {
-  ballotPaperSectionNotFound = 'ballotPaperSectionNotFound',
   candidateNotLinkedToBallotPaperSection = 'candidateNotLinkedToBallotPaperSection',
 }
 
 export const removeCandidateFromBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
   candidateId: Candidate['id'],
-): Promise<SelectableBallotPaperSection | RemoveCandidateFromBallotPaperSectionError> => {
+): Promise<SelectableBallotPaperSection | null> => {
   const result = await db
     .deleteFrom('ballotPaperSectionCandidate')
     .where('ballotPaperSectionId', '=', ballotPaperSectionId)
@@ -144,14 +127,9 @@ export const removeCandidateFromBallotPaperSection = async (
     .executeTakeFirst();
 
   if (result.numDeletedRows < 1n) {
-    return RemoveCandidateFromBallotPaperSectionError.candidateNotLinkedToBallotPaperSection;
+    return null;
   }
 
   // get updated ballot paper section
-  const ballotPaperSection = await getBallotPaperSection(ballotPaperSectionId);
-  if (ballotPaperSection === null) {
-    return RemoveCandidateFromBallotPaperSectionError.ballotPaperSectionNotFound;
-  }
-
-  return ballotPaperSection;
+  return getBallotPaperSection(ballotPaperSectionId);
 };

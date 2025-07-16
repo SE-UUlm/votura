@@ -3,7 +3,6 @@ import {
   insertableBallotPaperSectionObject,
   removableBallotPaperSectionCandidateObject,
   response404Object,
-  response500Object,
   updateableBallotPaperSectionObject,
   zodErrorToResponse400,
   type BallotPaper,
@@ -15,7 +14,6 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
-  RemoveCandidateFromBallotPaperSectionError,
   addCandidateToBallotPaperSection as addPersistentCandidateToBallotPaperSection,
   createBallotPaperSection as createPersistentBallotPaperSection,
   deleteBallotPaperSection as deletePersistentBallotPaperSection,
@@ -40,12 +38,6 @@ export const createBallotPaperSection = async (
     data,
     req.params.ballotPaperId,
   );
-  if (selectableBallotPaperSection === null) {
-    res
-      .status(HttpStatusCode.internalServerError)
-      .json(response500Object.parse({ message: undefined }));
-    return;
-  }
   res.status(HttpStatusCode.created).json(selectableBallotPaperSection);
 };
 
@@ -72,12 +64,6 @@ export const updateBallotPaperSection = async (
     data,
     req.params.ballotPaperSectionId,
   );
-  if (selectableBallotPaperSection === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(selectableBallotPaperSection);
 };
 
@@ -86,12 +72,6 @@ export const getBallotPaperSection = async (
   res: Response<SelectableBallotPaperSection | Response404>,
 ): Promise<void> => {
   const ballotPaperSection = await getPersistentBallotPaperSection(req.params.ballotPaperSectionId);
-  if (ballotPaperSection === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find ballot paper section." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(ballotPaperSection);
 };
 
@@ -127,12 +107,6 @@ export const addCandidateToBallotPaperSection = async (
     req.params.ballotPaperSectionId,
     data.candidateId,
   );
-  if (result === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'Ballot paper section not found' }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(result);
 };
 
@@ -154,18 +128,12 @@ export const removeCandidateFromBallotPaperSection = async (
     req.params.ballotPaperSectionId,
     data.candidateId,
   );
-  if (result === RemoveCandidateFromBallotPaperSectionError.ballotPaperSectionNotFound) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'Ballot paper section not found' }));
-    return;
-  }
-  if (
-    result === RemoveCandidateFromBallotPaperSectionError.candidateNotLinkedToBallotPaperSection
-  ) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: 'Candidate not linked to ballot paper section' }));
+  if (result === null) {
+    res.status(HttpStatusCode.notFound).json(
+      response404Object.parse({
+        message: 'Candidate not linked to ballot paper section, can not remove.',
+      }),
+    );
     return;
   }
   res.status(HttpStatusCode.ok).json(result);
