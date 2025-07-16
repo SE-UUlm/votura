@@ -44,6 +44,6 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "vite": "npm:rolldown-vite@latest"
+    "vite": "^7.0.4"
   }
 }
