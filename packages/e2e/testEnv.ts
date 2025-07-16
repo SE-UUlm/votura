@@ -87,10 +87,12 @@ export const startTestEnv = async (): Promise<void> => {
   logger.info('Backend started.');
 
   logger.info('Starting frontend...');
-  frontendProcess = spawn('npm', ['run', 'start'], {
+  frontendProcess = spawn('npm', ['run', 'build-and-preview'], {
     cwd: path.join(DIRNAME, '../../apps/frontend'),
     env: {
       ...process.env,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      PORT: '5173',
       // eslint-disable-next-line @typescript-eslint/naming-convention
       VITE_API_BASE_URL: 'http://localhost:4000',
     },

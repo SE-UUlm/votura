@@ -6,6 +6,7 @@
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
+    "build-and-preview": "npm run build && npm run preview",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "preview": "vite preview",

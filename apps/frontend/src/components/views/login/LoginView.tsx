@@ -32,7 +32,7 @@ export const LoginView = () => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : parsed.error.issues.map((issue) => issue.message).join('. ');
+        return parsed.success ? null : 'Invalid email address.';
       },
     },
   });
