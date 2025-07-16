@@ -1,7 +1,6 @@
 import {
   insertableBallotPaperObject,
   response404Object,
-  response500Object,
   updateableBallotPaperObject,
   zodErrorToResponse400,
   type BallotPaper,
@@ -32,12 +31,6 @@ export const createBallotPaper = async (
   }
 
   const selectableBallotPaper = await createPersistentBallotPaper(data, req.params.electionId);
-  if (selectableBallotPaper === null) {
-    res
-      .status(HttpStatusCode.internalServerError)
-      .json(response500Object.parse({ message: undefined }));
-    return;
-  }
   res.status(HttpStatusCode.created).json(selectableBallotPaper);
 };
 
@@ -54,12 +47,6 @@ export const getBallotPaper = async (
   res: Response<SelectableBallotPaper | Response404>,
 ): Promise<void> => {
   const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
-  if (ballotPaper === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find ballot paper." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(ballotPaper);
 };
 
@@ -75,12 +62,6 @@ export const updateBallotPaper = async (
   }
 
   const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
-  if (selectableBallotPaper === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find ballot paper." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(selectableBallotPaper);
 };
 

@@ -28,16 +28,12 @@ const ballotPaperTransformer = (
 export const createBallotPaper = async (
   insertableBallotPaper: InsertableBallotPaper,
   electionId: Election['id'],
-): Promise<SelectableBallotPaper | null> => {
+): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .insertInto('ballotPaper')
     .values({ ...insertableBallotPaper, electionId: electionId })
     .returningAll()
-    .executeTakeFirst();
-
-  if (ballotPaper === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperTransformer(ballotPaper);
 };
@@ -56,16 +52,12 @@ export const getBallotPapers = async (
 
 export const getBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
-): Promise<SelectableBallotPaper | null> => {
+): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .selectFrom('ballotPaper')
     .selectAll()
     .where('id', '=', ballotPaperId)
-    .executeTakeFirst();
-
-  if (ballotPaper === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperTransformer(ballotPaper);
 };
@@ -73,17 +65,13 @@ export const getBallotPaper = async (
 export const updateBallotPaper = async (
   updateableBallotPaper: UpdateableBallotPaper,
   ballotPaperId: BallotPaper['id'],
-): Promise<SelectableBallotPaper | null> => {
+): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .updateTable('ballotPaper')
     .set({ ...updateableBallotPaper })
     .where('id', '=', ballotPaperId)
     .returningAll()
-    .executeTakeFirst();
-
-  if (ballotPaper === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return ballotPaperTransformer(ballotPaper);
 };
