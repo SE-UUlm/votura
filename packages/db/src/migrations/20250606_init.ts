@@ -395,7 +395,9 @@ async function createMaxVotesValidationFunction(db: Kysely<any>): Promise<void> 
     RETURNS TRIGGER AS $BODY$
     DECLARE
         ballot_paper_max_votes INTEGER;
+        ballot_paper_max_votes_per_candidate INTEGER;
         max_section_votes INTEGER;
+        max_section_votes_per_candidate INTEGER;
     BEGIN
         -- Handle different trigger scenarios
         IF TG_OP = 'UPDATE' AND TG_TABLE_NAME = ${sql.lit(TableName.ballotPaper)} THEN
@@ -404,20 +406,35 @@ async function createMaxVotesValidationFunction(db: Kysely<any>): Promise<void> 
             FROM ${sql.table(TableName.ballotPaperSection)}
             WHERE ${sql.raw(`"${BallotPaperSectionColumnName.ballotPaperId}"`)} = NEW.${sql.raw(`"${DefaultColumnName.id}"`)};
             
+            SELECT MAX(${sql.raw(`"${BallotPaperSectionColumnName.maxVotesPerCandidate}"`)}) INTO max_section_votes_per_candidate
+            FROM ${sql.table(TableName.ballotPaperSection)}
+            WHERE ${sql.raw(`"${BallotPaperSectionColumnName.ballotPaperId}"`)} = NEW.${sql.raw(`"${DefaultColumnName.id}"`)};
+            
             IF max_section_votes IS NOT NULL AND NEW.${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)} < max_section_votes THEN
                 RAISE EXCEPTION 'Ballot paper maxVotes (%) cannot be less than maximum section maxVotes (%)', 
                     NEW.${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)}, max_section_votes;
             END IF;
             
+            IF max_section_votes_per_candidate IS NOT NULL AND NEW.${sql.raw(`"${BallotPaperColumnName.maxVotesPerCandidate}"`)} < max_section_votes_per_candidate THEN
+                RAISE EXCEPTION 'Ballot paper maxVotesPerCandidate (%) cannot be less than maximum section maxVotesPerCandidate (%)', 
+                    NEW.${sql.raw(`"${BallotPaperColumnName.maxVotesPerCandidate}"`)}, max_section_votes_per_candidate;
+            END IF;
+            
         ELSIF (TG_OP = 'INSERT' OR TG_OP = 'UPDATE') AND TG_TABLE_NAME = ${sql.lit(TableName.ballotPaperSection)} THEN
             -- Ballot paper section is being created or updated
-            SELECT ${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)} INTO ballot_paper_max_votes
+            SELECT ${sql.raw(`"${BallotPaperColumnName.maxVotes}"`)}, ${sql.raw(`"${BallotPaperColumnName.maxVotesPerCandidate}"`)} 
+            INTO ballot_paper_max_votes, ballot_paper_max_votes_per_candidate
             FROM ${sql.table(TableName.ballotPaper)}
             WHERE ${sql.raw(`"${DefaultColumnName.id}"`)} = NEW.${sql.raw(`"${BallotPaperSectionColumnName.ballotPaperId}"`)};
             
-            IF ballot_paper_max_votes IS NOT NULL AND NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)} > ballot_paper_max_votes THEN
+            IF NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)} > ballot_paper_max_votes THEN
                 RAISE EXCEPTION 'Ballot paper section maxVotes (%) cannot be greater than ballot paper maxVotes (%)', 
                     NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotes}"`)}, ballot_paper_max_votes;
+            END IF;
+            
+            IF NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotesPerCandidate}"`)} > ballot_paper_max_votes_per_candidate THEN
+                RAISE EXCEPTION 'Ballot paper section maxVotesPerCandidate (%) cannot be greater than ballot paper maxVotesPerCandidate (%)', 
+                    NEW.${sql.raw(`"${BallotPaperSectionColumnName.maxVotesPerCandidate}"`)}, ballot_paper_max_votes_per_candidate;
             END IF;
         END IF;
         
@@ -432,7 +449,7 @@ async function addMaxVotesTriggers(db: Kysely<any>): Promise<void> {
   // Trigger for ballot paper updates
   await sql`
     CREATE TRIGGER ballot_paper_max_votes_validation_trigger
-      BEFORE UPDATE OF "maxVotes"
+      BEFORE UPDATE OF "maxVotes", "maxVotesPerCandidate"
       ON ${sql.table(TableName.ballotPaper)}
       FOR EACH ROW
       EXECUTE FUNCTION validate_ballot_paper_max_votes();
@@ -450,7 +467,7 @@ async function addMaxVotesTriggers(db: Kysely<any>): Promise<void> {
   // Trigger for ballot paper section updates
   await sql`
     CREATE TRIGGER ballot_paper_section_update_max_votes_validation_trigger
-      BEFORE UPDATE OF "maxVotes"
+      BEFORE UPDATE OF "maxVotes", "maxVotesPerCandidate"
       ON ${sql.table(TableName.ballotPaperSection)}
       FOR EACH ROW
       EXECUTE FUNCTION validate_ballot_paper_max_votes();
