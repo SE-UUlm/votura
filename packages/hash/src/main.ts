@@ -14,11 +14,7 @@ export const getPepper = (): string => {
 };
 
 export const hashPassword = async (plaintext: string, pepper: string): Promise<string> => {
-  const foo = await argon2.hash(plaintext + pepper);
-  logger.info(`${plaintext} password`);
-  logger.info(`${pepper} pepper`);
-  logger.info(`${foo} hash`);
-  return foo;
+  return argon2.hash(plaintext + pepper);
 };
 
 export const verifyPassword = async (
@@ -26,8 +22,5 @@ export const verifyPassword = async (
   plaintext: string,
   pepper: string,
 ): Promise<boolean> => {
-  logger.info(`${plaintext} plain verify password`);
-  logger.info(`${pepper} pepper verify password`);
-  logger.info(`${hash} hash verify password`);
   return argon2.verify(hash, plaintext + pepper);
 };
