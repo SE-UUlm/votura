@@ -64,6 +64,26 @@ export const startTestEnv = async (): Promise<void> => {
 
   logger.info('Seeding completed.');
 
+  logger.info('Starting frontend...');
+  frontendProcess = spawn('npm', ['run', 'start'], {
+    cwd: path.join(DIRNAME, '../../apps/frontend'),
+    env: {
+      ...process.env,
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      PORT: '5173',
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      VITE_API_BASE_URL: 'http://localhost:4000',
+    },
+    stdio: 'inherit',
+  });
+
+  await waitOn({
+    resources: ['http://localhost:5173/'],
+    delay: 5000,
+    timeout: 240000,
+  });
+  logger.info('Frontend started.');
+
   logger.info('Starting backend...');
   backendProcess = spawn('npm', ['run', 'start'], {
     cwd: path.join(DIRNAME, '../../apps/backend'),
@@ -83,26 +103,6 @@ export const startTestEnv = async (): Promise<void> => {
     timeout: 30000,
   });
   logger.info('Backend started.');
-
-  logger.info('Starting frontend...');
-  frontendProcess = spawn('npm', ['run', 'start'], {
-    cwd: path.join(DIRNAME, '../../apps/frontend'),
-    env: {
-      ...process.env,
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      PORT: '5173',
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      VITE_API_BASE_URL: 'http://localhost:4000',
-    },
-    stdio: 'inherit',
-  });
-
-  // await waitOn({
-  //   resources: ['http://localhost:5173/'],
-  //   delay: 5000,
-  //   timeout: 240000,
-  // });
-  logger.info('Frontend started.');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
