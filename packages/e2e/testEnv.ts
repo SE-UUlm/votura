@@ -97,11 +97,11 @@ export const startTestEnv = async (): Promise<void> => {
     stdio: 'inherit',
   });
 
-  await waitOn({
-    resources: ['http://localhost:5173/'],
-    delay: 5000,
-    timeout: 240000,
-  });
+  // await waitOn({
+  //   resources: ['http://localhost:5173/'],
+  //   delay: 5000,
+  //   timeout: 240000,
+  // });
   logger.info('Frontend started.');
 };
 
