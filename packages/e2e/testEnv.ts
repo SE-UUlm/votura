@@ -98,7 +98,7 @@ export const startTestEnv = async (): Promise<void> => {
   });
 
   await waitOn({
-    resources: ['http://localhost:5173'],
+    resources: ['http://localhost:5173/'],
     delay: 5000,
     timeout: 240000,
   });
