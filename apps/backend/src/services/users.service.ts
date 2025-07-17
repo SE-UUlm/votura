@@ -73,7 +73,6 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
       email: insertableUser.email,
       passwordHash: hashedPassword,
     })
-
     .executeTakeFirstOrThrow();
 }
 
@@ -82,12 +81,11 @@ export async function setUserVerified(userId: string): Promise<void> {
     .updateTable('user')
     .set({ verified: true })
     .where('id', '=', userId)
-
     .executeTakeFirstOrThrow();
 }
 
 export async function deleteUser(userId: string): Promise<void> {
-  await db.deleteFrom('user').where('id', '=', userId).returningAll().executeTakeFirstOrThrow();
+  await db.deleteFrom('user').where('id', '=', userId).executeTakeFirstOrThrow();
 }
 
 export async function blacklistAccessToken(accessTokenId: string, expiresAt: Date): Promise<void> {
@@ -97,7 +95,6 @@ export async function blacklistAccessToken(accessTokenId: string, expiresAt: Dat
       accessTokenId: accessTokenId,
       expiresAt: expiresAt,
     })
-
     .executeTakeFirstOrThrow();
 }
 
@@ -145,7 +142,6 @@ export const loginUser = async (
       refreshTokenExpiresAt: getTokenExpiration(tokens.refreshToken),
     })
     .where('id', '=', user.id)
-
     .executeTakeFirstOrThrow();
 
   return tokens;
