@@ -45,41 +45,17 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
     const election2 = await createElection(demoElection2, user.id);
-    if (election2 === null) {
-      throw new Error('Failed to create test election 2');
-    }
-
     const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
-
     ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
-    if (ballotPaperSection === null) {
-      throw new Error('Failed to create test ballot paper section');
-    }
 
     candidate = await createCandidate(demoCandidate, election.id);
-    if (candidate === null) {
-      throw new Error('Failed to create test candidate');
-    }
     candidate2 = await createCandidate(demoCandidate2, election2.id);
-    if (candidate2 === null) {
-      throw new Error('Failed to create test candidate 2');
-    }
 
     const addCandidateResult = await addCandidateToBallotPaperSection(
       ballotPaperSection.id,
       candidate.id,
     );
-    // check if addCandidateResult is type of SelectableBallotPaperSection
-    if (addCandidateResult === null) {
-      throw new Error(`Failed to add candidate to ballot paper section`);
-    }
     ballotPaperSection = addCandidateResult;
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}/candidates/`;

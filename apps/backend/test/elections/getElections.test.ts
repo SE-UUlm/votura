@@ -29,7 +29,7 @@ describe('GET /elections', () => {
       throw new Error('User not found!');
     }
 
-    const election = await createElection(
+    await createElection(
       {
         private: true,
         name: 'Election 1',
@@ -40,10 +40,6 @@ describe('GET /elections', () => {
       },
       user?.id,
     );
-
-    if (election === null) {
-      throw new Error('Election not found!');
-    }
 
     tokens = generateUserTokens(user.id);
   });

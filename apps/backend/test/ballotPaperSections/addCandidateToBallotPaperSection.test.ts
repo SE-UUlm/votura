@@ -42,23 +42,11 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
     const election2 = await createElection(demoElection2, user.id);
-    if (election2 === null) {
-      throw new Error('Failed to create test election 2');
-    }
 
     const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
 
     ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
-    if (ballotPaperSection === null) {
-      throw new Error('Failed to create test ballot paper section');
-    }
 
     candidate = await createCandidate(demoCandidate, election.id);
     candidate2 = await createCandidate(demoCandidate2, election2.id);
@@ -69,10 +57,6 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
   });
 
   it('200: should add a candidate to a ballot paper section', async () => {
-    if (candidate === null) {
-      throw new Error('Failed to create test candidate');
-    }
-
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
@@ -111,10 +95,6 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
   });
   it('400: should return error for candidate not linked to election', async () => {
-    if (candidate2 === null) {
-      throw new Error('Failed to create test candidate 2');
-    }
-
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
