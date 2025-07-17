@@ -1,5 +1,5 @@
 {
-  "name": "backend",
+  "name": "@votura/backend",
   "version": "0.0.0",
   "description": "This workspace contains the backend for votura.",
   "keywords": [
