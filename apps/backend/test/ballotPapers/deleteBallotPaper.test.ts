@@ -28,14 +28,7 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
 
@@ -50,7 +43,6 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     if (ballotPaper?.id === undefined) {
       throw new Error('Ballot paper ID is undefined');
     }
-    const dbResult = await getBallotPaper(ballotPaper?.id);
-    expect(dbResult).toBeNull();
+    await expect(getBallotPaper(ballotPaper.id)).rejects.toThrow();
   });
 });

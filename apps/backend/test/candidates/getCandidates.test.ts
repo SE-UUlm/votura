@@ -21,15 +21,8 @@ describe(`GET /elections/:${parameter.electionId}/candidates`, () => {
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
-    const candidate = await createCandidate(demoCandidate, election.id);
-    const candidate2 = await createCandidate(demoCandidate2, election.id);
-    if (candidate === null || candidate2 === null) {
-      throw new Error('Failed to create test candidate');
-    }
+    await createCandidate(demoCandidate, election.id);
+    await createCandidate(demoCandidate2, election.id);
 
     requestPath = `/elections/${election.id}/candidates`;
     tokens = generateUserTokens(user.id);

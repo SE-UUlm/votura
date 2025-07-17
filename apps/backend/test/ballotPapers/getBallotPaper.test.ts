@@ -33,14 +33,8 @@ describe(`GET /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
 
     election = await createElection(demoElection, user.id);
     const election2 = await createElection(demoElection2, user.id);
-    if (election === null || election2 === null) {
-      throw new Error('Failed to create test election');
-    }
 
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
     requestPath2 = `/elections/${election2.id}/ballotPapers/${ballotPaper.id}`;
