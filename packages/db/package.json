@@ -10,6 +10,7 @@
     "gen-types": "kysely-codegen",
     "migrate": "tsx ./src/migrate.ts",
     "seed": "tsx ./src/runSeed.ts",
+    "lint": "eslint",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
