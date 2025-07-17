@@ -79,3 +79,24 @@ Depending on your setup this might take a lot of resources and time, so you can 
 ```bash
 NODE_OPTIONS=--import=tsx npx vitest run --coverage ./path/to/file.test.ts
 ```
+
+### End-to-end tests with Playwright
+
+We are using [Playwright](https://playwright.dev/) for end-to-end testing in votura.
+You can find the tests in the `packages/e2e` folder and they are run automatically in the pipeline.
+
+Before you can run the tests locally you need to install the headless browser dependencies:
+
+```bash
+cd packages/e2e
+npm run install-browsers
+```
+
+You also need to set the `PEPPER` environment variable in the `.env` file in the `packages/e2e` **AND** `apps/backend` folder.
+
+Now you can run the tests with the following command:
+
+```bash
+cd packages/e2e
+npm run test
+```
