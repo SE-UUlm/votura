@@ -22,14 +22,7 @@ describe(`DELETE /elections/:${parameter.electionId}/candidates/:${parameter.can
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     candidate = await createCandidate(demoCandidate, election.id);
-    if (candidate === null) {
-      throw new Error('Failed to create test candidate');
-    }
 
     requestPath = `/elections/${election.id}/candidates/${candidate.id}`;
     tokens = generateUserTokens(user.id);
@@ -43,7 +36,6 @@ describe(`DELETE /elections/:${parameter.electionId}/candidates/:${parameter.can
     if (candidate?.id === undefined) {
       throw new Error('Candidate ID is undefined');
     }
-    const dbResult = await getCandidate(candidate?.id);
-    expect(dbResult).toBeNull();
+    await expect(getCandidate(candidate.id)).rejects.toThrow();
   });
 });

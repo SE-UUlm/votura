@@ -33,9 +33,6 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
 
     const election = await createElection(demoElection, user.id);
     const election2 = await createElection(demoElection, user2.id);
-    if (election === null || election2 === null) {
-      throw new Error('Failed to create test election');
-    }
 
     requestPath = `/elections/${election.id}/ballotPapers`;
     requestPath2 = `/elections/${election2.id}/ballotPapers`;

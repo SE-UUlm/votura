@@ -9,7 +9,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
-import { createUser, findUserBy, verifyUser } from '../../src/services/users.service.js';
+import { createUser, findUserBy, setUserVerified } from '../../src/services/users.service.js';
 
 describe(`POST /users/login`, () => {
   let requestPath = '';
@@ -50,10 +50,7 @@ describe(`POST /users/login`, () => {
     }
 
     // set user as verified in db
-    const verified: boolean = await verifyUser(user.id);
-    if (!verified) {
-      throw new Error('Failed to verify test user');
-    }
+    await setUserVerified(user.id);
 
     const res = await request(app).post(requestPath).send({
       email: loginUser.email,

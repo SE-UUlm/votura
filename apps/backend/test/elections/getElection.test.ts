@@ -47,10 +47,6 @@ describe('GET /elections/:electionId', () => {
       user.id,
     );
 
-    if (election === null) {
-      throw new Error('Election not found!');
-    }
-
     tokens = generateUserTokens(user.id);
   });
 
