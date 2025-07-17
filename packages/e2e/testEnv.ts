@@ -19,8 +19,12 @@ const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
 export const startTestEnv = async (): Promise<void> => {
-  logger.info('Creating postgres container...');
+  /**
+   * Postgres container setup
+   */
+  logger.info('Start creating postgres container...');
   dbContainer = await genericContainer
+    .withName('e2e-test-db-' + Math.floor(Math.random() * 100000))
     .withEnvironment({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       POSTGRES_DB: 'votura',
@@ -31,11 +35,10 @@ export const startTestEnv = async (): Promise<void> => {
     })
     .withExposedPorts(5432)
     .start();
-
   const dbConnectionUri = `postgresql://test:test@${dbContainer.getHost()}:${dbContainer.getMappedPort(5432)}/votura`;
-  logger.info('Postgres container created.');
+  logger.info({ dbConnectionUri }, 'Postgres container is listening.');
 
-  logger.info('Running migration...');
+  logger.info('Start postgres migration...');
   const migrationClient = new Kysely<DB>({
     dialect: new PostgresDialect({
       pool: new Pool({
@@ -44,13 +47,11 @@ export const startTestEnv = async (): Promise<void> => {
     }),
     log: kyselyLogger,
   });
-
   const migrationPath = path.join(DIRNAME, '../db/src/migrations');
   await migrateToLatest(migrationClient, migrationPath);
   logger.info('Migration completed.');
 
-  logger.info('Running seed...');
-
+  logger.info('Start running seed...');
   const seedingClient = new Kysely<DB>({
     dialect: new PostgresDialect({
       pool: new Pool({
@@ -59,12 +60,13 @@ export const startTestEnv = async (): Promise<void> => {
     }),
     log: kyselyLogger,
   });
-
   await seed(seedingClient);
-
   logger.info('Seeding completed.');
 
-  logger.info('Starting backend...');
+  /**
+   * Backend setup
+   */
+  logger.info('Starting the backend...');
   backendProcess = spawn('npm', ['run', 'start'], {
     cwd: path.join(DIRNAME, '../../apps/backend'),
     env: {
@@ -76,16 +78,19 @@ export const startTestEnv = async (): Promise<void> => {
     },
     stdio: 'inherit',
   });
-
+  logger.info('Waiting for a heart-beat from the backend...');
   await waitOn({
     resources: ['http://localhost:4000/heart-beat'],
     delay: 1000,
     timeout: 30000,
   });
-  logger.info('Backend started.');
+  logger.info('The backend is listening.');
 
-  logger.info('Starting frontend...');
-  frontendProcess = spawn('npm', ['run', 'start:ci'], {
+  /**
+   * Frontend setup
+   */
+  logger.info('Starting the frontend...');
+  frontendProcess = spawn('npm', ['run', 'build-and-preview'], {
     cwd: path.join(DIRNAME, '../../apps/frontend'),
     env: {
       ...process.env,
@@ -96,13 +101,13 @@ export const startTestEnv = async (): Promise<void> => {
     },
     stdio: 'inherit',
   });
-
+  logger.info('Waiting for the login page from the frontend...');
   await waitOn({
-    resources: ['http://localhost:5173/'],
+    resources: ['http://localhost:5173/login'],
     delay: 5000,
     timeout: 240000,
   });
-  logger.info('Frontend started.');
+  logger.info('Frontend is ready.');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
