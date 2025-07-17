@@ -28,9 +28,6 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
 
     requestPath = `/elections/${election.id}/freeze`;
 

@@ -48,20 +48,9 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
     const ballotPaper2 = await createBallotPaper(demoBallotPaper2, election.id);
-    if (ballotPaper === null || ballotPaper2 === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
-
     ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
-    if (ballotPaperSection === null) {
-      throw new Error('Failed to create test ballot paper section');
-    }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}`;
     invalidUuidRequestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/No-UUID`;
@@ -131,10 +120,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   });
   it('400: should return error because updated max votes is higher than associated ballot paper', async () => {
     // checks to satisfy typechecker
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
-    if (ballotPaper.maxVotes === undefined) {
+    if (ballotPaper?.maxVotes === undefined) {
       throw new Error('Ballot paper maxVotes is undefined');
     }
 

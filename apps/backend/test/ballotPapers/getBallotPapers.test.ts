@@ -21,15 +21,9 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
 
-    const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    const ballotPaper2 = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null || ballotPaper2 === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
+    await createBallotPaper(demoBallotPaper, election.id);
+    await createBallotPaper(demoBallotPaper, election.id);
 
     requestPath = `/elections/${election.id}/ballotPapers`;
 

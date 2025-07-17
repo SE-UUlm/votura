@@ -34,14 +34,7 @@ describe(`PUT /elections/:${parameter.electionId}/candidates/:${parameter.candid
     }
 
     const election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     candidate = await createCandidate(demoCandidate, election.id);
-    if (candidate === null) {
-      throw new Error('Failed to create test candidate');
-    }
 
     requestPath = `/elections/${election.id}/candidates/${candidate.id}`;
     tokens = generateUserTokens(user.id);

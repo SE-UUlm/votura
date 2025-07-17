@@ -15,7 +15,7 @@ import {
   createUser,
   deleteUser,
   findUserBy,
-  verifyUser,
+  setUserVerified,
 } from '../../src/services/users.service.js';
 import { sleep } from '../utils.js';
 
@@ -37,10 +37,7 @@ describe(`POST /users/refreshTokens`, () => {
     }
 
     // set user as verified in db
-    const verified: boolean = await verifyUser(user.id);
-    if (!verified) {
-      throw new Error('Failed to verify test user');
-    }
+    await setUserVerified(user.id);
   });
 
   beforeEach(async () => {

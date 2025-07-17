@@ -35,15 +35,9 @@ describe(`GET /elections/:${parameter.electionId}/candidates/:${parameter.candid
 
     const election = await createElection(demoElection, user.id);
     const election2 = await createElection(demoElection, user2.id);
-    if (election === null || election2 === null) {
-      throw new Error('Failed to create test election');
-    }
 
     candidate = await createCandidate(demoCandidate, election.id);
     const candidate2 = await createCandidate(demoCandidate2, election2.id);
-    if (candidate === null || candidate2 === null) {
-      throw new Error('Failed to create test candidate');
-    }
 
     requestPath = `/elections/${election.id}/candidates/${candidate.id}`;
     invalidUuidPath = `/elections/${election.id}/candidates/1234-my-UUID`;

@@ -64,74 +64,43 @@ const getPepper = (): string => {
   return pepper;
 };
 
-export async function createUser(insertableUser: InsertableUser): Promise<boolean> {
+export async function createUser(insertableUser: InsertableUser): Promise<void> {
   const hashedPassword = await hashPassword(insertableUser.password, getPepper());
 
-  const user = await db
+  await db
     .insertInto('user')
     .values({
       email: insertableUser.email,
       passwordHash: hashedPassword,
     })
-    .returningAll()
-    .executeTakeFirst();
-
-  if (user === undefined) {
-    return false; // Failed to create user
-  }
-  return true; // User created successfully
+    .executeTakeFirstOrThrow();
 }
 
-export async function verifyUser(userId: string): Promise<boolean> {
-  const updatedUser = await db
+export async function setUserVerified(userId: string): Promise<void> {
+  await db
     .updateTable('user')
     .set({ verified: true })
     .where('id', '=', userId)
-    .returningAll()
-    .executeTakeFirst();
-
-  if (updatedUser === undefined) {
-    return false; // Failed to verify user
-  }
-  return true; // User verified successfully
+    .executeTakeFirstOrThrow();
 }
 
-export async function deleteUser(userId: string): Promise<boolean> {
-  const deletedUser = await db
-    .deleteFrom('user')
-    .where('id', '=', userId)
-    .returningAll()
-    .executeTakeFirst();
-
-  if (deletedUser === undefined) {
-    return false; // Failed to delete user
-  }
-  return true; // User deleted successfully
+export async function deleteUser(userId: string): Promise<void> {
+  await db.deleteFrom('user').where('id', '=', userId).executeTakeFirstOrThrow();
 }
 
-export async function blacklistAccessToken(
-  accessTokenId: string,
-  expiresAt: Date,
-): Promise<boolean> {
-  const blacklistEntry = await db
+export async function blacklistAccessToken(accessTokenId: string, expiresAt: Date): Promise<void> {
+  await db
     .insertInto('accessTokenBlacklist')
     .values({
       accessTokenId: accessTokenId,
       expiresAt: expiresAt,
     })
-    .returningAll()
-    .executeTakeFirst();
-
-  if (blacklistEntry === undefined) {
-    return false; // Failed to blacklist token
-  }
-  return true; // Token blacklisted successfully
+    .executeTakeFirstOrThrow();
 }
 
 export enum LoginError {
   invalidCredentials = 'Invalid credentials',
   userNotVerified = 'User is not verified',
-  internal = 'User could not be logged in due to internal errors',
 }
 
 export const loginUser = async (
@@ -167,19 +136,15 @@ export const loginUser = async (
   // Generate new token pair
   const tokens = generateUserTokens(user.id);
 
-  const updatedUser = await db
+  await db
     .updateTable('user')
     .set({
       refreshTokenHash: hashRefreshToken(tokens.refreshToken),
       refreshTokenExpiresAt: getTokenExpiration(tokens.refreshToken),
     })
     .where('id', '=', user.id)
-    .returningAll()
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  if (updatedUser === undefined) {
-    return LoginError.internal;
-  }
   return tokens;
 };
 
@@ -187,7 +152,6 @@ export enum RefreshTokenError {
   invalidToken = 'Invalid refresh token',
   userNotFound = 'User not found',
   tokenExpired = 'Refresh token has expired',
-  internal = 'Tokens could not be updated due to internal server error',
 }
 
 export const refreshUserTokens = async (
@@ -225,19 +189,14 @@ export const refreshUserTokens = async (
   // Generate new token pair
   const newTokens = generateUserTokens(user.id);
 
-  const updatedUser = await db
+  await db
     .updateTable('user')
     .set({
       refreshTokenHash: hashRefreshToken(newTokens.refreshToken),
       refreshTokenExpiresAt: getTokenExpiration(newTokens.refreshToken),
     })
     .where('id', '=', user.id)
-    .returningAll()
-    .executeTakeFirst();
-
-  if (updatedUser === undefined) {
-    return RefreshTokenError.internal;
-  }
+    .executeTakeFirstOrThrow();
 
   return newTokens;
 };
@@ -245,29 +204,19 @@ export const refreshUserTokens = async (
 export const logoutUser = async (
   accessTokenPayload: AccessTokenPayload,
   userId: string,
-): Promise<boolean> => {
+): Promise<void> => {
   // Add access token to blacklist
   const expiresAt = new Date(accessTokenPayload.exp * 1000);
 
-  const blacklisted = await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
-
-  if (!blacklisted) {
-    return false; // Failed to blacklist access token
-  }
+  await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
 
   // Clear refresh token from user record
-  const updatedUser = await db
+  await db
     .updateTable('user')
     .set({
       refreshTokenHash: null,
       refreshTokenExpiresAt: null,
     })
     .where('id', '=', userId)
-    .returningAll()
-    .execute();
-
-  if (updatedUser === undefined) {
-    return false; // Failed to clear refresh token
-  }
-  return true; // User logged out successfully
+    .executeTakeFirstOrThrow();
 };

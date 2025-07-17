@@ -1,7 +1,6 @@
 import {
   insertableCandidateObject,
   response404Object,
-  response500Object,
   updateableCandidateObject,
   zodErrorToResponse400,
   type Candidate,
@@ -22,7 +21,7 @@ import {
 
 export const createCandidate = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableCandidate | Response400 | Response404>,
+  res: Response<SelectableCandidate | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await insertableCandidateObject.safeParseAsync(body);
@@ -32,12 +31,6 @@ export const createCandidate = async (
   }
 
   const selectableCandidate = await createPersistentCandidate(data, req.params.electionId);
-  if (selectableCandidate === null) {
-    res
-      .status(HttpStatusCode.internalServerError)
-      .json(response500Object.parse({ message: undefined }));
-    return;
-  }
   res.status(HttpStatusCode.created).json(selectableCandidate);
 };
 
@@ -51,21 +44,15 @@ export const getCandidates = async (
 
 export const getCandidate = async (
   req: Request<{ candidateId: Candidate['id'] }>,
-  res: Response<SelectableCandidate | Response404>,
+  res: Response<SelectableCandidate>,
 ): Promise<void> => {
   const candidate = await getPersistentCandidate(req.params.candidateId);
-  if (candidate === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find candidate." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(candidate);
 };
 
 export const updateCandidate = async (
   req: Request<{ candidateId: Candidate['id'] }>,
-  res: Response<SelectableCandidate | Response400 | Response404>,
+  res: Response<SelectableCandidate | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableCandidateObject.safeParseAsync(body);
@@ -75,12 +62,6 @@ export const updateCandidate = async (
   }
 
   const selectableCandidate = await updatePersistentCandidate(data, req.params.candidateId);
-  if (selectableCandidate === null) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: "Can't find candidate." }));
-    return;
-  }
   res.status(HttpStatusCode.ok).json(selectableCandidate);
 };
 
