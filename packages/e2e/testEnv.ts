@@ -13,7 +13,6 @@ import waitOn from 'wait-on';
 
 let dbContainer: StartedTestContainer | null = null;
 let backendProcess: ChildProcess | null = null;
-// let frontendProcess: ChildProcess | null = null;
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
@@ -85,33 +84,9 @@ export const startTestEnv = async (): Promise<void> => {
     timeout: 30000,
   });
   logger.info('The backend is listening.');
-
-  /**
-   * Frontend setup
-   */
-  // logger.info('Starting the frontend...');
-  // frontendProcess = spawn('npm', ['run', 'build-and-preview'], {
-  //   cwd: path.join(DIRNAME, '../../apps/frontend'),
-  //   env: {
-  //     ...process.env,
-  //     // eslint-disable-next-line @typescript-eslint/naming-convention
-  //     PORT: '5173',
-  //     // eslint-disable-next-line @typescript-eslint/naming-convention
-  //     VITE_API_BASE_URL: 'http://localhost:4000',
-  //   },
-  //   stdio: 'inherit',
-  // });
-  // logger.info('Waiting for the login page from the frontend...');
-  // await waitOn({
-  //   resources: ['http://localhost:5173/login'],
-  //   delay: 5000,
-  //   timeout: 240000,
-  // });
-  // logger.info('Frontend is ready.');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
   await dbContainer?.stop();
   backendProcess?.kill();
-  //frontendProcess?.kill();
 };
