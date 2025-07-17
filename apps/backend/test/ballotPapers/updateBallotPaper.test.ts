@@ -90,4 +90,22 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
       );
     }
   });
+  it('400: should return error because max votes per candidate is lower than associated ballot paper sections', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        ...demoBallotPaper2,
+        maxVotesPerCandidate: demoBallotPaperSection.maxVotesPerCandidate - 1,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.message).toBe(
+        'The max votes per candidate for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+      );
+    }
+  });
 });
