@@ -4,7 +4,6 @@ import {
   selectableBallotPaperObject,
   type ApiTokenUser,
   type SelectableBallotPaper,
-  type SelectableBallotPaperSection,
   type SelectableElection,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -29,7 +28,6 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   let requestPath = '';
   let election: SelectableElection | null = null;
   let ballotPaper: SelectableBallotPaper | null = null;
-  let ballotPaperSection: SelectableBallotPaperSection | null = null;
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
@@ -40,19 +38,8 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
-
-    ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
-    if (ballotPaperSection === null) {
-      throw new Error('Failed to create test ballot paper section');
-    }
+    await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
 

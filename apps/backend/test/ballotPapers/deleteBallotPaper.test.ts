@@ -28,14 +28,7 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
 
