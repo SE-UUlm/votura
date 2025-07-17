@@ -13,7 +13,7 @@ import waitOn from 'wait-on';
 
 let dbContainer: StartedTestContainer | null = null;
 let backendProcess: ChildProcess | null = null;
-let frontendProcess: ChildProcess | null = null;
+// let frontendProcess: ChildProcess | null = null;
 
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
@@ -113,5 +113,5 @@ export const startTestEnv = async (): Promise<void> => {
 export const stopTestEnv = async (): Promise<void> => {
   await dbContainer?.stop();
   backendProcess?.kill();
-  frontendProcess?.kill();
+  //frontendProcess?.kill();
 };
