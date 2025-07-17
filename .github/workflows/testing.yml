@@ -80,7 +80,7 @@ jobs:
           npm run test
       - name: Run crypto test
         run: |
-          cd apps/votura-crypto
+          cd packages/votura-crypto
           npm run test
       - name: Run e2e test
         run: |
