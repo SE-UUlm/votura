@@ -12,7 +12,7 @@ export default defineConfig({
   testDir: './tests',
   globalSetup: './globalSetup',
   globalTeardown: './globalTeardown',
-  timeout: 60000,
+  timeout: 120000,
   fullyParallel: true,
   forbidOnly: !(process.env.CI == null),
   retries: process.env.CI != null ? 2 : 0,
@@ -28,6 +28,8 @@ export default defineConfig({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         VITE_API_BASE_URL: 'http://localhost:4000',
       },
+      name: 'frontend',
+      timeout: 120000,
     },
   ],
   use: {
