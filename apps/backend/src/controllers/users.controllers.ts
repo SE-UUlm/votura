@@ -4,7 +4,6 @@ import {
   response401Object,
   response403Object,
   response409Object,
-  response500Object,
   zodErrorToResponse400,
   type ApiTokenUser,
   type Response400,
@@ -48,16 +47,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       return;
     }
 
-    const createdUser: boolean = await createPersistentUser(data);
-
-    if (!createdUser) {
-      res
-        .status(HttpStatusCode.internalServerError)
-        .json(
-          response500Object.parse({ message: 'Failed to create user due to internal errors.' }),
-        );
-      return;
-    }
+    await createPersistentUser(data);
 
     res.sendStatus(HttpStatusCode.noContent);
   } else {
@@ -65,9 +55,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
   }
 };
 
-export type LoginResponse = Response<
-  ApiTokenUser | Response400 | Response401 | Response403 | Response500
->;
+export type LoginResponse = Response<ApiTokenUser | Response400 | Response401 | Response403>;
 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
   const body: unknown = req.body;
@@ -87,11 +75,6 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
         res
           .status(HttpStatusCode.forbidden)
           .json(response403Object.parse({ message: LoginError.userNotVerified }));
-        break;
-      case LoginError.internal:
-        res
-          .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: LoginError.internal }));
         break;
       default: {
         const tokens: ApiTokenUser = loginResult;
@@ -133,11 +116,6 @@ export const refreshTokens = async (req: Request, res: Response): Promise<void> 
           .status(HttpStatusCode.unauthorized)
           .json(response401Object.parse({ message: RefreshTokenError.tokenExpired }));
         break;
-      case RefreshTokenError.internal:
-        res
-          .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: RefreshTokenError.internal }));
-        break;
       default: {
         const newTokens: ApiTokenUser = refreshResults;
         res.status(HttpStatusCode.ok).json(newTokens);
@@ -156,14 +134,7 @@ export type LogoutResponse = Response<
 >;
 
 export const logout = async (_req: Request, res: LogoutResponse): Promise<void> => {
-  const logoutResult = await logoutUser(res.locals.accessTokenPayload, res.locals.user.id);
-
-  if (!logoutResult) {
-    res
-      .status(HttpStatusCode.unauthorized)
-      .json(response500Object.parse({ message: 'Failed to log out due to internal server error' }));
-    return;
-  }
+  await logoutUser(res.locals.accessTokenPayload, res.locals.user.id);
 
   res.sendStatus(HttpStatusCode.noContent);
 };
