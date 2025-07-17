@@ -36,7 +36,6 @@ describe(`DELETE /elections/:${parameter.electionId}/candidates/:${parameter.can
     if (candidate?.id === undefined) {
       throw new Error('Candidate ID is undefined');
     }
-    const dbResult = await getCandidate(candidate?.id);
-    expect(dbResult).toBeNull();
+    await expect(getCandidate(candidate.id)).rejects.toThrow();
   });
 });

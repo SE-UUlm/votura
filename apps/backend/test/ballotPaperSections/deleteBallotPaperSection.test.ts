@@ -48,7 +48,6 @@ describe(`DEL /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     if (ballotPaperSection?.id === undefined) {
       throw new Error('Ballot paper section ID is undefined');
     }
-    const dbResult = await getBallotPaperSection(ballotPaperSection?.id);
-    expect(dbResult).toBeNull();
+    await expect(getBallotPaperSection(ballotPaperSection.id)).rejects.toThrow();
   });
 });

@@ -54,7 +54,6 @@ describe(`DEL /elections/:${parameter.electionId}`, () => {
     if (ballotPaper?.id === undefined) {
       throw new Error('Ballot Paper ID is undefined');
     }
-    const ballotPaperResult = await getBallotPaper(ballotPaper?.id);
-    expect(ballotPaperResult).toBeNull();
+    await expect(getBallotPaper(ballotPaper?.id)).rejects.toThrow();
   });
 });
