@@ -24,7 +24,7 @@ const candidateTransformer = (candidate: Selectable<KyselyCandidate>): Selectabl
 export const createCandidate = async (
   insertableCandidate: InsertableCandidate,
   electionId: Election['id'],
-): Promise<SelectableCandidate | null> => {
+): Promise<SelectableCandidate> => {
   const candidate = await db
     .insertInto('candidate')
     .values({
@@ -32,11 +32,7 @@ export const createCandidate = async (
       electionId: electionId,
     })
     .returningAll()
-    .executeTakeFirst();
-
-  if (candidate === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return candidateTransformer(candidate);
 };
@@ -51,18 +47,12 @@ export const getCandidates = async (electionId: Election['id']): Promise<Selecta
   return candidates.map((candidate) => candidateTransformer(candidate));
 };
 
-export const getCandidate = async (
-  candidateId: Candidate['id'],
-): Promise<SelectableCandidate | null> => {
+export const getCandidate = async (candidateId: Candidate['id']): Promise<SelectableCandidate> => {
   const candidate = await db
     .selectFrom('candidate')
     .selectAll()
     .where('id', '=', candidateId)
-    .executeTakeFirst();
-
-  if (candidate === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return candidateTransformer(candidate);
 };
@@ -70,17 +60,13 @@ export const getCandidate = async (
 export const updateCandidate = async (
   updateableCandidate: UpdateableCandidate,
   candidateId: Candidate['id'],
-): Promise<SelectableCandidate | null> => {
+): Promise<SelectableCandidate> => {
   const candidate = await db
     .updateTable('candidate')
     .set({ ...updateableCandidate })
     .where('id', '=', candidateId)
     .returningAll()
-    .executeTakeFirst();
-
-  if (candidate === undefined) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   return candidateTransformer(candidate);
 };
