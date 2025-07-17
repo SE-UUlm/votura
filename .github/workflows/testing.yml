@@ -74,17 +74,8 @@ jobs:
         run: |
           cd apps/frontend
           npm run build
-      - name: Run backend test
+      - name: Run tests
         run: |
-          cd apps/backend
-          npm run test
-      - name: Run crypto test
-        run: |
-          cd packages/votura-crypto
-          npm run test
-      - name: Run e2e test
-        run: |
-          cd packages/e2e
           npm run test
       - name: Teamscale Upload
         uses: cqse/teamscale-upload-action@v2.9.6
