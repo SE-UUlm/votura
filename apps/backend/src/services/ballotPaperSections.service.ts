@@ -112,10 +112,6 @@ export const addCandidateToBallotPaperSection = async (
   return getBallotPaperSection(ballotPaperSectionId);
 };
 
-export enum RemoveCandidateFromBallotPaperSectionError {
-  candidateNotLinkedToBallotPaperSection = 'candidateNotLinkedToBallotPaperSection',
-}
-
 export const removeCandidateFromBallotPaperSection = async (
   ballotPaperSectionId: BallotPaperSection['id'],
   candidateId: Candidate['id'],

@@ -25,7 +25,7 @@ import {
 
 export const createBallotPaperSection = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
-  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+  res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperSectionObject.safeParseAsync(body);
@@ -51,7 +51,7 @@ export const getBallotPaperSections = async (
 
 export const updateBallotPaperSection = async (
   req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
-  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+  res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableBallotPaperSectionObject.safeParseAsync(body);
@@ -69,7 +69,7 @@ export const updateBallotPaperSection = async (
 
 export const getBallotPaperSection = async (
   req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
-  res: Response<SelectableBallotPaperSection | Response404>,
+  res: Response<SelectableBallotPaperSection>,
 ): Promise<void> => {
   const ballotPaperSection = await getPersistentBallotPaperSection(req.params.ballotPaperSectionId);
   res.status(HttpStatusCode.ok).json(ballotPaperSection);
@@ -93,7 +93,7 @@ export const addCandidateToBallotPaperSection = async (
   req: Request<{
     ballotPaperSectionId: BallotPaperSection['id'];
   }>,
-  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
+  res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
   const { data, error, success } = await insertableBallotPaperSectionCandidateObject.safeParseAsync(
     req.body,

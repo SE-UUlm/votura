@@ -21,7 +21,7 @@ import {
 
 export const createBallotPaper = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableBallotPaper | Response400 | Response404>,
+  res: Response<SelectableBallotPaper | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await insertableBallotPaperObject.safeParseAsync(body);
@@ -44,7 +44,7 @@ export const getBallotPapers = async (
 
 export const getBallotPaper = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
-  res: Response<SelectableBallotPaper | Response404>,
+  res: Response<SelectableBallotPaper>,
 ): Promise<void> => {
   const ballotPaper = await getPersistentBallotPaper(req.params.ballotPaperId);
   res.status(HttpStatusCode.ok).json(ballotPaper);
@@ -52,7 +52,7 @@ export const getBallotPaper = async (
 
 export const updateBallotPaper = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
-  res: Response<SelectableBallotPaper | Response400 | Response404>,
+  res: Response<SelectableBallotPaper | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableBallotPaperObject.safeParseAsync(body);
