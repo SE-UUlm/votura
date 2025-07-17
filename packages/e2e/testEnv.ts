@@ -85,7 +85,7 @@ export const startTestEnv = async (): Promise<void> => {
   logger.info('Backend started.');
 
   logger.info('Starting frontend...');
-  frontendProcess = spawn('npm', ['run', 'start'], {
+  frontendProcess = spawn('npm', ['run', 'start:ci'], {
     cwd: path.join(DIRNAME, '../../apps/frontend'),
     env: {
       ...process.env,
