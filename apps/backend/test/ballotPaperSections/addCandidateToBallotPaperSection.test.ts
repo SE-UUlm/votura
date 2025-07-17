@@ -60,7 +60,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: candidate.id });
+      .send({ candidateId: candidate?.id });
 
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
@@ -68,7 +68,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(success).toBe(true);
     if (success) {
       expect(data.id).toBe(ballotPaperSection?.id);
-      expect(data.candidateIds).toContain(candidate.id);
+      expect(data.candidateIds).toContain(candidate?.id);
     }
   });
   it('400: should return error for invalid request body', async () => {
@@ -98,7 +98,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: candidate2.id });
+      .send({ candidateId: candidate2?.id });
 
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
