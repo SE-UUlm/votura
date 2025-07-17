@@ -120,7 +120,6 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
   });
   it('400: should return error because updated max votes is higher than associated ballot paper', async () => {
     // checks to satisfy typechecker
-
     if (ballotPaper?.maxVotes === undefined) {
       throw new Error('Ballot paper maxVotes is undefined');
     }

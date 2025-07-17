@@ -48,15 +48,10 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const election2 = await createElection(demoElection2, user.id);
     const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
     ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
-
     candidate = await createCandidate(demoCandidate, election.id);
     candidate2 = await createCandidate(demoCandidate2, election2.id);
 
-    const addCandidateResult = await addCandidateToBallotPaperSection(
-      ballotPaperSection.id,
-      candidate.id,
-    );
-    ballotPaperSection = addCandidateResult;
+    await addCandidateToBallotPaperSection(ballotPaperSection.id, candidate.id);
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}/candidates/`;
 
