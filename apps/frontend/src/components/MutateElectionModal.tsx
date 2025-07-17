@@ -8,7 +8,7 @@ import {
   Textarea,
   TextInput,
 } from '@mantine/core';
-import { DatePickerInput } from '@mantine/dates';
+import { DateTimePicker } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 import { type ReactNode, useEffect } from 'react';
@@ -25,7 +25,8 @@ export interface MutateElectionModalProps {
 
 export interface MutateElectionFormValues
   extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
-  dateRange: [string, string];
+  startDateTime: string;
+  endDateTime: string;
 }
 
 export const MutateElectionModal = ({
@@ -41,8 +42,15 @@ export const MutateElectionModal = ({
     mode: 'uncontrolled',
     validate: {
       name: isNotEmpty('Name cannot be empty'),
-      dateRange: isNotEmpty('Start and end date are required'),
+      startDateTime: isNotEmpty('Start date is required'),
+      endDateTime: (value: string | null, values: { startDateTime: string }) =>
+        value
+          ? new Date(value) > new Date(values.startDateTime)
+            ? null
+            : 'End has to be after start'
+          : 'End date is required',
     },
+    validateInputOnBlur: true,
   });
 
   useEffect(() => {
@@ -53,7 +61,8 @@ export const MutateElectionModal = ({
         name: election.name,
         ...(election.description !== undefined ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
-        dateRange: [election.votingStartAt, election.votingEndAt],
+        startDateTime: election.votingStartAt,
+        endDateTime: election.votingEndAt,
       });
     } else {
       form.reset();
@@ -74,8 +83,8 @@ export const MutateElectionModal = ({
       name: formValues.name,
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
-      votingStartAt: new Date(formValues.dateRange[0]).toISOString(),
-      votingEndAt: new Date(formValues.dateRange[1]).toISOString(),
+      votingStartAt: new Date(formValues.startDateTime).toISOString(),
+      votingEndAt: new Date(formValues.endDateTime).toISOString(),
       private: true,
     });
     onClose();
@@ -100,15 +109,22 @@ export const MutateElectionModal = ({
           key={form.key('description')}
           {...form.getInputProps('description')}
         />
-        <DatePickerInput
-          withAsterisk
-          allowSingleDateInRange
-          type={'range'}
-          label={'Voting period'}
-          placeholder={'Pick a start and end date'}
-          key={form.key('dateRange')}
-          {...form.getInputProps('dateRange')}
-        />
+        <Group grow>
+          <DateTimePicker
+            withAsterisk
+            label={'Start of voting period'}
+            placeholder={'Pick a start date and time'}
+            key={form.key('startDateTime')}
+            {...form.getInputProps('startDateTime')}
+          />
+          <DateTimePicker
+            withAsterisk
+            label={'End of voting period'}
+            placeholder={'Pick an end date and time'}
+            key={form.key('endDateTime')}
+            {...form.getInputProps('endDateTime')}
+          />
+        </Group>
         <Switch
           label={'Allow invalid votes'}
           key={form.key('allowInvalidVotes')}
