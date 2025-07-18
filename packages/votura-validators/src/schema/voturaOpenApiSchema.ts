@@ -102,7 +102,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     {
       name: Tag.miscellaneous,
       description: 'Contains various additional resources.',
-    }
+    },
   ],
   paths: {
     [`/elections`]: electionsPathObject,
