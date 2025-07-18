@@ -169,6 +169,39 @@ export async function checkElectionNotGenerateKeys(
   }
 }
 
+/**
+ * Checks if the voting start date of the election with the given ID is in the future.
+ * If the voting start date is in the past, it sends a 403 Forbidden response.
+ * If the voting start date is in the future, it calls the next middleware function.
+ *
+ * @param req The request object containing the election ID as a path parameter.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the election is not frozen.
+ */
+export async function checkVotingStartInFuture(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  const result = await db
+    .selectFrom('election')
+    .select(['id', 'votingStartAt'])
+    .where('id', '=', req.params.electionId)
+    .executeTakeFirstOrThrow();
+
+  if (result.votingStartAt < new Date()) {
+    res.status(HttpStatusCode.forbidden).json(
+      response403Object.parse({
+        message:
+          'The voting start date is the past. ' +
+          'You are only allowed to do this action if the voting start date is in the future.',
+      }),
+    );
+  } else {
+    next();
+  }
+}
+
 export const defaultElectionChecks = [
   checkElectionUuid,
   checkElectionExists,
