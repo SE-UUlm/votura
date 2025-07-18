@@ -12,7 +12,7 @@ export default defineConfig({
   testDir: './tests',
   globalSetup: './globalSetup',
   globalTeardown: './globalTeardown',
-  timeout: 120000,
+  timeout: 60000,
   fullyParallel: true,
   forbidOnly: !(process.env.CI == null),
   retries: process.env.CI != null ? 2 : 0,
@@ -29,7 +29,7 @@ export default defineConfig({
         VITE_API_BASE_URL: 'http://localhost:4000',
       },
       name: 'frontend',
-      timeout: 120000,
+      timeout: 60000,
     },
   ],
   use: {
