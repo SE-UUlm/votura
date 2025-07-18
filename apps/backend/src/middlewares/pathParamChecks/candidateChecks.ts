@@ -1,7 +1,5 @@
 import { db } from '@repo/db';
 import {
-  insertableBallotPaperSectionCandidateObject,
-  removableBallotPaperSectionCandidateObject,
   response400Object,
   response404Object,
   uuidObject,
@@ -23,7 +21,7 @@ import { HttpStatusCode } from '../../httpStatusCode.js';
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the UUID is valid.
  */
-export async function checkCandidateUuidParam(
+export async function checkCandidateUuid(
   req: Request<{ candidateId: string }>,
   res: Response<Response400>,
   next: NextFunction,
@@ -38,58 +36,6 @@ export async function checkCandidateUuidParam(
 }
 
 /**
- * Checks if the body of the request is a valid insertableBallotPaperSectionCandidate object.
- * If the body is invalid, it sends a 400 Bad Request response with the error details.
- * If the body is valid, it sets the candidateId in response locals and calls the next middleware function.
- *
- * @param req The request object containing the body with candidateId.
- * @param res The response object to send errors to, and to set the candidateId in locals.
- * @param next The next middleware function to call if the body is valid.
- */
-export async function checkCandidateUuidBodyInsertable(
-  req: Request,
-  res: Response<Response400, { candidateId?: string }>,
-  next: NextFunction,
-): Promise<void> {
-  const { data, error, success } = await insertableBallotPaperSectionCandidateObject.safeParseAsync(
-    req.body,
-  );
-
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
-    return;
-  }
-  res.locals.candidateId = data.candidateId;
-  next();
-}
-
-/**
- * Checks if the body of the request is a valid removableBallotPaperSectionCandidate object.
- * If the body is invalid, it sends a 400 Bad Request response with the error details.
- * If the body is valid, it sets the candidateId in response locals and calls the next middleware function.
- *
- * @param req The request object containing the body with candidateId.
- * @param res The response object to send errors to, and to set the candidateId in locals.
- * @param next The next middleware function to call if the body is valid.
- */
-export async function checkCandidateUuidBodyRemovable(
-  req: Request,
-  res: Response<Response400, { candidateId?: string }>,
-  next: NextFunction,
-): Promise<void> {
-  const { data, error, success } = await removableBallotPaperSectionCandidateObject.safeParseAsync(
-    req.body,
-  );
-
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
-    return;
-  }
-  res.locals.candidateId = data.candidateId;
-  next();
-}
-
-/**
  * Checks if a candidate with the given ID exists in the database.
  * If the candidate does not exist, it sends a 404 Not Found response with an error message.
  * If the candidate exists, it calls the next middleware function.
@@ -98,7 +44,7 @@ export async function checkCandidateUuidBodyRemovable(
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the candidate exists.
  */
-export async function checkCandidateExists(
+export async function checkCandidateExistsHelper(
   candidateId: Candidate['id'],
   res: Response<Response404>,
   next: NextFunction,
@@ -121,40 +67,19 @@ export async function checkCandidateExists(
 }
 
 /**
- * Wrapper function for checkCandidateExists that checks if a candidate with the given ID in the request parameters exists.
+ * Wrapper function for checkCandidateExistsHelper that checks if a candidate with the given ID in the request parameters exists.
  * If it does not exist, it sends a 404 Not Found response, otherwise it calls the next middleware function.
  *
  * @param req The request object containing the candidate ID as a path parameter.
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the candidate exists.
  */
-export async function checkCandidateExistsParam(
+export async function checkCandidateExists(
   req: Request<{ candidateId: Candidate['id'] }>,
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  await checkCandidateExists(req.params.candidateId, res, next);
-}
-
-/**
- * Wrapper function for checkCandidateExists that checks if a candidate with the given ID in the response locals exists.
- * Is intended to be used when the candidate ID is set in the response locals by a previous middleware.
- * If the candidate ID is not set, it throws an error.
- *
- * @param _req The request object, not used in this function.
- * @param res The response object to send errors to, and to check the candidate ID in locals.
- * @param next The next middleware function to call if the candidate exists.
- */
-export async function checkCandidateExistsBody(
-  _req: Request,
-  res: Response<Response404, { candidateId?: string }>,
-  next: NextFunction,
-): Promise<void> {
-  if (res.locals.candidateId === undefined) {
-    throw new Error('Candidate ID is not set in response locals');
-  }
-
-  await checkCandidateExists(res.locals.candidateId, res, next);
+  await checkCandidateExistsHelper(req.params.candidateId, res, next);
 }
 
 /**
@@ -167,7 +92,7 @@ export async function checkCandidateExistsBody(
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the candidate belongs to the election.
  */
-export async function checkElectionIsParent(
+export async function checkElectionIsParentHelper(
   electionId: Election['id'],
   candidateId: Candidate['id'],
   res: Response<Response400>,
@@ -192,46 +117,23 @@ export async function checkElectionIsParent(
 }
 
 /**
- * Wrapper function for checkElectionIsParent that checks if the candidate with the given ID in the request parameters belongs to the election with the given ID.
+ * Wrapper function for checkElectionIsParentHelper that checks if the candidate with the given ID in the request parameters belongs to the election with the given ID.
  * If it does not belong, it sends a 400 Bad Request response, otherwise it calls the next middleware function.
  *
  * @param req The request object containing the candidate and election ID as a path parameter.
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the candidate belongs to the election.
  */
-export async function checkElectionIsParentParam(
+export async function checkElectionIsParent(
   req: Request<{ electionId: Election['id']; candidateId: Candidate['id'] }>,
   res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
-  await checkElectionIsParent(req.params.electionId, req.params.candidateId, res, next);
+  await checkElectionIsParentHelper(req.params.electionId, req.params.candidateId, res, next);
 }
 
-/**
- * Wrapper function for checkElectionIsParent that checks if the candidate with the given ID in the response locals belongs to the election with the given ID.
- * Is intended to be used when the candidate ID is set in the response locals by a previous middleware.
- * If the candidate ID is not set, it throws an error.
- *
- * @param req The request object, containing the election ID as a path parameter.
- * @param res The response object to send errors to, and to check the candidate ID in locals.
- * @param next The next middleware function to call if the candidate belongs to the election.
- */
-export async function checkElectionIsParentBody(
-  req: Request<{ electionId: Election['id'] }>,
-  res: Response<Response400, { candidateId?: string }>,
-  next: NextFunction,
-): Promise<void> {
-  if (res.locals.candidateId === undefined) {
-    throw new Error('Candidate ID is not set in response locals');
-  }
-
-  await checkElectionIsParent(req.params.electionId, res.locals.candidateId, res, next);
-}
-
-export const defaultCandidateChecksParam = [
-  checkCandidateUuidParam,
-  checkCandidateExistsParam,
-  checkElectionIsParentParam,
+export const defaultCandidateChecks = [
+  checkCandidateUuid,
+  checkCandidateExists,
+  checkElectionIsParent,
 ];
-
-export const defaultCandidateChecksBody = [checkCandidateExistsBody, checkElectionIsParentBody];
