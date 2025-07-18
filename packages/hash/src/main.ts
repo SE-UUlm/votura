@@ -13,11 +13,11 @@ export const getPepper = (): string => {
   return envPepper;
 };
 
-export const hashPassword = async (plaintext: string, pepper: string): Promise<string> => {
+export const hashPassword = (plaintext: string, pepper: string): Promise<string> => {
   return argon2.hash(plaintext + pepper);
 };
 
-export const verifyPassword = async (
+export const verifyPassword = (
   hash: string,
   plaintext: string,
   pepper: string,
