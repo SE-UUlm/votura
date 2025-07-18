@@ -109,22 +109,16 @@ export async function checkUserOwnerOfElection(
  */
 export async function checkElectionNotFrozen(
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<Response403 | Response404>,
+  res: Response<Response403>,
   next: NextFunction,
 ): Promise<void> {
   const result = await db
     .selectFrom('election')
     .select(['id', 'configFrozen'])
     .where('id', '=', req.params.electionId)
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  if (result === undefined) {
-    res.status(HttpStatusCode.notFound).json(
-      response404Object.parse({
-        message: 'The provided election does not exist!',
-      }),
-    );
-  } else if (result.configFrozen) {
+  if (result.configFrozen) {
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'The election is frozen and cannot be modified.',
