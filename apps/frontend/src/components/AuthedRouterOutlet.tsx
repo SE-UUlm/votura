@@ -1,11 +1,11 @@
-import { type PropsWithChildren, useEffect } from 'react';
+import { type JSX, type PropsWithChildren, useEffect } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { getAuthLocalStorage } from '../swr/authTokens.ts';
 
-const RequireAuth = ({ children }: PropsWithChildren) => {
+const RequireAuth = ({ children }: PropsWithChildren): JSX.Element => {
   const navigate = useNavigate();
 
-  useEffect(() => {
+  useEffect((): void => {
     const authTokens = getAuthLocalStorage();
 
     if (authTokens === null) {
@@ -16,7 +16,7 @@ const RequireAuth = ({ children }: PropsWithChildren) => {
   return <>{children}</>;
 };
 
-export const AuthedRouterOutlet = () => {
+export const AuthedRouterOutlet = (): JSX.Element => {
   return (
     <RequireAuth>
       <Outlet />

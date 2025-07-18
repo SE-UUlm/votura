@@ -16,11 +16,12 @@ import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
+import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
 
-export const LoginView = () => {
+export const LoginView = (): JSX.Element => {
   const { trigger, isMutating } = useLoginUser();
   const navigate = useNavigate();
 

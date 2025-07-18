@@ -1,14 +1,15 @@
 import { AppShell, Box, Button, Divider, Stack } from '@mantine/core';
 import { IconNotes } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 
-export const AppShellLayout = () => {
+export const AppShellLayout = (): JSX.Element => {
   const navigate = useNavigate();
 
-  const onLogout = () => {
+  const onLogout = (): void => {
     clearAuthLocalStorage();
     navigate('/login', { replace: true });
   };
