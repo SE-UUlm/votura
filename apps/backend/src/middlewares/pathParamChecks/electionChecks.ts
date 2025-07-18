@@ -187,7 +187,7 @@ export async function checkVotingStartInFuture(
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message:
-          'The voting start date is the past. ' +
+          'The voting start date is in the past. ' +
           'You are only allowed to do this action if the voting start date is in the future.',
       }),
     );
