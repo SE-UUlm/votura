@@ -21,6 +21,7 @@ test('should reject invalid email format', async ({ page }) => {
   await page.getByRole('button', { name: 'Login' }).click();
 
   await expect(page.getByText('Invalid email address.')).toBeVisible();
+  await expect(page).toHaveURL('/login');
 });
 
 test('should login', async ({ page }) => {
