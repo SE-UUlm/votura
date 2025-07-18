@@ -92,7 +92,7 @@ cd packages/e2e
 npm run install-browsers
 ```
 
-You also need to set the `PEPPER` environment variable in the `.env` file in the `packages/e2e` **AND** `apps/backend` folder.
+You also need to set the `PEPPER` environment variable in the `.env` file in the `packages/e2e`, `packages/db`, **AND** `apps/backend` folder.
 
 Now you can run the tests with the following command:
 
