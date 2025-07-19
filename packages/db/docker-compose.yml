@@ -1,0 +1,18 @@
+services:
+  postgres:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    volumes:
+      - votura_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: votura
+      POSTGRES_PASSWORD: votura
+      POSTGRES_DB: votura
+
+volumes:
+  votura_postgres_data:
