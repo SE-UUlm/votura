@@ -11,6 +11,7 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import { checkBallotPapersExist } from '../../services/ballotPapers.service.js';
 
 /**
  * Checks if the ballot paper ID in the request parameters is a valid UUID.
@@ -48,13 +49,7 @@ export async function checkBallotPaperExists(
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('ballotPaper')
-    .select(['id'])
-    .where('id', '=', req.params.ballotPaperId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await checkBallotPapersExist([req.params.ballotPaperId]))) {
     res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided ballot paper does not exist!',
