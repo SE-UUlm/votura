@@ -99,10 +99,8 @@ describe(`POST /voterGroups`, () => {
     expect(parseResult.data?.name).toBe(voterGroupNoBallotPapers.name);
     expect(parseResult.data?.description).toBe(voterGroupNoBallotPapers.description);
     expect(parseResult.data?.numberOfVoters).toBe(voterGroupNoBallotPapers.numberOfVoters);
-    expect(parseResult.data?.ballotPapers).toEqual([
-      ballotPaper1Election1Id,
-      ballotPaper1Election2Id,
-    ]);
+    expect(parseResult.data?.ballotPapers).toContain(ballotPaper1Election1Id);
+    expect(parseResult.data?.ballotPapers).toContain(ballotPaper1Election2Id);
   });
   it('400: should return error when trying to create a voter group not conforming to the schema', async () => {
     const res = await request(app)

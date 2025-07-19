@@ -100,7 +100,7 @@ export async function getNumberOfVotersInGroup(voterGroupId: string): Promise<nu
     .select((eb) => eb.fn.count<number>('id').as('count'))
     .executeTakeFirstOrThrow();
 
-  return result.count;
+  return Number(result.count); // For some reason, Kysely returns a string here
 }
 
 export async function getBallotPaperIdsForVoterGroup(voterGroupId: string): Promise<string[]> {
