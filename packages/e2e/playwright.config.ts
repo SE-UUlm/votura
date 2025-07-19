@@ -20,19 +20,7 @@ export default defineConfig({
   reporter: 'html',
   webServer: [
     {
-      command: 'npm run start',
-      url: 'http://localhost:4000',
-      cwd: path.join(DIRNAME, '../../apps/backend'),
-      env: {
-        ...process.env,
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        PORT: '4000',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        PEPPER: '1234',
-      },
-    },
-    {
-      command: 'npm run start',
+      command: 'npm run build-and-preview',
       url: 'http://localhost:5173',
       cwd: path.join(DIRNAME, '../../apps/frontend'),
       env: {
@@ -40,6 +28,8 @@ export default defineConfig({
         // eslint-disable-next-line @typescript-eslint/naming-convention
         VITE_API_BASE_URL: 'http://localhost:4000',
       },
+      name: 'frontend',
+      timeout: 60000,
     },
   ],
   use: {
@@ -51,12 +41,6 @@ export default defineConfig({
       name: 'chromium',
       use: { ...devices['Desktop Chrome'] },
     },
-
-    // {
-    //   name: 'firefox',
-    //   use: { ...devices['Desktop Firefox'] },
-    // },
-
     {
       name: 'webkit',
       use: { ...devices['Desktop Safari'] },
