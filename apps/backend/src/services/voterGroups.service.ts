@@ -1,5 +1,5 @@
 import { db } from '@repo/db';
-import type { Voter as KyselyVoter, VoterGroup as KyselyVoterGroup } from '@repo/db/types';
+import type { VoterGroup as KyselyVoterGroup } from '@repo/db/types';
 import type { InsertableVoterGroup, SelectableVoterGroup } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
@@ -93,30 +93,26 @@ export async function linkVotersToBallotPapers(
   }
 }
 
-export async function getVotersInVoterGroup(
-  voterGroupId: string,
-): Promise<Selectable<KyselyVoter>[]> {
-  return db.selectFrom('voter').where('voterGroupId', '=', voterGroupId).selectAll().execute();
-}
-
 export async function getNumberOfVotersInGroup(voterGroupId: string): Promise<number> {
-  const voters = await getVotersInVoterGroup(voterGroupId);
+  const result = await db
+    .selectFrom('voter')
+    .where('voterGroupId', '=', voterGroupId)
+    .select((eb) => eb.fn.count<number>('id').as('count'))
+    .executeTakeFirstOrThrow();
 
-  return voters.length;
+  return result.count;
 }
 
 export async function getBallotPaperIdsForVoterGroup(voterGroupId: string): Promise<string[]> {
-  const voters = await getVotersInVoterGroup(voterGroupId);
-  const voterIds = voters.map((voter) => voter.id);
-
-  const voterRegisters = await db
-    .selectFrom('voterRegister')
-    .where('voterId', 'in', voterIds)
-    .select('ballotPaperId')
+  const ballotPaperIds = await db
+    .selectFrom('voter')
+    .innerJoin('voterRegister', 'voter.id', 'voterRegister.voterId')
+    .where('voter.voterGroupId', '=', voterGroupId)
+    .select('voterRegister.ballotPaperId')
+    .distinct()
     .execute();
-  const ballotPaperIds = voterRegisters.map((voterRegister) => voterRegister.ballotPaperId);
 
-  return [...new Set(ballotPaperIds)]; // Return unique ballot paper IDs
+  return ballotPaperIds.map((row) => row.ballotPaperId);
 }
 
 export async function getVoterGroupsForUser(userId: string): Promise<SelectableVoterGroup[]> {
