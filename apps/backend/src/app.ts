@@ -8,6 +8,7 @@ import { HttpStatusCode } from './httpStatusCode.js';
 import { authenticateAccessToken } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
 import { usersRouter } from './routes/users.routes.js';
+import { voterGroupsRouter } from './routes/voterGroups.routes.js';
 
 dotenv.config();
 generateJWTKeyPair();
@@ -22,7 +23,7 @@ app.use(httpLogger);
 
 app.use('/users', usersRouter);
 app.use('/elections', [authenticateAccessToken, electionsRouter]);
-app.use('/voterGroups', [authenticateAccessToken]);
+app.use('/voterGroups', [authenticateAccessToken, voterGroupsRouter]);
 // Fallback for unhandled routes
 app.use((_req, res) => {
   res

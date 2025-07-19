@@ -9,6 +9,7 @@ import type {
 } from '@repo/votura-validators';
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
+import { checkElectionsNotFrozen, getDBElections } from './elections.service.js';
 
 const ballotPaperTransformer = (
   ballotPaper: Selectable<KyselyBallotPaper>,
@@ -80,4 +81,59 @@ export const deleteBallotPaper = async (
   ballotPaperId: BallotPaper['id'],
 ): Promise<DeleteResult> => {
   return db.deleteFrom('ballotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
+};
+
+export const checkBallotPapersExist = async (
+  ballotPaperIds: BallotPaper['id'][],
+): Promise<boolean> => {
+  const ballotPapers = await db
+    .selectFrom('ballotPaper')
+    .select('id')
+    .where('id', 'in', ballotPaperIds)
+    .execute();
+
+  return ballotPapers.length === ballotPaperIds.length;
+};
+
+export const checkBallotPapersBelongToUser = async (
+  ballotPaperIds: BallotPaper['id'][],
+  userId: string,
+): Promise<boolean> => {
+  const elections = await getDBElections(userId);
+  const electionIds = elections.map((election) => election.id);
+
+  const ballotPapers = await db
+    .selectFrom('ballotPaper')
+    .select('id')
+    .where('id', 'in', ballotPaperIds)
+    .where('electionId', 'in', electionIds)
+    .execute();
+
+  return ballotPapers.length === ballotPaperIds.length;
+};
+
+export const checkBallotPapersFromDifferentElections = async (
+  ballotPaperIds: BallotPaper['id'][],
+): Promise<boolean> => {
+  const ballotPapers = await db
+    .selectFrom('ballotPaper')
+    .select('electionId')
+    .where('id', 'in', ballotPaperIds)
+    .execute();
+
+  const uniqueElectionIds = new Set(ballotPapers.map((bp) => bp.electionId));
+  return uniqueElectionIds.size === ballotPapers.length;
+};
+
+export const checkBallotPapersElectionNotFrozen = async (
+  ballotPaperIds: BallotPaper['id'][],
+): Promise<boolean> => {
+  const ballotPapers = await db
+    .selectFrom('ballotPaper')
+    .select('electionId')
+    .where('id', 'in', ballotPaperIds)
+    .execute();
+
+  const electionIds = ballotPapers.map((bp) => bp.electionId);
+  return checkElectionsNotFrozen(electionIds);
 };

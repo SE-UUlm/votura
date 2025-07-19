@@ -46,12 +46,12 @@ export const createElection = async (
   return electionTransformer(election);
 };
 
+export const getDBElections = async (userId: User['id']): Promise<Selectable<KyselyElection>[]> => {
+  return db.selectFrom('election').selectAll().where('electionCreatorId', '=', userId).execute();
+};
+
 export const getElections = async (userId: User['id']): Promise<SelectableElection[]> => {
-  const elections = await db
-    .selectFrom('election')
-    .selectAll()
-    .where('electionCreatorId', '=', userId)
-    .execute();
+  const elections = await getDBElections(userId);
 
   return elections.map((kyselyElection) => electionTransformer(kyselyElection));
 };
@@ -141,6 +141,17 @@ export const freezeElection = async (electionId: Election['id']): Promise<Select
     .executeTakeFirstOrThrow();
 
   return electionTransformer(election);
+};
+
+export const checkElectionsNotFrozen = async (electionIds: Election['id'][]): Promise<boolean> => {
+  const elections = await db
+    .selectFrom('election')
+    .where('id', 'in', electionIds)
+    .where('configFrozen', '=', false)
+    .select('id')
+    .execute();
+
+  return elections.length === electionIds.length;
 };
 
 export const deleteElection = async (electionId: Election['id']): Promise<DeleteResult> => {

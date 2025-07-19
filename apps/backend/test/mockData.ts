@@ -4,6 +4,7 @@ import {
   insertableCandidateObject,
   insertableElectionObject,
   insertableUserObject,
+  insertableVoterGroupObject,
 } from '@repo/votura-validators';
 
 /*
@@ -102,3 +103,13 @@ export const brokenCandidate = {
   title: '',
   description: 'Broken candidate description',
 };
+
+/*
+ * Voter groups
+ */
+export const voterGroupNoBallotPapers = insertableVoterGroupObject.parse({
+  name: 'Test Voter Group',
+  description: 'Test Voter Group description',
+  numberOfVoters: 10,
+  ballotPapers: [],
+});
