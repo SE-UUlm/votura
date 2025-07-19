@@ -107,7 +107,7 @@ export async function checkElectionIsParent(
   await checkElectionIsParentHelper(req.params.electionId, res.locals.candidateId, res, next);
 }
 
-export const defaultBallotPaperSectionCanidateChecks = [
+export const defaultBallotPaperSectionCandidateChecks = [
   checkCandidateExists,
   checkElectionIsParent,
 ];

@@ -37,7 +37,7 @@ import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import {
   checkCandidateUuidInsertable,
   checkCandidateUuidRemovable,
-  defaultBallotPaperSectionCanidateChecks,
+  defaultBallotPaperSectionCandidateChecks,
 } from '../middlewares/bodyChecks/ballotPaperSectionCandidateChecks.js';
 import { maxVotesCheckFor, RequestTypeMaxVotesCheck } from '../middlewares/maxVotesCheckFor.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
@@ -192,7 +192,7 @@ electionsRouter.put(
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
   checkCandidateUuidInsertable,
-  ...defaultBallotPaperSectionCanidateChecks,
+  ...defaultBallotPaperSectionCandidateChecks,
   addCandidateToBallotPaperSection,
 );
 electionsRouter.delete(
@@ -204,7 +204,7 @@ electionsRouter.delete(
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
   checkCandidateUuidRemovable,
-  ...defaultBallotPaperSectionCanidateChecks,
+  ...defaultBallotPaperSectionCandidateChecks,
   removeCandidateFromBallotPaperSection,
 );
 
