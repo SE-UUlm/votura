@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "start": "vite",
-    "start:ci": "vite --host 0.0.0.0",
     "build": "tsc -b && vite build",
     "build-and-preview": "npm run build && npm run preview",
     "format": "prettier --write .",
