@@ -24,6 +24,9 @@ app.use(httpLogger);
 app.use('/users', usersRouter);
 app.use('/elections', [authenticateAccessToken, electionsRouter]);
 app.use('/voterGroups', [authenticateAccessToken, voterGroupsRouter]);
+app.use('/heart-beat', (_req, res) => {
+  res.sendStatus(HttpStatusCode.noContent);
+});
 // Fallback for unhandled routes
 app.use((_req, res) => {
   res
