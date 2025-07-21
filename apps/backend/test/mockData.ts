@@ -25,16 +25,16 @@ export const demoUser2 = insertableUserObject.parse({
 export const demoElection = insertableElectionObject.parse({
   name: 'My test election',
   private: true,
-  votingStartAt: '2025-06-16T14:30:00Z',
-  votingEndAt: '2025-06-18T14:30:00Z',
+  votingStartAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() + 10 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
 });
 export const demoElection2 = insertableElectionObject.parse({
   name: 'My test election 2',
   description: 'My test election description 2',
   private: true,
-  votingStartAt: '2026-06-16T14:30:00Z',
-  votingEndAt: '2026-06-18T14:30:00Z',
+  votingStartAt: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
 });
 export const brokenElection = {
@@ -44,6 +44,14 @@ export const brokenElection = {
   votingEndAt: '2025-06-16T14:30:00Z',
   allowInvalidVotes: 'false',
 };
+export const pastElection = insertableElectionObject.parse({
+  name: 'My past election',
+  description: 'My past election description 2',
+  private: true,
+  votingStartAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+  allowInvalidVotes: false,
+});
 
 /*
  * Ballot papers

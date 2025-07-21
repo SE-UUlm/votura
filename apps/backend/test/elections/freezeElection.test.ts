@@ -11,12 +11,13 @@ import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { demoElection, demoUser } from '../mockData.js';
+import { demoElection, demoUser, pastElection } from '../mockData.js';
 import { sleep } from '../utils.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   let requestPath = '';
+  let pastElectionRequestPath = '';
   let election: SelectableElection | null = null;
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
@@ -28,8 +29,10 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     }
 
     election = await createElection(demoElection, user.id);
+    const election2 = await createElection(pastElection, user.id);
 
     requestPath = `/elections/${election.id}/freeze`;
+    pastElectionRequestPath = `/elections/${election2.id}/freeze`;
 
     tokens = generateUserTokens(user.id);
   });
@@ -62,6 +65,15 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   it('403: should not allow freezing a second time', async () => {
     const res = await request(app)
       .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
+    expect(res.status).toBe(HttpStatusCode.forbidden);
+    expect(res.type).toBe('application/json');
+    const parseResult = response403Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('403: should not allow freezing a past election', async () => {
+    const res = await request(app)
+      .put(pastElectionRequestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
