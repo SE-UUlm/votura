@@ -10,7 +10,7 @@ import {
 export enum VoterGroupValidationErrorMessage {
   ballotPaperNotFound = 'One or more ballot papers to be added to voter group not found.',
   ballotPaperNotBelongToUser = 'One or more ballot papers to be added to voter group do not belong to the user.',
-  ballotPapersFromSameElection = 'One or more ballot papers to be added to voter group belong to the same election.',
+  ballotPapersFromSameElection = 'At least two ballot papers to be added to the voter group belong to the same election.',
   ballotPapersFromFrozenElection = 'One or more ballot papers to be added to voter group belong to a frozen election.',
 }
 

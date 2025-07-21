@@ -1,65 +1,26 @@
 import { db } from '@repo/db';
 import type {
+  DB,
   BallotPaper as DBBallotPaper,
   User as DBUser,
   Voter as DBVoter,
   VoterGroup as DBVoterGroup,
 } from '@repo/db/types';
 import type { InsertableVoterGroup, SelectableVoterGroup } from '@repo/votura-validators';
-import type { Selectable } from 'kysely';
+import type { Selectable, Transaction } from 'kysely';
 import { spreadableOptional } from '../utils.js';
-
-async function voterGroupTransformer(
-  voterGroup: Selectable<DBVoterGroup>,
-): Promise<SelectableVoterGroup> {
-  return {
-    id: voterGroup.id,
-    modifiedAt: voterGroup.modifiedAt.toISOString(),
-    createdAt: voterGroup.createdAt.toISOString(),
-    name: voterGroup.name,
-    ...spreadableOptional(voterGroup, 'description'),
-    numberOfVoters: await getNumberOfVotersInGroup(voterGroup.id),
-    ballotPapers: await getBallotPaperIdsForVoterGroup(voterGroup.id),
-  };
-}
-
-export async function createVoterGroup(
-  insertableVoterGroup: InsertableVoterGroup,
-  userId: DBVoterGroup['voterGroupCreatorId'],
-): Promise<SelectableVoterGroup> {
-  const voterGroup = await db
-    .insertInto('voterGroup')
-    .values({
-      name: insertableVoterGroup.name,
-      description: insertableVoterGroup.description,
-      voterGroupCreatorId: userId,
-    })
-    .returningAll()
-    .executeTakeFirstOrThrow();
-
-  const voterIds = await createVoters(voterGroup.id, insertableVoterGroup.numberOfVoters);
-
-  if (insertableVoterGroup.ballotPapers.length !== 0) {
-    await linkVotersToBallotPapers(voterIds, insertableVoterGroup.ballotPapers);
-  }
-
-  return voterGroupTransformer(voterGroup);
-}
 
 export async function createVoters(
   voterGroupId: Selectable<DBVoterGroup>['id'],
   numberOfVoters: number,
+  trx: Transaction<DB>,
 ): Promise<string[]> {
   // insert the voters into the database
-  const voterEntries = [];
+  const voterEntries = Array.from({ length: numberOfVoters }, () => ({
+    voterGroupId: voterGroupId,
+  }));
 
-  for (let i = 0; i < numberOfVoters; i++) {
-    voterEntries.push({
-      voterGroupId: voterGroupId,
-    });
-  }
-
-  const voters = await db.insertInto('voter').values(voterEntries).returning('id').execute();
+  const voters = await trx.insertInto('voter').values(voterEntries).returning('id').execute();
 
   // check if the number of created voters matches the expected number
   if (voters.length !== numberOfVoters) {
@@ -72,19 +33,16 @@ export async function createVoters(
 export async function linkVotersToBallotPapers(
   voterIds: Selectable<DBVoter>['id'][],
   ballotPaperIds: Selectable<DBBallotPaper>['id'][],
+  trx: Transaction<DB>,
 ): Promise<void> {
-  const voterRegisterEntries = [];
+  const voterRegisterEntries = voterIds.flatMap((voterId) =>
+    ballotPaperIds.map((ballotPaperId) => ({
+      voterId: voterId,
+      ballotPaperId: ballotPaperId,
+    })),
+  );
 
-  for (const voterId of voterIds) {
-    for (const ballotPaperId of ballotPaperIds) {
-      voterRegisterEntries.push({
-        voterId: voterId,
-        ballotPaperId: ballotPaperId,
-      });
-    }
-  }
-
-  const voterRegisterResult = await db
+  const voterRegisterResult = await trx
     .insertInto('voterRegister')
     .values(voterRegisterEntries)
     .returning('id')
@@ -107,7 +65,7 @@ export async function getNumberOfVotersInGroup(
     .select((eb) => eb.fn.count<number>('id').as('count'))
     .executeTakeFirstOrThrow();
 
-  return Number(result.count); // For some reason, Kysely returns a string here
+  return Number(result.count);
 }
 
 export async function getBallotPaperIdsForVoterGroup(
@@ -122,6 +80,50 @@ export async function getBallotPaperIdsForVoterGroup(
     .execute();
 
   return ballotPaperIds.map((row) => row.ballotPaperId);
+}
+
+async function voterGroupTransformer(
+  voterGroup: Selectable<DBVoterGroup>,
+): Promise<SelectableVoterGroup> {
+  return {
+    id: voterGroup.id,
+    modifiedAt: voterGroup.modifiedAt.toISOString(),
+    createdAt: voterGroup.createdAt.toISOString(),
+    name: voterGroup.name,
+    ...spreadableOptional(voterGroup, 'description'),
+    numberOfVoters: await getNumberOfVotersInGroup(voterGroup.id),
+    ballotPapers: await getBallotPaperIdsForVoterGroup(voterGroup.id),
+  };
+}
+
+export async function createVoterGroup(
+  insertableVoterGroup: InsertableVoterGroup,
+  userId: DBVoterGroup['voterGroupCreatorId'],
+): Promise<SelectableVoterGroup> {
+  const voterGroup = await db.transaction().execute(async (trx) => {
+    // Create the voter group
+    const voterGroup = await trx
+      .insertInto('voterGroup')
+      .values({
+        name: insertableVoterGroup.name,
+        description: insertableVoterGroup.description,
+        voterGroupCreatorId: userId,
+      })
+      .returningAll()
+      .executeTakeFirstOrThrow();
+
+    // Create voters within the transaction
+    const voterIds = await createVoters(voterGroup.id, insertableVoterGroup.numberOfVoters, trx);
+
+    // Link voters to ballot papers if any exist
+    if (insertableVoterGroup.ballotPapers.length !== 0) {
+      await linkVotersToBallotPapers(voterIds, insertableVoterGroup.ballotPapers, trx);
+    }
+
+    return voterGroup;
+  });
+
+  return voterGroupTransformer(voterGroup);
 }
 
 export async function getVoterGroupsForUser(

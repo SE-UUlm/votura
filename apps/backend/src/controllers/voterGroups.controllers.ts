@@ -7,6 +7,7 @@ import {
   type Response400,
   type Response403,
   type Response404,
+  type Response500,
   type SelectableUser,
   type SelectableVoterGroup,
 } from '@repo/votura-validators';
@@ -22,7 +23,7 @@ import {
 } from './bodyChecks/voterGroupChecks.js';
 
 export type CreateVoterGroupResponse = Response<
-  SelectableVoterGroup | Response400 | Response403 | Response404,
+  SelectableVoterGroup | Response400 | Response403 | Response404 | Response500,
   { user: SelectableUser }
 >;
 
@@ -52,7 +53,7 @@ export const createVoterGroup = async (
       default:
         res
           .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: 'Internal server error' }));
+          .json(response500Object.parse({ message: undefined }));
     }
     return;
   }
