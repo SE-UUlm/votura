@@ -154,7 +154,7 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
       .send({
         name: 'Invalid Voter Group',
         description: 'This voter group has an invalid ID.',
-        ballotPaperId: [],
+        ballotPapers: [],
         numberOfVoters: 5,
       });
 
@@ -171,7 +171,7 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
       .send({
         name: 'Non-existent Voter Group',
         description: 'This voter group does not exist.',
-        ballotPaperId: [],
+        ballotPapers: [],
         numberOfVoters: 5,
       });
 
@@ -192,7 +192,7 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
       .send({
         name: 'Unauthorized Update',
         description: 'This voter group update should not be allowed.',
-        ballotPaperId: [],
+        ballotPapers: [],
         numberOfVoters: 5,
       });
 
@@ -216,7 +216,7 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
         name: 'Frozen Voter Group Update',
         description:
           'This voter group update should not be allowed because the election is frozen.',
-        ballotPaperId: [],
+        ballotPapers: [],
         numberOfVoters: 5,
       });
 
