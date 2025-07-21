@@ -11,7 +11,7 @@ import { demoUser, voterGroupNoBallotPapers } from '../mockData.js';
 describe(`GET /voterGroups/:${parameter.voterGroupId}`, () => {
   let requestPath = '';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
-  let voterGroupId: string;
+  let voterGroupId = '';
 
   beforeAll(async () => {
     await createUser(demoUser);
