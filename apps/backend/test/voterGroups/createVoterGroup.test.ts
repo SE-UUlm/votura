@@ -89,7 +89,7 @@ describe(`POST /voterGroups`, () => {
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send({
         ...voterGroupNoBallotPapers,
-        ballotPapers: [ballotPaper1Election1Id, ballotPaper1Election2Id],
+        ballotPapers: [ballotPaper1Election1Id, ballotPaper1Election2Id, ballotPaper1Election1Id], //duplicate ballot paper should be ignored
       });
 
     expect(res.status).toBe(HttpStatusCode.created);
@@ -101,6 +101,7 @@ describe(`POST /voterGroups`, () => {
     expect(parseResult.data?.numberOfVoters).toBe(voterGroupNoBallotPapers.numberOfVoters);
     expect(parseResult.data?.ballotPapers).toContain(ballotPaper1Election1Id);
     expect(parseResult.data?.ballotPapers).toContain(ballotPaper1Election2Id);
+    expect(parseResult.data?.ballotPapers.length).toBe(2); // Should be 2, as one is a duplicate
   });
   it('400: should return error when trying to create a voter group not conforming to the schema', async () => {
     const res = await request(app)
