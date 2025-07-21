@@ -10,6 +10,8 @@ export type Generated<T> =
     ? ColumnType<S, I | undefined, U>
     : ColumnType<T, T | undefined, T>;
 
+export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
+
 export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
@@ -61,6 +63,31 @@ export interface Candidate {
   title: string;
 }
 
+export interface CronJob {
+  active: Generated<boolean>;
+  command: string;
+  database: Generated<string>;
+  jobid: Generated<Int8>;
+  jobname: string | null;
+  nodename: Generated<string>;
+  nodeport: Generated<number>;
+  schedule: string;
+  username: Generated<string>;
+}
+
+export interface CronJobRunDetails {
+  command: string | null;
+  database: string | null;
+  end_time: Timestamp | null;
+  job_pid: number | null;
+  jobid: Int8 | null;
+  return_message: string | null;
+  runid: Generated<Int8>;
+  start_time: Timestamp | null;
+  status: string | null;
+  username: string | null;
+}
+
 export interface Election {
   allowInvalidVotes: Generated<boolean>;
   configFrozen: Generated<boolean>;
@@ -110,6 +137,7 @@ export interface VoterGroup {
   name: string;
   privKey: string | null;
   pubKey: string | null;
+  voterGroupCreatorId: string;
   voterTokensGenerated: Generated<boolean>;
 }
 
@@ -128,6 +156,8 @@ export interface DB {
   ballotPaperSection: BallotPaperSection;
   ballotPaperSectionCandidate: BallotPaperSectionCandidate;
   candidate: Candidate;
+  'cron.job': CronJob;
+  'cron.job_run_details': CronJobRunDetails;
   election: Election;
   user: User;
   voter: Voter;

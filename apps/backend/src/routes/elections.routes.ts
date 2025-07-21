@@ -34,15 +34,15 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
+import {
+  checkCandidateUuidInsertable,
+  checkCandidateUuidRemovable,
+  defaultBallotPaperSectionCandidateChecks,
+} from '../middlewares/bodyChecks/ballotPaperSectionCandidateChecks.js';
 import { maxVotesCheckFor, RequestTypeMaxVotesCheck } from '../middlewares/maxVotesCheckFor.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
-import {
-  checkCandidateUuidBodyInsertable,
-  checkCandidateUuidBodyRemovable,
-  defaultCandidateChecksBody,
-  defaultCandidateChecksParam,
-} from '../middlewares/pathParamChecks/candidateChecks.js';
+import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
   checkElectionNotGenerateKeys,
@@ -90,8 +90,6 @@ electionsRouter.put(
   checkElectionNotGenerateKeys,
   unfreezeElection,
 );
-
-// Ballot Papers routes
 electionsRouter.delete(
   `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.applicationJson),
@@ -100,6 +98,7 @@ electionsRouter.delete(
   deleteElection,
 );
 
+// Ballot Papers routes
 electionsRouter.post(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.applicationJson),
@@ -194,8 +193,8 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  checkCandidateUuidBodyInsertable,
-  ...defaultCandidateChecksBody,
+  checkCandidateUuidInsertable,
+  ...defaultBallotPaperSectionCandidateChecks,
   addCandidateToBallotPaperSection,
 );
 electionsRouter.delete(
@@ -206,8 +205,8 @@ electionsRouter.delete(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  checkCandidateUuidBodyRemovable,
-  ...defaultCandidateChecksBody,
+  checkCandidateUuidRemovable,
+  ...defaultBallotPaperSectionCandidateChecks,
   removeCandidateFromBallotPaperSection,
 );
 
@@ -230,7 +229,7 @@ electionsRouter.get(
   `/:${parameter.electionId}/candidates/:${parameter.candidateId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
-  ...defaultCandidateChecksParam,
+  ...defaultCandidateChecks,
   getCandidate,
 );
 electionsRouter.put(
@@ -239,7 +238,7 @@ electionsRouter.put(
   acceptBodyCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ...defaultCandidateChecksParam,
+  ...defaultCandidateChecks,
   updateCandidate,
 );
 electionsRouter.delete(
@@ -247,6 +246,6 @@ electionsRouter.delete(
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotFrozen,
-  ...defaultCandidateChecksParam,
+  ...defaultCandidateChecks,
   deleteCandidate,
 );

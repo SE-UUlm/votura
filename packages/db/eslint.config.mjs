@@ -7,6 +7,9 @@ const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
 export default tseslint.config(
   {
+    ignores: ['src/types/db.d.ts'],
+  },
+  {
     files: ['**/*.ts'],
     ignores: ['**/*.json'],
     languageOptions: {
