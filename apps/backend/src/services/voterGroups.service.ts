@@ -295,8 +295,5 @@ export async function deleteVoterGroup(
 ): Promise<void> {
   // deletes all voters and voter registers associated with the voter group
   // because of foreign key constraints
-  await db
-    .deleteFrom('voterGroup')
-    .where('id', '=', voterGroupId)
-    .executeTakeFirstOrThrow();
+  await db.deleteFrom('voterGroup').where('id', '=', voterGroupId).executeTakeFirstOrThrow();
 }

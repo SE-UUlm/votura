@@ -22,7 +22,7 @@ describe(`GET /voterGroups/:${parameter.voterGroupId}`, () => {
 
     const voterGroup = await createVoterGroup(voterGroupNoBallotPapers, user.id);
     voterGroupId = voterGroup.id;
-    
+
     requestPath = `/voterGroups/${voterGroupId}`;
     tokens = generateUserTokens(user.id);
   });

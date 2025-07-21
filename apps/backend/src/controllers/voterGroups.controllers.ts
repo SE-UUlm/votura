@@ -15,10 +15,10 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createVoterGroup as createPersistentVoterGroup,
+  deleteVoterGroup as deletePersistentVoterGroup,
   getVoterGroup,
   getVoterGroupsForUser,
   updateVoterGroup as updatePersistentVoterGroup,
-  deleteVoterGroup as deletePersistentVoterGroup,
 } from '../services/voterGroups.service.js';
 import {
   isVoterGroupValidationError,

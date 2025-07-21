@@ -1,10 +1,10 @@
 import { Router } from 'express';
 import {
   createVoterGroup,
+  deleteVoterGroup,
   getSpecificVoterGroup,
   getVoterGroups,
   updateVoterGroup,
-  deleteVoterGroup,
 } from '../controllers/voterGroups.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
@@ -43,4 +43,4 @@ voterGroupsRouter.delete(
   ...defaultVoterGroupChecks,
   checkVoterGroupElectionsNotFrozen,
   deleteVoterGroup,
-)
+);
