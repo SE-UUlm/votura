@@ -67,7 +67,7 @@ export const candidatesPathObject: OpenAPIV3.PathItemObject = {
     tags: [Tag.candidates],
     summary: 'Get all candidates for an election',
     description:
-      'Returns all candidates with the public information fields, that are linked to the specified election. \n' +
+      'Returns all candidates with the public information fields, that are linked to the specified election.\n' +
       'The user of the API access token needs the access rights to the election to read the candidate.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getCandidates',

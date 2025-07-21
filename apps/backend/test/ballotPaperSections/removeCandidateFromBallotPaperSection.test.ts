@@ -125,6 +125,8 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe('Candidate not linked to ballot paper section');
+    expect(parseResult.data?.message).toBe(
+      'Candidate not linked to ballot paper section, no candidate was removed.',
+    );
   });
 });
