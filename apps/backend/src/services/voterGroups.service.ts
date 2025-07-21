@@ -289,3 +289,14 @@ export async function updateVoterGroup(
 
   return voterGroupTransformer(updatedVoterGroup);
 }
+
+export async function deleteVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<void> {
+  // deletes all voters and voter registers associated with the voter group
+  // because of foreign key constraints
+  await db
+    .deleteFrom('voterGroup')
+    .where('id', '=', voterGroupId)
+    .executeTakeFirstOrThrow();
+}

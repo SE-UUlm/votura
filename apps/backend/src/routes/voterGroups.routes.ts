@@ -1,5 +1,11 @@
 import { Router } from 'express';
-import { createVoterGroup, getVoterGroups, updateVoterGroup } from '../controllers/voterGroups.controllers.js';
+import {
+  createVoterGroup,
+  getSpecificVoterGroup,
+  getVoterGroups,
+  updateVoterGroup,
+  deleteVoterGroup,
+} from '../controllers/voterGroups.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import {
@@ -25,3 +31,16 @@ voterGroupsRouter.put(
   checkVoterGroupElectionsNotFrozen,
   updateVoterGroup,
 );
+voterGroupsRouter.get(
+  '/:voterGroupId',
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultVoterGroupChecks,
+  getSpecificVoterGroup,
+);
+voterGroupsRouter.delete(
+  '/:voterGroupId',
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultVoterGroupChecks,
+  checkVoterGroupElectionsNotFrozen,
+  deleteVoterGroup,
+)

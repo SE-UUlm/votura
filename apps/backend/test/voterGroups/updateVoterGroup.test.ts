@@ -83,12 +83,14 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send(insertableVoterGroupObject.parse({
-        name: 'Updated Voter Group',
-        description: 'This is an updated voter group with more voters and a new ballot paper.',
-        ballotPapers: [ballotPaperId],
-        numberOfVoters: 20,
-      }));
+      .send(
+        insertableVoterGroupObject.parse({
+          name: 'Updated Voter Group',
+          description: 'This is an updated voter group with more voters and a new ballot paper.',
+          ballotPapers: [ballotPaperId],
+          numberOfVoters: 20,
+        }),
+      );
 
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
@@ -117,12 +119,14 @@ describe(`PUT /voterGroups/:voterGroupId`, () => {
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send(insertableVoterGroupObject.parse({
-        name: 'Updated Voter Group No Ballot Paper',
-        description: 'This is an updated voter group without a ballot paper.',
-        ballotPapers: [],
-        numberOfVoters: 10,
-      }));
+      .send(
+        insertableVoterGroupObject.parse({
+          name: 'Updated Voter Group No Ballot Paper',
+          description: 'This is an updated voter group without a ballot paper.',
+          ballotPapers: [],
+          numberOfVoters: 10,
+        }),
+      );
 
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
