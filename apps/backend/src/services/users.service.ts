@@ -1,4 +1,5 @@
 import { db } from '@repo/db';
+import { hashPassword, verifyPassword } from '@repo/hash';
 import type {
   ApiTokenUser,
   InsertableUser,
@@ -6,7 +7,6 @@ import type {
   SelectableUser,
   User,
 } from '@repo/votura-validators';
-import argon2 from 'argon2';
 import type { AccessTokenPayload } from '../auth/types.js';
 import {
   generateUserTokens,
@@ -65,7 +65,7 @@ const getPepper = (): string => {
 };
 
 export async function createUser(insertableUser: InsertableUser): Promise<void> {
-  const hashedPassword = await argon2.hash(insertableUser.password + getPepper());
+  const hashedPassword = await hashPassword(insertableUser.password, getPepper());
 
   await db
     .insertInto('user')
@@ -118,9 +118,10 @@ export const loginUser = async (
   }
 
   // Verify password
-  const isValidPassword: boolean = await argon2.verify(
+  const isValidPassword: boolean = await verifyPassword(
     user.passwordHash,
-    credentials.password + getPepper(),
+    credentials.password,
+    getPepper(),
   );
   if (!isValidPassword) {
     return LoginError.invalidCredentials; // Invalid password
@@ -181,7 +182,7 @@ export const refreshUserTokens = async (
   }
 
   // Check if refresh token is expired
-  if (!user.refreshTokenExpiresAt || user.refreshTokenExpiresAt < new Date()) {
+  if (user.refreshTokenExpiresAt === null || user.refreshTokenExpiresAt < new Date()) {
     return RefreshTokenError.tokenExpired;
   }
 

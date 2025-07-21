@@ -58,7 +58,7 @@
       "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "test": {
-      "dependsOn": [],
+      "dependsOn": ["^test"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",

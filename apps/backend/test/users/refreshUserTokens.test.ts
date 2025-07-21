@@ -20,7 +20,7 @@ import {
 import { sleep } from '../utils.js';
 
 describe(`POST /users/refreshTokens`, () => {
-  let requestPath = '';
+  const requestPath = '/users/refreshTokens';
   let user: SelectableUser | null = null;
   let accessToken: string | null = null;
   let refreshToken: string | null = null;
@@ -38,8 +38,6 @@ describe(`POST /users/refreshTokens`, () => {
 
     // set user as verified in db
     await setUserVerified(user.id);
-
-    requestPath = '/users/refreshTokens';
   });
 
   beforeEach(async () => {
@@ -81,7 +79,9 @@ describe(`POST /users/refreshTokens`, () => {
     // Verify the new access token
     const newAccessToken = parseResult.data.accessToken;
     const decodedPayload = verifyToken(newAccessToken) as AccessTokenPayload;
+    const decodedRefreshToken = verifyToken(parseResult.data.refreshToken);
     expect(decodedPayload.sub).toBe(user.id);
+    expect(decodedRefreshToken?.sub).toBe(user.id);
   });
 
   it('401: should return error for invalid refresh token', async () => {

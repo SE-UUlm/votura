@@ -13,6 +13,7 @@ const DIRNAME = path.dirname(FILENAME);
 
 // Now configure and start the container
 const container = await genericContainer
+  .withName('backend-test-db-' + Math.floor(Math.random() * 100000))
   .withEnvironment({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     POSTGRES_DB: 'votura',
