@@ -79,6 +79,13 @@ export const deleteBallotPaper = async (
   return db.deleteFrom('ballotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
 };
 
+/**
+ * Checks if the given ballot papers exist in the database.
+ * The ballot paper IDs need to be unique, otherwise the check will fail.
+ *
+ * @param ballotPaperIds Array of unique IDs of the ballot papers to check.
+ * @returns True if all ballot papers exist, false otherwise.
+ */
 export const checkBallotPapersExist = async (
   ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<boolean> => {
@@ -121,6 +128,13 @@ export const checkBallotPapersBelongToUser = async (
   return unauthorizedBallotPaper === undefined;
 };
 
+/**
+ * Checks if the given ballot papers belong to different elections.
+ * The ballot paper IDs need to be unique, otherwise the check will fail.
+ *
+ * @param ballotPaperIds Array of unique IDs of the ballot papers to check.
+ * @returns True if all ballot papers belong to different elections, false otherwise.
+ */
 export const checkBallotPapersFromDifferentElections = async (
   ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<boolean> => {
