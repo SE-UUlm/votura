@@ -170,6 +170,7 @@ entity "voterGroup" as voterGroups #05DFA3 {
     privKey : TEXT | NULL
     * voterTokensGenerated : BOOLEAN
     --
+    * voterGroupCreatorId : User.id <<FK>>
 }
 
 note as N1
@@ -181,12 +182,13 @@ elections "1"--"*" ballotPapers : belongs to <
 elections -- N2
 elections "1"--"*" candidates : belongs to <
 ballotPapers "1"--"*" voterRegisters : can be read by >
-voterRegisters "1..*"--"1" voters : has access to <
+voterRegisters "*"--"1" voters : has access to <
 ballotPapers "1"--"*" ballotPaperSections : belongs to <
 ballotPaperSections "1"--"*" ballotPaperSectionCandidates : contains >
 ballotPaperSectionCandidates "*"--"1" candidates : appears in <
 votes "*"--"1" elections : belongs to >
-voters "1"--"*" votes : belongs to \n (optional) <
+voters "0..1"--"*" votes : belongs to \n (optional) <
+user "1"--"*" voterGroups : belongs to <
 voterGroups "1"--"1..*" voters : contains >
 voters -- N3
 votes -- N4

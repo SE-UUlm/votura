@@ -27,7 +27,9 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
       '\n' +
       'After an election is unfrozen, the configuration of the election can be changed again.\n' +
       'But all generated voting tokens will be revoked, and the election key pair will be revoked.\n' +
-      'Also, every vote that was cast will be deleted.',
+      'Also, every vote that was cast will be deleted.\n' +
+      '\n' +
+      'You are not allowed to unfreeze an election that is currently generating its election keys.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'unfreezeElectionById',
     responses: {

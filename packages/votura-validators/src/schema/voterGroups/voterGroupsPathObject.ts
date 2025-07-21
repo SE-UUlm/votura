@@ -19,20 +19,17 @@ import { Tag } from '../globals/tag.js';
 export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Create and read ballot voter groups',
   description:
-    'A voter group is always linked to at least one user and at least one ballot paper.\n' +
+    'A voter group is always linked to at least one user and any number of ballot papers.\n' +
     'You can create a new one ore read all the existing ones for a user.',
   post: {
     tags: [Tag.voterGroups],
     summary: 'Create a voter group',
     description:
-      'Creates a voter group with a link to at least one ballot paper.\n' +
+      'Creates a voter group with an optional link to any number of ballot papers.\n' +
       'The user of the API access token needs access to all linked ballot papers & elections.\n' +
       'The voter group can only be created if all elections of the linked ballot papers are not frozen.\n' +
       'The user can only link one ballot paper per election to the same voter group.\n' +
-      'It is allowed to link ballot papers from different elections to the same voter group.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'It is allowed to link ballot papers from different elections to the same voter group.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createVoterGroup',
     requestBody: {
@@ -71,10 +68,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all voter groups for the user',
     description:
       'Returns all voter groups with the public information fields, that are linked to the requesting user.\n' +
-      'The user of the API access token needs access to all linked ballot papers & elections.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs access to all linked ballot papers & elections.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterGroups',
     responses: {

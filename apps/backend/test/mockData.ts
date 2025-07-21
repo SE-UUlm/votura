@@ -4,6 +4,7 @@ import {
   insertableCandidateObject,
   insertableElectionObject,
   insertableUserObject,
+  insertableVoterGroupObject,
 } from '@repo/votura-validators';
 
 /*
@@ -25,16 +26,16 @@ export const demoUser2 = insertableUserObject.parse({
 export const demoElection = insertableElectionObject.parse({
   name: 'My test election',
   private: true,
-  votingStartAt: '2025-06-16T14:30:00Z',
-  votingEndAt: '2025-06-18T14:30:00Z',
+  votingStartAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() + 10 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
 });
 export const demoElection2 = insertableElectionObject.parse({
   name: 'My test election 2',
   description: 'My test election description 2',
   private: true,
-  votingStartAt: '2026-06-16T14:30:00Z',
-  votingEndAt: '2026-06-18T14:30:00Z',
+  votingStartAt: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
 });
 export const brokenElection = {
@@ -44,6 +45,14 @@ export const brokenElection = {
   votingEndAt: '2025-06-16T14:30:00Z',
   allowInvalidVotes: 'false',
 };
+export const pastElection = insertableElectionObject.parse({
+  name: 'My past election',
+  description: 'My past election description 2',
+  private: true,
+  votingStartAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
+  allowInvalidVotes: false,
+});
 
 /*
  * Ballot papers
@@ -72,13 +81,13 @@ export const brokenDemoBallotPaper = {
 export const demoBallotPaperSection = insertableBallotPaperSectionObject.parse({
   name: 'Test ballot paper section',
   description: 'Test ballot paper section description',
-  maxVotes: 30,
-  maxVotesPerCandidate: 20,
+  maxVotes: 4,
+  maxVotesPerCandidate: 2,
 });
 export const demoBallotPaperSection2 = insertableBallotPaperSectionObject.parse({
   name: 'Test ballot paper section 2',
   description: 'Test ballot paper section description 2',
-  maxVotes: 5,
+  maxVotes: 3,
   maxVotesPerCandidate: 1,
 });
 export const brokenBallotPaperSection = {
@@ -102,3 +111,13 @@ export const brokenCandidate = {
   title: '',
   description: 'Broken candidate description',
 };
+
+/*
+ * Voter groups
+ */
+export const voterGroupNoBallotPapers = insertableVoterGroupObject.parse({
+  name: 'Test Voter Group',
+  description: 'Test Voter Group description',
+  numberOfVoters: 10,
+  ballotPapers: [],
+});

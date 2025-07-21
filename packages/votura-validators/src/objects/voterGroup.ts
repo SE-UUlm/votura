@@ -16,7 +16,7 @@ export const voterGroupObject = z.object({
     description: 'Specifies the number of voters that belong to this voter group.',
     example: 42,
   }),
-  ballotPapers: z.array(ballotPaperObject.shape.id).min(1).register(voturaMetadataRegistry, {
+  ballotPapers: z.array(ballotPaperObject.shape.id).register(voturaMetadataRegistry, {
     description:
       'All ballot papers that are linked to this voter group. A voter which is part of this voter group can vote on these ballot papers.',
   }),

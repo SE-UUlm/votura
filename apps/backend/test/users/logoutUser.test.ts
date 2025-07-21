@@ -14,7 +14,7 @@ import {
   createUser,
   deleteUser,
   findUserBy,
-  verifyUser,
+  setUserVerified,
 } from '../../src/services/users.service.js';
 import { demoUser } from '../mockData.js';
 
@@ -32,10 +32,7 @@ describe(`POST /users/logout`, () => {
     }
 
     // set user as verified in db
-    const verified: boolean = await verifyUser(user.id);
-    if (!verified) {
-      throw new Error('Failed to verify test user');
-    }
+    await setUserVerified(user.id);
 
     requestPath = '/users/logout';
   });
@@ -105,10 +102,7 @@ describe(`POST /users/logout`, () => {
     // Simulate blacklisting the access token
     const accessTokenPayload = verifyToken(accessToken) as AccessTokenPayload;
     const expiresAt = new Date(accessTokenPayload.exp * 1000);
-    const blacklisted = await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
-    if (!blacklisted) {
-      throw new Error('Failed to blacklist access token');
-    }
+    await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
     expect(res.status).toBe(HttpStatusCode.unauthorized);
@@ -126,10 +120,7 @@ describe(`POST /users/logout`, () => {
     }
 
     // Delete the user before sending the request
-    const deletionResult = await deleteUser(user.id);
-    if (!deletionResult) {
-      throw new Error('Failed to delete test user');
-    }
+    await deleteUser(user.id);
 
     const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
     expect(res.status).toBe(HttpStatusCode.unauthorized);

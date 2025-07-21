@@ -9,11 +9,12 @@
     "postgres-down": "docker compose down",
     "gen-types": "kysely-codegen",
     "migrate": "tsx ./src/migrate.ts",
-    "seed": "tsx ./src/seed.ts",
+    "seed": "tsx ./src/runSeed.ts",
+    "lint": "eslint",
     "check-types": "tsc --noEmit"
   },
   "dependencies": {
-    "dotenv": "^16.5.0",
+    "dotenv": "^17.2.0",
     "kysely": "^0.28.2",
     "pg": "^8.16.0",
     "@repo/logger": "*"
@@ -35,6 +36,7 @@
     ".": "./src/main.ts",
     "./types": "./src/types/db.d.ts",
     "./migrateToLatest": "./src/migrateToLatest.ts",
-    "./genericContainer": "./src/genericContainer.ts"
+    "./genericContainer": "./src/genericContainer.ts",
+    "./seed": "./src/seed.ts"
   }
 }

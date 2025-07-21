@@ -5,4 +5,5 @@ export enum Tag {
   ballotPaperSections = 'BallotPaperSections',
   candidates = 'Candidates',
   voterGroups = 'VoterGroups',
+  miscellaneous = 'Miscellaneous',
 }

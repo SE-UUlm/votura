@@ -8,10 +8,12 @@ import {
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import {
+  addCandidateToBallotPaperSection,
   createBallotPaperSection,
   deleteBallotPaperSection,
   getBallotPaperSection,
   getBallotPaperSections,
+  removeCandidateFromBallotPaperSection,
   updateBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
@@ -32,11 +34,19 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
+import {
+  checkCandidateUuidInsertable,
+  checkCandidateUuidRemovable,
+  defaultBallotPaperSectionCandidateChecks,
+} from '../middlewares/bodyChecks/ballotPaperSectionCandidateChecks.js';
+import { maxVotesCheckFor, RequestTypeMaxVotesCheck } from '../middlewares/maxVotesCheckFor.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
   checkElectionNotFrozen,
+  checkElectionNotGenerateKeys,
+  checkVotingStartInFuture,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionChecks.js';
 import { MimeType } from '../middlewares/utils.js';
@@ -69,6 +79,7 @@ electionsRouter.put(
   `/:${parameter.electionId}/freeze`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
+  checkVotingStartInFuture,
   checkElectionNotFrozen,
   freezeElection,
 );
@@ -76,10 +87,9 @@ electionsRouter.put(
   `/:${parameter.electionId}/unfreeze`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
+  checkElectionNotGenerateKeys,
   unfreezeElection,
 );
-
-// Ballot Papers routes
 electionsRouter.delete(
   `/:${parameter.electionId}`,
   acceptHeaderCheck(MimeType.applicationJson),
@@ -88,6 +98,7 @@ electionsRouter.delete(
   deleteElection,
 );
 
+// Ballot Papers routes
 electionsRouter.post(
   `/:${parameter.electionId}/ballotPapers`,
   acceptHeaderCheck(MimeType.applicationJson),
@@ -109,6 +120,7 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
+  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperUpdate),
   updateBallotPaper,
 );
 electionsRouter.get(
@@ -135,6 +147,7 @@ electionsRouter.post(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
+  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperSectionCreate),
   createBallotPaperSection,
 );
 electionsRouter.get(
@@ -152,6 +165,7 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
+  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperSectionUpdate),
   updateBallotPaperSection,
 );
 electionsRouter.get(
@@ -170,6 +184,30 @@ electionsRouter.delete(
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
   deleteBallotPaperSection,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  checkCandidateUuidInsertable,
+  ...defaultBallotPaperSectionCandidateChecks,
+  addCandidateToBallotPaperSection,
+);
+electionsRouter.delete(
+  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  checkElectionNotFrozen,
+  ...defaultBallotPaperChecks,
+  ...defaultBallotPaperSectionChecks,
+  checkCandidateUuidRemovable,
+  ...defaultBallotPaperSectionCandidateChecks,
+  removeCandidateFromBallotPaperSection,
 );
 
 // Candidates

@@ -1,5 +1,6 @@
 import {
   apiTokenUserObject,
+  insertableUserObject,
   response400Object,
   response401Object,
   type SelectableUser,
@@ -14,37 +15,36 @@ import {
   createUser,
   deleteUser,
   findUserBy,
-  verifyUser,
+  setUserVerified,
 } from '../../src/services/users.service.js';
-import { demoUser } from '../mockData.js';
+import { sleep } from '../utils.js';
 
 describe(`POST /users/refreshTokens`, () => {
-  let requestPath = '';
+  const requestPath = '/users/refreshTokens';
   let user: SelectableUser | null = null;
   let accessToken: string | null = null;
   let refreshToken: string | null = null;
+  const refreshUser = insertableUserObject.parse({
+    email: 'refreshUser@votura.org',
+    password: 'MyStrong!Password123',
+  });
 
   beforeAll(async () => {
-    await createUser(demoUser);
-    user = await findUserBy({ email: demoUser.email });
+    await createUser(refreshUser);
+    user = await findUserBy({ email: refreshUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
     }
 
     // set user as verified in db
-    const verified: boolean = await verifyUser(user.id);
-    if (!verified) {
-      throw new Error('Failed to verify test user');
-    }
-
-    requestPath = '/users/refreshTokens';
+    await setUserVerified(user.id);
   });
 
   beforeEach(async () => {
     // Log in the user to create a session
     const loginResponse = await request(app).post('/users/login').send({
-      email: demoUser.email,
-      password: demoUser.password,
+      email: refreshUser.email,
+      password: refreshUser.password,
     });
     if (loginResponse.status !== Number(HttpStatusCode.ok)) {
       throw new Error('Failed to log in test user');
@@ -79,7 +79,9 @@ describe(`POST /users/refreshTokens`, () => {
     // Verify the new access token
     const newAccessToken = parseResult.data.accessToken;
     const decodedPayload = verifyToken(newAccessToken) as AccessTokenPayload;
+    const decodedRefreshToken = verifyToken(parseResult.data.refreshToken);
     expect(decodedPayload.sub).toBe(user.id);
+    expect(decodedRefreshToken?.sub).toBe(user.id);
   });
 
   it('401: should return error for invalid refresh token', async () => {
@@ -111,7 +113,7 @@ describe(`POST /users/refreshTokens`, () => {
 
     // refresh tokens once to expire the current refresh token
     // wait for a bit to ensure the new refresh token has a different expiresAt
-    await new Promise((resolve) => setTimeout(resolve, 1500));
+    await sleep(1500);
     const res = await request(app).post(requestPath).send({ refreshToken: refreshToken });
     expect(res.status).toBe(HttpStatusCode.ok);
 

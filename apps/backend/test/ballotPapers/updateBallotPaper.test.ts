@@ -16,10 +16,12 @@ import {
   brokenDemoBallotPaper,
   demoBallotPaper,
   demoBallotPaper2,
+  demoBallotPaperSection,
   demoElection,
   demoUser,
 } from '../mockData.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
+import { createBallotPaperSection } from './../../src/services/ballotPaperSections.service.js';
 import { createElection } from './../../src/services/elections.service.js';
 
 describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}`, () => {
@@ -36,14 +38,8 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     }
 
     election = await createElection(demoElection, user.id);
-    if (election === null) {
-      throw new Error('Failed to create test election');
-    }
-
     ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
-    if (ballotPaper === null) {
-      throw new Error('Failed to create test ballot paper');
-    }
+    await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}`;
 
@@ -75,5 +71,41 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+  });
+  it('400: should return error because max votes is lower than associated ballot paper sections', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        ...demoBallotPaper2,
+        maxVotes: demoBallotPaperSection.maxVotes - 1,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.message).toBe(
+        'The max votes for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+      );
+    }
+  });
+  it('400: should return error because max votes per candidate is lower than associated ballot paper sections', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({
+        ...demoBallotPaper2,
+        maxVotesPerCandidate: demoBallotPaperSection.maxVotesPerCandidate - 1,
+      });
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success === true) {
+      expect(parseResult.data.message).toBe(
+        'The max votes per candidate for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+      );
+    }
   });
 });

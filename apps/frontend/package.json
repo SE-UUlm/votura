@@ -1,11 +1,12 @@
 {
-  "name": "frontend",
+  "name": "@votura/frontend",
   "private": true,
   "version": "0.0.0",
   "type": "module",
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
+    "build-and-preview": "npm run build && npm run preview",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "preview": "vite preview",
@@ -21,6 +22,8 @@
     "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
     "@votura/votura-crypto": "^0.0.3",
+    "axios": "^1.10.0",
+    "axios-auth-refresh": "^3.3.6",
     "dayjs": "^1.11.13",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
@@ -42,6 +45,6 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "vite": "^6.3.5"
+    "vite": "^7.0.4"
   }
 }
