@@ -22,7 +22,7 @@ This guide explains how date-time values flow between the frontend and the backe
 
 ## Frontend
 
-We use the [`DateTimePicker`](https://mantine.dev/dates/datetime-picker/) component from `@mantine/dates` in the frontend. This component works with native JavaScript `Date` objects and always displays the time in the user's local time zone, as determined by the browser (for example CET/CEST in Europe). When a user selects a date and time, the picker returns a `Date` object that represents a local time. Before sending this value to the backened, it must be converted to UTC. Our way to do this is by calling `toISOString()` on the `Date` object, which produces an ISO-8601 string in UTC. Note the trailing `Z` that indicates UTC.
+We use the [`DateTimePicker`](https://mantine.dev/dates/datetime-picker/) component from `@mantine/dates` in the frontend. This component works with native JavaScript `Date` objects and always displays the time in the user's local time zone, as determined by the browser (for example CET/CEST in Europe). When a user selects a date and time, the picker returns a `Date` object that represents a local time. Before sending this value to the backend, it must be converted to UTC. Our way to do this is by calling `toISOString()` on the `Date` object, which produces an ISO-8601 string in UTC. Note the trailing `Z` that indicates UTC.
 
 For example, if the user selects 20 April 2025 at 12:00 CEST, `toISOString()` will return `2025-04-20T10:00:00.000Z`, which should be send to the backend.
 
