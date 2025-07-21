@@ -46,6 +46,7 @@ import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidate
 import {
   checkElectionNotFrozen,
   checkElectionNotGenerateKeys,
+  checkVotingStartInFuture,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionChecks.js';
 import { MimeType } from '../middlewares/utils.js';
@@ -78,6 +79,7 @@ electionsRouter.put(
   `/:${parameter.electionId}/freeze`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
+  checkVotingStartInFuture,
   checkElectionNotFrozen,
   freezeElection,
 );
