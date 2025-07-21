@@ -2,7 +2,7 @@ import {
   response400Object,
   response403Object,
   response404Object,
-  zodErrorToResponse400,
+  response500Object,
   type InsertableVoterGroup,
   type Response400,
   type Response403,
@@ -11,16 +11,15 @@ import {
   type SelectableVoterGroup,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
-import { ZodError } from 'zod/v4';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createVoterGroup as createPersistentVoterGroup,
   getVoterGroupsForUser,
 } from '../services/voterGroups.service.js';
 import {
+  isVoterGroupValidationError,
   validateInsertableVoterGroup,
-  VoterGroupValidationError,
-} from './bodyChecks/voterGroup.js';
+} from './bodyChecks/voterGroupChecks.js';
 
 export type CreateVoterGroupResponse = Response<
   SelectableVoterGroup | Response400 | Response403 | Response404,
@@ -33,38 +32,28 @@ export const createVoterGroup = async (
 ): Promise<void> => {
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
-  if (validationResult instanceof ZodError) {
-    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(validationResult));
-    return;
-  }
-  if (validationResult === VoterGroupValidationError.ballotPaperNotFound) {
-    res
-      .status(HttpStatusCode.notFound)
-      .json(response404Object.parse({ message: VoterGroupValidationError.ballotPaperNotFound }));
-    return;
-  }
-  if (validationResult === VoterGroupValidationError.ballotPaperNotBelongToUser) {
-    res
-      .status(HttpStatusCode.forbidden)
-      .json(
-        response403Object.parse({ message: VoterGroupValidationError.ballotPaperNotBelongToUser }),
-      );
-    return;
-  }
-  if (validationResult === VoterGroupValidationError.ballotPapersFromSameElection) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: VoterGroupValidationError.ballotPapersFromSameElection,
-      }),
-    );
-    return;
-  }
-  if (validationResult === VoterGroupValidationError.ballotPapersFromFrozenElection) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: VoterGroupValidationError.ballotPapersFromFrozenElection,
-      }),
-    );
+  if (isVoterGroupValidationError(validationResult)) {
+    switch (validationResult.status) {
+      case HttpStatusCode.badRequest:
+        res
+          .status(HttpStatusCode.badRequest)
+          .json(response400Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.forbidden:
+        res
+          .status(HttpStatusCode.forbidden)
+          .json(response403Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.notFound:
+        res
+          .status(HttpStatusCode.notFound)
+          .json(response404Object.parse({ message: validationResult.message }));
+        break;
+      default:
+        res
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: 'Internal server error' }));
+    }
     return;
   }
 

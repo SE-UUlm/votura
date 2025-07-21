@@ -1,7 +1,6 @@
 import { db } from '@repo/db';
-import type { BallotPaper as KyselyBallotPaper } from '@repo/db/types';
+import type { BallotPaper as DBBallotPaper, User as DBUser } from '@repo/db/types';
 import type {
-  BallotPaper,
   Election,
   InsertableBallotPaper,
   SelectableBallotPaper,
@@ -9,11 +8,8 @@ import type {
 } from '@repo/votura-validators';
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
-import { checkElectionsNotFrozen, getDBElections } from './elections.service.js';
 
-const ballotPaperTransformer = (
-  ballotPaper: Selectable<KyselyBallotPaper>,
-): SelectableBallotPaper => {
+const ballotPaperTransformer = (ballotPaper: Selectable<DBBallotPaper>): SelectableBallotPaper => {
   return {
     id: ballotPaper.id,
     modifiedAt: ballotPaper.modifiedAt.toISOString(),
@@ -52,7 +48,7 @@ export const getBallotPapers = async (
 };
 
 export const getBallotPaper = async (
-  ballotPaperId: BallotPaper['id'],
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .selectFrom('ballotPaper')
@@ -65,7 +61,7 @@ export const getBallotPaper = async (
 
 export const updateBallotPaper = async (
   updateableBallotPaper: UpdateableBallotPaper,
-  ballotPaperId: BallotPaper['id'],
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .updateTable('ballotPaper')
@@ -78,14 +74,18 @@ export const updateBallotPaper = async (
 };
 
 export const deleteBallotPaper = async (
-  ballotPaperId: BallotPaper['id'],
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<DeleteResult> => {
   return db.deleteFrom('ballotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
 };
 
 export const checkBallotPapersExist = async (
-  ballotPaperIds: BallotPaper['id'][],
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<boolean> => {
+  if (ballotPaperIds.length === 0) {
+    return true; // No ballot papers to check, so they "exist"
+  }
+
   const ballotPapers = await db
     .selectFrom('ballotPaper')
     .select('id')
@@ -96,44 +96,63 @@ export const checkBallotPapersExist = async (
 };
 
 export const checkBallotPapersBelongToUser = async (
-  ballotPaperIds: BallotPaper['id'][],
-  userId: string,
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
+  userId: Selectable<DBUser>['id'],
 ): Promise<boolean> => {
-  const elections = await getDBElections(userId);
-  const electionIds = elections.map((election) => election.id);
+  if (ballotPaperIds.length === 0) {
+    return true; // No ballot papers to check, so they "belong" to the user
+  }
 
-  const ballotPapers = await db
+  // Check if any ballot paper does not belong to the user's elections
+  // terminate early if we find one
+  const unauthorizedBallotPaper = await db
     .selectFrom('ballotPaper')
-    .select('id')
-    .where('id', 'in', ballotPaperIds)
-    .where('electionId', 'in', electionIds)
-    .execute();
+    .leftJoin('election', (join) =>
+      join
+        .onRef('ballotPaper.electionId', '=', 'election.id')
+        .on('election.electionCreatorId', '=', userId),
+    )
+    .select('ballotPaper.id')
+    .where('ballotPaper.id', 'in', ballotPaperIds)
+    .where('election.id', 'is', null) // ballot paper doesn't belong to user's election
+    .limit(1)
+    .executeTakeFirst();
 
-  return ballotPapers.length === ballotPaperIds.length;
+  return unauthorizedBallotPaper === undefined;
 };
 
 export const checkBallotPapersFromDifferentElections = async (
-  ballotPaperIds: BallotPaper['id'][],
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<boolean> => {
+  if (ballotPaperIds.length === 0) {
+    return true; // No ballot papers to check, so they "belong" to the same election
+  }
+
   const ballotPapers = await db
     .selectFrom('ballotPaper')
     .select('electionId')
     .where('id', 'in', ballotPaperIds)
+    .distinct()
     .execute();
 
-  const uniqueElectionIds = new Set(ballotPapers.map((bp) => bp.electionId));
-  return uniqueElectionIds.size === ballotPapers.length;
+  return ballotPaperIds.length === ballotPapers.length;
 };
 
 export const checkBallotPapersElectionNotFrozen = async (
-  ballotPaperIds: BallotPaper['id'][],
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<boolean> => {
-  const ballotPapers = await db
-    .selectFrom('ballotPaper')
-    .select('electionId')
-    .where('id', 'in', ballotPaperIds)
-    .execute();
+  if (ballotPaperIds.length === 0) {
+    return true; // No ballot papers to check, so they are considered not frozen
+  }
 
-  const electionIds = ballotPapers.map((bp) => bp.electionId);
-  return checkElectionsNotFrozen(electionIds);
+  const frozenElectionExists = await db
+    .selectFrom('ballotPaper')
+    .innerJoin('election', 'election.id', 'ballotPaper.electionId')
+    .where('ballotPaper.id', 'in', ballotPaperIds)
+    .where('election.configFrozen', '=', true)
+    .select('ballotPaper.id')
+    .limit(1) // We only need to find one frozen election to know the condition is false
+    .executeTakeFirst();
+
+  return frozenElectionExists === undefined;
 };

@@ -9,9 +9,9 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
-import { VoterGroupValidationError } from '../../src/controllers/bodyChecks/voterGroup.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
+import { VoterGroupValidationErrorMessage } from '../../src/controllers/bodyChecks/voterGroupChecks.js';
 import {
   demoBallotPaper,
   demoBallotPaper2,
@@ -130,7 +130,7 @@ describe(`POST /voterGroups`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe(VoterGroupValidationError.ballotPaperNotFound);
+    expect(parseResult.data?.message).toBe(VoterGroupValidationErrorMessage.ballotPaperNotFound);
   });
   it('403: should return error when trying to create a voter group with a ballot paper that does not belong to the user', async () => {
     const res = await request(app)
@@ -145,7 +145,9 @@ describe(`POST /voterGroups`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe(VoterGroupValidationError.ballotPaperNotBelongToUser);
+    expect(parseResult.data?.message).toBe(
+      VoterGroupValidationErrorMessage.ballotPaperNotBelongToUser,
+    );
   });
   it('400: should return error when trying to create a voter group with ballot papers from the same election', async () => {
     const res = await request(app)
@@ -160,7 +162,9 @@ describe(`POST /voterGroups`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe(VoterGroupValidationError.ballotPapersFromSameElection);
+    expect(parseResult.data?.message).toBe(
+      VoterGroupValidationErrorMessage.ballotPapersFromSameElection,
+    );
   });
   it('400: should return error when trying to create a voter group with ballot papers from frozen elections', async () => {
     // set election1 to frozen
@@ -182,7 +186,7 @@ describe(`POST /voterGroups`, () => {
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe(
-      VoterGroupValidationError.ballotPapersFromFrozenElection,
+      VoterGroupValidationErrorMessage.ballotPapersFromFrozenElection,
     );
   });
 });

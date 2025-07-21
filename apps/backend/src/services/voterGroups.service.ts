@@ -1,11 +1,16 @@
 import { db } from '@repo/db';
-import type { VoterGroup as KyselyVoterGroup } from '@repo/db/types';
+import type {
+  BallotPaper as DBBallotPaper,
+  User as DBUser,
+  Voter as DBVoter,
+  VoterGroup as DBVoterGroup,
+} from '@repo/db/types';
 import type { InsertableVoterGroup, SelectableVoterGroup } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
 
 async function voterGroupTransformer(
-  voterGroup: Selectable<KyselyVoterGroup>,
+  voterGroup: Selectable<DBVoterGroup>,
 ): Promise<SelectableVoterGroup> {
   return {
     id: voterGroup.id,
@@ -20,7 +25,7 @@ async function voterGroupTransformer(
 
 export async function createVoterGroup(
   insertableVoterGroup: InsertableVoterGroup,
-  userId: string,
+  userId: DBVoterGroup['voterGroupCreatorId'],
 ): Promise<SelectableVoterGroup> {
   const voterGroup = await db
     .insertInto('voterGroup')
@@ -42,7 +47,7 @@ export async function createVoterGroup(
 }
 
 export async function createVoters(
-  voterGroupId: string,
+  voterGroupId: Selectable<DBVoterGroup>['id'],
   numberOfVoters: number,
 ): Promise<string[]> {
   // insert the voters into the database
@@ -65,8 +70,8 @@ export async function createVoters(
 }
 
 export async function linkVotersToBallotPapers(
-  voterIds: string[],
-  ballotPaperIds: string[],
+  voterIds: Selectable<DBVoter>['id'][],
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
 ): Promise<void> {
   const voterRegisterEntries = [];
 
@@ -93,7 +98,9 @@ export async function linkVotersToBallotPapers(
   }
 }
 
-export async function getNumberOfVotersInGroup(voterGroupId: string): Promise<number> {
+export async function getNumberOfVotersInGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<number> {
   const result = await db
     .selectFrom('voter')
     .where('voterGroupId', '=', voterGroupId)
@@ -103,7 +110,9 @@ export async function getNumberOfVotersInGroup(voterGroupId: string): Promise<nu
   return Number(result.count); // For some reason, Kysely returns a string here
 }
 
-export async function getBallotPaperIdsForVoterGroup(voterGroupId: string): Promise<string[]> {
+export async function getBallotPaperIdsForVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<string[]> {
   const ballotPaperIds = await db
     .selectFrom('voter')
     .innerJoin('voterRegister', 'voter.id', 'voterRegister.voterId')
@@ -115,7 +124,9 @@ export async function getBallotPaperIdsForVoterGroup(voterGroupId: string): Prom
   return ballotPaperIds.map((row) => row.ballotPaperId);
 }
 
-export async function getVoterGroupsForUser(userId: string): Promise<SelectableVoterGroup[]> {
+export async function getVoterGroupsForUser(
+  userId: Selectable<DBUser>['id'],
+): Promise<SelectableVoterGroup[]> {
   const voterGroups = await db
     .selectFrom('voterGroup')
     .where('voterGroupCreatorId', '=', userId)

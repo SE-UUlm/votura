@@ -1,17 +1,15 @@
 import { db } from '@repo/db';
-import type { Election as KyselyElection } from '@repo/db/types';
+import type { Election as DBElection, User as DBUser } from '@repo/db/types';
 import type {
-  Election,
   InsertableElection,
   SelectableElection,
   UpdateableElection,
-  User,
 } from '@repo/votura-validators';
 import type { KeyPair } from '@votura/votura-crypto/index';
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
 
-const electionTransformer = (election: Selectable<KyselyElection>): SelectableElection => {
+const electionTransformer = (election: Selectable<DBElection>): SelectableElection => {
   return {
     id: election.id,
     createdAt: election.createdAt.toISOString(),
@@ -32,7 +30,7 @@ const electionTransformer = (election: Selectable<KyselyElection>): SelectableEl
 
 export const createElection = async (
   insertableElection: InsertableElection,
-  userId: User['id'],
+  userId: Selectable<DBUser>['id'],
 ): Promise<SelectableElection> => {
   const election = await db
     .insertInto('election')
@@ -46,19 +44,21 @@ export const createElection = async (
   return electionTransformer(election);
 };
 
-export const getDBElections = async (userId: User['id']): Promise<Selectable<KyselyElection>[]> => {
-  return db.selectFrom('election').selectAll().where('electionCreatorId', '=', userId).execute();
-};
-
-export const getElections = async (userId: User['id']): Promise<SelectableElection[]> => {
-  const elections = await getDBElections(userId);
+export const getElections = async (
+  userId: Selectable<DBUser>['id'],
+): Promise<SelectableElection[]> => {
+  const elections = await db
+    .selectFrom('election')
+    .selectAll()
+    .where('electionCreatorId', '=', userId)
+    .execute();
 
   return elections.map((kyselyElection) => electionTransformer(kyselyElection));
 };
 
 export const getElection = async (
-  electionId: Election['id'],
-  userId: User['id'],
+  electionId: Selectable<DBElection>['id'],
+  userId: Selectable<DBUser>['id'],
 ): Promise<SelectableElection> => {
   const election = await db
     .selectFrom('election')
@@ -72,7 +72,7 @@ export const getElection = async (
 
 export const updateElection = async (
   updateableElection: UpdateableElection,
-  electionId: Election['id'],
+  electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
@@ -86,7 +86,7 @@ export const updateElection = async (
 
 export const setElectionKeys = async (
   keyPair: KeyPair,
-  electionId: Election['id'],
+  electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
@@ -104,7 +104,9 @@ export const setElectionKeys = async (
   return electionTransformer(election);
 };
 
-export const unfreezeElection = async (electionId: Election['id']): Promise<SelectableElection> => {
+export const unfreezeElection = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
     .set({
@@ -132,7 +134,9 @@ export const unfreezeElection = async (electionId: Election['id']): Promise<Sele
  * @param electionId The ID of the election to update.
  * @returns The updated election.
  */
-export const freezeElection = async (electionId: Election['id']): Promise<SelectableElection> => {
+export const freezeElection = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<SelectableElection> => {
   const election = await db
     .updateTable('election')
     .set({ configFrozen: true })
@@ -143,17 +147,8 @@ export const freezeElection = async (electionId: Election['id']): Promise<Select
   return electionTransformer(election);
 };
 
-export const checkElectionsNotFrozen = async (electionIds: Election['id'][]): Promise<boolean> => {
-  const elections = await db
-    .selectFrom('election')
-    .where('id', 'in', electionIds)
-    .where('configFrozen', '=', false)
-    .select('id')
-    .execute();
-
-  return elections.length === electionIds.length;
-};
-
-export const deleteElection = async (electionId: Election['id']): Promise<DeleteResult> => {
+export const deleteElection = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<DeleteResult> => {
   return db.deleteFrom('election').where('id', '=', electionId).executeTakeFirst();
 };
