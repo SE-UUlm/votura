@@ -16,6 +16,7 @@ import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createVoterGroup as createPersistentVoterGroup,
   getVoterGroupsForUser,
+  updateVoterGroup as updatePersistentVoterGroup,
 } from '../services/voterGroups.service.js';
 import {
   isVoterGroupValidationError,
@@ -73,4 +74,49 @@ export const getVoterGroups = async (_req: Request, res: GetVoterGroupsResponse)
 
   const voterGroups = await getVoterGroupsForUser(userId);
   res.status(HttpStatusCode.ok).json(voterGroups);
+};
+
+export const updateVoterGroup = async (
+  req: Request<{ voterGroupId: string }>,
+  res: Response<
+    SelectableVoterGroup | Response400 | Response403 | Response404,
+    { user: SelectableUser }
+  >,
+): Promise<void> => {
+  const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
+
+  if (isVoterGroupValidationError(validationResult)) {
+    switch (validationResult.status) {
+      case HttpStatusCode.badRequest:
+        res
+          .status(HttpStatusCode.badRequest)
+          .json(response400Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.forbidden:
+        res
+          .status(HttpStatusCode.forbidden)
+          .json(response403Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.notFound:
+        res
+          .status(HttpStatusCode.notFound)
+          .json(response404Object.parse({ message: validationResult.message }));
+        break;
+      default:
+        res
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: undefined }));
+    }
+    return;
+  }
+
+  // If we reach this point, the request body is valid
+  const insertableVoterGroup: InsertableVoterGroup = validationResult;
+
+  // Proceed with updating the voter group
+  const voterGroup = await updatePersistentVoterGroup(
+    req.params.voterGroupId,
+    insertableVoterGroup,
+  );
+  res.status(HttpStatusCode.ok).send(voterGroup);
 };
