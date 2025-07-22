@@ -22,29 +22,29 @@ export const ToggleFreezeElectionModal = ({
   const title = (
     <Group gap="xs">
       <IconAlertTriangle size={20} stroke={2} style={{ color: redColor }} />
-      <Text fw={700} c="red.7">
+      <Text fw={700} c={redColor}>
         {titleText}
       </Text>
     </Group>
   );
+  const message = election.configFrozen
+    ? 'Unfreezing an election allows configuration changes again, but all previously' +
+      ' issued voter tokens become invalid, and any votes that have already been cast' +
+      ' will be reset and no longer counted.'
+    : 'Freezing an election locks its configuration, no further changes can be made.';
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>
-      <Text c="red.7">You are about to {action.toLowerCase()} the election:</Text>
-      <Text fw={700} c="red.7">
+      <Text c={redColor}>You are about to {action.toLowerCase()} the election:</Text>
+      <Text fw={700} c={redColor}>
         {election.name}
       </Text>
       <Space h={'md'} />
-      <Text fs="italic" c="red.7">
+      <Text fs="italic" c={redColor}>
         Important:
       </Text>
-      <Text fs="italic" c="red.7">
-        Freezing an election locks its configuration, no further changes can be made.
-      </Text>
-      <Text fs="italic" c="red.7">
-        Unfreezing an election allows configuration changes again, but all previously issued voter
-        tokens become invalid, and any votes that have already been cast will be reset and no longer
-        counted.
+      <Text fs="italic" c={redColor}>
+        {message}
       </Text>
       <Space h={'md'} />
       <Group justify="flex-end">
