@@ -1,8 +1,11 @@
 import { db } from '@repo/db';
-import type { Candidate as KyselyCandidate } from '@repo/db/types';
+import type {
+  BallotPaper as DBBallotPaper,
+  Candidate as DBCandidate,
+  Election as DBElection,
+} from '@repo/db/types';
 import type {
   Candidate,
-  Election,
   InsertableCandidate,
   SelectableCandidate,
   UpdateableCandidate,
@@ -10,7 +13,7 @@ import type {
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
 
-const candidateTransformer = (candidate: Selectable<KyselyCandidate>): SelectableCandidate => {
+const candidateTransformer = (candidate: Selectable<DBCandidate>): SelectableCandidate => {
   return {
     id: candidate.id,
     createdAt: candidate.createdAt.toISOString(),
@@ -23,7 +26,7 @@ const candidateTransformer = (candidate: Selectable<KyselyCandidate>): Selectabl
 
 export const createCandidate = async (
   insertableCandidate: InsertableCandidate,
-  electionId: Election['id'],
+  electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableCandidate> => {
   const candidate = await db
     .insertInto('candidate')
@@ -37,7 +40,9 @@ export const createCandidate = async (
   return candidateTransformer(candidate);
 };
 
-export const getCandidates = async (electionId: Election['id']): Promise<SelectableCandidate[]> => {
+export const getCandidates = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<SelectableCandidate[]> => {
   const candidates = await db
     .selectFrom('candidate')
     .selectAll()
@@ -47,7 +52,9 @@ export const getCandidates = async (electionId: Election['id']): Promise<Selecta
   return candidates.map((candidate) => candidateTransformer(candidate));
 };
 
-export const getCandidate = async (candidateId: Candidate['id']): Promise<SelectableCandidate> => {
+export const getCandidate = async (
+  candidateId: Selectable<DBCandidate>['id'],
+): Promise<SelectableCandidate> => {
   const candidate = await db
     .selectFrom('candidate')
     .selectAll()
@@ -59,7 +66,7 @@ export const getCandidate = async (candidateId: Candidate['id']): Promise<Select
 
 export const updateCandidate = async (
   updateableCandidate: UpdateableCandidate,
-  candidateId: Candidate['id'],
+  candidateId: Selectable<DBCandidate>['id'],
 ): Promise<SelectableCandidate> => {
   const candidate = await db
     .updateTable('candidate')
@@ -73,4 +80,18 @@ export const updateCandidate = async (
 
 export const deleteCandidate = async (candidateId: Candidate['id']): Promise<DeleteResult> => {
   return db.deleteFrom('candidate').where('id', '=', candidateId).executeTakeFirst();
+};
+
+export const isCandidateLinkedToBallotPaperSection = async (
+  candidateId: Selectable<DBCandidate>['id'],
+  ballotPaperSectionId: Selectable<DBBallotPaper>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('ballotPaperSectionCandidate')
+    .select('id')
+    .where('candidateId', '=', candidateId)
+    .where('ballotPaperSectionId', '=', ballotPaperSectionId)
+    .executeTakeFirst();
+
+  return result !== undefined;
 };

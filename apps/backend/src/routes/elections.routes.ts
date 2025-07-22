@@ -35,6 +35,7 @@ import {
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import {
+  checkCandidateNotLinkedToBallotPaperSection,
   checkCandidateUuidInsertable,
   checkCandidateUuidRemovable,
   defaultBallotPaperSectionCandidateChecks,
@@ -195,6 +196,7 @@ electionsRouter.put(
   ...defaultBallotPaperSectionChecks,
   checkCandidateUuidInsertable,
   ...defaultBallotPaperSectionCandidateChecks,
+  checkCandidateNotLinkedToBallotPaperSection,
   addCandidateToBallotPaperSection,
 );
 electionsRouter.delete(
