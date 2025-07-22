@@ -71,6 +71,14 @@ export const MutateElectionModal = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [election, opened]);
 
+  useEffect(() => {
+    const start = form.values.startDateTime ? new Date(form.values.startDateTime) : null;
+    const end = form.values.endDateTime ? new Date(form.values.endDateTime) : null;
+    if (start && end && start >= end) {
+      form.setFieldValue('endDateTime', '');
+    }
+  }, [form.values.startDateTime]);
+
   const onMutateTransform = () => {
     const validationResult = form.validate();
 
@@ -123,6 +131,8 @@ export const MutateElectionModal = ({
             placeholder={'Pick an end date and time'}
             key={form.key('endDateTime')}
             {...form.getInputProps('endDateTime')}
+            disabled={!form.values.startDateTime}
+            {...(form.values.startDateTime ? { minDate: new Date(form.values.startDateTime) } : {})}
           />
         </Group>
         <Switch
