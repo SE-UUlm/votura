@@ -27,10 +27,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Updates the configuration of the requested voter group with the provided information.\n' +
       'The user of the API access token needs access to the requested voter group and the linked ballot papers & elections.\n' +
-      'The voter group can only be updated if all linked ballot papers & elections are not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The voter group can only be updated if all linked ballot papers & elections are not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateVoterGroupById',
     requestBody: {
@@ -68,10 +65,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get a specific voter group',
     description:
       'Returns the requested voter group with all public information fields.\n' +
-      'The user of the API access token needs access to the voter group and all linked ballot papers & elections.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs access to the voter group and all linked ballot papers & elections.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterGroupById',
     responses: {
@@ -101,10 +95,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Deletes the requested voter group.\n' +
       'The user of the API access token needs access to the voter group and all linked ballot papers & elections.\n' +
-      'The voter group can only be deleted if all linked ballot papers & elections are not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The voter group can only be deleted if all linked ballot papers & elections are not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteVoterGroupById',
     responses: {
