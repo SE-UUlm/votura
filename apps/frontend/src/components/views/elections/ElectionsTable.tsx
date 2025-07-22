@@ -13,7 +13,7 @@ import {
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 
 export interface ElectionsTableProps {

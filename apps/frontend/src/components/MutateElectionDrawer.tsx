@@ -1,7 +1,8 @@
 import {
+  Box,
   Button,
+  Drawer,
   Group,
-  Modal,
   type ModalProps,
   Stack,
   Switch,
@@ -28,7 +29,7 @@ export interface MutateElectionFormValues
   dateRange: [string, string];
 }
 
-export const MutateElectionModal = ({
+export const MutateElectionDrawer = ({
   election,
   opened,
   onMutate,
@@ -82,47 +83,60 @@ export const MutateElectionModal = ({
   };
 
   return (
-    <Modal opened={opened} onClose={onClose} title={title}>
-      <Stack>
-        <TextInput
-          withAsterisk
-          label={'Name'}
-          placeholder={'e.g. Student Council Election 2025'}
-          key={form.key('name')}
-          {...form.getInputProps('name')}
-        />
-        <Textarea
-          label={'Description'}
-          placeholder={'e.g. This years election on the student council ...'}
-          autosize={true}
-          minRows={4}
-          maxRows={4}
-          key={form.key('description')}
-          {...form.getInputProps('description')}
-        />
-        <DatePickerInput
-          withAsterisk
-          allowSingleDateInRange
-          type={'range'}
-          label={'Voting period'}
-          placeholder={'Pick a start and end date'}
-          key={form.key('dateRange')}
-          {...form.getInputProps('dateRange')}
-        />
-        <Switch
-          label={'Allow invalid votes'}
-          key={form.key('allowInvalidVotes')}
-          {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
-        />
-        <Group justify="flex-end">
-          <Button variant="outline" onClick={onClose} disabled={isMutating}>
-            Cancel
-          </Button>
-          <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
-            {mutateButtonText}
-          </Button>
-        </Group>
-      </Stack>
-    </Modal>
+    <Drawer.Root opened={opened} onClose={onClose} position={'right'} offset={16} radius={'md'}>
+      <Drawer.Overlay />
+      <Drawer.Content>
+        <Stack justify={'space-between'} h={'100%'}>
+          <Box>
+            <Drawer.Header>
+              <Drawer.Title>{title}</Drawer.Title>
+              <Drawer.CloseButton disabled={isMutating} />
+            </Drawer.Header>
+            <Drawer.Body>
+              <Stack>
+                <TextInput
+                  withAsterisk
+                  label={'Name'}
+                  placeholder={'e.g. Student Council Election 2025'}
+                  key={form.key('name')}
+                  {...form.getInputProps('name')}
+                />
+                <Textarea
+                  label={'Description'}
+                  placeholder={'e.g. This years election on the student council ...'}
+                  autosize={true}
+                  minRows={4}
+                  maxRows={4}
+                  key={form.key('description')}
+                  {...form.getInputProps('description')}
+                />
+                <DatePickerInput
+                  withAsterisk
+                  allowSingleDateInRange
+                  type={'range'}
+                  label={'Voting period'}
+                  placeholder={'Pick a start and end date'}
+                  key={form.key('dateRange')}
+                  {...form.getInputProps('dateRange')}
+                />
+                <Switch
+                  label={'Allow invalid votes'}
+                  key={form.key('allowInvalidVotes')}
+                  {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
+                />
+              </Stack>
+            </Drawer.Body>
+          </Box>
+          <Group justify="flex-end" m={'md'}>
+            <Button variant="outline" onClick={onClose} disabled={isMutating}>
+              Cancel
+            </Button>
+            <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
+              {mutateButtonText}
+            </Button>
+          </Group>
+        </Stack>
+      </Drawer.Content>
+    </Drawer.Root>
   );
 };
