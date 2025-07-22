@@ -24,7 +24,7 @@ test.describe('MutateElectionModal logic', () => {
     await expect(page.getByLabel('Description')).toBeVisible();
     await expect(page.getByLabel('Start of voting period')).toBeVisible();
     await expect(page.getByLabel('End of voting period')).toBeVisible();
-    await expect(page.getByLabel('Allow invalid votes')).toBeVisible();
+    await expect(page.getByRole('checkbox', { name: 'Allow invalid votes' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Create new election' })).toBeVisible();
   });
@@ -37,7 +37,7 @@ test.describe('MutateElectionModal logic', () => {
   });
 
   test('EndDateTime picker becomes enabled after setting StartDateTime', async ({ page }) => {
-    const startDateTimeInput = page.getByLabel('Start of voting period');
+    const startDateTimeInput = page.getByRole('textbox', { name: 'Start of voting period' });
     const endDateTimeInput = page.getByLabel('End of voting period');
     await startDateTimeInput.fill('2025-10-10T12:00');
     await expect(endDateTimeInput).toBeEnabled();
@@ -46,8 +46,8 @@ test.describe('MutateElectionModal logic', () => {
   test('EndDateTime value is cleared when StartDateTime is moved beyond EndDateTime', async ({
     page,
   }) => {
-    const startDateTimeInput = page.getByLabel('Start of voting period');
-    const endDateTimeInput = page.getByLabel('End of voting period');
+    const startDateTimeInput = page.getByRole('textbox', { name: 'Start of voting period' });
+    const endDateTimeInput = page.getByRole('textbox', { name: 'End of voting period' });
     await startDateTimeInput.fill('2025-10-10T12:00');
     await endDateTimeInput.fill('2025-10-11T12:00');
     await expect(endDateTimeInput).toHaveValue('2025-10-11T12:00');
