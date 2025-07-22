@@ -1,6 +1,6 @@
 import { expect, test, type Page } from '@playwright/test';
 
-async function login(page: Page) {
+async function login(page: Page): Promise<void> {
   await page.goto('/login');
   await page.getByLabel('Email').fill('user@votura.org');
   await page.getByLabel('Password').fill('HelloVotura1!');
@@ -8,7 +8,7 @@ async function login(page: Page) {
   await expect(page).toHaveURL('/elections');
 }
 
-async function openModal(page: Page) {
+async function openModal(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'New Election' }).click();
   await expect(page.getByText('Create new election')).toBeVisible();
 }
