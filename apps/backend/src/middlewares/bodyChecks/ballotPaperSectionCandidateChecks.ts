@@ -1,6 +1,7 @@
 import {
   insertableBallotPaperSectionCandidateObject,
   removableBallotPaperSectionCandidateObject,
+  response400Object,
   zodErrorToResponse400,
   type BallotPaperSection,
   type Election,
@@ -8,7 +9,6 @@ import {
   type Response404,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
-import { response400Object } from '../../../../../packages/votura-validators/dist/objects/response.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { isCandidateLinkedToBallotPaperSection } from '../../services/candidates.service.js';
 import {
