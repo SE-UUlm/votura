@@ -13,6 +13,12 @@ async function openModal(page: Page): Promise<void> {
   await expect(page.getByText('Create new election')).toBeVisible();
 }
 
+async function pickDateTime(page: Page, gridcell: string): Promise<void> {
+  await page.getByRole('gridcell', { name: gridcell }).click();
+  await page.getByRole('spinbutton', { name: 'Hours' }).fill('12');
+  await page.getByRole('spinbutton', { name: 'Minutes' }).fill('00');
+}
+
 test.describe('MutateElectionModal logic', () => {
   test.beforeEach(async ({ page }) => {
     await login(page);
@@ -32,26 +38,27 @@ test.describe('MutateElectionModal logic', () => {
   test('EndDateTime picker is disabled initially when no StartDateTime is set', async ({
     page,
   }) => {
-    const endDateTimeInput = page.getByLabel('End of voting period');
-    await expect(endDateTimeInput).toBeDisabled();
+    await expect(page.getByLabel('End of voting period')).toBeDisabled();
   });
 
   test('EndDateTime picker becomes enabled after setting StartDateTime', async ({ page }) => {
-    const startDateTimeInput = page.getByLabel('Start of voting period');
-    const endDateTimeInput = page.getByLabel('End of voting period');
-    await startDateTimeInput.fill('10/10/2025 12:00');
-    await expect(endDateTimeInput).toBeEnabled();
+    await page.getByLabel('Start of voting period').click();
+    await pickDateTime(page, '10');
+    await expect(page.getByLabel('End of voting period')).toBeEnabled();
   });
 
   test('EndDateTime value is cleared when StartDateTime is moved beyond EndDateTime', async ({
     page,
   }) => {
-    const startDateTimeInput = page.getByLabel('Start of voting period');
-    const endDateTimeInput = page.getByLabel('End of voting period');
-    await startDateTimeInput.fill('10/10/2025 12:00');
-    await endDateTimeInput.fill('11/10/2025 12:00');
-    await expect(endDateTimeInput).toHaveValue('11/10/2025 12:00');
-    await startDateTimeInput.fill('10/11/2025 12:00');
-    await expect(endDateTimeInput).toHaveValue('');
+    await page.getByLabel('Start of voting period').click();
+    await pickDateTime(page, '10');
+    await page.getByLabel('End of voting period').click();
+    await pickDateTime(page, '11');
+    await expect(page.getByLabel('End of voting period')).not.toHaveValue('');
+
+    await page.getByLabel('Start of voting period').click();
+    await page.getByRole('button', { name: 'Next month' }).click();
+    await pickDateTime(page, '10');
+    await expect(page.getByLabel('End of voting period')).toHaveValue('');
   });
 });
