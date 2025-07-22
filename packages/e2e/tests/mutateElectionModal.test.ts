@@ -24,7 +24,7 @@ test.describe('MutateElectionModal logic', () => {
     await expect(page.getByLabel('Description')).toBeVisible();
     await expect(page.getByLabel('Start of voting period')).toBeVisible();
     await expect(page.getByLabel('End of voting period')).toBeVisible();
-    await expect(page.getByText('Allow invalid votes' )).toBeVisible();
+    await expect(page.getByText('Allow invalid votes')).toBeVisible();
     await expect(page.getByRole('button', { name: 'Cancel' })).toBeVisible();
     await expect(page.getByRole('button', { name: 'Create new election' })).toBeVisible();
   });
