@@ -6,7 +6,10 @@ import { useNavigate } from 'react-router';
 import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
 import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
-import { MutateElectionDrawer, type MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
+import {
+  MutateElectionDrawer,
+  type MutateElectionModalProps,
+} from '../../MutateElectionDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
 
