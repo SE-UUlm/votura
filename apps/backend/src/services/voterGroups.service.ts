@@ -8,7 +8,7 @@ import type {
 } from '@repo/db/types';
 import type { InsertableVoterGroup, SelectableVoterGroup } from '@repo/votura-validators';
 import type { Selectable, Transaction } from 'kysely';
-import { spreadableOptional } from '../utils.js';
+import { arraysEqual, spreadableOptional } from '../utils.js';
 
 export async function createVoters(
   voterGroupId: Selectable<DBVoterGroup>['id'],
@@ -136,4 +136,164 @@ export async function getVoterGroupsForUser(
     .execute();
 
   return Promise.all(voterGroups.map(async (voterGroup) => voterGroupTransformer(voterGroup)));
+}
+
+export async function checkVoterGroupExists(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<boolean> {
+  const result = await db
+    .selectFrom('voterGroup')
+    .select('id')
+    .where('id', '=', voterGroupId)
+    .executeTakeFirst();
+
+  return result !== undefined;
+}
+
+export async function getOwnerOfVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<string> {
+  const result = await db
+    .selectFrom('voterGroup')
+    .select('voterGroupCreatorId')
+    .where('id', '=', voterGroupId)
+    .executeTakeFirstOrThrow();
+
+  return result.voterGroupCreatorId;
+}
+
+export async function checkVoterGroupElectionsNotFrozen(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<boolean> {
+  const frozenElection = await db
+    .selectFrom('voterGroup as vg')
+    .innerJoin('voter as v', 'v.voterGroupId', 'vg.id')
+    .innerJoin('voterRegister as vr', 'vr.voterId', 'v.id')
+    .innerJoin('ballotPaper as bp', 'bp.id', 'vr.ballotPaperId')
+    .innerJoin('election as e', 'e.id', 'bp.electionId')
+    .select('e.id')
+    .where('vg.id', '=', voterGroupId)
+    .where('e.configFrozen', '=', true)
+    .limit(1) // Stop at first frozen election found
+    .executeTakeFirst();
+
+  return frozenElection === undefined;
+}
+
+export async function getVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<SelectableVoterGroup> {
+  const voterGroup = await db
+    .selectFrom('voterGroup')
+    .where('id', '=', voterGroupId)
+    .selectAll()
+    .executeTakeFirstOrThrow();
+
+  return voterGroupTransformer(voterGroup);
+}
+
+/**
+ * Randomly removes a specified number of voters from a voter group.
+ * Enough voters must exist in the group to remove the specified number.
+ *
+ * @param voterGroupId - The ID of the voter group.
+ * @param numberOfVoters - The number of voters to remove.
+ * @param trx - The database transaction to use.
+ */
+export async function removeVotersFromGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+  numberOfVoters: number,
+  trx: Transaction<DB>,
+): Promise<void> {
+  // Delete the voters from the voter table
+  await trx
+    .deleteFrom('voter')
+    .where(
+      'id',
+      'in',
+      trx
+        .selectFrom('voter')
+        .select('id')
+        .where('voterGroupId', '=', voterGroupId)
+        .limit(numberOfVoters),
+    )
+    .executeTakeFirstOrThrow();
+}
+
+export async function clearVoterRegisterForVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+  trx: Transaction<DB>,
+): Promise<void> {
+  // Delete all voter register entries for the specified voter group
+  await trx
+    .deleteFrom('voterRegister')
+    .where(
+      'voterId',
+      'in',
+      trx.selectFrom('voter').select('id').where('voterGroupId', '=', voterGroupId),
+    )
+    .execute();
+}
+
+export async function updateVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+  insertableVoterGroup: InsertableVoterGroup,
+): Promise<SelectableVoterGroup> {
+  const existingVoterGroup = await getVoterGroup(voterGroupId);
+  const voterCountDelta = insertableVoterGroup.numberOfVoters - existingVoterGroup.numberOfVoters;
+  let voterIdsToLink: Selectable<DBVoter>['id'][] = []; // Voter IDs to link to ballot papers in insertableVoterGroup
+
+  // Wrap all operations in a single transaction to ensure consistency
+  const updatedVoterGroup = await db.transaction().execute(async (trx) => {
+    // Handle voter count changes first
+    if (voterCountDelta < 0) {
+      await removeVotersFromGroup(voterGroupId, Math.abs(voterCountDelta), trx);
+    } else if (voterCountDelta > 0) {
+      // Create new voters and store their IDs, voter register entries are added later
+      voterIdsToLink = await createVoters(voterGroupId, voterCountDelta, trx);
+    }
+
+    if (!arraysEqual(existingVoterGroup.ballotPapers, insertableVoterGroup.ballotPapers)) {
+      // Ballot papers changed - need to update voter register entries
+      await clearVoterRegisterForVoterGroup(voterGroupId, trx);
+
+      // Create new voter register entries for all voters in the group
+      if (insertableVoterGroup.ballotPapers.length > 0) {
+        const groupVoterIds = await trx
+          .selectFrom('voter')
+          .select('id')
+          .where('voterGroupId', '=', voterGroupId)
+          .execute();
+
+        voterIdsToLink = groupVoterIds.map((voter) => voter.id);
+      }
+    }
+
+    // link voters to ballot papers
+    if (voterIdsToLink.length > 0 && insertableVoterGroup.ballotPapers.length > 0) {
+      // Link voters to ballot papers
+      await linkVotersToBallotPapers(voterIdsToLink, insertableVoterGroup.ballotPapers, trx);
+    }
+
+    // Update the voter group name and description
+    return trx
+      .updateTable('voterGroup')
+      .set({
+        name: insertableVoterGroup.name,
+        description: insertableVoterGroup.description,
+      })
+      .where('id', '=', voterGroupId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+  });
+
+  return voterGroupTransformer(updatedVoterGroup);
+}
+
+export async function deleteVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<void> {
+  // deletes all voters and voter registers associated with the voter group
+  // because of foreign key constraints
+  await db.deleteFrom('voterGroup').where('id', '=', voterGroupId).executeTakeFirstOrThrow();
 }
