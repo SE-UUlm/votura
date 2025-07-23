@@ -71,6 +71,17 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
       expect(data.candidateIds).toContain(candidate?.id);
     }
   });
+  it('400: should return error for linking candidate twice', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({ candidateId: candidate?.id });
+
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
   it('400: should return error for invalid request body', async () => {
     const res = await request(app)
       .put(requestPath)
