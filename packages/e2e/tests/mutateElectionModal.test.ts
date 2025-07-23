@@ -14,7 +14,7 @@ async function openModal(page: Page): Promise<void> {
 }
 
 async function pickDateTime(page: Page, gridcell: string): Promise<void> {
-  await page.getByRole('gridcell', { name: gridcell }).click();
+  await page.getByRole('button', { name: gridcell }).click();
   await page.getByRole('spinbutton', { name: 'Hours' }).fill('12');
   await page.getByRole('spinbutton', { name: 'Minutes' }).fill('00');
 }
