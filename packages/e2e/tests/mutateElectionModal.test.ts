@@ -46,13 +46,16 @@ test.describe('MutateElectionModal logic', () => {
   }) => {
     await page.getByLabel('Start of voting period').click();
     await page.getByRole('button', { name: '10' }).click();
+    await page.keyboard.press('Escape');
     await page.getByLabel('End of voting period').click();
     await page.getByRole('button', { name: '11' }).click();
-    await expect(page.getByLabel('End of voting period')).not.toHaveValue('');
+    const endInput = page.getByLabel('End of voting period').locator('input');
+    await expect(endInput).not.toHaveValue('');
 
+    await page.keyboard.press('Escape');
     await page.getByLabel('Start of voting period').click();
     await page.getByRole('button', { name: 'Next month' }).click();
     await page.getByRole('button', { name: '10' }).click();
-    await expect(page.getByLabel('End of voting period')).toHaveValue('');
+    await expect(endInput).toHaveValue('');
   });
 });
