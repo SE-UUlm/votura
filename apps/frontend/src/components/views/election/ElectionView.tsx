@@ -1,10 +1,19 @@
-import { Container, Divider, Loader, Space, ThemeIcon } from '@mantine/core';
+import { Button, Container, Divider, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import { parameter } from '@repo/votura-validators';
-import { IconBug } from '@tabler/icons-react';
+import { IconBug, IconPlus } from '@tabler/icons-react';
 import { Navigate, useParams } from 'react-router';
+import { useCreateBallotPaper } from '../../../swr/ballotPapers/useCreateBallotPaper.ts';
+import { useGetBallotPapers } from '../../../swr/ballotPapers/useGetBallotPapers.ts';
 import { useGetElection } from '../../../swr/elections/useGetElection.ts';
+import { getAddSuccessBallotPaperConfig } from '../../../utils/notifications.ts';
 import { ElectionStats } from './ElectionStats.tsx';
 import { ElectionViewHeader } from './ElectionViewHeader.tsx';
+import {
+  MutateBallotPaperDrawer,
+  type MutateBallotPaperDrawerProps,
+} from './MutateBallotPaperDrawer.tsx';
 
 export interface ElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
@@ -12,13 +21,26 @@ export interface ElectionViewRouteParams extends Record<string, string> {
 
 export const ElectionView = () => {
   const params = useParams<ElectionViewRouteParams>();
-  const { data, isLoading, error } = useGetElection({ electionId: params.electionId });
+  const {
+    data: electionData,
+    isLoading: isElectionLoading,
+    error: electionError,
+  } = useGetElection({ electionId: params.electionId });
+  const {
+    data: ballotPapersData,
+    isLoading: isBallotPapersLoading,
+    error: ballotPapersError,
+  } = useGetBallotPapers(electionData?.id);
+
+  const { trigger, isMutating } = useCreateBallotPaper(electionData?.id);
+
+  const [isMutateDrawerOpen, mutateDrawerActions] = useDisclosure(false);
 
   if (!params.electionId) {
     return <Navigate to={'/elections'} />;
   }
 
-  if (error) {
+  if (electionError || ballotPapersError) {
     return (
       <ThemeIcon size="xl" color="red">
         <IconBug style={{ width: '70%', height: '70%' }} />
@@ -26,7 +48,7 @@ export const ElectionView = () => {
     );
   }
 
-  if (isLoading || data === undefined) {
+  if (isElectionLoading || electionData === undefined || isBallotPapersLoading) {
     return (
       <Container>
         <Loader color="blue" />
@@ -34,15 +56,40 @@ export const ElectionView = () => {
     );
   }
 
+  const onMutate: MutateBallotPaperDrawerProps['onMutate'] = async (update) => {
+    const response = await trigger(update);
+    notifications.show(getAddSuccessBallotPaperConfig(response.name));
+  };
+
   return (
-    <Container fluid>
-      <ElectionViewHeader election={data} />
-      <Divider />
-      <Space h={'md'} />
-      <ElectionStats election={data} />
-      <Space h={'md'} />
-      <Divider />
-      <Space h={'md'} />
-    </Container>
+    <>
+      <MutateBallotPaperDrawer
+        opened={isMutateDrawerOpen}
+        onClose={mutateDrawerActions.close}
+        mutateButtonText={'Create new ballot paper'}
+        onMutate={onMutate}
+        title={'Create Ballot Paper'}
+        isMutating={isMutating}
+      />
+      <Container fluid>
+        <ElectionViewHeader election={electionData} />
+        <Divider />
+        <Space h={'md'} />
+        <ElectionStats election={electionData} />
+        <Space h={'md'} />
+        <Divider />
+        <Space h={'md'} />
+        <Group justify={'space-between'}>
+          <Title order={4}>Ballot Papers</Title>
+          <Button
+            leftSection={<IconPlus size={16} />}
+            variant="light"
+            onClick={mutateDrawerActions.open}
+          >
+            New Ballot Paper
+          </Button>
+        </Group>
+      </Container>
+    </>
   );
 };
