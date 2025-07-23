@@ -10,7 +10,7 @@ import {
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 

@@ -4,7 +4,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
-import { MutateElectionModal, type MutateElectionModalProps } from './MutateElectionModal.tsx';
+import { MutateElectionDrawer, type MutateElectionModalProps } from './MutateElectionDrawer.tsx';
 import {
   ToggleFreezeElectionModal,
   type ToggleFreezeElectionModalProps,
@@ -47,7 +47,7 @@ export const ElectionsSettingsMenu = ({
         onClose={deleteModalActions.close}
         onDelete={onDelete}
       />
-      <MutateElectionModal
+      <MutateElectionDrawer
         election={election}
         opened={mutateModalOpened}
         title={'Edit Election'}
