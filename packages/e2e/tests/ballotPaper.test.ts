@@ -21,7 +21,7 @@ test('should create a ballot paper', async ({ page }) => {
     .nth(1)
     .click();
   await page.getByRole('button', { name: 'New Ballot Paper' }).click();
-  const nameTextbox = page.getByRole('textbox', { name: 'Name' })
+  const nameTextbox = page.getByRole('textbox', { name: 'Name' });
   await nameTextbox.fill(ballotPaper.name);
   if (ballotPaper.description !== undefined) {
     await page.getByRole('textbox', { name: 'Description' }).fill(ballotPaper.description);
