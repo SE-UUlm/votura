@@ -44,24 +44,20 @@ test.describe('MutateElectionModal logic', () => {
   test('EndDateTime value is cleared when StartDateTime is moved beyond EndDateTime', async ({
     page,
   }) => {
-    await page.getByLabel('Start of voting period').click();
-    await page.getByRole('button', { name: '10' }).click();
-    await page.keyboard.press('Escape');
-    await expect(page.getByLabel('End of voting period')).toBeVisible();
-    await expect(page.getByLabel('End of voting period')).toBeEnabled();
-    await page.waitForTimeout(200);
-    await page.getByLabel('End of voting period').click();
-    await page.getByRole('button', { name: '11' }).click();
-    const endInput = page.getByLabel('End of voting period').locator('input');
-    await expect(endInput).not.toHaveValue('');
+    const startPicker = page.getByLabel('Start of voting period');
+    const startPickerID = await startPicker.getAttribute('aria-controls');
+    const endPicker = page.getByLabel('End of voting period');
+    const endPickerID = await endPicker.getAttribute('aria-controls');
 
-    await page.keyboard.press('Escape');
-    await expect(page.getByLabel('Start of voting period')).toBeVisible();
-    await expect(page.getByLabel('Start of voting period')).toBeEnabled();
-    await page.waitForTimeout(200);
-    await page.getByLabel('Start of voting period').click();
-    await page.getByRole('button', { name: 'Next month' }).click();
-    await page.getByRole('button', { name: '10' }).click();
-    await expect(endInput).toHaveValue('');
+    await startPicker.click();
+    await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
+    await endPicker.click();
+    await page.locator(`#${endPickerID}`).getByRole('button', { name: '11' }).click();
+    await expect(endPicker.locator('input')).not.toHaveValue('');
+
+    await startPicker.click();
+    await page.locator(`#${startPickerID}`).getByRole('button', { name: 'Next month' }).click();
+    await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
+    await expect(endPicker.locator('input')).toHaveValue('');
   });
 });
