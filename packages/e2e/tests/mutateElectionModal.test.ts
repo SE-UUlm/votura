@@ -55,7 +55,6 @@ test.describe('MutateElectionModal logic', () => {
     await page.locator(`#${endPickerID}`).getByRole('button', { name: '11' }).click();
     await expect(endPicker).not.toHaveText('');
 
-    await startPicker.click();
     await page.locator(`#${startPickerID}`).getByRole('button', { name: 'Next month' }).click();
     await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
     await expect(endPicker).toHaveText('');
