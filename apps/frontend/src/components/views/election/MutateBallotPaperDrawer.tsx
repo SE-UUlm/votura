@@ -47,7 +47,9 @@ export const MutateBallotPaperDrawer = ({
   });
 
   useEffect(() => {
-    if (!opened) return;
+    if (!opened) {
+      return;
+    }
 
     if (ballotPaper !== undefined) {
       form.setValues(ballotPaper);
