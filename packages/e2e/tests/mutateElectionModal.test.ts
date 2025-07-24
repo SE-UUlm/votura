@@ -55,9 +55,7 @@ test.describe('MutateElectionModal logic', () => {
     await page.locator(`#${endPickerID}`).getByRole('button', { name: '11' }).click();
     await expect(endPicker).not.toHaveText('');
 
-    // switch to next month
-    await page.locator(`#${startPickerID} .mantine-CalendarHeader-nextButton`).click();
-    await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
+    await page.locator(`#${startPickerID}`).getByRole('button', { name: '12' }).click();
     await expect(endPicker).toHaveText('');
   });
 });
