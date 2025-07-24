@@ -1,4 +1,4 @@
-import { Button, Container, Divider, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
+import { Button, Divider, Flex, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
@@ -49,7 +49,7 @@ export const ElectionsView = () => {
         mutateButtonText={'Create new election'}
         isMutating={isMutating}
       />
-      <Container fluid>
+      <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
           <Title order={1}>Elections</Title>
           <Button
@@ -63,7 +63,7 @@ export const ElectionsView = () => {
         <Divider />
         <Space h={'md'} />
         <ElectionsTable data={data} />
-      </Container>
+      </Flex>
     </>
   );
 };

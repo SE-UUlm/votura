@@ -1,13 +1,23 @@
-import { Button, Container, Divider, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
+import {
+  Button,
+  Container,
+  Divider,
+  Flex,
+  Group,
+  Loader,
+  Space,
+  ThemeIcon,
+  Title,
+} from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconPlus } from '@tabler/icons-react';
 import { Navigate, useParams } from 'react-router';
 import { useCreateBallotPaper } from '../../../swr/ballotPapers/useCreateBallotPaper.ts';
-import { useGetBallotPapers } from '../../../swr/ballotPapers/useGetBallotPapers.ts';
 import { useGetElection } from '../../../swr/elections/useGetElection.ts';
 import { getAddSuccessBallotPaperConfig } from '../../../utils/notifications.ts';
+import { BallotPaperBoard } from './ballotPaperBoard/BallotPaperBoard.tsx';
 import { ElectionStats } from './ElectionStats.tsx';
 import { ElectionViewHeader } from './ElectionViewHeader.tsx';
 import {
@@ -26,11 +36,6 @@ export const ElectionView = () => {
     isLoading: isElectionLoading,
     error: electionError,
   } = useGetElection({ electionId: params.electionId });
-  const {
-    data: ballotPapersData,
-    isLoading: isBallotPapersLoading,
-    error: ballotPapersError,
-  } = useGetBallotPapers(electionData?.id);
 
   const { trigger, isMutating } = useCreateBallotPaper(electionData?.id);
 
@@ -40,7 +45,7 @@ export const ElectionView = () => {
     return <Navigate to={'/elections'} />;
   }
 
-  if (electionError || ballotPapersError) {
+  if (electionError) {
     return (
       <ThemeIcon size="xl" color="red">
         <IconBug style={{ width: '70%', height: '70%' }} />
@@ -48,7 +53,7 @@ export const ElectionView = () => {
     );
   }
 
-  if (isElectionLoading || electionData === undefined || isBallotPapersLoading) {
+  if (isElectionLoading || electionData === undefined) {
     return (
       <Container>
         <Loader color="blue" />
@@ -71,7 +76,7 @@ export const ElectionView = () => {
         title={'Create Ballot Paper'}
         isMutating={isMutating}
       />
-      <Container fluid>
+      <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <ElectionViewHeader election={electionData} />
         <Divider />
         <Space h={'md'} />
@@ -89,7 +94,9 @@ export const ElectionView = () => {
             New Ballot Paper
           </Button>
         </Group>
-      </Container>
+        <Space h={'md'} />
+        <BallotPaperBoard electionId={electionData.id} />
+      </Flex>
     </>
   );
 };

@@ -1,0 +1,5 @@
+.ballotPaperBoard {
+    overflow: auto;
+    flex-wrap: nowrap;
+    scrollbar-color: var(--mantine-color-gray-3) transparent;
+}
