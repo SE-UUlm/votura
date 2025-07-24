@@ -9,7 +9,7 @@ export const zodResolver: ZodResolver = (schema) => {
       schema.parse(values);
 
       return {};
-    } catch (e) {
+    } catch (e: unknown) {
       if (e instanceof ZodError) {
         const results: FormErrors = {};
 
