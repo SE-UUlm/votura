@@ -1,8 +1,8 @@
 import { Flex, Skeleton, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
 import { useGetBallotPapers } from '../../../../swr/ballotPapers/useGetBallotPapers.ts';
+import styles from './BallotPaperBoard.module.css';
 import { BallotPaperColumn } from './BallotPaperColumn.tsx';
-import styles from './BallotPaperBoard.module.css'
 
 export interface BallotPaperBoardProps {
   electionId: SelectableElection['id'] | undefined;
@@ -28,9 +28,7 @@ export const BallotPaperBoard = ({ electionId }: BallotPaperBoardProps) => {
   }
 
   if (ballotPapersError !== undefined) {
-      return (
-          <Text c={'red.7'}>The ballot papers could not be loaded. Please try again.</Text>
-      )
+    return <Text c={'red.7'}>The ballot papers could not be loaded. Please try again.</Text>;
   }
 
   return (

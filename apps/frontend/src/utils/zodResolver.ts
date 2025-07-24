@@ -1,7 +1,7 @@
 import type { FormErrors, FormValidateInput } from '@mantine/form';
 import { ZodError, type ZodType } from 'zod/v4';
 
-export type ZodResolver = <S, F>(schema: ZodType<S>) => FormValidateInput<F>
+export type ZodResolver = <S, F>(schema: ZodType<S>) => FormValidateInput<F>;
 
 export const zodResolver: ZodResolver = (schema) => {
   return (values) => {
