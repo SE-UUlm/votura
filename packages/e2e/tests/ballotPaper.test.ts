@@ -32,7 +32,7 @@ test('should create a ballot paper', async ({ page }) => {
     .getByRole('textbox', { name: 'Maximum votes per candidate' })
     .fill(ballotPaper.maxVotesPerCandidate.toString());
   await page.getByRole('button', { name: 'Create new ballot paper' }).click();
-  await expect(page.getByRole('textbox', { name: 'Name' })).toBeHidden();
+  await expect(page.getByText(ballotPaper.name, { exact: true })).toBeHidden({ timeout: 10000 }); // wait for the drawer to close
   await expect(page.getByText(ballotPaper.name, { exact: true })).toBeVisible();
   if (ballotPaper.description !== undefined) {
     await expect(page.getByText(ballotPaper.description, { exact: true })).toBeVisible();
