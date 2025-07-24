@@ -53,11 +53,11 @@ test.describe('MutateElectionModal logic', () => {
     await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
     await endPicker.click();
     await page.locator(`#${endPickerID}`).getByRole('button', { name: '11' }).click();
-    await expect(endPicker.locator('input')).not.toHaveValue('');
+    await expect(endPicker).not.toHaveText('');
 
     await startPicker.click();
     await page.locator(`#${startPickerID}`).getByRole('button', { name: 'Next month' }).click();
     await page.locator(`#${startPickerID}`).getByRole('button', { name: '10' }).click();
-    await expect(endPicker.locator('input')).toHaveValue('');
+    await expect(endPicker).toHaveText('');
   });
 });
