@@ -58,7 +58,7 @@ export const MutateBallotPaperDrawer = ({
     }
   }, [ballotPaper, opened]);
 
-  const onMutateTransform = () => {
+  const onMutateTransform = (): void => {
     const validationResult = form.validate();
 
     if (validationResult.hasErrors) {
