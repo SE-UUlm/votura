@@ -13,6 +13,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconPlus } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { Navigate, useParams } from 'react-router';
 import { useCreateBallotPaper } from '../../../swr/ballotPapers/useCreateBallotPaper.ts';
 import { useGetElection } from '../../../swr/elections/useGetElection.ts';
@@ -29,7 +30,7 @@ export interface ElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
 }
 
-export const ElectionView = () => {
+export const ElectionView = (): JSX.Element => {
   const params = useParams<ElectionViewRouteParams>();
   const {
     data: electionData,

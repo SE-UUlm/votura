@@ -2,7 +2,7 @@ import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
-import type { PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
@@ -20,13 +20,13 @@ export interface ElectionsTableProps {
   data: SelectableElection[];
 }
 
-const TableText = ({ children }: PropsWithChildren) => (
+const TableText = ({ children }: PropsWithChildren): JSX.Element => (
   <Text lineClamp={1} size={'sm'}>
     {children}
   </Text>
 );
 
-export const ElectionsTable = ({ data }: ElectionsTableProps) => {
+export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
   const navigate = useNavigate();
 
   const rows = data.map((election) => {

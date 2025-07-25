@@ -1,5 +1,6 @@
 import { Flex, Skeleton, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
+import type { JSX } from 'react';
 import { useGetBallotPapers } from '../../../../swr/ballotPapers/useGetBallotPapers.ts';
 import styles from './BallotPaperBoard.module.css';
 import { BallotPaperColumn } from './BallotPaperColumn.tsx';
@@ -8,7 +9,7 @@ export interface BallotPaperBoardProps {
   electionId: SelectableElection['id'] | undefined;
 }
 
-export const BallotPaperBoard = ({ electionId }: BallotPaperBoardProps) => {
+export const BallotPaperBoard = ({ electionId }: BallotPaperBoardProps): JSX.Element => {
   const {
     data: ballotPapersData,
     isLoading: isBallotPapersLoading,

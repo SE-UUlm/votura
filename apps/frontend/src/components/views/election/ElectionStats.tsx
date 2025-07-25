@@ -1,5 +1,6 @@
 import { Grid, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
+import type { JSX } from 'react';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
 
@@ -7,7 +8,7 @@ export interface ElectionStatsProps {
   election: SelectableElection;
 }
 
-export const ElectionStats = ({ election }: ElectionStatsProps) => {
+export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => {
   return (
     <Grid>
       <Grid.Col span={6}>

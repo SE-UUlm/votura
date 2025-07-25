@@ -2,7 +2,7 @@ import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
-import type { ReactNode } from 'react';
+import type { JSX, ReactNode } from 'react';
 import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
 import { MutateElectionDrawer, type MutateElectionModalProps } from './MutateElectionDrawer.tsx';
 import {
@@ -26,7 +26,7 @@ export const ElectionsSettingsMenu = ({
   onMutate,
   onToggleFreeze,
   isMutating,
-}: ElectionsTableMenuProps) => {
+}: ElectionsTableMenuProps): JSX.Element => {
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [toggleFreezeModalOpened, toggleFreezeModalActions] = useDisclosure(false);

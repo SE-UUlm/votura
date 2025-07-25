@@ -12,7 +12,7 @@ import {
 import { DatePickerInput } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
-import { type ReactNode, useEffect } from 'react';
+import { type JSX, type ReactNode, useEffect } from 'react';
 
 export interface MutateElectionModalProps {
   election?: UpdateableElection;
@@ -37,7 +37,7 @@ export const MutateElectionDrawer = ({
   mutateButtonText,
   title,
   isMutating,
-}: MutateElectionModalProps) => {
+}: MutateElectionModalProps): JSX.Element => {
   const form = useForm<MutateElectionFormValues>({
     mode: 'uncontrolled',
     validate: {

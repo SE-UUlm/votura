@@ -11,7 +11,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { type UpdateableBallotPaper, updateableBallotPaperObject } from '@repo/votura-validators';
-import { type ReactNode, useEffect } from 'react';
+import { type JSX, type ReactNode, useEffect } from 'react';
 import { zodResolver } from '../../../utils/zodResolver.ts';
 
 export interface MutateBallotPaperDrawerProps {
@@ -40,7 +40,7 @@ export const MutateBallotPaperDrawer = ({
   mutateButtonText,
   title,
   isMutating,
-}: MutateBallotPaperDrawerProps) => {
+}: MutateBallotPaperDrawerProps): JSX.Element => {
   const form = useForm<UpdateableBallotPaper>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableBallotPaperObject),

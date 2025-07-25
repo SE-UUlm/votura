@@ -1,7 +1,8 @@
 import { Code, Group, Text } from '@mantine/core';
+import type { JSX } from 'react';
 import { HEADER_HEIGHT } from '../utils.ts';
 
-export const NavbarHeader = () => {
+export const NavbarHeader = (): JSX.Element => {
   return (
     <Group justify="space-between" h={HEADER_HEIGHT}>
       <Text fw={700}>Votura</Text>

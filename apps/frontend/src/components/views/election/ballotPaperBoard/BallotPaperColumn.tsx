@@ -1,12 +1,13 @@
 import { ActionIcon, Divider, Group, Paper, Stack, Text, useMantineTheme } from '@mantine/core';
 import type { SelectableBallotPaper } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
+import type { JSX } from 'react';
 
 export interface BallotPaperColumnProps {
   ballotPaper: SelectableBallotPaper;
 }
 
-export const BallotPaperColumn = ({ ballotPaper }: BallotPaperColumnProps) => {
+export const BallotPaperColumn = ({ ballotPaper }: BallotPaperColumnProps): JSX.Element => {
   const theme = useMantineTheme();
 
   return (

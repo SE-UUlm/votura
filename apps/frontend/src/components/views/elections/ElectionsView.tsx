@@ -2,6 +2,7 @@ import { Button, Divider, Flex, Group, Loader, Space, ThemeIcon, Title } from '@
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
@@ -13,7 +14,7 @@ import {
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
 
-export const ElectionsView = () => {
+export const ElectionsView = (): JSX.Element => {
   const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 
