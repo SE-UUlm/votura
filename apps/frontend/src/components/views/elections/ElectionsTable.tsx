@@ -15,6 +15,7 @@ import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
+import dayjs from 'dayjs';
 
 export interface ElectionsTableProps {
   data: SelectableElection[];
@@ -57,7 +58,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
           <TableText>{election.description}</TableText>
         </Table.Td>
         <Table.Td>
-          <TableText>{new Date(election.modifiedAt).toLocaleString('en-US')}</TableText>
+          <TableText>{dayjs(election.modifiedAt).format('lll')}</TableText>
         </Table.Td>
         <Table.Td>
           <BooleanBadge isTrue={election.configFrozen} />

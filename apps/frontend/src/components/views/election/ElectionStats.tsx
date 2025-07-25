@@ -3,6 +3,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import type { JSX } from 'react';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
+import dayjs from 'dayjs';
 
 export interface ElectionStatsProps {
   election: SelectableElection;
@@ -37,7 +38,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
         <ElectionStatField
           title={'Start of voting'}
           content={
-            <Text size={'sm'}>{new Date(election.votingStartAt).toLocaleString('en-US')}</Text>
+            <Text size={'sm'}>{dayjs(election.votingStartAt).format('lll')}</Text>
           }
         />
       </Grid.Col>
@@ -45,7 +46,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
         <ElectionStatField
           title={'End of voting'}
           content={
-            <Text size={'sm'}>{new Date(election.votingEndAt).toLocaleString('en-US')}</Text>
+            <Text size={'sm'}>{dayjs(election.votingEndAt).format('lll')}</Text>
           }
         />
       </Grid.Col>
