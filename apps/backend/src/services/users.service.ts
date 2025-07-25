@@ -1,4 +1,5 @@
 import { db } from '@repo/db';
+import type { User as DBUser } from '@repo/db/types';
 import { hashPassword, verifyPassword } from '@repo/hash';
 import type {
   ApiTokenUser,
@@ -7,6 +8,7 @@ import type {
   SelectableUser,
   User,
 } from '@repo/votura-validators';
+import type { Selectable } from 'kysely';
 import type { AccessTokenPayload } from '../auth/types.js';
 import {
   generateUserTokens,
@@ -76,7 +78,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
     .executeTakeFirstOrThrow();
 }
 
-export async function setUserVerified(userId: string): Promise<void> {
+export async function setUserVerified(userId: Selectable<DBUser>['id']): Promise<void> {
   await db
     .updateTable('user')
     .set({ verified: true })
@@ -84,7 +86,7 @@ export async function setUserVerified(userId: string): Promise<void> {
     .executeTakeFirstOrThrow();
 }
 
-export async function deleteUser(userId: string): Promise<void> {
+export async function deleteUser(userId: Selectable<DBUser>['id']): Promise<void> {
   await db.deleteFrom('user').where('id', '=', userId).executeTakeFirstOrThrow();
 }
 
@@ -203,7 +205,7 @@ export const refreshUserTokens = async (
 
 export const logoutUser = async (
   accessTokenPayload: AccessTokenPayload,
-  userId: string,
+  userId: Selectable<DBUser>['id'],
 ): Promise<void> => {
   // Add access token to blacklist
   const expiresAt = new Date(accessTokenPayload.exp * 1000);
