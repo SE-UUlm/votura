@@ -57,7 +57,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
           <TableText>{election.description}</TableText>
         </Table.Td>
         <Table.Td>
-          <TableText>{new Date(election.createdAt).toLocaleString('en-US')}</TableText>
+          <TableText>{new Date(election.modifiedAt).toLocaleString('en-US')}</TableText>
         </Table.Td>
         <Table.Td>
           <BooleanBadge isTrue={election.configFrozen} />
@@ -97,7 +97,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Description</Table.Th>
-          <Table.Th>Created at</Table.Th>
+          <Table.Th>Last modified</Table.Th>
           <Table.Th>Frozen</Table.Th>
           <Table.Th />
         </Table.Tr>
