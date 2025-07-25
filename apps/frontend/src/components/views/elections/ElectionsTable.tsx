@@ -2,6 +2,7 @@ import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
+import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
@@ -15,7 +16,6 @@ import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import dayjs from 'dayjs';
 
 export interface ElectionsTableProps {
   data: SelectableElection[];

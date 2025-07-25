@@ -1,9 +1,9 @@
 import { Grid, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
+import dayjs from 'dayjs';
 import type { JSX } from 'react';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
-import dayjs from 'dayjs';
 
 export interface ElectionStatsProps {
   election: SelectableElection;
@@ -37,17 +37,13 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
       <Grid.Col span={6}>
         <ElectionStatField
           title={'Start of voting'}
-          content={
-            <Text size={'sm'}>{dayjs(election.votingStartAt).format('lll')}</Text>
-          }
+          content={<Text size={'sm'}>{dayjs(election.votingStartAt).format('lll')}</Text>}
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <ElectionStatField
           title={'End of voting'}
-          content={
-            <Text size={'sm'}>{dayjs(election.votingEndAt).format('lll')}</Text>
-          }
+          content={<Text size={'sm'}>{dayjs(election.votingEndAt).format('lll')}</Text>}
         />
       </Grid.Col>
     </Grid>
