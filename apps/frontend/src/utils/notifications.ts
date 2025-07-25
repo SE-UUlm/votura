@@ -1,4 +1,5 @@
 import type { NotificationData } from '@mantine/notifications';
+import type { SelectableBallotPaper } from '@repo/votura-validators';
 import type { MockElection } from '../store/useStore.ts';
 
 export const getDeleteSuccessElectionConfig = (name: string): NotificationData => {
@@ -29,5 +30,14 @@ export const getAddSuccessElectionConfig = (name: MockElection['name']): Notific
   return {
     title: 'Success',
     message: `The election "${name}" has been created.`,
+  };
+};
+
+export const getAddSuccessBallotPaperConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The ballot paper "${name}" has been created.`,
   };
 };

@@ -1,7 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconAlertTriangle } from '@tabler/icons-react';
-import type { MouseEventHandler } from 'react';
+import type { JSX, MouseEventHandler } from 'react';
 
 export interface ToggleFreezeElectionModalProps {
   election: SelectableElection;
@@ -15,7 +15,7 @@ export const ToggleFreezeElectionModal = ({
   opened,
   onClose,
   onToggleFreeze,
-}: ToggleFreezeElectionModalProps) => {
+}: ToggleFreezeElectionModalProps): JSX.Element => {
   const action = election.configFrozen ? 'Unfreeze' : 'Freeze';
   const titleText = action + ' election config';
   const redColor = 'var(--mantine-color-red-7)';

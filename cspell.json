@@ -73,6 +73,7 @@
     "jobname",
     "nodename",
     "nodeport",
-    "runid"
+    "runid",
+    "mantine"
   ]
 }

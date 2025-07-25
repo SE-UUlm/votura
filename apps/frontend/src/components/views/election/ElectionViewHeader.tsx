@@ -2,6 +2,7 @@ import { ActionIcon, Button, Group, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
@@ -18,7 +19,7 @@ export interface ElectionViewHeaderProps {
   election: SelectableElection;
 }
 
-export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps) => {
+export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
   const navigate = useNavigate();
   const { trigger, isMutating } = useUpdateElection(election.id);
 
