@@ -7,7 +7,7 @@ export const heartBeatPathObject: OpenAPIV3.PathItemObject = {
   get: {
     summary: 'Check if the application is ready to respond',
     description:
-      'This heart beat check can be used for waiting on the application to be responsive',
+      'This heartbeat check can be used for waiting on the application to be responsive',
     tags: [Tag.miscellaneous],
     operationId: 'getHeartBeat',
     responses: {

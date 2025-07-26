@@ -77,9 +77,9 @@ export const startTestEnv = async (): Promise<void> => {
     },
     stdio: 'inherit',
   });
-  logger.info('Waiting for a heart-beat from the backend...');
+  logger.info('Waiting for a heartbeat from the backend...');
   await waitOn({
-    resources: ['http://localhost:4000/heart-beat'],
+    resources: ['http://localhost:4000/heartbeat'],
     delay: 1000,
     timeout: 30000,
   });

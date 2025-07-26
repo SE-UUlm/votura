@@ -100,6 +100,10 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
       description: 'Managing CRUD operations for voter groups.',
     },
     {
+      name: Tag.voting,
+      description: 'Managing API endpoints for the voting process.',
+    },
+    {
       name: Tag.miscellaneous,
       description: 'Contains various additional resources.',
     },
@@ -131,6 +135,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/voterGroups`]: voterGroupsPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
-    [`/heart-beat`]: heartBeatPathObject,
+    // [`/voting/getElections`]: getElectionsPathObject,
+    [`/heartbeat`]: heartBeatPathObject,
   },
 };
