@@ -1,4 +1,5 @@
 import { NavLink, type NavLinkProps } from '@mantine/core';
+import type { JSX } from 'react';
 import { NavLink as RouterNavLink } from 'react-router';
 
 export interface RoutingNavLinkProps {
@@ -7,7 +8,7 @@ export interface RoutingNavLinkProps {
   label: NavLinkProps['label'];
 }
 
-export const RoutingNavbarLink = ({ to, icon, label }: RoutingNavLinkProps) => {
+export const RoutingNavbarLink = ({ to, icon, label }: RoutingNavLinkProps): JSX.Element => {
   return (
     <RouterNavLink to={to} style={{ textDecoration: 'none' }}>
       {({ isActive }) => (
