@@ -13,7 +13,7 @@ import { unfreezePathObject } from './elections/unfreezePathObject.js';
 import { parameter } from './globals/parameter.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
 import { Tag } from './globals/tag.js';
-import { heartbeatPathObject } from './heartBeatPathObject.js';
+import { heartbeatPathObject } from './heartbeatPathObject.js';
 import { loginPathObject } from './users/loginPathObject.js';
 import { logoutPathObject } from './users/logoutPathObject.js';
 import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
