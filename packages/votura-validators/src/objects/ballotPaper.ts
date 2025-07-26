@@ -9,9 +9,11 @@ export const ballotPaperObject = z.object({
   ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the ballot paper.',
+    example: 'My important ballot paper',
   }),
   description: z.string().min(1).max(256).optional().register(voturaMetadataRegistry, {
     description: 'The description text of the ballot paper.',
+    example: 'This is a super important ballot paper description.',
   }),
   maxVotes: z
     .int32()
