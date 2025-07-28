@@ -175,9 +175,6 @@ async function createVoterGroupTable(db: Kysely<any>): Promise<void> {
     .addColumn(VoterGroupColumnName.name, 'varchar(256)', (col) => col.notNull())
     .addColumn(VoterGroupColumnName.description, 'varchar(256)')
     .addColumn(VoterGroupColumnName.pubKey, 'text')
-    .addColumn(VoterGroupColumnName.voterTokensGenerated, 'boolean', (col) =>
-      col.notNull().defaultTo(false),
-    )
     .addColumn(VoterGroupColumnName.voterGroupCreatorId, 'uuid', (col) => col.notNull())
     .execute();
 }

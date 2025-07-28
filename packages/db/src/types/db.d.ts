@@ -137,7 +137,6 @@ export interface VoterGroup {
   name: string;
   pubKey: string | null;
   voterGroupCreatorId: string;
-  voterTokensGenerated: Generated<boolean>;
 }
 
 export interface VoterRegister {
