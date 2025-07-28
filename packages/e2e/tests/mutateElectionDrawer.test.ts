@@ -53,6 +53,7 @@ test.describe('MutateElectionDrawer logic', () => {
     await page.getByRole('button', { name: '11' }).nth(1).click();
     await expect(endPicker).not.toHaveText('');
 
+    await startPicker.click();
     await page.getByRole('button', { name: '12' }).nth(0).click();
     await expect(endPicker).toHaveText('');
   });

@@ -22,9 +22,10 @@ test('should create an election', async ({ page }) => {
   if (election.description !== undefined) {
     await page.getByLabel('Description').fill(election.description);
   }
-  await page.getByRole('button', { name: 'Voting period' }).click();
-  await page.getByRole('button', { name: '16' }).click();
-  await page.getByRole('button', { name: '18' }).click();
+  await page.getByRole('button', { name: 'Start of voting period' }).click();
+  await page.getByRole('button', { name: '16' }).nth(0).click();
+  await page.getByRole('button', { name: 'End of voting period' }).click();
+  await page.getByRole('button', { name: '18' }).nth(1).click();
   await page.getByRole('button', { name: 'Create new election' }).click();
 
   await expect(page).toHaveURL(
