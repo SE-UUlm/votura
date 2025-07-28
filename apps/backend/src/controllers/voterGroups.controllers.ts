@@ -151,7 +151,7 @@ export const createVoterTokens = async (
   const voterIds = await getVoterIdsForVoterGroup(req.params.voterGroupId);
   const voterTokens: string[] = [];
   for (const voterId of voterIds) {
-    const votingToken = jwt.sign({ voter: voterId }, privateKey, {
+    const votingToken = jwt.sign({ sub: voterId }, privateKey, {
       algorithm: JWT_CONFIG.algorithm,
     });
     voterTokens.push(votingToken);

@@ -1,4 +1,4 @@
-import type { User } from '@repo/votura-validators';
+import type { User, Uuid } from '@repo/votura-validators';
 
 export interface UserJwtPayload {
   sub: User['id'];
@@ -17,6 +17,6 @@ export interface AccessTokenPayload extends UserJwtPayload {
 }
 
 export interface VoterJwtPayload {
-  sub: User['id'];
+  sub: Uuid;
   iat?: number;
 }
