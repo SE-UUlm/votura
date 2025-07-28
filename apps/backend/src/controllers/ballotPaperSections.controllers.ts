@@ -131,7 +131,7 @@ export const removeCandidateFromBallotPaperSection = async (
   if (result === null) {
     res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
-        message: 'Candidate not linked to ballot paper section',
+        message: 'Candidate not linked to ballot paper section, no candidate was removed.',
       }),
     );
     return;

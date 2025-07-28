@@ -1,6 +1,6 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
-import type { MouseEventHandler } from 'react';
+import type { JSX, MouseEventHandler } from 'react';
 
 export interface DeleteElectionModalProps {
   election: SelectableElection;
@@ -14,7 +14,7 @@ export const DeleteElectionModal = ({
   opened,
   onClose,
   onDelete,
-}: DeleteElectionModalProps) => {
+}: DeleteElectionModalProps): JSX.Element => {
   return (
     <Modal opened={opened} onClose={onClose} title={'Deleting election'}>
       <Text>You are about to delete the election:</Text>

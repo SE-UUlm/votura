@@ -28,10 +28,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Updates the configuration of the requested candidate with the provided information.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'The candidate can only be updated if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The candidate can only be updated if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateCandidateById',
     requestBody: {
@@ -99,10 +96,7 @@ export const candidateIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Deletes the requested candidate.\n' +
       'The user of the API access token needs access to the linked election.\n' +
-      'The candidate can only be deleted if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The candidate can only be deleted if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteCandidateById',
     responses: {

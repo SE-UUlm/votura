@@ -31,10 +31,8 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     description:
       'Adds an existing candidate to the specified ballot paper section. ' +
       'The user of the API access token needs access to the linked ballot paper / election. ' +
-      'A candidate can only be added if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A candidate can only be added if the linked election is not frozen. ' +
+      'The candidate can not be added multiple times to the same ballot paper section.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'addCandidateToBallotPaperSection',
     requestBody: {
@@ -75,10 +73,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
     description:
       'Removes an existing candidate from the specified ballot paper section.\n' +
       'The user of the API access token needs access to the linked ballot paper / election. ' +
-      'A candidate can only be removed from the ballot paper section if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A candidate can only be removed from the ballot paper section if the linked election is not frozen.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'removeCandidateFromBallotPaperSection',
     requestBody: {

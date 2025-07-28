@@ -5,6 +5,9 @@ export const apiRoutes = {
   elections: {
     base: '/elections',
     byId: (id: SelectableElection['id']): string => `/elections/${id}`,
+    ballotPapers: {
+      base: (id: SelectableElection['id']): string => `/elections/${id}/ballotPapers`,
+    },
   },
   users: {
     base: '/users',

@@ -2,7 +2,8 @@ import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
-import type { PropsWithChildren } from 'react';
+import dayjs from 'dayjs';
+import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
@@ -13,20 +14,20 @@ import {
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
-import type { MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 
 export interface ElectionsTableProps {
   data: SelectableElection[];
 }
 
-const TableText = ({ children }: PropsWithChildren) => (
+const TableText = ({ children }: PropsWithChildren): JSX.Element => (
   <Text lineClamp={1} size={'sm'}>
     {children}
   </Text>
 );
 
-export const ElectionsTable = ({ data }: ElectionsTableProps) => {
+export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
   const navigate = useNavigate();
 
   const rows = data.map((election) => {
@@ -57,7 +58,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
           <TableText>{election.description}</TableText>
         </Table.Td>
         <Table.Td>
-          <TableText>{new Date(election.createdAt).toLocaleString('en-US')}</TableText>
+          <TableText>{dayjs(election.modifiedAt).format('lll')}</TableText>
         </Table.Td>
         <Table.Td>
           <BooleanBadge isTrue={election.configFrozen} />
@@ -97,7 +98,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps) => {
         <Table.Tr>
           <Table.Th>Name</Table.Th>
           <Table.Th>Description</Table.Th>
-          <Table.Th>Created at</Table.Th>
+          <Table.Th>Last modified</Table.Th>
           <Table.Th>Frozen</Table.Th>
           <Table.Th />
         </Table.Tr>

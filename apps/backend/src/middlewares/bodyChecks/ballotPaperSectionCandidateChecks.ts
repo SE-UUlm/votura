@@ -1,13 +1,16 @@
 import {
   insertableBallotPaperSectionCandidateObject,
   removableBallotPaperSectionCandidateObject,
+  response400Object,
   zodErrorToResponse400,
+  type BallotPaperSection,
   type Election,
   type Response400,
   type Response404,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import { isCandidateLinkedToBallotPaperSection } from '../../services/candidates.service.js';
 import {
   checkCandidateExistsHelper,
   checkElectionIsParentHelper,
@@ -105,6 +108,30 @@ export async function checkElectionIsParent(
   }
 
   await checkElectionIsParentHelper(req.params.electionId, res.locals.candidateId, res, next);
+}
+
+export async function checkCandidateNotLinkedToBallotPaperSection(
+  req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
+  res: Response<Response400, { candidateId?: string }>,
+  next: NextFunction,
+): Promise<void> {
+  if (res.locals.candidateId === undefined) {
+    throw new Error('Candidate ID is not set in response locals');
+  }
+  if (
+    await isCandidateLinkedToBallotPaperSection(
+      res.locals.candidateId,
+      req.params.ballotPaperSectionId,
+    )
+  ) {
+    res.status(HttpStatusCode.badRequest).json(
+      response400Object.parse({
+        message: 'The provided candidate is already linked to the ballot paper section.',
+      }),
+    );
+  } else {
+    next();
+  }
 }
 
 export const defaultBallotPaperSectionCandidateChecks = [

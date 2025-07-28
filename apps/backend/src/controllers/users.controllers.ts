@@ -17,6 +17,7 @@ import type { AccessTokenPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createUser as createPersistentUser,
+  deleteUser as deletePersistentUser,
   findUserBy,
   LoginError,
   loginUser,
@@ -52,6 +53,14 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
   } else {
     res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
   }
+};
+
+export const deleteUser = async (
+  _req: Request,
+  res: Response<void, { user: SelectableUser }>,
+): Promise<void> => {
+  await deletePersistentUser(res.locals.user.id);
+  res.sendStatus(HttpStatusCode.noContent);
 };
 
 export type LoginResponse = Response<ApiTokenUser | Response400 | Response401 | Response403>;

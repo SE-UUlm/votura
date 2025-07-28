@@ -1,16 +1,20 @@
-import { Button, Container, Divider, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
+import { Button, Divider, Flex, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
 import { getAddSuccessElectionConfig } from '../../../utils/notifications.ts';
-import { MutateElectionModal, type MutateElectionModalProps } from '../../MutateElectionModal.tsx';
+import {
+  MutateElectionDrawer,
+  type MutateElectionModalProps,
+} from '../../MutateElectionDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
 
-export const ElectionsView = () => {
+export const ElectionsView = (): JSX.Element => {
   const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 
@@ -38,7 +42,7 @@ export const ElectionsView = () => {
 
   return (
     <>
-      <MutateElectionModal
+      <MutateElectionDrawer
         opened={mutateModalOpened}
         title={'New Election'}
         onMutate={onMutate}
@@ -46,7 +50,7 @@ export const ElectionsView = () => {
         mutateButtonText={'Create new election'}
         isMutating={isMutating}
       />
-      <Container fluid>
+      <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
           <Title order={1}>Elections</Title>
           <Button
@@ -60,7 +64,7 @@ export const ElectionsView = () => {
         <Divider />
         <Space h={'md'} />
         <ElectionsTable data={data} />
-      </Container>
+      </Flex>
     </>
   );
 };
