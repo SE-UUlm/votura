@@ -135,7 +135,6 @@ export interface VoterGroup {
   id: Generated<string>;
   modifiedAt: Generated<Timestamp>;
   name: string;
-  privKey: string | null;
   pubKey: string | null;
   voterGroupCreatorId: string;
   voterTokensGenerated: Generated<boolean>;

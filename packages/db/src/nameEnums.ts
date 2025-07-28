@@ -88,7 +88,6 @@ export enum VoterGroupColumnName {
   name = 'name',
   description = 'description',
   pubKey = 'pubKey',
-  privKey = 'privKey',
   voterTokensGenerated = 'voterTokensGenerated',
   voterGroupCreatorId = 'voterGroupCreatorId',
 }
