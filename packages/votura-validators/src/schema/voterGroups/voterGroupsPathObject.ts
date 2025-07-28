@@ -29,7 +29,7 @@ export const voterGroupsPathObject: OpenAPIV3.PathItemObject = {
       'The user of the API access token needs access to all linked ballot papers & elections.\n' +
       'The voter group can only be created if all elections of the linked ballot papers are not frozen.\n' +
       'The user can only link one ballot paper per election to the same voter group.\n' +
-      'It is allowed to link ballot papers from different elections to the same voter group.',
+      'It is allowed to link ballot papers from different elections to the same voter group, this can be helpful to give a voter with one voting token access to multiple elections.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'createVoterGroup',
     requestBody: {

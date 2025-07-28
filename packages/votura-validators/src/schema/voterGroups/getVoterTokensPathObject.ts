@@ -20,13 +20,12 @@ export const getVoterTokensPathObject: OpenAPIV3.PathItemObject = {
     tags: [Tag.voterGroups],
     summary: 'Create voter tokens for a specific voter group',
     description:
-      'Creates and returns voter tokens for every voter in the requested voter group.\n' +
-      'The user of the API access token needs access to the voter group and all linked ballot papers & elections.\n' +
-      'The voter tokens for a voter group can only be created if all linked ballot papers & elections are frozen.\n' +
-      'The voter tokens can only be created once after freezing.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'Creates and returns voter tokens for every voter in the requested voter group. ' +
+      'The user of the API access token needs access to the voter group. ' +
+      'The voter tokens for a voter group can only be created if all linked elections (ballot papers) are frozen. ' +
+      'The voter tokens can only be created once after freezing.\n\n' +
+      'If one linked election will be unfrozen, the voter tokens for all voter groups with a link to this election will be invalid.' +
+      'The voting tokens can be created again after all linked elections of the voter group are frozen again.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getVoterTokensForId',
     responses: {
@@ -43,8 +42,9 @@ export const getVoterTokensPathObject: OpenAPIV3.PathItemObject = {
               uniqueItems: true,
               items: {
                 description:
-                  'The voter token for a voter.\n' +
-                  'This token is used to authenticate the voter for the ballot papers.',
+                  'The JWT voting token for a voter.\n' +
+                  'This token is used to authenticate the voter for the linked ballot papers. ' +
+                  'The JWT payload contains the voter ID.',
                 type: 'string',
                 // TODO: Update after implementation -> maybe dedicated zod schema
               },
