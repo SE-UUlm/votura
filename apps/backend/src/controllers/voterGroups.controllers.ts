@@ -12,13 +12,18 @@ import {
   type SelectableVoterGroup,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
+import jwt from 'jsonwebtoken';
+import { generateRSAKeyPair } from '../auth/generateJWTKeyPair.js';
+import { JWT_CONFIG } from '../auth/jwtConfig.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createVoterGroup as createPersistentVoterGroup,
   deleteVoterGroup as deletePersistentVoterGroup,
   getVoterGroup,
   getVoterGroupsForUser,
+  getVoterIdsForVoterGroup,
   updateVoterGroup as updatePersistentVoterGroup,
+  updateVoterGroupPubKey,
 } from '../services/voterGroups.service.js';
 import {
   isVoterGroupValidationError,
@@ -76,7 +81,7 @@ export const getVoterGroups = async (
 };
 
 export const updateVoterGroup = async (
-  req: Request<{ voterGroupId: string }>,
+  req: Request<{ voterGroupId: SelectableVoterGroup['id'] }>,
   res: Response<
     SelectableVoterGroup | Response400 | Response403 | Response404 | Response500,
     { user: SelectableUser }
@@ -121,7 +126,7 @@ export const updateVoterGroup = async (
 };
 
 export const getSpecificVoterGroup = async (
-  req: Request<{ voterGroupId: string }>,
+  req: Request<{ voterGroupId: SelectableVoterGroup['id'] }>,
   res: Response<SelectableVoterGroup, { user: SelectableUser }>,
 ): Promise<void> => {
   const voterGroup = await getVoterGroup(req.params.voterGroupId);
@@ -129,9 +134,28 @@ export const getSpecificVoterGroup = async (
 };
 
 export const deleteVoterGroup = async (
-  req: Request<{ voterGroupId: string }>,
+  req: Request<{ voterGroupId: SelectableVoterGroup['id'] }>,
   res: Response<void, { user: SelectableUser }>,
 ): Promise<void> => {
   await deletePersistentVoterGroup(req.params.voterGroupId);
   res.status(HttpStatusCode.noContent).send();
+};
+
+export const createVoterTokens = async (
+  req: Request<{ voterGroupId: SelectableVoterGroup['id'] }>,
+  res: Response<string[], { user: SelectableUser }>,
+): Promise<void> => {
+  const { privateKey, publicKey } = generateRSAKeyPair();
+  await updateVoterGroupPubKey(req.params.voterGroupId, publicKey);
+
+  const voterIds = await getVoterIdsForVoterGroup(req.params.voterGroupId);
+  const voterTokens: string[] = [];
+  for (const voterId of voterIds) {
+    const votingToken = jwt.sign({ voter: voterId }, privateKey, {
+      algorithm: JWT_CONFIG.algorithm,
+    });
+    voterTokens.push(votingToken);
+  }
+
+  res.status(HttpStatusCode.ok).send(voterTokens);
 };
