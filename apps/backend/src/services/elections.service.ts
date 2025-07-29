@@ -211,10 +211,7 @@ export const isElectionGeneratingKeys = async (
     .where('id', '=', electionId)
     .executeTakeFirstOrThrow();
 
-  if (result.pubKey === null && result.configFrozen === true) {
-    return true;
-  }
-  return false;
+  return result.pubKey === null && result.configFrozen;
 };
 
 /**
