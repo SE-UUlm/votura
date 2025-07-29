@@ -222,3 +222,17 @@ export const logoutUser = async (
     .where('id', '=', userId)
     .executeTakeFirstOrThrow();
 };
+
+export const isAccessTokenBlacklisted = async (tokenId: string): Promise<boolean> => {
+  const blacklistedToken = await db
+    .selectFrom('accessTokenBlacklist')
+    .select('accessTokenId')
+    .where('accessTokenId', '=', tokenId)
+    .where('expiresAt', '>', new Date())
+    .executeTakeFirst();
+
+  if (blacklistedToken === undefined) {
+    return false; // Token is not blacklisted
+  }
+  return true; // Token is blacklisted
+};

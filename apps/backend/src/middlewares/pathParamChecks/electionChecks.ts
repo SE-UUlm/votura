@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import {
   response403Object,
   response404Object,
@@ -12,6 +11,13 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import {
+  checkElectionExists as checkElectionExistsService,
+  getElectionVotingStart,
+  isElectionFrozen,
+  isElectionGeneratingKeys,
+  isUserOwnerOfElection,
+} from '../../services/elections.service.js';
 
 /**
  * Checks if the election ID in the request parameters is a valid UUID.
@@ -49,13 +55,7 @@ export async function checkElectionExists(
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('election')
-    .select(['id'])
-    .where('id', '=', req.params.electionId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await checkElectionExistsService(req.params.electionId))) {
     res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided election does not exist!',
@@ -80,14 +80,7 @@ export async function checkUserOwnerOfElection(
   res: Response<Response403, { user: SelectableUser }>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('election')
-    .select(['id', 'electionCreatorId'])
-    .where('id', '=', req.params.electionId)
-    .where('electionCreatorId', '=', res.locals.user.id)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await isUserOwnerOfElection(req.params.electionId, res.locals.user.id))) {
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'You do not have the permission to access or modify this election.',
@@ -112,13 +105,7 @@ export async function checkElectionNotFrozen(
   res: Response<Response403>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('election')
-    .select(['id', 'configFrozen'])
-    .where('id', '=', req.params.electionId)
-    .executeTakeFirstOrThrow();
-
-  if (result.configFrozen) {
+  if (await isElectionFrozen(req.params.electionId)) {
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'The election is frozen and cannot be modified.',
@@ -143,15 +130,7 @@ export async function checkElectionNotGenerateKeys(
   res: Response<Response403>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('election')
-    .select(['id', 'configFrozen', 'pubKey'])
-    .where('id', '=', req.params.electionId)
-    .executeTakeFirstOrThrow();
-
-  if (!result.configFrozen || (result.configFrozen && result.pubKey !== null)) {
-    next();
-  } else {
+  if (await isElectionGeneratingKeys(req.params.electionId)) {
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message:
@@ -160,6 +139,8 @@ export async function checkElectionNotGenerateKeys(
           'Please retry in some minutes.',
       }),
     );
+  } else {
+    next();
   }
 }
 
@@ -177,13 +158,9 @@ export async function checkVotingStartInFuture(
   res: Response<Response403>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('election')
-    .select(['id', 'votingStartAt'])
-    .where('id', '=', req.params.electionId)
-    .executeTakeFirstOrThrow();
+  const votingStart = await getElectionVotingStart(req.params.electionId);
 
-  if (result.votingStartAt < new Date()) {
+  if (votingStart < new Date()) {
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message:

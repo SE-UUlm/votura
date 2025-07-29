@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import type { ApiTokenUser } from '@repo/votura-validators';
 import crypto from 'crypto';
 import type { Request } from 'express';
@@ -76,20 +75,6 @@ export const verifyToken = (token: string): JwtPayload | null => {
   } catch {
     return null; // Token is invalid or expired
   }
-};
-
-export const isTokenBlacklisted = async (tokenId: string): Promise<boolean> => {
-  const blacklistedToken = await db
-    .selectFrom('accessTokenBlacklist')
-    .select('accessTokenId')
-    .where('accessTokenId', '=', tokenId)
-    .where('expiresAt', '>', new Date())
-    .executeTakeFirst();
-
-  if (blacklistedToken === undefined) {
-    return false; // Token is not blacklisted
-  }
-  return true; // Token is blacklisted
 };
 
 export const getBearerToken = (req: Request): string | null => {

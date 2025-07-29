@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import {
   response400Object,
   response404Object,
@@ -11,7 +10,10 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { checkBallotPapersExist } from '../../services/ballotPapers.service.js';
+import {
+  checkBallotPapersExist,
+  isElectionParentOfBallotPaper,
+} from '../../services/ballotPapers.service.js';
 
 /**
  * Checks if the ballot paper ID in the request parameters is a valid UUID.
@@ -73,14 +75,7 @@ export async function checkElectionIsParent(
   res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('ballotPaper')
-    .select(['id', 'electionId'])
-    .where('id', '=', req.params.ballotPaperId)
-    .where('electionId', '=', req.params.electionId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await isElectionParentOfBallotPaper(req.params.electionId, req.params.ballotPaperId))) {
     res.status(HttpStatusCode.badRequest).json(
       response400Object.parse({
         message: 'The provided ballot paper does not belong to the provided election.',

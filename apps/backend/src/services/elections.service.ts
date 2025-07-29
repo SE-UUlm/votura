@@ -152,3 +152,85 @@ export const deleteElection = async (
 ): Promise<DeleteResult> => {
   return db.deleteFrom('election').where('id', '=', electionId).executeTakeFirst();
 };
+
+export const checkElectionExists = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('election')
+    .select('id')
+    .where('id', '=', electionId)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+export const isUserOwnerOfElection = async (
+  electionId: Selectable<DBElection>['id'],
+  userId: Selectable<DBUser>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('election')
+    .select('id')
+    .where('id', '=', electionId)
+    .where('electionCreatorId', '=', userId)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+/**
+ * Checks if the election with the given ID is frozen.
+ * @param electionId The ID of the election to check.
+ * @returns True if the election is frozen, false otherwise.
+ */
+export const isElectionFrozen = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('election')
+    .select('id')
+    .where('id', '=', electionId)
+    .where('configFrozen', '=', true)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+/**
+ * Checks if the election with the given ID is currently generating keys.
+ * @param electionId The ID of the election to check.
+ * @returns True if the election is generating keys, false otherwise.
+ */
+export const isElectionGeneratingKeys = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('election')
+    .select(['id', 'pubKey', 'configFrozen'])
+    .where('id', '=', electionId)
+    .executeTakeFirstOrThrow();
+
+  if (result.pubKey === null && result.configFrozen === true) {
+    return true;
+  }
+  return false;
+};
+
+/**
+ * Gets the voting start date of the election with the given ID.
+ * Expects that the election exists.
+ * @param electionId The ID of the election to check.
+ * @returns The voting start date of the election.
+ */
+export const getElectionVotingStart = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<Date> => {
+  const result = await db
+    .selectFrom('election')
+    .select('votingStartAt')
+    .where('id', '=', electionId)
+    .executeTakeFirstOrThrow();
+
+  return result.votingStartAt;
+};
