@@ -231,8 +231,5 @@ export const isAccessTokenBlacklisted = async (tokenId: string): Promise<boolean
     .where('expiresAt', '>', new Date())
     .executeTakeFirst();
 
-  if (blacklistedToken === undefined) {
-    return false; // Token is not blacklisted
-  }
-  return true; // Token is blacklisted
+  return blacklistedToken !== undefined; // Return true if token is blacklisted, false otherwise
 };
