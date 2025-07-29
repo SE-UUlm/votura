@@ -102,7 +102,7 @@ export const MutateElectionDrawer = ({
   return (
     <Drawer.Root opened={opened} onClose={onClose} position={'right'} offset={16} radius={'md'}>
       <Drawer.Overlay />
-      <Drawer.Content>
+      <Drawer.Content data-testid="mutate-election-drawer">
         <Stack justify={'space-between'} h={'100%'}>
           <Box>
             <Drawer.Header>

@@ -44,8 +44,9 @@ test.describe('MutateElectionDrawer logic', () => {
   test('EndDateTime value is cleared when StartDateTime is moved beyond EndDateTime', async ({
     page,
   }) => {
-    const startPicker = page.getByLabel('Start of voting period');
-    const endPicker = page.getByLabel('End of voting period');
+    const drawer = page.locator('[data-testid="mutate-election-drawer"]');
+    const startPicker = drawer.getByLabel('Start of voting period');
+    const endPicker = drawer.getByLabel('End of voting period');
 
     await startPicker.click();
     await page.getByRole('button', { name: '10' }).nth(0).click();
