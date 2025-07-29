@@ -26,6 +26,7 @@ import { createBallotPaper } from './../../src/services/ballotPapers.service.js'
 import { createBallotPaperSection } from './../../src/services/ballotPaperSections.service.js';
 import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
+import { BallotPaperCandidateValidationErrorMessage } from '../../src/controllers/bodyChecks/ballotPaperSectionCandidateChecks.js';
 
 describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`, () => {
   let requestPath = '';
@@ -103,7 +104,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
+    expect(parseResult.data?.message).toBe(BallotPaperCandidateValidationErrorMessage.candidateNotFound);
   });
   it('400: should return error for candidate not linked to election', async () => {
     const res = await request(app)
@@ -116,7 +117,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe(
-      'The provided candidate does not belong to the provided election.',
+      BallotPaperCandidateValidationErrorMessage.electionNotParent,
     );
   });
 });

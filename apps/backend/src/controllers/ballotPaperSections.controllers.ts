@@ -1,12 +1,15 @@
 import {
-  insertableBallotPaperSectionCandidateObject,
   insertableBallotPaperSectionObject,
-  removableBallotPaperSectionCandidateObject,
+  response400Object,
   response404Object,
+  response500Object,
   updateableBallotPaperSectionObject,
   zodErrorToResponse400,
   type BallotPaper,
   type BallotPaperSection,
+  type Election,
+  type InsertableBallotPaperSectionCandidate,
+  type RemovableBallotPaperSectionCandidate,
   type Response400,
   type Response404,
   type SelectableBallotPaperSection,
@@ -22,6 +25,11 @@ import {
   removeCandidateFromBallotPaperSection as removePersistentCandidateFromBallotPaperSection,
   updateBallotPaperSection as updatePersistentBallotPaperSection,
 } from '../services/ballotPaperSections.service.js';
+import {
+  validateInsertableBallotPaperSectionCandidate,
+  validateRemovableBallotPaperSectionCandidate,
+} from './bodyChecks/ballotPaperSectionCandidateChecks.js';
+import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 
 export const createBallotPaperSection = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
@@ -91,50 +99,90 @@ export const deleteBallotPaperSection = async (
 
 export const addCandidateToBallotPaperSection = async (
   req: Request<{
+    electionId: Election['id'];
     ballotPaperSectionId: BallotPaperSection['id'];
   }>,
   res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
-  const { data, error, success } = await insertableBallotPaperSectionCandidateObject.safeParseAsync(
+  const validationResult = await validateInsertableBallotPaperSectionCandidate(
     req.body,
+    req.params.electionId,
+    req.params.ballotPaperSectionId,
   );
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+  console.log('validateInsertableBallotPaperSectionCandidate result:', validationResult);
+
+  if (isBodyCheckValidationError(validationResult)) {
+    switch (validationResult.status) {
+      case HttpStatusCode.badRequest:
+        res
+          .status(HttpStatusCode.badRequest)
+          .json(response400Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.notFound:
+        res
+          .status(HttpStatusCode.notFound)
+          .json(response404Object.parse({ message: validationResult.message }));
+        break;
+      default:
+        console.log('Unexpected status code:', validationResult.status);
+        res
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: undefined }));
+    }
     return;
   }
 
+  // If we reach this point, the request body is valid
+  const insertableBallotPaperSectionCandidate: InsertableBallotPaperSectionCandidate =
+    validationResult;
+
+  // Proceed with adding the candidate to the ballot paper section
   const result = await addPersistentCandidateToBallotPaperSection(
     req.params.ballotPaperSectionId,
-    data.candidateId,
+    insertableBallotPaperSectionCandidate.candidateId,
   );
   res.status(HttpStatusCode.ok).json(result);
 };
 
 export const removeCandidateFromBallotPaperSection = async (
   req: Request<{
+    electionId: Election['id'];
     ballotPaperSectionId: BallotPaperSection['id'];
   }>,
   res: Response<SelectableBallotPaperSection | Response400 | Response404>,
 ): Promise<void> => {
-  const { data, error, success } = await removableBallotPaperSectionCandidateObject.safeParseAsync(
+  const validationResult = await validateRemovableBallotPaperSectionCandidate(
     req.body,
+    req.params.electionId,
+    req.params.ballotPaperSectionId,
   );
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+
+  if (isBodyCheckValidationError(validationResult)) {
+    switch (validationResult.status) {
+      case HttpStatusCode.badRequest:
+        res
+          .status(HttpStatusCode.badRequest)
+          .json(response400Object.parse({ message: validationResult.message }));
+        break;
+      case HttpStatusCode.notFound:
+        res
+          .status(HttpStatusCode.notFound)
+          .json(response404Object.parse({ message: validationResult.message }));
+        break;
+      default:
+        res
+          .status(HttpStatusCode.internalServerError)
+          .json(response500Object.parse({ message: undefined }));
+    }
     return;
   }
 
+  // If we reach this point, the request body is valid
+  const removableBallotPaperSectionCandidate: RemovableBallotPaperSectionCandidate =
+    validationResult;
   const result = await removePersistentCandidateFromBallotPaperSection(
     req.params.ballotPaperSectionId,
-    data.candidateId,
+    removableBallotPaperSectionCandidate.candidateId,
   );
-  if (result === null) {
-    res.status(HttpStatusCode.notFound).json(
-      response404Object.parse({
-        message: 'Candidate not linked to ballot paper section, no candidate was removed.',
-      }),
-    );
-    return;
-  }
   res.status(HttpStatusCode.ok).json(result);
 };

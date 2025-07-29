@@ -20,10 +20,8 @@ import {
   getVoterGroupsForUser,
   updateVoterGroup as updatePersistentVoterGroup,
 } from '../services/voterGroups.service.js';
-import {
-  isVoterGroupValidationError,
-  validateInsertableVoterGroup,
-} from './bodyChecks/voterGroupChecks.js';
+import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
+import { validateInsertableVoterGroup } from './bodyChecks/voterGroupChecks.js';
 
 export const createVoterGroup = async (
   req: Request,
@@ -34,7 +32,7 @@ export const createVoterGroup = async (
 ): Promise<void> => {
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
-  if (isVoterGroupValidationError(validationResult)) {
+  if (isBodyCheckValidationError(validationResult)) {
     switch (validationResult.status) {
       case HttpStatusCode.badRequest:
         res
@@ -84,7 +82,7 @@ export const updateVoterGroup = async (
 ): Promise<void> => {
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
-  if (isVoterGroupValidationError(validationResult)) {
+  if (isBodyCheckValidationError(validationResult)) {
     switch (validationResult.status) {
       case HttpStatusCode.badRequest:
         res

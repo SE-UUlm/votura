@@ -6,6 +6,7 @@ import {
   checkBallotPapersExist,
   checkBallotPapersFromDifferentElections,
 } from '../../services/ballotPapers.service.js';
+import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
 export enum VoterGroupValidationErrorMessage {
   ballotPaperNotFound = 'One or more ballot papers to be added to voter group not found.',
@@ -14,15 +15,8 @@ export enum VoterGroupValidationErrorMessage {
   ballotPapersFromFrozenElection = 'One or more ballot papers to be added to voter group belong to a frozen election.',
 }
 
-export interface VoterGroupValidationError {
-  status: HttpStatusCode;
+export interface VoterGroupValidationError extends BodyCheckValidationError {
   message: VoterGroupValidationErrorMessage | string;
-}
-
-export function isVoterGroupValidationError(
-  value: InsertableVoterGroup | VoterGroupValidationError,
-): value is VoterGroupValidationError {
-  return 'status' in value && 'message' in value;
 }
 
 export const validateInsertableVoterGroup = async (
