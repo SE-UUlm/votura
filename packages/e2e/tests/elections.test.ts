@@ -26,7 +26,6 @@ test('should create an election', async ({ page }) => {
   await page.getByRole('button', { name: '16' }).nth(0).click();
   await page.getByRole('button', { name: 'End of voting period' }).click();
   await page.getByRole('button', { name: '18' }).nth(1).click();
-  await page.keyboard.press('Escape');
   await page.getByRole('button', { name: 'Create new election' }).click();
 
   await expect(page).toHaveURL(

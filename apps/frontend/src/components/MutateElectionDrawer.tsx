@@ -27,7 +27,7 @@ export interface MutateElectionModalProps {
 export interface MutateElectionFormValues
   extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
   startDateTime: string;
-  endDateTime: string;
+  endDateTime: string | null;
 }
 
 export const MutateElectionDrawer = ({
@@ -40,7 +40,7 @@ export const MutateElectionDrawer = ({
   isMutating,
 }: MutateElectionModalProps): JSX.Element => {
   const form = useForm<MutateElectionFormValues>({
-    mode: 'uncontrolled',
+    mode: 'controlled',
     validate: {
       name: isNotEmpty('Name cannot be empty'),
       startDateTime: isNotEmpty('Start date is required'),
@@ -76,8 +76,7 @@ export const MutateElectionDrawer = ({
     const start = form.values.startDateTime ? new Date(form.values.startDateTime) : null;
     const end = form.values.endDateTime ? new Date(form.values.endDateTime) : null;
     if (start && end && start >= end) {
-      form.setFieldValue('endDateTime', '');
-      form.resetField('endDateTime');
+      form.setFieldValue('endDateTime', null);
     }
   }, [form.values.startDateTime]);
 
@@ -94,7 +93,7 @@ export const MutateElectionDrawer = ({
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
       votingStartAt: new Date(formValues.startDateTime).toISOString(),
-      votingEndAt: new Date(formValues.endDateTime).toISOString(),
+      votingEndAt: formValues.endDateTime ? new Date(formValues.endDateTime).toISOString() : '',
       private: true,
     });
     onClose();
