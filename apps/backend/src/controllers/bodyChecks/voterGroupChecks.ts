@@ -28,7 +28,7 @@ export const validateInsertableVoterGroup = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.message,
+      message: error.issues.map((issue) => issue.message).join(', '),
     };
   }
 

@@ -11,6 +11,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
+import { BallotPaperCandidateValidationErrorMessage } from '../../src/controllers/bodyChecks/ballotPaperSectionChecks.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import {
@@ -29,7 +30,6 @@ import {
 } from './../../src/services/ballotPaperSections.service.js';
 import { createCandidate } from './../../src/services/candidates.service.js';
 import { createElection } from './../../src/services/elections.service.js';
-import {BallotPaperCandidateValidationErrorMessage} from '../../src/controllers/bodyChecks/ballotPaperSectionCandidateChecks.js';
 
 describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`, () => {
   let requestPath = '';
@@ -82,7 +82,9 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe(BallotPaperCandidateValidationErrorMessage.candidateNotFound);
+    expect(parseResult.data?.message).toBe(
+      BallotPaperCandidateValidationErrorMessage.candidateNotFound,
+    );
   });
   it('400: should return error for candidate not linked to election', async () => {
     const res = await request(app)

@@ -1,18 +1,17 @@
 import {
-  insertableBallotPaperSectionObject,
   response400Object,
   response404Object,
   response500Object,
-  updateableBallotPaperSectionObject,
-  zodErrorToResponse400,
   type BallotPaper,
   type BallotPaperSection,
   type Election,
+  type InsertableBallotPaperSection,
   type InsertableBallotPaperSectionCandidate,
   type RemovableBallotPaperSectionCandidate,
   type Response400,
   type Response404,
   type SelectableBallotPaperSection,
+  type UpdateableBallotPaperSection,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
@@ -26,24 +25,33 @@ import {
   updateBallotPaperSection as updatePersistentBallotPaperSection,
 } from '../services/ballotPaperSections.service.js';
 import {
+  validateInsertableBallotPaperSection,
   validateInsertableBallotPaperSectionCandidate,
   validateRemovableBallotPaperSectionCandidate,
-} from './bodyChecks/ballotPaperSectionCandidateChecks.js';
+  validateUpdateableBallotPaperSection,
+} from './bodyChecks/ballotPaperSectionChecks.js';
 import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 
 export const createBallotPaperSection = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
   res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
-  const body: unknown = req.body;
-  const { data, error, success } = await insertableBallotPaperSectionObject.safeParseAsync(body);
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+  const validationResult = await validateInsertableBallotPaperSection(
+    req.body,
+    req.params.ballotPaperId,
+  );
+  if (isBodyCheckValidationError(validationResult)) {
+    res
+      .status(validationResult.status)
+      .json(response400Object.parse({ message: validationResult.message }));
     return;
   }
 
+  // If we reach this point, the request body is valid
+  const insertableBallotPaperSection: InsertableBallotPaperSection = validationResult;
+
   const selectableBallotPaperSection = await createPersistentBallotPaperSection(
-    data,
+    insertableBallotPaperSection,
     req.params.ballotPaperId,
   );
   res.status(HttpStatusCode.created).json(selectableBallotPaperSection);
@@ -58,18 +66,28 @@ export const getBallotPaperSections = async (
 };
 
 export const updateBallotPaperSection = async (
-  req: Request<{ ballotPaperSectionId: BallotPaperSection['id'] }>,
+  req: Request<{
+    ballotPaperId: BallotPaper['id'];
+    ballotPaperSectionId: BallotPaperSection['id'];
+  }>,
   res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
-  const body: unknown = req.body;
-  const { data, error, success } = await updateableBallotPaperSectionObject.safeParseAsync(body);
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+  const validationResult = await validateUpdateableBallotPaperSection(
+    req.body,
+    req.params.ballotPaperId,
+  );
+  if (isBodyCheckValidationError(validationResult)) {
+    res
+      .status(validationResult.status)
+      .json(response400Object.parse({ message: validationResult.message }));
     return;
   }
 
+  // If we reach this point, the request body is valid
+  const updateableBallotPaperSection: UpdateableBallotPaperSection = validationResult;
+
   const selectableBallotPaperSection = await updatePersistentBallotPaperSection(
-    data,
+    updateableBallotPaperSection,
     req.params.ballotPaperSectionId,
   );
   res.status(HttpStatusCode.ok).json(selectableBallotPaperSection);
@@ -109,7 +127,6 @@ export const addCandidateToBallotPaperSection = async (
     req.params.electionId,
     req.params.ballotPaperSectionId,
   );
-  console.log('validateInsertableBallotPaperSectionCandidate result:', validationResult);
 
   if (isBodyCheckValidationError(validationResult)) {
     switch (validationResult.status) {
@@ -124,7 +141,6 @@ export const addCandidateToBallotPaperSection = async (
           .json(response404Object.parse({ message: validationResult.message }));
         break;
       default:
-        console.log('Unexpected status code:', validationResult.status);
         res
           .status(HttpStatusCode.internalServerError)
           .json(response500Object.parse({ message: undefined }));

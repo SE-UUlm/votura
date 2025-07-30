@@ -1,13 +1,14 @@
 import {
   insertableBallotPaperObject,
+  response400Object,
   response404Object,
-  updateableBallotPaperObject,
   zodErrorToResponse400,
   type BallotPaper,
   type Election,
   type Response400,
   type Response404,
   type SelectableBallotPaper,
+  type UpdateableBallotPaper,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
@@ -18,6 +19,8 @@ import {
   getBallotPapers as getPersistentBallotPapers,
   updateBallotPaper as updatePersistentBallotPaper,
 } from '../services/ballotPapers.service.js';
+import { validateUpdateableBallotPaper } from './bodyChecks/ballotPaperChecks.js';
+import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 
 export const createBallotPaper = async (
   req: Request<{ electionId: Election['id'] }>,
@@ -54,14 +57,21 @@ export const updateBallotPaper = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,
   res: Response<SelectableBallotPaper | Response400>,
 ): Promise<void> => {
-  const body: unknown = req.body;
-  const { data, error, success } = await updateableBallotPaperObject.safeParseAsync(body);
-  if (success === false) {
-    res.status(HttpStatusCode.badRequest).send(zodErrorToResponse400(error));
+  const validationResult = await validateUpdateableBallotPaper(req.body, req.params.ballotPaperId);
+  if (isBodyCheckValidationError(validationResult)) {
+    res
+      .status(validationResult.status)
+      .json(response400Object.parse({ message: validationResult.message }));
     return;
   }
 
-  const selectableBallotPaper = await updatePersistentBallotPaper(data, req.params.ballotPaperId);
+  // If we reach this point, the request body is valid
+  const updateableBallotPaper: UpdateableBallotPaper = validationResult;
+
+  const selectableBallotPaper = await updatePersistentBallotPaper(
+    updateableBallotPaper,
+    req.params.ballotPaperId,
+  );
   res.status(HttpStatusCode.ok).json(selectableBallotPaper);
 };
 
