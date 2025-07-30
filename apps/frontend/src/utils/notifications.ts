@@ -42,16 +42,16 @@ export const getAddSuccessBallotPaperConfig = (
   };
 };
 
-export const getMutateSuccessBallotPaperConfig = (name: SelectableBallotPaper['name'])=> {
+export const getMutateSuccessBallotPaperConfig = (name: SelectableBallotPaper['name']) => {
   return {
     title: 'Success',
     message: `The changes to the ballot paper "${name}" have been saved.`,
   };
-}
+};
 
-export const getDeleteSuccessBallotPaperConfig = (name: SelectableBallotPaper['name'])=> {
+export const getDeleteSuccessBallotPaperConfig = (name: SelectableBallotPaper['name']) => {
   return {
     title: 'Success',
     message: `The ballot paper "${name}" has been deleted.`,
   };
-}
+};

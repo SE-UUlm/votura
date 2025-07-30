@@ -2,7 +2,7 @@ import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { SelectableBallotPaper } from '@repo/votura-validators';
 import { IconEdit, IconTrash } from '@tabler/icons-react';
-import type {JSX, PropsWithChildren} from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 import {
   MutateBallotPaperDrawer,
   type MutateBallotPaperDrawerProps,
