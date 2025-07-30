@@ -1,9 +1,11 @@
 import crypto from 'crypto';
 
 /**
- * Generate RSA key pair for JWT signing and stores them in the environment
+ * Generates a RSA key pair for JWT signing.
+ *
+ * @returns An object containing the private and public keys as strings.
  */
-export const generateJWTKeyPair = (): void => {
+export const generateRSAKeyPair = (): { privateKey: string; publicKey: string } => {
   const { privateKey, publicKey } = crypto.generateKeyPairSync('rsa', {
     modulusLength: 4096,
     publicKeyEncoding: {
@@ -15,13 +17,21 @@ export const generateJWTKeyPair = (): void => {
       format: 'pem',
     },
   });
+  return { privateKey, publicKey };
+};
+
+/**
+ * Sets a key pair for the users JWT to the environment variables USERS_JWT_PRIV_KEY and USERS_JWT_PUB_KEY.
+ */
+export const setUsersJWTKeyPair = (): void => {
+  const { privateKey, publicKey } = generateRSAKeyPair();
 
   // load keys into environment variables
-  process.env.JWT_PRIVATE_KEY = Buffer.from(privateKey).toString('base64');
-  process.env.JWT_PUBLIC_KEY = Buffer.from(publicKey).toString('base64');
+  process.env.USERS_JWT_PRIV_KEY = Buffer.from(privateKey).toString('base64');
+  process.env.USERS_JWT_PUB_KEY = Buffer.from(publicKey).toString('base64');
 
   // make sure the keys are set
-  if (process.env.JWT_PRIVATE_KEY === undefined || process.env.JWT_PUBLIC_KEY === undefined) {
+  if (process.env.USERS_JWT_PRIV_KEY === undefined || process.env.USERS_JWT_PUB_KEY === undefined) {
     throw new Error('Failed to generate JWT key pair. Check your environment variables.');
   }
 };

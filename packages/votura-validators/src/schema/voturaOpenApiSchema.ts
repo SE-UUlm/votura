@@ -21,7 +21,7 @@ import { requestPasswordResetPathObject } from './users/requestPasswordResetPath
 import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
 import { usersPathObject } from './users/usersPathObject.js';
 import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
-import { getVoterTokensPathObject } from './voterGroups/getVoterTokensPathObject.js';
+import { createVoterTokensPathObject } from './voterGroups/createVoterTokensPathObject.js';
 import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
 import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
 
@@ -130,7 +130,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/logout`]: logoutPathObject,
     [`/voterGroups`]: voterGroupsPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
-    [`/voterGroups/{${parameter.voterGroupId}}/getVoterTokens`]: getVoterTokensPathObject,
+    [`/voterGroups/{${parameter.voterGroupId}}/createVoterTokens`]: createVoterTokensPathObject,
     [`/heart-beat`]: heartBeatPathObject,
   },
 };
