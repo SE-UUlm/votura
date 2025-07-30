@@ -24,7 +24,6 @@ entity "accessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
     ' The jti is 36 characters long if we use UUIDv4
     * id : UUID <<PK>>
-    * id : UUID <<PK>>
     --
     * accessTokenId : UUID <<UK>>
     * createdAt : TIMESTAMPTZ(6)
@@ -155,8 +154,8 @@ entity "voter" as voters #05DFA3 {
     voterGroupId: VoterGroup.id <<FK>>
 }
 note as N3
-A voter can only get one ballot paper,
-and with this one vote per election.
+A voter can only get one ballot paper per election,
+and with this only one vote per election.
 end note
 
 entity "voterGroup" as voterGroups #05DFA3 {
@@ -167,8 +166,6 @@ entity "voterGroup" as voterGroups #05DFA3 {
     * name : VARCHAR(256)
     description : VARCHAR(256) | NULL
     pubKey : TEXT | NULL
-    privKey : TEXT | NULL
-    * voterTokensGenerated : BOOLEAN
     --
     * voterGroupCreatorId : User.id <<FK>>
 }
