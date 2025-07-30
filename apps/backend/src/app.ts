@@ -3,6 +3,7 @@ import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import helmet from 'helmet';
 import { setUsersJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
 import { authenticateAccessToken } from './middlewares/auth.js';
@@ -15,7 +16,7 @@ setUsersJWTKeyPair();
 
 export const app = express();
 
-app.disable('x-powered-by');
+app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
