@@ -55,6 +55,7 @@ test.describe('MutateElectionDrawer logic', () => {
     await expect(endPicker).not.toHaveText('Pick an end date and time');
 
     await startPicker.click();
+    await page.waitForTimeout(500);
     await page.getByRole('button', { name: '12' }).nth(0).click();
     await expect(endPicker).toHaveText('Pick an end date and time');
   });
