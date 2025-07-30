@@ -6,15 +6,15 @@ import styles from './BallotPaperBoard.module.css';
 import { BallotPaperColumn } from './BallotPaperColumn.tsx';
 
 export interface BallotPaperBoardProps {
-  electionId: SelectableElection['id'] | undefined;
+  election: SelectableElection | undefined;
 }
 
-export const BallotPaperBoard = ({ electionId }: BallotPaperBoardProps): JSX.Element => {
+export const BallotPaperBoard = ({ election }: BallotPaperBoardProps): JSX.Element => {
   const {
     data: ballotPapersData,
     isLoading: isBallotPapersLoading,
     error: ballotPapersError,
-  } = useGetBallotPapers(electionId);
+  } = useGetBallotPapers(election?.id);
 
   if (isBallotPapersLoading) {
     return (
@@ -28,15 +28,21 @@ export const BallotPaperBoard = ({ electionId }: BallotPaperBoardProps): JSX.Ele
     );
   }
 
+  if (election === undefined) {
+    return <></>;
+  }
+
   if (ballotPapersError !== undefined) {
     return <Text c={'red.7'}>The ballot papers could not be loaded. Please try again.</Text>;
   }
 
   return (
     <Flex flex={1} w={'100%'} pb={'md'} gap="md" className={styles.ballotPaperBoard}>
-      {ballotPapersData?.map((ballotPaper, index) => (
-        <BallotPaperColumn ballotPaper={ballotPaper} key={index} />
-      ))}
+      {ballotPapersData
+        ?.sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+        .map((ballotPaper, index) => (
+          <BallotPaperColumn election={election} ballotPaper={ballotPaper} key={index} />
+        ))}
     </Flex>
   );
 };
