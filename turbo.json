@@ -55,7 +55,14 @@
       "persistent": false,
       "interactive": false,
       "outputs": ["build/**", "dist/**"],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
     },
     "test": {
       "dependsOn": ["^test"],
@@ -65,7 +72,16 @@
       "persistent": false,
       "interactive": false,
       "outputs": ["coverage/**", "results/**", "logs/**", "test-results/**"],
-      "env": ["PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "CI", "HOME", "BITS_PRIME_P"]
+      "env": [
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "CI",
+        "HOME",
+        "BITS_PRIME_P",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
     },
     "start": {
       "dependsOn": ["^start"],
@@ -75,7 +91,15 @@
       "persistent": true,
       "interactive": false,
       "outputs": ["logs/**"],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "BITS_PRIME_P",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
     }
   }
 }
