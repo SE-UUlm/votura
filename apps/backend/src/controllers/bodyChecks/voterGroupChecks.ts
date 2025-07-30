@@ -1,4 +1,11 @@
-import { insertableVoterGroupObject, type InsertableVoterGroup } from '@repo/votura-validators';
+import type { BallotPaper as DBBallotPaper, User as DBUser } from '@repo/db/types';
+import {
+  insertableVoterGroupObject,
+  updateableVoterGroupObject,
+  type InsertableVoterGroup,
+  type UpdateableVoterGroup,
+} from '@repo/votura-validators';
+import type { Selectable } from 'kysely';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import {
   checkBallotPapersBelongToUser,
@@ -19,22 +26,13 @@ export interface VoterGroupValidationError extends BodyCheckValidationError {
   message: VoterGroupValidationErrorMessage | string;
 }
 
-export const validateInsertableVoterGroup = async (
-  body: unknown,
-  userId: string,
-): Promise<InsertableVoterGroup | VoterGroupValidationError> => {
-  // Validate the request body against the insertableVoterGroupObject schema
-  const { data, error, success } = await insertableVoterGroupObject.safeParseAsync(body);
-  if (!success) {
-    return {
-      status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
-    };
-  }
-
-  if (data.ballotPapers.length !== 0) {
+const defaultVoterGroupChecks = async (
+  userId: Selectable<DBUser>['id'],
+  ballotPaperIds: Selectable<DBBallotPaper>['id'][],
+): Promise<VoterGroupValidationError | null> => {
+  if (ballotPaperIds.length !== 0) {
     // make sure the ballotPaper IDs are unique
-    const uniqueBallotPaperIds = [...new Set(data.ballotPapers)];
+    const uniqueBallotPaperIds = [...new Set(ballotPaperIds)];
 
     // check if all ballot papers in the request body exist
     if (!(await checkBallotPapersExist(uniqueBallotPaperIds))) {
@@ -69,5 +67,45 @@ export const validateInsertableVoterGroup = async (
     }
   }
 
+  return null;
+};
+
+export const validateInsertableVoterGroup = async (
+  body: unknown,
+  userId: string,
+): Promise<InsertableVoterGroup | VoterGroupValidationError> => {
+  // Validate the request body against the insertableVoterGroupObject schema
+  const { data, error, success } = await insertableVoterGroupObject.safeParseAsync(body);
+  if (!success) {
+    return {
+      status: HttpStatusCode.badRequest,
+      message: error.issues.map((issue) => issue.message).join(', '),
+    };
+  }
+
+  const validationError = await defaultVoterGroupChecks(userId, data.ballotPapers);
+  if (validationError !== null) {
+    return validationError;
+  }
+  return data;
+};
+
+export const validateUpdateableVoterGroup = async (
+  body: unknown,
+  userId: string,
+): Promise<UpdateableVoterGroup | VoterGroupValidationError> => {
+  // Validate the request body against the updateableVoterGroupObject schema
+  const { data, error, success } = await updateableVoterGroupObject.safeParseAsync(body);
+  if (!success) {
+    return {
+      status: HttpStatusCode.badRequest,
+      message: error.issues.map((issue) => issue.message).join(', '),
+    };
+  }
+
+  const validationError = await defaultVoterGroupChecks(userId, data.ballotPapers);
+  if (validationError !== null) {
+    return validationError;
+  }
   return data;
 };
