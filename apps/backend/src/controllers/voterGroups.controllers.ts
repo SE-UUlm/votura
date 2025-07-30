@@ -146,7 +146,6 @@ export const createVoterTokens = async (
   res: Response<string[], { user: SelectableUser }>,
 ): Promise<void> => {
   const { privateKey, publicKey } = generateRSAKeyPair();
-  await updateVoterGroupPubKey(req.params.voterGroupId, publicKey);
 
   const voterIds = await getVoterIdsForVoterGroup(req.params.voterGroupId);
   const voterTokens: string[] = [];
@@ -156,6 +155,7 @@ export const createVoterTokens = async (
     });
     voterTokens.push(votingToken);
   }
+  await updateVoterGroupPubKey(req.params.voterGroupId, publicKey);
 
   res.status(HttpStatusCode.ok).send(voterTokens);
 };
