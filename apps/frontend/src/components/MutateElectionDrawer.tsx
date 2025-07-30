@@ -77,6 +77,7 @@ export const MutateElectionDrawer = ({
     const end = form.values.endDateTime ? new Date(form.values.endDateTime) : null;
     if (start && end && start >= end) {
       form.setFieldValue('endDateTime', '');
+      form.resetField('endDateTime');
     }
   }, [form.values.startDateTime]);
 
