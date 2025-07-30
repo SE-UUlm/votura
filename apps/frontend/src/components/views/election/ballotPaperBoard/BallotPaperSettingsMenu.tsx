@@ -41,7 +41,7 @@ export const BallotPaperSettingsMenu = ({
         ballotPaper={ballotPaper}
         opened={deleteContextOpened}
         onClose={deleteContextActions.close}
-        onDelete={() => {
+        onDelete={(): void => {
           onDelete();
           deleteContextActions.close();
         }}
