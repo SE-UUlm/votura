@@ -6,9 +6,9 @@ import {
 
 describe('Ballot paper section tests', () => {
   const demoBallotPaperSection = insertableBallotPaperSectionObject.parse({
-    name: 'Test ballot paper',
-    description: 'Test ballot paper description',
-    maxVotes: 5,
+    name: 'Test ballot paper section',
+    description: 'A very cool test ballot paper section description',
+    maxVotes: 8,
     maxVotesPerCandidate: 3,
   });
 
