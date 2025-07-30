@@ -87,4 +87,4 @@ jobs:
           partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
           format: CLOVER
           message: 'Code coverage from GitHub Actions'
-          files: './packages/votura-crypto/coverage/clover.xml apps/backend/coverage/clover.xml'
+          files: './packages/votura-crypto/coverage/clover.xml ./packages/votura-validators/coverage/clover.xml apps/backend/coverage/clover.xml'

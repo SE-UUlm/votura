@@ -10,6 +10,9 @@
 ### sql sessions ###
 *.session.sql
 
+### test results ###
+results
+
 # Created by https://www.toptal.com/developers/gitignore/api/jetbrains+all,macos,windows,linux,node
 # Edit at https://www.toptal.com/developers/gitignore?templates=jetbrains+all,macos,windows,linux,node
 
