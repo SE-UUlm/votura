@@ -18,8 +18,9 @@ export const votingElectionsPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get all elections and ballot papers for a voter token',
     description:
       'Returns all elections and ballot papers for the provided voter token. ' +
-      'Contains all public information about the elections and ballot papers that are necessary for the voting process.\n' +
-      '\n' +
+      'Contains all public information about the elections and ballot papers that are necessary for the voting process. ' +
+      'Returns only elections / ballot papers where no vote was submitted by this voter token.' +
+      '\n\n' +
       'This endpoint is currently only a draft and not implemented!\n' +
       'When this endpoint is implemented this note will be removed.',
     security: [{ [SecuritySchemaName.voturaVoterAuth]: [] }],
@@ -34,7 +35,7 @@ export const votingElectionsPathObject: OpenAPIV3.PathItemObject = {
           'application/json': {
             schema: {
               type: 'array',
-              minItems: 1,
+              minItems: 0,
               uniqueItems: true,
               items: selectableVotingElectionObjectSchema as OpenAPIV3.SchemaObject,
             },
