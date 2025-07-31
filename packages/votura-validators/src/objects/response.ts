@@ -1,6 +1,13 @@
 import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
+export const responseObject = z.object({
+  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
+    example: 'A detailed message about the response.',
+    description: 'A message that provides additional information about the response.',
+  }),
+});
+
 export const response400Object = z.object({
   message: z
     .string()
@@ -32,9 +39,14 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
 };
 
 export const response401Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Invalid authentication, please check your credentials.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Invalid authentication, please check your credentials.')
+    .register(voturaMetadataRegistry, {
+      example: 'Invalid authentication, please check your credentials.',
+    }),
 });
 
 export type Response401 = z.infer<typeof response401Object>;
@@ -81,10 +93,19 @@ export const response406Object = z.object({
 export type Response406 = z.infer<typeof response406Object>;
 
 export const response409Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example:
-      'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default(
+      'Conflict. Conflict in the current state of the resource, request could not be processed.',
+    )
+    .register(voturaMetadataRegistry, {
+      example:
+        'Conflict. Conflict in the current state of the resource, request could not be processed.',
+      description:
+        'Indicates that the request could not be processed because of conflict in the current state of the resource.',
+    }),
 });
 
 export type Response409 = z.infer<typeof response409Object>;
