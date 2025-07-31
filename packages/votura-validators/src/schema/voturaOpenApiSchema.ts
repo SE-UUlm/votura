@@ -13,7 +13,7 @@ import { unfreezePathObject } from './elections/unfreezePathObject.js';
 import { parameter } from './globals/parameter.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
 import { Tag } from './globals/tag.js';
-import { heartBeatPathObject } from './heartBeatPathObject.js';
+import { heartbeatPathObject } from './heartbeatPathObject.js';
 import { loginPathObject } from './users/loginPathObject.js';
 import { logoutPathObject } from './users/logoutPathObject.js';
 import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
@@ -24,6 +24,7 @@ import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
 import { createVoterTokensPathObject } from './voterGroups/createVoterTokensPathObject.js';
 import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
 import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
+import { votingElectionsPathObject } from './voting/votingElectionsPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
   openapi: '3.0.0',
@@ -70,7 +71,14 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
         scheme: 'bearer',
         bearerFormat: 'JWT',
         description:
-          'With this JWT access token the user can authenticate and authorize himself against the votura backend.',
+          'With this JWT access token the user can authenticate and authorize himself against the votura backend to modify elections.',
+      },
+      [SecuritySchemaName.voturaVoterAuth]: {
+        type: 'http',
+        scheme: 'bearer',
+        bearerFormat: 'JWT',
+        description:
+          'With this JWT token the voter can authenticate and authorize himself against the votura backend to take part in the voting process.',
       },
     },
   },
@@ -98,6 +106,10 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     {
       name: Tag.voterGroups,
       description: 'Managing CRUD operations for voter groups.',
+    },
+    {
+      name: Tag.voting,
+      description: 'Managing API endpoints for the voting process.',
     },
     {
       name: Tag.miscellaneous,
@@ -131,6 +143,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/voterGroups`]: voterGroupsPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}/createVoterTokens`]: createVoterTokensPathObject,
-    [`/heart-beat`]: heartBeatPathObject,
+    [`/voting/getElections`]: votingElectionsPathObject,
+    [`/heartbeat`]: heartbeatPathObject,
   },
 };
