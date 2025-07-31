@@ -32,9 +32,14 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
 };
 
 export const response401Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Invalid authentication, please check your credentials.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Invalid authentication, please check your credentials.')
+    .register(voturaMetadataRegistry, {
+      example: 'Invalid authentication, please check your credentials.',
+    }),
 });
 
 export type Response401 = z.infer<typeof response401Object>;
@@ -81,10 +86,17 @@ export const response406Object = z.object({
 export type Response406 = z.infer<typeof response406Object>;
 
 export const response409Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example:
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default(
       'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
-  }),
+    )
+    .register(voturaMetadataRegistry, {
+      example:
+        'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
+    }),
 });
 
 export type Response409 = z.infer<typeof response409Object>;
@@ -103,9 +115,14 @@ export const response415Object = z.object({
 export type Response415 = z.infer<typeof response415Object>;
 
 export const response429Object = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Too many requests, please try again later.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Too many requests, please try again later.')
+    .register(voturaMetadataRegistry, {
+      example: 'Too many requests, please try again later.',
+    }),
 });
 
 export type Response429 = z.infer<typeof response429Object>;
