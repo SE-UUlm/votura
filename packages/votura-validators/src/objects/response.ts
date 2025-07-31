@@ -132,9 +132,14 @@ export type Response415 = z.infer<typeof response415Object>;
 
 export const response429Object = z.object({
   ...responseObject.shape,
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
-    example: 'Too many requests, please try again later.',
-  }),
+  message: z
+    .string()
+    .min(1)
+    .max(256)
+    .default('Too many requests, please try again later.')
+    .register(voturaMetadataRegistry, {
+      example: 'Too many requests, please try again later.',
+    }),
 });
 
 export type Response429 = z.infer<typeof response429Object>;

@@ -6,4 +6,5 @@ export enum Tag {
   candidates = 'Candidates',
   voterGroups = 'VoterGroups',
   miscellaneous = 'Miscellaneous',
+  voting = 'Voting',
 }
