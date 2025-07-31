@@ -136,7 +136,7 @@ export const loginUser = async (
   );
   if (!isValidPassword) {
     return {
-      status: HttpStatusCode.forbidden,
+      status: HttpStatusCode.unauthorized,
       message: LoginErrorMessage.invalidCredentials,
     }; // Invalid password
   }
