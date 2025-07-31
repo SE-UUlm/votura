@@ -9,6 +9,7 @@ export const responseObject = z.object({
 });
 
 export const response400Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -39,6 +40,7 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
 };
 
 export const response401Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -52,6 +54,7 @@ export const response401Object = z.object({
 export type Response401 = z.infer<typeof response401Object>;
 
 export const response403Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -65,6 +68,7 @@ export const response403Object = z.object({
 export type Response403 = z.infer<typeof response403Object>;
 
 export const response404Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -78,6 +82,7 @@ export const response404Object = z.object({
 export type Response404 = z.infer<typeof response404Object>;
 
 export const response406Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -93,6 +98,7 @@ export const response406Object = z.object({
 export type Response406 = z.infer<typeof response406Object>;
 
 export const response409Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -111,6 +117,7 @@ export const response409Object = z.object({
 export type Response409 = z.infer<typeof response409Object>;
 
 export const response415Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
@@ -124,6 +131,7 @@ export const response415Object = z.object({
 export type Response415 = z.infer<typeof response415Object>;
 
 export const response429Object = z.object({
+  ...responseObject.shape,
   message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     example: 'Too many requests, please try again later.',
   }),
@@ -132,6 +140,7 @@ export const response429Object = z.object({
 export type Response429 = z.infer<typeof response429Object>;
 
 export const response500Object = z.object({
+  ...responseObject.shape,
   message: z
     .string()
     .min(1)
