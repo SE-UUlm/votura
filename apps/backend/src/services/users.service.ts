@@ -16,6 +16,7 @@ import {
   hashRefreshToken,
   verifyToken,
 } from '../auth/utils.js';
+import { HttpStatusCode } from '../httpStatusCode.js';
 
 export async function findUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
@@ -100,9 +101,14 @@ export async function blacklistAccessToken(accessTokenId: string, expiresAt: Dat
     .executeTakeFirstOrThrow();
 }
 
-export enum LoginError {
-  invalidCredentials = 'Invalid credentials',
-  userNotVerified = 'User is not verified',
+export enum LoginErrorMessage {
+  invalidCredentials = 'Invalid credentials.',
+  userNotVerified = 'User is not verified.',
+}
+
+export interface LoginError {
+  status: HttpStatusCode;
+  message: LoginErrorMessage;
 }
 
 export const loginUser = async (
@@ -116,7 +122,10 @@ export const loginUser = async (
     .executeTakeFirst();
 
   if (user === undefined) {
-    return LoginError.invalidCredentials; // User not found
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: LoginErrorMessage.invalidCredentials,
+    }; // User not found
   }
 
   // Verify password
@@ -126,7 +135,10 @@ export const loginUser = async (
     getPepper(),
   );
   if (!isValidPassword) {
-    return LoginError.invalidCredentials; // Invalid password
+    return {
+      status: HttpStatusCode.forbidden,
+      message: LoginErrorMessage.invalidCredentials,
+    }; // Invalid password
   }
 
   // TODO: Uncomment when user verification is implemented (see issue #125)
@@ -150,10 +162,15 @@ export const loginUser = async (
   return tokens;
 };
 
-export enum RefreshTokenError {
-  invalidToken = 'Invalid refresh token',
-  userNotFound = 'User not found',
-  tokenExpired = 'Refresh token has expired',
+export enum RefreshTokenErrorMessage {
+  invalidToken = 'Invalid refresh token.',
+  userNotFound = 'User not found.',
+  tokenExpired = 'Refresh token has expired.',
+}
+
+export interface RefreshTokenError {
+  status: HttpStatusCode;
+  message: RefreshTokenErrorMessage;
 }
 
 export const refreshUserTokens = async (
@@ -163,7 +180,10 @@ export const refreshUserTokens = async (
   const decodedToken = verifyToken(refreshRequest.refreshToken);
 
   if (decodedToken === null || decodedToken.type !== 'refresh') {
-    return RefreshTokenError.invalidToken;
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: RefreshTokenErrorMessage.invalidToken,
+    };
   }
 
   // Get user and verify stored refresh token
@@ -174,18 +194,27 @@ export const refreshUserTokens = async (
     .executeTakeFirst();
 
   if (user === undefined) {
-    return RefreshTokenError.userNotFound;
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: RefreshTokenErrorMessage.userNotFound,
+    };
   }
 
   // Check if refresh token matches stored hash
   const refreshTokenHash = hashRefreshToken(refreshRequest.refreshToken);
   if (user.refreshTokenHash !== refreshTokenHash) {
-    return RefreshTokenError.invalidToken;
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: RefreshTokenErrorMessage.invalidToken,
+    };
   }
 
   // Check if refresh token is expired
   if (user.refreshTokenExpiresAt === null || user.refreshTokenExpiresAt < new Date()) {
-    return RefreshTokenError.tokenExpired;
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: RefreshTokenErrorMessage.tokenExpired,
+    };
   }
 
   // Generate new token pair
