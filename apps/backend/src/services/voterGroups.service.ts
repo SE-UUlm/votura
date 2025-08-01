@@ -68,6 +68,18 @@ export async function getNumberOfVotersInGroup(
   return Number(result.count);
 }
 
+export async function getVoterIdsForVoterGroup(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<Selectable<DBVoter>['id'][]> {
+  const voterIds = await db
+    .selectFrom('voter')
+    .where('voterGroupId', '=', voterGroupId)
+    .select('id')
+    .execute();
+
+  return voterIds.map((voter) => voter.id);
+}
+
 export async function getBallotPaperIdsForVoterGroup(
   voterGroupId: Selectable<DBVoterGroup>['id'],
 ): Promise<string[]> {
@@ -296,4 +308,32 @@ export async function deleteVoterGroup(
   // deletes all voters and voter registers associated with the voter group
   // because of foreign key constraints
   await db.deleteFrom('voterGroup').where('id', '=', voterGroupId).executeTakeFirstOrThrow();
+}
+
+/**
+ * Updates the public key for a voter group.
+ * @param voterGroupId - The ID of the voter group.
+ * @param pubKey - The new public key to set.
+ */
+export async function updateVoterGroupPubKey(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+  pubKey: string,
+): Promise<void> {
+  await db
+    .updateTable('voterGroup')
+    .set({ pubKey: pubKey })
+    .where('id', '=', voterGroupId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function getVoterGroupPubKey(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<DBVoterGroup['pubKey']> {
+  const result = await db
+    .selectFrom('voterGroup')
+    .select('pubKey')
+    .where('id', '=', voterGroupId)
+    .executeTakeFirstOrThrow();
+
+  return result.pubKey;
 }

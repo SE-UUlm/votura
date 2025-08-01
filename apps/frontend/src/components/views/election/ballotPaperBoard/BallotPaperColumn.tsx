@@ -1,14 +1,45 @@
 import { ActionIcon, Divider, Group, Paper, Stack, Text, useMantineTheme } from '@mantine/core';
-import type { SelectableBallotPaper } from '@repo/votura-validators';
+import { notifications } from '@mantine/notifications';
+import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useDeleteBallotPaper } from '../../../../swr/ballotPapers/useDeleteBallotPaper.ts';
+import { useUpdateBallotPaper } from '../../../../swr/ballotPapers/useUpdateBallotPaper.ts';
+import {
+  getDeleteSuccessBallotPaperConfig,
+  getMutateSuccessBallotPaperConfig,
+} from '../../../../utils/notifications.ts';
+import type { MutateBallotPaperDrawerProps } from '../MutateBallotPaperDrawer.tsx';
+import { BallotPaperSettingsMenu } from './BallotPaperSettingsMenu.tsx';
 
 export interface BallotPaperColumnProps {
+  election: SelectableElection;
   ballotPaper: SelectableBallotPaper;
 }
 
-export const BallotPaperColumn = ({ ballotPaper }: BallotPaperColumnProps): JSX.Element => {
+export const BallotPaperColumn = ({
+  election,
+  ballotPaper,
+}: BallotPaperColumnProps): JSX.Element => {
   const theme = useMantineTheme();
+  const { trigger: triggerUpdate, isMutating: isUpdateMutating } = useUpdateBallotPaper({
+    electionId: election.id,
+    ballotPaperId: ballotPaper.id,
+  });
+  const { trigger: triggerDelete } = useDeleteBallotPaper({
+    electionId: election.id,
+    ballotPaperId: ballotPaper.id,
+  });
+
+  const onMutate: MutateBallotPaperDrawerProps['onMutate'] = async (mutatedBallotPaper) => {
+    await triggerUpdate(mutatedBallotPaper);
+    notifications.show(getMutateSuccessBallotPaperConfig(mutatedBallotPaper.name));
+  };
+
+  const onDelete = async (): Promise<void> => {
+    await triggerDelete();
+    notifications.show(getDeleteSuccessBallotPaperConfig(ballotPaper.name));
+  };
 
   return (
     <Paper shadow={'xs'} p={'md'} miw={400} bg={theme.colors.gray[0]} style={{ overflow: 'auto' }}>
@@ -22,9 +53,16 @@ export const BallotPaperColumn = ({ ballotPaper }: BallotPaperColumnProps): JSX.
               </Text>
             )}
           </Stack>
-          <ActionIcon size="lg" variant="light" aria-label="Settings">
-            <IconDots size={16} />
-          </ActionIcon>
+          <BallotPaperSettingsMenu
+            ballotPaper={ballotPaper}
+            onMutate={onMutate}
+            isMutating={isUpdateMutating}
+            onDelete={onDelete}
+          >
+            <ActionIcon size="lg" variant="light" aria-label="Settings">
+              <IconDots size={16} />
+            </ActionIcon>
+          </BallotPaperSettingsMenu>
         </Group>
         <Divider />
       </Stack>

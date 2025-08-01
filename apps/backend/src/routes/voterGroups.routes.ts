@@ -1,6 +1,8 @@
+import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import {
   createVoterGroup,
+  createVoterTokens,
   deleteVoterGroup,
   getSpecificVoterGroup,
   getVoterGroups,
@@ -24,7 +26,7 @@ voterGroupsRouter.post(
 );
 voterGroupsRouter.get('/', acceptHeaderCheck(MimeType.applicationJson), getVoterGroups);
 voterGroupsRouter.put(
-  '/:voterGroupId',
+  `/:${parameter.voterGroupId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   ...defaultVoterGroupChecks,
@@ -32,15 +34,21 @@ voterGroupsRouter.put(
   updateVoterGroup,
 );
 voterGroupsRouter.get(
-  '/:voterGroupId',
+  `/:${parameter.voterGroupId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultVoterGroupChecks,
   getSpecificVoterGroup,
 );
 voterGroupsRouter.delete(
-  '/:voterGroupId',
+  `/:${parameter.voterGroupId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultVoterGroupChecks,
   checkVoterGroupElectionsNotFrozen,
   deleteVoterGroup,
+);
+voterGroupsRouter.get(
+  `/:${parameter.voterGroupId}/createVoterTokens`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultVoterGroupChecks,
+  createVoterTokens,
 );

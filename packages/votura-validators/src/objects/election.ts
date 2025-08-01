@@ -11,9 +11,11 @@ export const electionObject = z.object({
   ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the election.',
+    example: 'My important election',
   }),
   description: z.string().min(1).max(256).optional().register(voturaMetadataRegistry, {
     description: 'The description text of the election.',
+    example: 'This is a super important election description.',
   }),
   private: z.boolean().default(true).register(voturaMetadataRegistry, {
     description:
