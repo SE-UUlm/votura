@@ -4,7 +4,7 @@ import type { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
 import { JWT_CONFIG } from './jwtConfig.js';
-import type { AccessTokenPayload, JwtPayload, RefreshTokenPayload } from './types.js';
+import type { AccessTokenPayload, RefreshTokenPayload, UserJwtPayload } from './types.js';
 
 let jwtKeys: { privateKey: string; publicKey: string } | null = null;
 
@@ -13,11 +13,11 @@ const getKeys = (): { privateKey: string; publicKey: string } => {
     return jwtKeys;
   }
 
-  const privateKey = process.env.JWT_PRIVATE_KEY;
-  const publicKey = process.env.JWT_PUBLIC_KEY;
+  const privateKey = process.env.USERS_JWT_PRIV_KEY;
+  const publicKey = process.env.USERS_JWT_PUB_KEY;
 
   if (privateKey === undefined || publicKey === undefined) {
-    throw new Error('JWT_PRIVATE_KEY and JWT_PUBLIC_KEY environment variables must be set.');
+    throw new Error('USERS_JWT_PRIV_KEY and USERS_JWT_PUB_KEY environment variables must be set.');
   }
 
   jwtKeys = {
@@ -61,17 +61,17 @@ export const hashRefreshToken = (refreshToken: string): string => {
 };
 
 export const getTokenExpiration = (token: string): Date => {
-  const decoded = jwt.decode(token) as JwtPayload;
+  const decoded = jwt.decode(token) as UserJwtPayload;
   return new Date(decoded.exp * 1000);
 };
 
-export const verifyToken = (token: string): JwtPayload | null => {
+export const verifyToken = (token: string): UserJwtPayload | null => {
   try {
     const verifyOptions: jwt.VerifyOptions = {
       algorithms: [JWT_CONFIG.algorithm],
     };
 
-    return jwt.verify(token, getKeys().publicKey, verifyOptions) as JwtPayload;
+    return jwt.verify(token, getKeys().publicKey, verifyOptions) as UserJwtPayload;
   } catch {
     return null; // Token is invalid or expired
   }

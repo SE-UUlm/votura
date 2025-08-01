@@ -96,7 +96,7 @@ export const ElectionView = (): JSX.Element => {
           </Button>
         </Group>
         <Space h={'md'} />
-        <BallotPaperBoard electionId={electionData.id} />
+        <BallotPaperBoard election={electionData} />
       </Flex>
     </>
   );

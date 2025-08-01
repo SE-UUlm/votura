@@ -35,8 +35,7 @@ export const electionsPathObject: OpenAPIV3.PathItemObject = {
           'application/json': {
             schema: {
               type: 'array',
-              // minItems: 0,
-              // maxItems: 100,
+              minItems: 0,
               uniqueItems: true,
               items: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
             },

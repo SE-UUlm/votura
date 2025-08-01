@@ -3,7 +3,8 @@ import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
-import { generateJWTKeyPair } from './auth/generateJWTKeyPair.js';
+import helmet from 'helmet';
+import { setUsersJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
 import { authenticateAccessToken } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
@@ -11,11 +12,11 @@ import { usersRouter } from './routes/users.routes.js';
 import { voterGroupsRouter } from './routes/voterGroups.routes.js';
 
 dotenv.config();
-generateJWTKeyPair();
+setUsersJWTKeyPair();
 
 export const app = express();
 
-app.disable('x-powered-by');
+app.use(helmet());
 app.use(cors());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
@@ -24,7 +25,7 @@ app.use(httpLogger);
 app.use('/users', usersRouter);
 app.use('/elections', [authenticateAccessToken, electionsRouter]);
 app.use('/voterGroups', [authenticateAccessToken, voterGroupsRouter]);
-app.use('/heart-beat', (_req, res) => {
+app.use('/heartbeat', (_req, res) => {
   res.sendStatus(HttpStatusCode.noContent);
 });
 // Fallback for unhandled routes

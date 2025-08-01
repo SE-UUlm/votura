@@ -10,9 +10,11 @@ export const ballotPaperSectionObject = z.object({
   ...identifiableTimestampedObject.shape,
   name: z.string().min(1).max(256).register(voturaMetadataRegistry, {
     description: 'The name of the ballot paper section.',
+    example: 'My important ballot paper section',
   }),
   description: z.string().min(1).max(256).optional().register(voturaMetadataRegistry, {
     description: 'The description text of the ballot paper section.',
+    example: 'This section is about my important topic.',
   }),
   maxVotes: z
     .int32()
