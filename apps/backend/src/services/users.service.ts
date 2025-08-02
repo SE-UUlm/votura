@@ -1,5 +1,8 @@
 import { db } from '@repo/db';
-import type { User as DBUser } from '@repo/db/types';
+import type {
+  AccessTokenBlacklist as DBAccessTokenBlacklist,
+  User as DBUser,
+} from '@repo/db/types';
 import { hashPassword, verifyPassword } from '@repo/hash';
 import type {
   ApiTokenUser,
@@ -221,4 +224,17 @@ export const logoutUser = async (
     })
     .where('id', '=', userId)
     .executeTakeFirstOrThrow();
+};
+
+export const isAccessTokenBlacklisted = async (
+  tokenId: DBAccessTokenBlacklist['accessTokenId'],
+): Promise<boolean> => {
+  const blacklistedToken = await db
+    .selectFrom('accessTokenBlacklist')
+    .select('accessTokenId')
+    .where('accessTokenId', '=', tokenId)
+    .where('expiresAt', '>', new Date())
+    .executeTakeFirst();
+
+  return blacklistedToken !== undefined; // Return true if token is blacklisted, false otherwise
 };

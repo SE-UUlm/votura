@@ -1,9 +1,9 @@
 import { response401Object, response500Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
-import { getBearerToken, isTokenBlacklisted, verifyToken } from '../auth/utils.js';
+import { getBearerToken, verifyToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { findUserBy } from '../services/users.service.js';
+import { findUserBy, isAccessTokenBlacklisted } from '../services/users.service.js';
 
 /**
  * Middleware to authenticate requests using JWT access tokens
@@ -36,7 +36,7 @@ export const authenticateAccessToken = async (
     const decodedAccessToken = decodedToken as AccessTokenPayload;
 
     // Check if token is blacklisted
-    const isBlacklisted: boolean = await isTokenBlacklisted(decodedAccessToken.jti);
+    const isBlacklisted: boolean = await isAccessTokenBlacklisted(decodedAccessToken.jti);
     if (isBlacklisted) {
       res
         .status(HttpStatusCode.unauthorized)

@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import {
   response400Object,
   response404Object,
@@ -12,6 +11,10 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import {
+  checkBallotPaperSectionExists as checkBallotPaperSectionExistsService,
+  isBallotPaperParentOfBallotPaperSection,
+} from '../../services/ballotPaperSections.service.js';
 
 /**
  * Checks if the ballot paper section ID in the request parameters is a valid UUID.
@@ -49,13 +52,7 @@ export async function checkBallotPaperSectionExists(
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('ballotPaperSection')
-    .select(['id'])
-    .where('id', '=', req.params.ballotPaperSectionId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await checkBallotPaperSectionExistsService(req.params.ballotPaperSectionId))) {
     res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided ballot paper section does not exist!',
@@ -83,14 +80,12 @@ export async function checkBallotPaperIsParent(
   res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('ballotPaperSection')
-    .select(['id', 'ballotPaperId'])
-    .where('id', '=', req.params.ballotPaperSectionId)
-    .where('ballotPaperId', '=', req.params.ballotPaperId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (
+    !(await isBallotPaperParentOfBallotPaperSection(
+      req.params.ballotPaperId,
+      req.params.ballotPaperSectionId,
+    ))
+  ) {
     res.status(HttpStatusCode.badRequest).json(
       response400Object.parse({
         message: 'The provided ballot paper section does not belong to the provided ballot paper.',

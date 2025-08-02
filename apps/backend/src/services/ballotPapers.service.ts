@@ -1,7 +1,10 @@
 import { db } from '@repo/db';
-import type { BallotPaper as DBBallotPaper, User as DBUser } from '@repo/db/types';
 import type {
-  Election,
+  BallotPaper as DBBallotPaper,
+  Election as DBElection,
+  User as DBUser,
+} from '@repo/db/types';
+import type {
   InsertableBallotPaper,
   SelectableBallotPaper,
   UpdateableBallotPaper,
@@ -24,7 +27,7 @@ const ballotPaperTransformer = (ballotPaper: Selectable<DBBallotPaper>): Selecta
 
 export const createBallotPaper = async (
   insertableBallotPaper: InsertableBallotPaper,
-  electionId: Election['id'],
+  electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableBallotPaper> => {
   const ballotPaper = await db
     .insertInto('ballotPaper')
@@ -36,7 +39,7 @@ export const createBallotPaper = async (
 };
 
 export const getBallotPapers = async (
-  electionId: Election['id'],
+  electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableBallotPaper[]> => {
   const ballotPapers = await db
     .selectFrom('ballotPaper')
@@ -169,4 +172,39 @@ export const checkBallotPapersElectionNotFrozen = async (
     .executeTakeFirst();
 
   return frozenElectionExists === undefined;
+};
+
+/**
+ * Get the maxVotes and maxVotesPerCandidate for the ballot paper with the given ballotPaperId
+ *
+ * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate from
+ * @returns A promise that resolves to the maxVotes and maxVotesPerCandidate values if successful, or null if unsuccessful
+ */
+export const getBallotPaperMaxVotes = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<{
+  maxVotes: DBBallotPaper['maxVotes'];
+  maxVotesPerCandidate: DBBallotPaper['maxVotesPerCandidate'];
+}> => {
+  const ballotPaper = await db
+    .selectFrom('ballotPaper')
+    .select(['maxVotes', 'maxVotesPerCandidate'])
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirstOrThrow();
+
+  return { maxVotes: ballotPaper.maxVotes, maxVotesPerCandidate: ballotPaper.maxVotesPerCandidate };
+};
+
+export const isElectionParentOfBallotPaper = async (
+  electionId: Selectable<DBElection>['id'],
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('ballotPaper')
+    .select(['electionId'])
+    .where('id', '=', ballotPaperId)
+    .where('electionId', '=', electionId)
+    .executeTakeFirst();
+
+  return result !== undefined;
 };
