@@ -91,7 +91,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
       demoBallotPaperSection,
       additionalCandidateBallotPaper.id,
     );
-    const normalCandidate = await createCandidate(demoCandidate, additionalCandidateElection.id);
+    const sectionCandidate = await createCandidate(demoCandidate, additionalCandidateElection.id);
     await createCandidate(
       // additional candidate only linked to the election
       { ...demoCandidate, title: 'Additional Candidate' },
@@ -99,7 +99,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     );
     await addCandidateToBallotPaperSection(
       additionalCandidateBallotPaperSection.id,
-      normalCandidate.id,
+      sectionCandidate.id,
     );
 
     validElectionRequestPath = `/elections/${validElection.id}/freeze`;
