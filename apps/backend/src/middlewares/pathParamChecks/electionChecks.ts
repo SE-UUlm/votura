@@ -1,3 +1,4 @@
+import type { Candidate as DBCandidate } from '@repo/db/types';
 import {
   response403Object,
   response404Object,
@@ -10,7 +11,11 @@ import {
   type SelectableUser,
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
+import type { Selectable } from 'kysely';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import { getBallotPapers } from '../../services/ballotPapers.service.js';
+import { getBallotPaperSections } from '../../services/ballotPaperSections.service.js';
+import { getCandidates } from '../../services/candidates.service.js';
 import {
   checkElectionExists as checkElectionExistsService,
   getElectionVotingStart,
@@ -18,6 +23,7 @@ import {
   isElectionGeneratingKeys,
   isUserOwnerOfElection,
 } from '../../services/elections.service.js';
+import { setsEqual } from '../../utils.js';
 
 /**
  * Checks if the election ID in the request parameters is a valid UUID.
@@ -66,6 +72,10 @@ export async function checkElectionExists(
   }
 }
 
+const error403Response = (res: Response<Response403>, message: string): void => {
+  res.status(HttpStatusCode.forbidden).json(response403Object.parse({ message }));
+};
+
 /**
  * Checks if the user is the owner of the election with the given ID.
  * If the user is not the owner, it sends a 403 Forbidden response.
@@ -81,11 +91,7 @@ export async function checkUserOwnerOfElection(
   next: NextFunction,
 ): Promise<void> {
   if (!(await isUserOwnerOfElection(req.params.electionId, res.locals.user.id))) {
-    res.status(HttpStatusCode.forbidden).json(
-      response403Object.parse({
-        message: 'You do not have the permission to access or modify this election.',
-      }),
-    );
+    error403Response(res, 'You do not have the permission to access or modify this election.');
   } else {
     next();
   }
@@ -106,11 +112,7 @@ export async function checkElectionNotFrozen(
   next: NextFunction,
 ): Promise<void> {
   if (await isElectionFrozen(req.params.electionId)) {
-    res.status(HttpStatusCode.forbidden).json(
-      response403Object.parse({
-        message: 'The election is frozen and cannot be modified.',
-      }),
-    );
+    error403Response(res, 'The election is frozen and cannot be modified.');
   } else {
     next();
   }
@@ -131,13 +133,11 @@ export async function checkElectionNotGenerateKeys(
   next: NextFunction,
 ): Promise<void> {
   if (await isElectionGeneratingKeys(req.params.electionId)) {
-    res.status(HttpStatusCode.forbidden).json(
-      response403Object.parse({
-        message:
-          'Currently the generation of the election keys are running. ' +
-          'For consistency you are not allowed to do this action. ' +
-          'Please retry in some minutes.',
-      }),
+    error403Response(
+      res,
+      'Currently the generation of the election keys are running. ' +
+        'For consistency you are not allowed to do this action. ' +
+        'Please retry in some minutes.',
     );
   } else {
     next();
@@ -161,16 +161,107 @@ export async function checkVotingStartInFuture(
   const votingStart = await getElectionVotingStart(req.params.electionId);
 
   if (votingStart < new Date()) {
-    res.status(HttpStatusCode.forbidden).json(
-      response403Object.parse({
-        message:
-          'The voting start date is in the past. ' +
-          'You are only allowed to do this action if the voting start date is in the future.',
-      }),
+    error403Response(
+      res,
+      'The voting start date is in the past. ' +
+        'You are only allowed to do this action if the voting start date is in the future.',
     );
   } else {
     next();
   }
+}
+
+export enum CheckElectionIsValidErrors {
+  noBallotPapers = 'noBallotPapers',
+  noSections = 'noSections',
+  noCandidates = 'noCandidates',
+  candidateMismatch = 'candidateMismatch',
+}
+type CheckElectionIsValidErrorsWithoutId =
+  | CheckElectionIsValidErrors.noBallotPapers
+  | CheckElectionIsValidErrors.candidateMismatch;
+type CheckElectionIsValidErrorsWithId =
+  | CheckElectionIsValidErrors.noSections
+  | CheckElectionIsValidErrors.noCandidates;
+
+export function getValidationErrorMessage(error: CheckElectionIsValidErrorsWithoutId): string;
+export function getValidationErrorMessage(
+  error: CheckElectionIsValidErrorsWithId,
+  id: string,
+): string;
+export function getValidationErrorMessage(error: CheckElectionIsValidErrors, id?: string): string {
+  switch (error) {
+    case CheckElectionIsValidErrors.noBallotPapers:
+      return 'The election must have at least one ballot paper.';
+    case CheckElectionIsValidErrors.noSections:
+      return `The ballot paper with ID ${id} must have at least one section.`;
+    case CheckElectionIsValidErrors.noCandidates:
+      return `The ballot paper section with ID ${id} must have at least one candidate linked to it.`;
+    case CheckElectionIsValidErrors.candidateMismatch:
+      return 'The candidates linked to the ballot paper sections must be the same as the candidates linked to the election. Most likely a candidate linked to the election is not linked to any ballot paper section.';
+    default:
+      return 'Unknown validation error';
+  }
+}
+
+/**
+ * Checks if an election is valid by verifying the following conditions:
+ * 1. At least one ballot paper is linked to the election.
+ * 2. Each ballot paper has at least one section linked to it.
+ * 3. Each ballot paper section has at least one candidate linked to it.
+ * 4. The candidates linked to the ballot paper sections must be the same as the candidates linked to the election. Every candidate linked to the election must be linked to at least one ballot paper section.
+ *
+ * @param req The request object containing the election ID.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the election is valid.
+ */
+export async function checkElectionIsValid(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  // Check at least one ballot paper is linked to the election
+  const ballotPapers = await getBallotPapers(req.params.electionId);
+  if (ballotPapers.length === 0) {
+    error403Response(res, getValidationErrorMessage(CheckElectionIsValidErrors.noBallotPapers));
+    return;
+  }
+
+  // Check ballot papers have at least one section linked to them
+  // and that each section has at least one candidate linked to it
+  const bpsCandidateIds = new Set<Selectable<DBCandidate>['id']>();
+  for (const ballotPaper of ballotPapers) {
+    const sections = await getBallotPaperSections(ballotPaper.id);
+    if (sections.length === 0) {
+      error403Response(
+        res,
+        getValidationErrorMessage(CheckElectionIsValidErrors.noSections, ballotPaper.id),
+      );
+      return;
+    }
+
+    for (const section of sections) {
+      if (section.candidateIds.length === 0) {
+        error403Response(
+          res,
+          getValidationErrorMessage(CheckElectionIsValidErrors.noCandidates, section.id),
+        );
+        return;
+      }
+      section.candidateIds.forEach((id) => bpsCandidateIds.add(id));
+    }
+  }
+
+  // Check that the candidates linked to the ballot paper sections are the same as the candidates linked to the election
+  const electionCandidateIds = new Set(
+    (await getCandidates(req.params.electionId)).map((candidate) => candidate.id),
+  );
+  if (!setsEqual(bpsCandidateIds, electionCandidateIds)) {
+    error403Response(res, getValidationErrorMessage(CheckElectionIsValidErrors.candidateMismatch));
+    return;
+  }
+
+  next();
 }
 
 export const defaultElectionChecks = [

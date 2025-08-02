@@ -9,8 +9,20 @@ import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { createBallotPaper } from '../../src/services/ballotPapers.service.js';
+import {
+  addCandidateToBallotPaperSection,
+  createBallotPaperSection,
+} from '../../src/services/ballotPaperSections.service.js';
+import { createCandidate } from '../../src/services/candidates.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import { demoElection, demoUser } from '../mockData.js';
+import {
+  demoBallotPaper,
+  demoBallotPaperSection,
+  demoCandidate,
+  demoElection,
+  demoUser,
+} from '../mockData.js';
 import { sleep } from '../utils.js';
 import { createElection } from './../../src/services/elections.service.js';
 
@@ -28,6 +40,13 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
     }
 
     election = await createElection(demoElection, user.id);
+    const ballotPaper = await createBallotPaper(demoBallotPaper, election.id);
+    const ballotPaperSection = await createBallotPaperSection(
+      demoBallotPaperSection,
+      ballotPaper.id,
+    );
+    const candidate = await createCandidate(demoCandidate, election.id);
+    await addCandidateToBallotPaperSection(ballotPaperSection.id, candidate.id);
 
     freezePath = `/elections/${election.id}/freeze`;
     unfreezePath = `/elections/${election.id}/unfreeze`;
