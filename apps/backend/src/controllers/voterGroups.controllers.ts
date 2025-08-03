@@ -1,8 +1,5 @@
 import {
-  response400Object,
-  response403Object,
-  response404Object,
-  response500Object,
+  response4XXObject,
   type InsertableVoterGroup,
   type Response400,
   type Response403,
@@ -40,27 +37,9 @@ export const createVoterGroup = async (
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
   if (isVoterGroupValidationError(validationResult)) {
-    switch (validationResult.status) {
-      case HttpStatusCode.badRequest:
-        res
-          .status(HttpStatusCode.badRequest)
-          .json(response400Object.parse({ message: validationResult.message }));
-        break;
-      case HttpStatusCode.forbidden:
-        res
-          .status(HttpStatusCode.forbidden)
-          .json(response403Object.parse({ message: validationResult.message }));
-        break;
-      case HttpStatusCode.notFound:
-        res
-          .status(HttpStatusCode.notFound)
-          .json(response404Object.parse({ message: validationResult.message }));
-        break;
-      default:
-        res
-          .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: undefined }));
-    }
+    res
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
@@ -90,27 +69,9 @@ export const updateVoterGroup = async (
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
   if (isVoterGroupValidationError(validationResult)) {
-    switch (validationResult.status) {
-      case HttpStatusCode.badRequest:
-        res
-          .status(HttpStatusCode.badRequest)
-          .json(response400Object.parse({ message: validationResult.message }));
-        break;
-      case HttpStatusCode.forbidden:
-        res
-          .status(HttpStatusCode.forbidden)
-          .json(response403Object.parse({ message: validationResult.message }));
-        break;
-      case HttpStatusCode.notFound:
-        res
-          .status(HttpStatusCode.notFound)
-          .json(response404Object.parse({ message: validationResult.message }));
-        break;
-      default:
-        res
-          .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: undefined }));
-    }
+    res
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
