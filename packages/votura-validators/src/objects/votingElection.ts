@@ -39,7 +39,7 @@ export const selectableVotingElectionObject = z.object({
     }),
 });
 
-export type SelectableVotingElectionObject = typeof selectableVotingElectionObject;
+export type SelectableVotingElection = z.infer<typeof selectableVotingElectionObject>;
 
 export const selectableVotingElectionObjectSchema = z.toJSONSchema(
   selectableVotingElectionObject,

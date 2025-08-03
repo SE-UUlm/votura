@@ -6,10 +6,11 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import helmet from 'helmet';
 import { setUsersJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
-import { authenticateAccessToken } from './middlewares/auth.js';
+import { authenticateAccessToken, authenticateVoterToken } from './middlewares/auth.js';
 import { electionsRouter } from './routes/elections.routes.js';
 import { usersRouter } from './routes/users.routes.js';
 import { voterGroupsRouter } from './routes/voterGroups.routes.js';
+import { votingRouter } from './routes/voting.routes.js';
 
 dotenv.config();
 setUsersJWTKeyPair();
@@ -25,6 +26,7 @@ app.use(httpLogger);
 app.use('/users', usersRouter);
 app.use('/elections', [authenticateAccessToken, electionsRouter]);
 app.use('/voterGroups', [authenticateAccessToken, voterGroupsRouter]);
+app.use('/voting', [authenticateVoterToken, votingRouter]);
 app.use('/heartbeat', (_req, res) => {
   res.sendStatus(HttpStatusCode.noContent);
 });
