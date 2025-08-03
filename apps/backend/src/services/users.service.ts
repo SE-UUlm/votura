@@ -17,7 +17,7 @@ import {
   generateUserTokens,
   getTokenExpiration,
   hashRefreshToken,
-  verifyToken,
+  verifyUserToken,
 } from '../auth/utils.js';
 
 export async function findUserBy(
@@ -163,7 +163,7 @@ export const refreshUserTokens = async (
   refreshRequest: RefreshRequestUser,
 ): Promise<ApiTokenUser | RefreshTokenError> => {
   // Verify refresh token
-  const decodedToken = verifyToken(refreshRequest.refreshToken);
+  const decodedToken = verifyUserToken(refreshRequest.refreshToken);
 
   if (decodedToken === null || decodedToken.type !== 'refresh') {
     return RefreshTokenError.invalidToken;

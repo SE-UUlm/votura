@@ -7,7 +7,7 @@ import request from 'supertest';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import type { AccessTokenPayload } from '../../src/auth/types.js';
-import { verifyToken } from '../../src/auth/utils.js';
+import { verifyUserToken } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import {
   blacklistAccessToken,
@@ -100,7 +100,7 @@ describe(`POST /users/logout`, () => {
     }
 
     // Simulate blacklisting the access token
-    const accessTokenPayload = verifyToken(accessToken) as AccessTokenPayload;
+    const accessTokenPayload = verifyUserToken(accessToken) as AccessTokenPayload;
     const expiresAt = new Date(accessTokenPayload.exp * 1000);
     await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
 
