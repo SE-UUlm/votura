@@ -5,7 +5,6 @@ import type {
   Election as DBElection,
 } from '@repo/db/types';
 import type {
-  Candidate,
   InsertableCandidate,
   SelectableCandidate,
   UpdateableCandidate,
@@ -78,7 +77,9 @@ export const updateCandidate = async (
   return candidateTransformer(candidate);
 };
 
-export const deleteCandidate = async (candidateId: Candidate['id']): Promise<DeleteResult> => {
+export const deleteCandidate = async (
+  candidateId: Selectable<DBCandidate>['id'],
+): Promise<DeleteResult> => {
   return db.deleteFrom('candidate').where('id', '=', candidateId).executeTakeFirst();
 };
 
@@ -91,6 +92,32 @@ export const isCandidateLinkedToBallotPaperSection = async (
     .select('id')
     .where('candidateId', '=', candidateId)
     .where('ballotPaperSectionId', '=', ballotPaperSectionId)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+export const checkCandidateExists = async (
+  candidateId: Selectable<DBCandidate>['id'],
+): Promise<boolean> => {
+  const candidate = await db
+    .selectFrom('candidate')
+    .select('id')
+    .where('id', '=', candidateId)
+    .executeTakeFirst();
+
+  return candidate !== undefined;
+};
+
+export const isElectionParentOfCandidate = async (
+  electionId: Selectable<DBElection>['id'],
+  candidateId: Selectable<DBCandidate>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('candidate')
+    .select('electionId')
+    .where('id', '=', candidateId)
+    .where('electionId', '=', electionId)
     .executeTakeFirst();
 
   return result !== undefined;

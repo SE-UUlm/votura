@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import {
   response400Object,
   response404Object,
@@ -11,6 +10,10 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import {
+  checkCandidateExists as checkCandidateExistsService,
+  isElectionParentOfCandidate,
+} from '../../services/candidates.service.js';
 
 /**
  * Checks if the candidate ID in the request parameters is a valid UUID.
@@ -49,13 +52,7 @@ export async function checkCandidateExistsHelper(
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('candidate')
-    .select(['id'])
-    .where('id', '=', candidateId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await checkCandidateExistsService(candidateId))) {
     res.status(HttpStatusCode.notFound).json(
       response404Object.parse({
         message: 'The provided candidate does not exist!',
@@ -98,14 +95,7 @@ export async function checkElectionIsParentHelper(
   res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
-  const result = await db
-    .selectFrom('candidate')
-    .select(['id', 'electionId'])
-    .where('id', '=', candidateId)
-    .where('electionId', '=', electionId)
-    .executeTakeFirst();
-
-  if (result === undefined) {
+  if (!(await isElectionParentOfCandidate(electionId, candidateId))) {
     res.status(HttpStatusCode.badRequest).json(
       response400Object.parse({
         message: 'The provided candidate does not belong to the provided election.',

@@ -1,4 +1,3 @@
-import { db } from '@repo/db';
 import type { BallotPaper as DBBallotPaper } from '@repo/db/types';
 import {
   insertableBallotPaperSectionObject,
@@ -13,6 +12,8 @@ import {
 } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { getBallotPaperMaxVotes } from '../services/ballotPapers.service.js';
+import { getBPSMaxVotesForBP } from '../services/ballotPaperSections.service.js';
 
 export enum RequestTypeMaxVotesCheck {
   ballotPaperUpdate = 'ballotPaperUpdate',
@@ -49,28 +50,6 @@ const parseRequestMaxVotes = async (
   return { maxVotes: data.maxVotes, maxVotesPerCandidate: data.maxVotesPerCandidate };
 };
 
-/**
- * Get the maxVotes and maxVotesPerCandidate for the ballot paper with the given ballotPaperId
- *
- * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate from
- * @param res The response object to send errors to if getting the ballot paper fails
- * @returns A promise that resolves to the maxVotes and maxVotesPerCandidate values if successful, or null if unsuccessful
- */
-const getBallotPaperMaxVotes = async (
-  ballotPaperId: BallotPaper['id'],
-): Promise<{
-  maxVotes: DBBallotPaper['maxVotes'];
-  maxVotesPerCandidate: DBBallotPaper['maxVotesPerCandidate'];
-}> => {
-  const ballotPaper = await db
-    .selectFrom('ballotPaper')
-    .select(['maxVotes', 'maxVotesPerCandidate'])
-    .where('id', '=', ballotPaperId)
-    .executeTakeFirstOrThrow();
-
-  return { maxVotes: ballotPaper.maxVotes, maxVotesPerCandidate: ballotPaper.maxVotesPerCandidate };
-};
-
 const checkBallotPaperUpdate = async (
   ballotPaperId: BallotPaper['id'],
   oldMaxVotes: DBBallotPaper['maxVotes'],
@@ -85,20 +64,8 @@ const checkBallotPaperUpdate = async (
     return;
   }
 
-  const ballotPaperSections = await db
-    .selectFrom('ballotPaperSection')
-    .select(['maxVotes', 'maxVotesPerCandidate'])
-    .where('ballotPaperId', '=', ballotPaperId)
-    .execute();
-
-  const maxVotesFromSections = Math.max(
-    ...ballotPaperSections.map((section) => section.maxVotes),
-    0,
-  );
-  const maxVotesPerCandidateFromSections = Math.max(
-    ...ballotPaperSections.map((section) => section.maxVotesPerCandidate),
-    0,
-  );
+  const { maxVotes: maxVotesFromSections, maxVotesPerCandidate: maxVotesPerCandidateFromSections } =
+    await getBPSMaxVotesForBP(ballotPaperId);
 
   let message = '';
   if (maxVotesFromSections > requestMaxVotes) {
