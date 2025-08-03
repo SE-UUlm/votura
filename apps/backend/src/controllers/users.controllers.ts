@@ -2,7 +2,7 @@ import {
   insertableUserObject,
   refreshRequestUserObject,
   response409Object,
-  responseObject,
+  response4XXObject,
   zodErrorToResponse400,
   type ApiTokenUser,
   type Response400,
@@ -74,7 +74,7 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
   const loginResult = await loginUser(data);
 
   if ('message' in loginResult) {
-    res.status(loginResult.status).json(responseObject.parse({ message: loginResult.message }));
+    res.status(loginResult.status).json(response4XXObject.parse({ message: loginResult.message }));
     return;
   }
 
@@ -96,7 +96,7 @@ export const refreshTokens = async (req: Request, res: Response): Promise<void> 
   if ('message' in refreshResults) {
     res
       .status(refreshResults.status)
-      .json(responseObject.parse({ message: refreshResults.message }));
+      .json(response4XXObject.parse({ message: refreshResults.message }));
     return;
   }
 

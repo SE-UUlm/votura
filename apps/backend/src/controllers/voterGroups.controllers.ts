@@ -1,5 +1,5 @@
 import {
-  responseObject,
+  response4XXObject,
   type InsertableVoterGroup,
   type Response400,
   type Response403,
@@ -39,7 +39,7 @@ export const createVoterGroup = async (
   if (isVoterGroupValidationError(validationResult)) {
     res
       .status(validationResult.status)
-      .json(responseObject.parse({ message: validationResult.message }));
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
@@ -71,7 +71,7 @@ export const updateVoterGroup = async (
   if (isVoterGroupValidationError(validationResult)) {
     res
       .status(validationResult.status)
-      .json(responseObject.parse({ message: validationResult.message }));
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
