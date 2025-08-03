@@ -112,13 +112,15 @@ export const unfreezeElection = async (
 
   const unfrozenElection = await db.transaction().execute(async (trx) => {
     // Delete the pub keys from the voter groups linked to this election
-    await trx
-      .updateTable('voterGroup')
-      .set({
-        pubKey: null,
-      })
-      .where('id', 'in', voterGroupIds)
-      .execute();
+    if( voterGroupIds.length > 0 ) {
+      await trx
+        .updateTable('voterGroup')
+        .set({
+          pubKey: null,
+        })
+        .where('id', 'in', voterGroupIds)
+        .execute();
+    }
 
     // Unfreeze the election and remove its keys
     return trx
