@@ -15,6 +15,7 @@ import type { Request, Response } from 'express';
 import jwt from 'jsonwebtoken';
 import { generateRSAKeyPair } from '../auth/generateJWTKeyPair.js';
 import { JWT_CONFIG } from '../auth/jwtConfig.js';
+import type { VoterJwtPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
   createVoterGroup as createPersistentVoterGroup,
@@ -150,7 +151,10 @@ export const createVoterTokens = async (
   const voterIds = await getVoterIdsForVoterGroup(req.params.voterGroupId);
   const voterTokens: string[] = [];
   for (const voterId of voterIds) {
-    const votingToken = jwt.sign({ sub: voterId }, privateKey, {
+    const tokenPayload: VoterJwtPayload = {
+      sub: voterId,
+    };
+    const votingToken = jwt.sign(tokenPayload, privateKey, {
       algorithm: JWT_CONFIG.algorithm,
     });
     voterTokens.push(votingToken);
