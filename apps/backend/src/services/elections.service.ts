@@ -8,6 +8,7 @@ import type {
 import type { KeyPair } from '@votura/votura-crypto/index';
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
+import { getVoterGroupsLinkedToElection } from './voterGroups.service.js';
 
 const electionTransformer = (election: Selectable<DBElection>): SelectableElection => {
   return {
@@ -107,25 +108,40 @@ export const setElectionKeys = async (
 export const unfreezeElection = async (
   electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableElection> => {
-  const election = await db
-    .updateTable('election')
-    .set({
-      configFrozen: false,
-      pubKey: null,
-      privKey: null,
-      primeP: null,
-      primeQ: null,
-      generator: null,
-    })
-    .where('id', '=', electionId)
-    .returningAll()
-    .executeTakeFirstOrThrow();
+  const voterGroupIds = await getVoterGroupsLinkedToElection(electionId);
 
-  // TODO: Add here the functionality to delete all voter tokens that have access to this election. (see #214)
-  // Think about using a transaction here to ensure consistency.
-  // https://kysely.dev/docs/category/transactions
+  const unfrozenElection = await db.transaction().execute(async (trx) => {
+    // Delete the pub keys from the voter groups linked to this election
+    if (voterGroupIds.length > 0) {
+      await trx
+        .updateTable('voterGroup')
+        .set({
+          pubKey: null,
+        })
+        .where('id', 'in', voterGroupIds)
+        .execute();
+    }
 
-  return electionTransformer(election);
+    // Unfreeze the election and remove its keys
+    return trx
+      .updateTable('election')
+      .set({
+        configFrozen: false,
+        pubKey: null,
+        privKey: null,
+        primeP: null,
+        primeQ: null,
+        generator: null,
+      })
+      .where('id', '=', electionId)
+      .returningAll()
+      .executeTakeFirstOrThrow();
+
+    // TODO: Add here the functionality to remove the votes from the election and
+    // all other elections related to the same voter groups (see #272).
+  });
+
+  return electionTransformer(unfrozenElection);
 };
 
 /**

@@ -1,7 +1,15 @@
 import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
+export const response4XXObject = z.object({
+  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
+    example: 'A detailed message about the response.',
+    description: 'A message that provides additional information about the response.',
+  }),
+});
+
 export const response400Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -32,6 +40,7 @@ export const zodErrorToResponse400 = (error: ZodError): Response400 => {
 };
 
 export const response401Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -45,6 +54,7 @@ export const response401Object = z.object({
 export type Response401 = z.infer<typeof response401Object>;
 
 export const response403Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -58,6 +68,7 @@ export const response403Object = z.object({
 export type Response403 = z.infer<typeof response403Object>;
 
 export const response404Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -71,6 +82,7 @@ export const response404Object = z.object({
 export type Response404 = z.infer<typeof response404Object>;
 
 export const response406Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -86,22 +98,26 @@ export const response406Object = z.object({
 export type Response406 = z.infer<typeof response406Object>;
 
 export const response409Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
     .max(256)
     .default(
-      'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
+      'Conflict. Conflict in the current state of the resource, request could not be processed.',
     )
     .register(voturaMetadataRegistry, {
       example:
-        'Conflict. Indicates that the request could not be processed because of conflict in the current state of the resource.',
+        'Conflict. Conflict in the current state of the resource, request could not be processed.',
+      description:
+        'Indicates that the request could not be processed because of conflict in the current state of the resource.',
     }),
 });
 
 export type Response409 = z.infer<typeof response409Object>;
 
 export const response415Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -115,6 +131,7 @@ export const response415Object = z.object({
 export type Response415 = z.infer<typeof response415Object>;
 
 export const response429Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
@@ -128,6 +145,7 @@ export const response429Object = z.object({
 export type Response429 = z.infer<typeof response429Object>;
 
 export const response500Object = z.object({
+  ...response4XXObject.shape,
   message: z
     .string()
     .min(1)
