@@ -168,7 +168,7 @@ export async function getSelectableVotingElectionForVoter(
 
     const candidateExists = section.candidates.some((c) => c.id === row.candidateId);
     if (!candidateExists) {
-      // section is call by reference, so we can directly push to it
+      // section is passed by reference, so we can directly push to it
       section.candidates.push(createCandidate(row));
     }
   }

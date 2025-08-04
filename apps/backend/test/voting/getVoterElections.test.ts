@@ -1,22 +1,3 @@
-/*
-// positive test for getVoterElections
-Create 2 valid elections, each with 2 ballot papers, each with 2 sections, each section with 2 candidates. -> 8 Candidates in total to make sections unique based on candidates
-Create voter group with 1 voter for both elections, getting a ballot paper for each election 
-
-Freeze election
-
-Generate voter tokens for voter group
-
-get voter elections for vote
-
-make request with authenticated voter token as bearer token
-
-Make sure everything is as expected
-
-// negative test:
-use invalid voter token 
-*/
-
 import {
   response401Object,
   selectableElectionObject,
