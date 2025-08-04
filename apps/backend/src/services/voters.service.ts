@@ -153,7 +153,7 @@ export async function getSelectableVotingElectionForVoter(
 
   for (const row of electionsData) {
     let election = electionsMap.get(row.electionId);
-    if (!election) {
+    if (election === undefined) {
       election = createElectionFromRow(row);
       electionsMap.set(row.electionId, election);
     }
@@ -161,7 +161,7 @@ export async function getSelectableVotingElectionForVoter(
     let section = election.ballotPaper.ballotPaperSections.find(
       (s) => s.id === row.ballotPaperSectionId,
     );
-    if (!section) {
+    if (section === undefined) {
       section = createBallotPaperSection(row);
       election.ballotPaper.ballotPaperSections.push(section);
     }
