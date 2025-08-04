@@ -1,9 +1,8 @@
 import {
   insertableUserObject,
   refreshRequestUserObject,
-  response401Object,
-  response403Object,
   response409Object,
+  response4XXObject,
   zodErrorToResponse400,
   type ApiTokenUser,
   type Response400,
@@ -19,10 +18,8 @@ import {
   createUser as createPersistentUser,
   deleteUser as deletePersistentUser,
   findUserBy,
-  LoginError,
   loginUser,
   logoutUser,
-  RefreshTokenError,
   refreshUserTokens,
 } from '../services/users.service.js';
 
@@ -69,69 +66,41 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
   const body: unknown = req.body;
 
   const { data, error, success } = await insertableUserObject.safeParseAsync(body);
-
-  if (success) {
-    const loginResult = await loginUser(data);
-
-    switch (loginResult) {
-      case LoginError.invalidCredentials:
-        res
-          .status(HttpStatusCode.unauthorized)
-          .json(response401Object.parse({ message: LoginError.invalidCredentials }));
-        break;
-      case LoginError.userNotVerified:
-        res
-          .status(HttpStatusCode.forbidden)
-          .json(response403Object.parse({ message: LoginError.userNotVerified }));
-        break;
-      default: {
-        const tokens: ApiTokenUser = loginResult;
-        res.status(HttpStatusCode.ok).json(tokens);
-        break;
-      }
-    }
+  if (!success) {
+    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
     return;
   }
 
-  res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
+  const loginResult = await loginUser(data);
+
+  if ('message' in loginResult) {
+    res.status(loginResult.status).json(response4XXObject.parse({ message: loginResult.message }));
+    return;
+  }
+
+  res.status(HttpStatusCode.ok).json(loginResult);
 };
 
 export type RefreshTokensResponse = Response<ApiTokenUser | Response400 | Response401>;
 
 export const refreshTokens = async (req: Request, res: Response): Promise<void> => {
   const body: unknown = req.body;
-
   const { data, error, success } = await refreshRequestUserObject.safeParseAsync(body);
-
-  if (success) {
-    const refreshResults = await refreshUserTokens(data);
-
-    switch (refreshResults) {
-      case RefreshTokenError.invalidToken:
-        res
-          .status(HttpStatusCode.unauthorized)
-          .json(response401Object.parse({ message: RefreshTokenError.invalidToken }));
-        break;
-      case RefreshTokenError.userNotFound:
-        res
-          .status(HttpStatusCode.unauthorized)
-          .json(response401Object.parse({ message: RefreshTokenError.userNotFound }));
-        break;
-      case RefreshTokenError.tokenExpired:
-        res
-          .status(HttpStatusCode.unauthorized)
-          .json(response401Object.parse({ message: RefreshTokenError.tokenExpired }));
-        break;
-      default: {
-        const newTokens: ApiTokenUser = refreshResults;
-        res.status(HttpStatusCode.ok).json(newTokens);
-        break;
-      }
-    }
+  if (!success) {
+    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
     return;
   }
 
-  res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
+  const refreshResults = await refreshUserTokens(data);
+
+  if ('message' in refreshResults) {
+    res
+      .status(refreshResults.status)
+      .json(response4XXObject.parse({ message: refreshResults.message }));
+    return;
+  }
+
+  res.status(HttpStatusCode.ok).json(refreshResults);
 };
 
 export type LogoutResponse = Response<
