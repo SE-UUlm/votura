@@ -5,11 +5,15 @@ import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useDeleteBallotPaper } from '../../../../swr/ballotPapers/useDeleteBallotPaper.ts';
 import { useUpdateBallotPaper } from '../../../../swr/ballotPapers/useUpdateBallotPaper.ts';
+import { useCreateBallotPaperSection } from '../../../../swr/ballotPaperSections/useCreateBallotPaperSection.ts';
 import {
+  getAddSuccessBallotPaperSectionConfig,
   getDeleteSuccessBallotPaperConfig,
   getMutateSuccessBallotPaperConfig,
 } from '../../../../utils/notifications.ts';
 import type { MutateBallotPaperDrawerProps } from '../MutateBallotPaperDrawer.tsx';
+import { BallotPaperSectionStack } from './ballotPaperSection/BallotPaperSectionStack.tsx';
+import type { MutateBallotPaperSectionSectionDrawerProps } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
 import { BallotPaperSettingsMenu } from './BallotPaperSettingsMenu.tsx';
 
 export interface BallotPaperColumnProps {
@@ -30,8 +34,15 @@ export const BallotPaperColumn = ({
     electionId: election.id,
     ballotPaperId: ballotPaper.id,
   });
+  const { trigger: triggerCreateSection, isMutating: isSectionMutating } =
+    useCreateBallotPaperSection({
+      electionId: election.id,
+      ballotPaperId: ballotPaper.id,
+    });
 
-  const onMutate: MutateBallotPaperDrawerProps['onMutate'] = async (mutatedBallotPaper) => {
+  const onMutate: MutateBallotPaperDrawerProps['onMutate'] = async (
+    mutatedBallotPaper,
+  ): Promise<void> => {
     await triggerUpdate(mutatedBallotPaper);
     notifications.show(getMutateSuccessBallotPaperConfig(mutatedBallotPaper.name));
   };
@@ -41,9 +52,16 @@ export const BallotPaperColumn = ({
     notifications.show(getDeleteSuccessBallotPaperConfig(ballotPaper.name));
   };
 
+  const onSectionMutate: MutateBallotPaperSectionSectionDrawerProps['onMutate'] = async (
+    partial,
+  ): Promise<void> => {
+    await triggerCreateSection(partial);
+    notifications.show(getAddSuccessBallotPaperSectionConfig(partial.name));
+  };
+
   return (
     <Paper shadow={'xs'} p={'md'} miw={400} bg={theme.colors.gray[0]} style={{ overflow: 'auto' }}>
-      <Stack>
+      <Stack h={'100%'}>
         <Group justify={'space-between'} align={'start'}>
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaper.name}</Text>
@@ -58,6 +76,8 @@ export const BallotPaperColumn = ({
             onMutate={onMutate}
             isMutating={isUpdateMutating}
             onDelete={onDelete}
+            onSectionMutate={onSectionMutate}
+            isSectionMutating={isSectionMutating}
           >
             <ActionIcon size="lg" variant="light" aria-label="Settings">
               <IconDots size={16} />
@@ -65,6 +85,7 @@ export const BallotPaperColumn = ({
           </BallotPaperSettingsMenu>
         </Group>
         <Divider />
+        <BallotPaperSectionStack electionId={election.id} ballotPaperId={ballotPaper.id} />
       </Stack>
     </Paper>
   );
