@@ -17,12 +17,13 @@ import {
 import { createCandidate } from '../../src/services/candidates.service.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { createVoterGroup, getVoterGroupPubKey } from '../../src/services/voterGroups.service.js';
-import { 
+import {
   demoBallotPaper,
   demoBallotPaperSection,
   demoCandidate,
   demoElection,
-  demoUser, voterGroupNoBallotPapers,
+  demoUser,
+  voterGroupNoBallotPapers,
 } from '../mockData.js';
 import { sleep } from '../utils.js';
 import { createElection } from './../../src/services/elections.service.js';
