@@ -79,7 +79,7 @@ export const BallotPaperColumn = ({
             onSectionMutate={onSectionMutate}
             isSectionMutating={isSectionMutating}
           >
-            <ActionIcon size="lg" variant="light" aria-label="Settings">
+            <ActionIcon size="lg" variant="light" aria-label="Ballot Paper Settings">
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSettingsMenu>

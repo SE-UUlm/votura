@@ -69,6 +69,7 @@ export const BallotPaperSettingsMenu = ({
           <Menu.Item
             leftSection={<IconSquarePlus size={14} />}
             onClick={mutateSectionContextActions.open}
+            aria-label={'Add ballot paper section'}
           >
             Add section
           </Menu.Item>
