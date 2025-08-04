@@ -337,3 +337,19 @@ export async function getVoterGroupPubKey(
 
   return result.pubKey;
 }
+
+export async function getVoterGroupsLinkedToElection(
+  electionId: Selectable<DBBallotPaper>['electionId'],
+): Promise<Selectable<DBVoterGroup>['id'][]> {
+  const voterGroups = await db
+    .selectFrom('voterGroup as vg')
+    .innerJoin('voter as v', 'v.voterGroupId', 'vg.id')
+    .innerJoin('voterRegister as vr', 'vr.voterId', 'v.id')
+    .innerJoin('ballotPaper as bp', 'bp.id', 'vr.ballotPaperId')
+    .where('bp.electionId', '=', electionId)
+    .select('vg.id')
+    .distinct()
+    .execute();
+
+  return voterGroups.map((vg) => vg.id);
+}
