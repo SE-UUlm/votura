@@ -75,6 +75,7 @@
     "nodeport",
     "runid",
     "mantine",
-    "deleter"
+    "deleter",
+    "bpsc"
   ]
 }
