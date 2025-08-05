@@ -45,6 +45,7 @@ import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotP
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
+  checkElectionIsValid,
   checkElectionNotFrozen,
   checkElectionNotGenerateKeys,
   checkVotingStartInFuture,
@@ -82,6 +83,7 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkVotingStartInFuture,
   checkElectionNotFrozen,
+  checkElectionIsValid,
   freezeElection,
 );
 electionsRouter.put(
