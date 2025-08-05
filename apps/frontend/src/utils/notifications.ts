@@ -1,15 +1,18 @@
 import type { NotificationData } from '@mantine/notifications';
-import type { SelectableBallotPaper } from '@repo/votura-validators';
-import type { MockElection } from '../store/useStore.ts';
+import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
 
-export const getDeleteSuccessElectionConfig = (name: string): NotificationData => {
+export const getDeleteSuccessElectionConfig = (
+  name: SelectableElection['name'],
+): NotificationData => {
   return {
     title: 'Success',
     message: `You successfully deleted the election: ${name}`,
   };
 };
 
-export const getMutateSuccessElectionConfig = (name: MockElection['name']): NotificationData => {
+export const getMutateSuccessElectionConfig = (
+  name: SelectableElection['name'],
+): NotificationData => {
   return {
     title: 'Success',
     message: `The changes to the election "${name}" have been saved.`,
@@ -17,7 +20,7 @@ export const getMutateSuccessElectionConfig = (name: MockElection['name']): Noti
 };
 
 export const getToggleFreezeSuccessElectionConfig = (
-  name: MockElection['name'],
+  name: SelectableElection['name'],
   gotFrozen: boolean,
 ): NotificationData => {
   return {
@@ -26,7 +29,7 @@ export const getToggleFreezeSuccessElectionConfig = (
   };
 };
 
-export const getAddSuccessElectionConfig = (name: MockElection['name']): NotificationData => {
+export const getAddSuccessElectionConfig = (name: SelectableElection['name']): NotificationData => {
   return {
     title: 'Success',
     message: `The election "${name}" has been created.`,
