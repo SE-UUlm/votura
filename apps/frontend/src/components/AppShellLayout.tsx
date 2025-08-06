@@ -41,7 +41,7 @@ export const AppShellLayout = (): JSX.Element => {
         </Stack>
       </AppShell.Navbar>
 
-      <AppShell.Main style={{ display: 'flex', flexDirection: 'column' }}>
+      <AppShell.Main style={{ display: 'flex', flexDirection: 'column', height: '100vh' }}>
         <Outlet />
       </AppShell.Main>
     </AppShell>
