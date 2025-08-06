@@ -15,6 +15,7 @@ export enum TableName {
   voterGroup = 'voterGroup',
   voter = 'voter',
   voterRegister = 'voterRegister',
+  vote = 'vote',
 }
 
 // --- Column names ---
@@ -98,6 +99,12 @@ export enum VoterColumnName {
 export enum VoterRegisterColumnName {
   voted = 'voted',
   ballotPaperId = 'ballotPaperId',
+  voterId = 'voterId',
+}
+
+export enum VoteColumnName {
+  filledBallotPaper = 'filledBallotPaper',
+  electionId = 'electionId',
   voterId = 'voterId',
 }
 

@@ -15,6 +15,7 @@ import {
   RegexPattern,
   TableName,
   UserColumnName,
+  VoteColumnName,
   VoterColumnName,
   VoterFKName,
   VoterGroupColumnName,
@@ -200,6 +201,17 @@ async function createVoterRegisterTable(db: Kysely<any>): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createVoteTable(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .createTable(TableName.vote)
+    .$call(addDefaultColumns)
+    .addColumn(VoteColumnName.filledBallotPaper, 'jsonb', (col) => col.notNull())
+    .addColumn(VoteColumnName.electionId, 'uuid', (col) => col.notNull())
+    .addColumn(VoteColumnName.voterId, 'uuid')
+    .execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createTables(db: Kysely<any>): Promise<void> {
   await createUserTable(db);
   await createAccessTokenBlacklistTable(db);
@@ -211,6 +223,7 @@ async function createTables(db: Kysely<any>): Promise<void> {
   await createVoterGroupTable(db);
   await createVoterTable(db);
   await createVoterRegisterTable(db);
+  await createVoteTable(db);
 }
 
 // --- Foreign Key Helper Functions ---
@@ -349,6 +362,31 @@ async function addVoterRegisterForeignKeys(db: Kysely<any>): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function addVoteForeignKeys(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .alterTable(TableName.vote)
+    .addForeignKeyConstraint(
+      VoteColumnName.electionId,
+      [VoteColumnName.electionId],
+      TableName.election,
+      [DefaultColumnName.id],
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
+    )
+    .execute();
+
+  await db.schema
+    .alterTable(TableName.vote)
+    .addForeignKeyConstraint(
+      VoteColumnName.voterId,
+      [VoteColumnName.voterId],
+      TableName.voter,
+      [DefaultColumnName.id],
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
+    )
+    .execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addElectionForeignKeys(db);
   await addBallotPaperForeignKeys(db);
@@ -358,6 +396,7 @@ async function addForeignKeys(db: Kysely<any>): Promise<void> {
   await addVoterGroupForeignKeys(db);
   await addVoterForeignKeys(db);
   await addVoterRegisterForeignKeys(db);
+  await addVoteForeignKeys(db);
 }
 
 // --- Modified At Helper Functions ---
