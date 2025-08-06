@@ -62,3 +62,12 @@ export const getDeleteSuccessBallotPaperConfig = (
     message: `The ballot paper "${name}" has been deleted.`,
   };
 };
+
+export const getAddSuccessBallotPaperSectionConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The ballot paper section "${name}" has been created.`,
+  };
+};
