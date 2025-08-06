@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosError } from 'axios';
 import { api } from './api.ts';
 import { getAuthLocalStorage } from './authTokens.ts';
 import { hasMessage } from './hasMessage.ts';
@@ -23,7 +23,7 @@ export const getter = async (url: string): Promise<unknown> => {
         error.response?.data !== undefined && hasMessage(error.response.data)
           ? error.response.data.message
           : 'We encountered an unexpected error while fetching a resource. Please try again later or get in contact with us.';
-      throw new Error(errorMessage);
+      throw new AxiosError(errorMessage);
     } else {
       throw error;
     }
