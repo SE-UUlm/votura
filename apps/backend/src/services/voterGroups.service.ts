@@ -353,3 +353,32 @@ export async function getVoterGroupsLinkedToElection(
 
   return voterGroups.map((vg) => vg.id);
 }
+
+export async function checkVoterGroupElectionsReadyToVote(
+  voterGroupId: Selectable<DBVoterGroup>['id'],
+): Promise<boolean> {
+  const linkedElections = await db
+    .selectFrom('voterGroup as vg')
+    .innerJoin('voter as v', 'v.voterGroupId', 'vg.id')
+    .innerJoin('voterRegister as vr', 'vr.voterId', 'v.id')
+    .innerJoin('ballotPaper as bp', 'bp.id', 'vr.ballotPaperId')
+    .innerJoin('election as e', 'e.id', 'bp.electionId')
+    .where('vg.id', '=', voterGroupId)
+    .select(['e.pubKey', 'e.votingStartAt'])
+    .execute();
+
+  // Check if all linked elections are ready to vote
+  for (const election of linkedElections) {
+    // Check if the election has a public key
+    if (election.pubKey === null) {
+      return false;
+    }
+
+    // Check if the voting start time is in the future
+    if (election.votingStartAt < new Date()) {
+      return false;
+    }
+  }
+
+  return true;
+}

@@ -12,6 +12,7 @@ import type { NextFunction, Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import {
   checkVoterGroupElectionsNotFrozen as checkVoterGroupElectionsNotFrozenService,
+  checkVoterGroupElectionsReadyToVote,
   checkVoterGroupExists as checkVoterGroupExistService,
   getOwnerOfVoterGroup,
 } from '../../services/voterGroups.service.js';
@@ -73,6 +74,25 @@ export async function checkVoterGroupElectionsNotFrozen(
     res.status(HttpStatusCode.forbidden).json(
       response403Object.parse({
         message: 'At least one election associated with this voter group is frozen.',
+      }),
+    );
+  } else {
+    next();
+  }
+}
+
+export async function checkVoterTokensMayBeCreated(
+  req: Request<{ voterGroupId: string }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  // keys of all linked elections must be generated, start times must be in the future
+  if (!(await checkVoterGroupElectionsReadyToVote(req.params.voterGroupId))) {
+    res.status(HttpStatusCode.forbidden).json(
+      response403Object.parse({
+        message:
+          'At least one election associated with this voter group is not ready to vote. ' +
+          'Either the keys are not generated or the start time is in the past.',
       }),
     );
   } else {
