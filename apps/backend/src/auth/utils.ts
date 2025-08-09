@@ -1,10 +1,17 @@
-import type { ApiTokenUser } from '@repo/votura-validators';
+import { type ApiTokenUser, uuidObject } from '@repo/votura-validators';
 import crypto from 'crypto';
 import type { Request } from 'express';
 import jwt from 'jsonwebtoken';
 import ms from 'ms';
+import { getVoterGroupPubKey } from '../services/voterGroups.service.js';
+import { getVoterGroupIdForVoter } from '../services/voters.service.js';
 import { JWT_CONFIG } from './jwtConfig.js';
-import type { AccessTokenPayload, RefreshTokenPayload, UserJwtPayload } from './types.js';
+import type {
+  AccessTokenPayload,
+  RefreshTokenPayload,
+  UserJwtPayload,
+  VoterJwtPayload,
+} from './types.js';
 
 let jwtKeys: { privateKey: string; publicKey: string } | null = null;
 
@@ -65,7 +72,7 @@ export const getTokenExpiration = (token: string): Date => {
   return new Date(decoded.exp * 1000);
 };
 
-export const verifyToken = (token: string): UserJwtPayload | null => {
+export const verifyUserToken = (token: string): UserJwtPayload | null => {
   try {
     const verifyOptions: jwt.VerifyOptions = {
       algorithms: [JWT_CONFIG.algorithm],
@@ -74,6 +81,37 @@ export const verifyToken = (token: string): UserJwtPayload | null => {
     return jwt.verify(token, getKeys().publicKey, verifyOptions) as UserJwtPayload;
   } catch {
     return null; // Token is invalid or expired
+  }
+};
+
+export const verifyVoterToken = async (token: string): Promise<VoterJwtPayload | null> => {
+  try {
+    const verifyOptions: jwt.VerifyOptions = {
+      algorithms: [JWT_CONFIG.algorithm],
+    };
+
+    // get voter id from the token payload
+    const decodedPayload = jwt.decode(token);
+    const parseResult = uuidObject.safeParse(decodedPayload?.sub);
+
+    if (!parseResult.success) {
+      return null; // Invalid voter ID
+    }
+    const voterId = parseResult.data;
+
+    // Get the public key from the voter group the voter ID is linked to
+    const voterGroupId = await getVoterGroupIdForVoter(voterId);
+    if (voterGroupId === null) {
+      return null; // Voter group not found
+    }
+    const publicKey = await getVoterGroupPubKey(voterGroupId);
+    if (publicKey === null) {
+      return null; // Public key not set for voter group
+    }
+
+    return jwt.verify(token, publicKey, verifyOptions) as VoterJwtPayload;
+  } catch {
+    return null; // Token is invalid
   }
 };
 

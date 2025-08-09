@@ -9,7 +9,7 @@ import request from 'supertest';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import type { AccessTokenPayload } from '../../src/auth/types.js';
-import { verifyToken } from '../../src/auth/utils.js';
+import { verifyUserToken } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import {
   createUser,
@@ -78,8 +78,8 @@ describe(`POST /users/refreshTokens`, () => {
 
     // Verify the new access token
     const newAccessToken = parseResult.data.accessToken;
-    const decodedPayload = verifyToken(newAccessToken) as AccessTokenPayload;
-    const decodedRefreshToken = verifyToken(parseResult.data.refreshToken);
+    const decodedPayload = verifyUserToken(newAccessToken) as AccessTokenPayload;
+    const decodedRefreshToken = verifyUserToken(parseResult.data.refreshToken);
     expect(decodedPayload.sub).toBe(user.id);
     expect(decodedRefreshToken?.sub).toBe(user.id);
   });

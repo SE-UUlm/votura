@@ -7,8 +7,9 @@ import request from 'supertest';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import type { AccessTokenPayload } from '../../src/auth/types.js';
-import { verifyToken } from '../../src/auth/utils.js';
+import { verifyUserToken } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { UserAuthErrorMessages } from '../../src/middlewares/auth.js';
 import {
   blacklistAccessToken,
   createUser,
@@ -72,6 +73,7 @@ describe(`POST /users/logout`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.noToken);
   });
 
   it('401: should return error because of invalid access token', async () => {
@@ -80,6 +82,7 @@ describe(`POST /users/logout`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.invalidToken);
   });
 
   it('401: should return error because of refresh token instead of access token', async () => {
@@ -92,6 +95,7 @@ describe(`POST /users/logout`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.invalidToken);
   });
 
   it('401: should return error because of blacklisted access token', async () => {
@@ -100,7 +104,7 @@ describe(`POST /users/logout`, () => {
     }
 
     // Simulate blacklisting the access token
-    const accessTokenPayload = verifyToken(accessToken) as AccessTokenPayload;
+    const accessTokenPayload = verifyUserToken(accessToken) as AccessTokenPayload;
     const expiresAt = new Date(accessTokenPayload.exp * 1000);
     await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
 
@@ -109,6 +113,7 @@ describe(`POST /users/logout`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.blacklisted);
   });
 
   it('401: should return error because of user not found', async () => {
@@ -127,5 +132,6 @@ describe(`POST /users/logout`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.userNotFound);
   });
 });

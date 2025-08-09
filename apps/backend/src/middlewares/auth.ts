@@ -1,9 +1,17 @@
 import { response401Object, response500Object } from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
-import { getBearerToken, verifyToken } from '../auth/utils.js';
+import { getBearerToken, verifyUserToken, verifyVoterToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { findUserBy, isAccessTokenBlacklisted } from '../services/users.service.js';
+
+export enum UserAuthErrorMessages {
+  noToken = 'Access token is required. Are you logged in?',
+  invalidToken = 'Invalid access token.',
+  blacklisted = 'Invalid access token. Token has been revoked.',
+  userNotFound = 'User claimed by access token does not exist.',
+  internal = 'Internal server error during authentication of user.',
+}
 
 /**
  * Middleware to authenticate requests using JWT access tokens
@@ -20,17 +28,17 @@ export const authenticateAccessToken = async (
     if (bearerToken === null) {
       res
         .status(HttpStatusCode.unauthorized)
-        .json(response401Object.parse({ message: 'Access token is required. Are you logged in?' }));
+        .json(response401Object.parse({ message: UserAuthErrorMessages.noToken }));
       return;
     }
 
     // Verify token
-    const decodedToken = verifyToken(bearerToken);
+    const decodedToken = verifyUserToken(bearerToken);
 
     if (decodedToken === null || decodedToken.type !== 'access') {
       res
         .status(HttpStatusCode.unauthorized)
-        .json(response401Object.parse({ message: 'Invalid access token.' }));
+        .json(response401Object.parse({ message: UserAuthErrorMessages.invalidToken }));
       return;
     }
     const decodedAccessToken = decodedToken as AccessTokenPayload;
@@ -40,9 +48,7 @@ export const authenticateAccessToken = async (
     if (isBlacklisted) {
       res
         .status(HttpStatusCode.unauthorized)
-        .json(
-          response401Object.parse({ message: 'Invalid access token. Token has been revoked.' }),
-        );
+        .json(response401Object.parse({ message: UserAuthErrorMessages.blacklisted }));
       return;
     }
 
@@ -52,7 +58,7 @@ export const authenticateAccessToken = async (
     if (user === null) {
       res
         .status(HttpStatusCode.unauthorized)
-        .json(response401Object.parse({ message: 'User claimed by access token does not exist.' }));
+        .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
       return;
     }
 
@@ -63,6 +69,49 @@ export const authenticateAccessToken = async (
   } catch {
     res
       .status(HttpStatusCode.internalServerError)
-      .json(response500Object.parse({ message: 'Internal server error during authentication.' }));
+      .json(response500Object.parse({ message: UserAuthErrorMessages.internal }));
+  }
+};
+
+export enum VoterAuthErrorMessages {
+  noToken = 'Voter token is required. Have you provided one?',
+  invalidToken = 'Invalid voter token.',
+  internal = 'Internal server error during authentication of voter.',
+}
+
+export const authenticateVoterToken = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+): Promise<void> => {
+  try {
+    const bearerToken = getBearerToken(req);
+
+    if (bearerToken === null) {
+      res
+        .status(HttpStatusCode.unauthorized)
+        .json(response401Object.parse({ message: VoterAuthErrorMessages.noToken }));
+      return;
+    }
+
+    // Verify token
+    const decodedToken = await verifyVoterToken(bearerToken);
+
+    if (decodedToken === null) {
+      res
+        .status(HttpStatusCode.unauthorized)
+        .json(response401Object.parse({ message: VoterAuthErrorMessages.invalidToken }));
+      return;
+    }
+    const decodedVoterToken = decodedToken;
+
+    // set voterId in response locals
+    res.locals.voterId = decodedVoterToken.sub;
+
+    next();
+  } catch {
+    res
+      .status(HttpStatusCode.internalServerError)
+      .json(response500Object.parse({ message: VoterAuthErrorMessages.internal }));
   }
 };

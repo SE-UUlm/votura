@@ -77,7 +77,7 @@ export const ElectionView = (): JSX.Element => {
         title={'Create Ballot Paper'}
         isMutating={isMutating}
       />
-      <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
+      <Flex direction={'column'} maw={'100%'} px={'md'} flex={1} h={'100%'}>
         <ElectionViewHeader election={electionData} />
         <Divider />
         <Space h={'md'} />
