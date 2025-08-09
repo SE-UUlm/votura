@@ -1,5 +1,9 @@
 import type { BallotPaper as DBBallotPaper } from '@repo/db/types';
-import { updateableBallotPaperObject, type UpdateableBallotPaper } from '@repo/votura-validators';
+import {
+  updateableBallotPaperObject,
+  zodErrorToResponse400,
+  type UpdateableBallotPaper,
+} from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { getBallotPaperMaxVotes } from '../../services/ballotPapers.service.js';
@@ -24,7 +28,7 @@ export const validateUpdateableBallotPaper = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 

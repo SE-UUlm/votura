@@ -9,6 +9,7 @@ import {
   insertableBallotPaperSectionObject,
   removableBallotPaperSectionCandidateObject,
   updateableBallotPaperSectionObject,
+  zodErrorToResponse400,
   type InsertableBallotPaperSection,
   type InsertableBallotPaperSectionCandidate,
   type RemovableBallotPaperSectionCandidate,
@@ -68,7 +69,7 @@ export const validateInsertableBallotPaperSectionCandidate = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 
@@ -100,7 +101,7 @@ export const validateRemovableBallotPaperSectionCandidate = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 
@@ -168,7 +169,7 @@ export const validateInsertableBallotPaperSection = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 
@@ -193,7 +194,7 @@ export const validateUpdateableBallotPaperSection = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 

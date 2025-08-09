@@ -2,6 +2,7 @@ import type { BallotPaper as DBBallotPaper, User as DBUser } from '@repo/db/type
 import {
   insertableVoterGroupObject,
   updateableVoterGroupObject,
+  zodErrorToResponse400,
   type InsertableVoterGroup,
   type UpdateableVoterGroup,
 } from '@repo/votura-validators';
@@ -79,7 +80,7 @@ export const validateInsertableVoterGroup = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 
@@ -99,7 +100,7 @@ export const validateUpdateableVoterGroup = async (
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
-      message: error.issues.map((issue) => issue.message).join(', '),
+      message: zodErrorToResponse400(error).message,
     };
   }
 
