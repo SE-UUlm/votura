@@ -10,13 +10,8 @@ export type PosterFactory = <T, R = void>(
   },
 ) => Promise<R>;
 
-export const posterFactory: PosterFactory = <T, R = void>(
-  responseSchema?: ZodType<R>,
-) => {
-  return async (
-    url: Parameters<typeof poster>[0],
-    args: { arg: T },
-  ) => {
+export const posterFactory: PosterFactory = <T, R = void>(responseSchema?: ZodType<R>) => {
+  return async (url: Parameters<typeof poster>[0], args: { arg: T }) => {
     const response = await poster(url, args);
     if (!responseSchema) {
       return response as unknown as R;

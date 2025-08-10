@@ -66,9 +66,10 @@ export const RegisterView = (): JSX.Element => {
       });
       navigate('/login');
     } catch (e: unknown) {
-      const message = e instanceof Error
-        ? e.message
-        : 'Something went wrong during registration. Please try again.';
+      const message =
+        e instanceof Error
+          ? e.message
+          : 'Something went wrong during registration. Please try again.';
       notifications.show({
         title: 'Registration failed',
         message: message,
@@ -111,7 +112,9 @@ export const RegisterView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
-          <Button variant="subtle" onClick={() => navigate('/login')}>Back To Login</Button>
+          <Button variant="subtle" onClick={() => navigate('/login')}>
+            Back To Login
+          </Button>
         </Stack>
       </Center>
     </Container>
