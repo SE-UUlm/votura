@@ -14,7 +14,7 @@ export const posterFactory: PosterFactory = <T, R = void>(responseSchema?: ZodTy
   return async (url: Parameters<typeof poster>[0], args: { arg: T }) => {
     const response = await poster(url, args);
     if (!responseSchema) {
-      return response as unknown as R;
+      return response as R;
     }
     const parsed = await responseSchema.safeParseAsync(response);
 
