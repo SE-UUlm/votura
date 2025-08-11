@@ -31,7 +31,7 @@ test.describe('RegisterView logic', () => {
 
   test('RegisterView shows error when password does not meet requirements', async ({ page }) => {
     await page.getByLabel('Email').fill('user@votura.org');
-    await page.getByLabel('Password').fill('123');
+    await page.getByLabel('Password').nth(0).fill('123');
     await page.getByLabel('Password confirmation').fill('123');
     await page.getByRole('button', { name: 'Sign Up' }).click();
     await expect(page.getByText('Password does not meet requirements.')).toBeVisible();
@@ -39,7 +39,7 @@ test.describe('RegisterView logic', () => {
 
   test('RegisterView shows error when password confirmation does not match', async ({ page }) => {
     await page.getByLabel('Email').fill('user@votura.org');
-    await page.getByLabel('Password').fill('MySecurePassword1!');
+    await page.getByLabel('Password').nth(0).fill('MySecurePassword1!');
     await page.getByLabel('Password confirmation').fill('MySecurePassword2!');
     await page.getByRole('button', { name: 'Sign Up' }).click();
     await expect(page.getByText('Passwords do not match.')).toBeVisible();
@@ -54,7 +54,7 @@ test.describe('RegisterView logic', () => {
       });
     });
     await page.getByLabel('Email').fill('mockuser@votura.org');
-    await page.getByLabel('Password').fill('MySecurePassword42!');
+    await page.getByLabel('Password').nth(0).fill('MySecurePassword42!');
     await page.getByLabel('Password confirmation').fill('MySecurePassword42!');
     await page.getByRole('button', { name: 'Sign Up' }).click();
     await expect(page.getByText('Almost done!')).toBeVisible();
