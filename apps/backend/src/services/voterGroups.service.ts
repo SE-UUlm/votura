@@ -374,7 +374,7 @@ export async function checkVoterGroupElectionsReadyToVote(
       return false;
     }
 
-    // Check if the voting start time is in the future
+    // Make sure the voting start isn't in the past
     if (election.votingStartAt < new Date()) {
       return false;
     }
