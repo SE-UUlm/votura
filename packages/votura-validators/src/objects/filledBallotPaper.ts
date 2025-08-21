@@ -51,25 +51,33 @@ export const filledBallotPaperObject = z.object({
               z.object({
                 alpha: z.number().register(voturaMetadataRegistry, {
                   description:
-                    'First part of the ciphertext determining if this candidate was voted with the vote represented by this json object. Maximum of 2048 bits long.',
+                    'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
                   example: 12345,
                 }),
                 beta: z.number().register(voturaMetadataRegistry, {
                   description:
-                    'Second part of the ciphertext determining if this candidate was voted with the vote represented by this json object. Maximum of 2048 bits long.',
+                    'Second part f the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
                   example: 67890,
                 }),
                 commitment1: z.number().register(voturaMetadataRegistry, {
-                  description: 'TODO',
+                  description:
+                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
+                  example: 1345789,
                 }),
                 commitment2: z.number().register(voturaMetadataRegistry, {
-                  description: 'TODO',
+                  description:
+                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
+                  example: 9072314,
                 }),
                 challenge: z.number().register(voturaMetadataRegistry, {
-                  description: 'TODO',
+                  description:
+                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
+                  example: 76687914,
                 }),
                 response: z.number().register(voturaMetadataRegistry, {
-                  description: 'TODO',
+                  description:
+                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
+                  example: 2013945,
                 }),
               }),
             )
@@ -88,10 +96,3 @@ export const filledBallotPaperObjectSchema = z.toJSONSchema(
   filledBallotPaperObject,
   toJsonSchemaParams,
 );
-
-// TODO: Write refine function: only one g^1 per vote, else g^0. Possible? How? Clever/practical?
-// TODO: Write tests for the refine functions.
-// TODO: provide examples values
-// TODO: provide descriptions for all fields
-// TODO: test: to JSON schema -> display in OpenAPI definition -> docusaurus
-// TODO: Write docs page explaining the voting object / matrix.
