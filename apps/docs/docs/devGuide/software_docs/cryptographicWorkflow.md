@@ -91,68 +91,7 @@ This generalization maintains the privacy, integrity, and verifiability guarante
 As explained above, votes are encrypted by the frontend using El Gamal, which requires exactly one option (e.g. of a ballot paper section) being set as voted (g^1).
 This effectively means, that for encryption purposes, a ballot paper section, where a voter can cast four votes, needs to be internally structured as shown in the below table:
 
-<!---
-<style type="text/css">
-.tg  {border-collapse:collapse;border-spacing:0;}
-.tg td{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg th{border-color:black;border-style:solid;border-width:1px;font-family:Arial, sans-serif;font-size:14px;
-  font-weight:normal;overflow:hidden;padding:10px 5px;word-break:normal;}
-.tg .tg-5ztr{background-color:#cbcefb;border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
-.tg .tg-31dk{background-color:#ffccc9;border-color:inherit;font-weight:bold;text-align:left;vertical-align:top}
-.tg .tg-fblz{background-color:#ffccc9;border-color:inherit;text-align:left;vertical-align:middle}
-.tg .tg-61xu{background-color:#cbcefb;border-color:inherit;text-align:left;vertical-align:top}
-.tg .tg-0pky{border-color:inherit;text-align:left;vertical-align:top}
-</style>
-<table class="tg"><thead>
-  <tr>
-    <th class="tg-31dk">Vote</th>
-    <th class="tg-fblz" rowspan="2">Vote 1</th>
-    <th class="tg-fblz" rowspan="2">Vote 2</th>
-    <th class="tg-fblz" rowspan="2">Vote 3</th>
-    <th class="tg-fblz" rowspan="2">Vote 4</th>
-  </tr>
-  <tr>
-    <th class="tg-5ztr"><span style="font-weight:bold">Candidate</span></th>
-  </tr></thead>
-<tbody>
-  <tr>
-    <td class="tg-61xu">Candidate 1<br></td>
-    <td class="tg-0pky">1</td>
-    <td class="tg-0pky">1</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-  </tr>
-  <tr>
-    <td class="tg-61xu">Candidate 2</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">1</td>
-    <td class="tg-0pky">0</td>
-  </tr>
-  <tr>
-    <td class="tg-61xu">Candidate 3</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-  </tr>
-  <tr>
-    <td class="tg-61xu">No Vote</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">1</td>
-  </tr>
-  <tr>
-    <td class="tg-61xu">Invalid</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-    <td class="tg-0pky">0</td>
-  </tr>
-</tbody></table>
--->
+![Tabular representation of a ballot paper section for encryption](../../../static/drawio/voteBallotPaperSectionTable.svg)
 
 In this table, representing a single ballot paper section, a voter has chosen to give two of four possible votes in the section to candidate 1.
 Another vote was given to candidate 2 and the last vote was not given to any candidate.
