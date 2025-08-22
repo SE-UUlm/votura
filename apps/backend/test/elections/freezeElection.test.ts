@@ -113,45 +113,49 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     tokens = generateUserTokens(user.id);
   });
 
-  it('200: should freeze an election & generate keys after confirming the election is freezable', { timeout: 120000 }, async () => {
-    // confirm election is freezable (test for /:${parameter.electionId}/freezable API)
-    const freezableRes = await request(app)
-      .get(validElectionRequestPath + "freezable")
-      .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(freezableRes.status).toBe(HttpStatusCode.ok);
-    expect(freezableRes.type).toBe('application/json');
-    const freezableParseResult = freezableElectionObject.safeParse(freezableRes.body);
-    expect(freezableParseResult.success).toBe(true);
-    expect(freezableParseResult.data?.freezable).toBe(true);
-
-    const freezeRes = await request(app)
-      .put(validElectionRequestPath + "freeze")
-      .set('Authorization', `Bearer ${tokens.accessToken}`);
-    expect(freezeRes.status).toBe(HttpStatusCode.ok);
-    expect(freezeRes.type).toBe('application/json');
-    let freezeParseResult = selectableElectionObject.safeParse(freezeRes.body);
-    expect(freezeParseResult.success).toBe(true);
-
-    expect(freezeParseResult.data?.id).toBe(validElection?.id);
-    expect(freezeParseResult.data?.configFrozen).toBe(true);
-
-    while (freezeParseResult.data?.pubKey === undefined) {
-      await sleep(5000);
-      const res2 = await request(app)
-        .get(`/elections/${validElection?.id}`)
+  it(
+    '200: should freeze an election & generate keys after confirming the election is freezable',
+    { timeout: 120000 },
+    async () => {
+      // confirm election is freezable (test for /:${parameter.electionId}/freezable API)
+      const freezableRes = await request(app)
+        .get(validElectionRequestPath + 'freezable')
         .set('Authorization', `Bearer ${tokens.accessToken}`);
-      freezeParseResult = selectableElectionObject.safeParse(res2.body);
-    }
+      expect(freezableRes.status).toBe(HttpStatusCode.ok);
+      expect(freezableRes.type).toBe('application/json');
+      const freezableParseResult = freezableElectionObject.safeParse(freezableRes.body);
+      expect(freezableParseResult.success).toBe(true);
+      expect(freezableParseResult.data?.freezable).toBe(true);
 
-    expect(freezeParseResult.data?.pubKey).toBeTypeOf('string');
-    expect(freezeParseResult.data?.primeP).toBeTypeOf('string');
-    expect(freezeParseResult.data?.primeQ).toBeTypeOf('string');
-    expect(freezeParseResult.data?.generator).toBeTypeOf('string');
-  });
+      const freezeRes = await request(app)
+        .put(validElectionRequestPath + 'freeze')
+        .set('Authorization', `Bearer ${tokens.accessToken}`);
+      expect(freezeRes.status).toBe(HttpStatusCode.ok);
+      expect(freezeRes.type).toBe('application/json');
+      let freezeParseResult = selectableElectionObject.safeParse(freezeRes.body);
+      expect(freezeParseResult.success).toBe(true);
+
+      expect(freezeParseResult.data?.id).toBe(validElection?.id);
+      expect(freezeParseResult.data?.configFrozen).toBe(true);
+
+      while (freezeParseResult.data?.pubKey === undefined) {
+        await sleep(5000);
+        const res2 = await request(app)
+          .get(`/elections/${validElection?.id}`)
+          .set('Authorization', `Bearer ${tokens.accessToken}`);
+        freezeParseResult = selectableElectionObject.safeParse(res2.body);
+      }
+
+      expect(freezeParseResult.data?.pubKey).toBeTypeOf('string');
+      expect(freezeParseResult.data?.primeP).toBeTypeOf('string');
+      expect(freezeParseResult.data?.primeQ).toBeTypeOf('string');
+      expect(freezeParseResult.data?.generator).toBeTypeOf('string');
+    },
+  );
   it('403: should not allow freezing a second time and election should not be freezable', async () => {
     // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(validElectionRequestPath + "freezable")
+      .get(validElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
@@ -160,7 +164,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     expect(freezableParseResult.data?.freezable).toBe(false);
 
     const freezeRes = await request(app)
-      .put(validElectionRequestPath + "freeze")
+      .put(validElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
     expect(freezeRes.type).toBe('application/json');
@@ -170,7 +174,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   it('403: should not allow freezing a past election after finding out election is not freezable', async () => {
     // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(pastElectionRequestPath + "freezable")
+      .get(pastElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
@@ -179,7 +183,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     expect(freezableParseResult.data?.freezable).toBe(false);
 
     const freezeRes = await request(app)
-      .put(pastElectionRequestPath + "freeze")
+      .put(pastElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
     expect(freezeRes.type).toBe('application/json');
@@ -189,7 +193,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
   it('403: should not allow freezing an election with no ballot papers after finding out election is not freezable', async () => {
     // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(emptyElectionRequestPath + "freezable")
+      .get(emptyElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
@@ -198,7 +202,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     expect(freezableParseResult.data?.freezable).toBe(false);
 
     const freezeRes = await request(app)
-      .put(emptyElectionRequestPath + "freeze")
+      .put(emptyElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
@@ -210,21 +214,21 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     );
   });
   it('403: should not allow freezing an election with no ballot paper sections after finding out election is not freezable', async () => {
-   // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
+    // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(noSectionsElectionRequestPath + "freezable")
+      .get(noSectionsElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
     const freezableParseResult = freezableElectionObject.safeParse(freezableRes.body);
     expect(freezableParseResult.success).toBe(true);
     expect(freezableParseResult.data?.freezable).toBe(false);
-    
+
     if (noSectionsBPId === null) {
       throw new Error('No ballot paper ID set for no sections election');
     }
     const freezeRes = await request(app)
-      .put(noSectionsElectionRequestPath + "freeze")
+      .put(noSectionsElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
@@ -236,9 +240,9 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     );
   });
   it('403: should not allow freezing an election with no candidates linked to ballot paper sections after finding out election is not freezable', async () => {
-   // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
+    // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(noCandidatesElectionRequestPath + "freezable")
+      .get(noCandidatesElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
@@ -250,7 +254,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
       throw new Error('No ballot paper section ID set for no section candidates election');
     }
     const freezeRes = await request(app)
-      .put(noCandidatesElectionRequestPath + "freeze")
+      .put(noCandidatesElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
@@ -262,9 +266,9 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     );
   });
   it('403: should not allow freezing an election with candidates linked to the election but not to ballot paper sections after finding out election is not freezable', async () => {
-   // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
+    // confirm election is not freezable (test for /:${parameter.electionId}/freezable API)
     const freezableRes = await request(app)
-      .get(additionalCandidateElectionRequestPath + "freezable")
+      .get(additionalCandidateElectionRequestPath + 'freezable')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     expect(freezableRes.status).toBe(HttpStatusCode.ok);
     expect(freezableRes.type).toBe('application/json');
@@ -273,7 +277,7 @@ describe(`PUT /elections/:${parameter.electionId}/freeze`, () => {
     expect(freezableParseResult.data?.freezable).toBe(false);
 
     const freezeRes = await request(app)
-      .put(additionalCandidateElectionRequestPath + "freeze")
+      .put(additionalCandidateElectionRequestPath + 'freeze')
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
     expect(freezeRes.status).toBe(HttpStatusCode.forbidden);
