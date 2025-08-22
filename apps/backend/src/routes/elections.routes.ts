@@ -29,6 +29,7 @@ import {
   freezeElection,
   getElection,
   getElections,
+  getFreezableElection,
   unfreezeElection,
   updateElection,
 } from '../controllers/elections.controllers.js';
@@ -76,6 +77,12 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   updateElection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/freezable`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  getFreezableElection,
 );
 electionsRouter.put(
   `/:${parameter.electionId}/freeze`,

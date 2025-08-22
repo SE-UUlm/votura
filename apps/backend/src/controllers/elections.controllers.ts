@@ -5,6 +5,7 @@ import {
   updateableElectionObject,
   zodErrorToResponse400,
   type Election,
+  type FreezableElection,
   type Response400,
   type Response404,
   type SelectableElection,
@@ -13,12 +14,14 @@ import {
 import { getKeyPair } from '@votura/votura-crypto/index';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { isElectionValid } from '../middlewares/pathParamChecks/electionChecks.js';
 import {
   createElection as createPersistentElection,
   deleteElection as deletePersistentElection,
   freezeElection as freezePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
+  isElectionFrozen,
   setElectionKeys,
   unfreezeElection as unfreezePersistentElection,
   updateElection as updatePersistentElection,
@@ -78,6 +81,22 @@ export const getElection = async (
 ): Promise<void> => {
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
   res.status(HttpStatusCode.ok).json(election);
+};
+
+export const getFreezableElection = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<FreezableElection>,
+): Promise<void> => {
+  // find out if election is not frozen and valid
+  if (
+    (await isElectionFrozen(req.params.electionId)) ||
+    !(await isElectionValid(req.params.electionId))
+  ) {
+    res.status(HttpStatusCode.ok).json({ freezable: false });
+    return;
+  }
+
+  res.status(HttpStatusCode.ok).json({ freezable: true });
 };
 
 export const freezeElection = async (
