@@ -1,5 +1,4 @@
 import { ActionIcon, Button, Group, Title } from '@mantine/core';
-import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
@@ -12,7 +11,6 @@ import {
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
-import { DeleteElectionModal } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
@@ -24,22 +22,19 @@ export interface ElectionViewHeaderProps {
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
   const navigate = useNavigate();
-  const { trigger: deleteTrigger, isMutating: isDeleting } = useDeleteElection({electionId: election.id});
+  const { trigger: deleteTrigger } = useDeleteElection({
+    electionId: election.id,
+  });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
-
-  const [isDeleteOpen, deleteModalActions] = useDisclosure(false);
 
   const onDelete = async () => {
     try {
       await deleteTrigger();
       notifications.show(getDeleteSuccessElectionConfig(election.name));
-      deleteModalActions.close();
       navigate('/elections');
     } catch (e: unknown) {
       const message =
-        e instanceof Error
-          ? e.message
-          : 'Could not delete election. Please try again.';
+        e instanceof Error ? e.message : 'Could not delete election. Please try again.';
       notifications.show({
         title: 'Deletion failed',
         message: message,
@@ -80,19 +75,12 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
               <IconDots size={16} />
             </ActionIcon>
           }
-          onDelete={deleteModalActions.open}
+          onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
-          isMutating={isDeleting || isMutating}
+          isMutating={isMutating}
         />
       </Group>
-
-      <DeleteElectionModal
-        election={election}
-        opened={isDeleteOpen}
-        onClose={deleteModalActions.close}
-        onDelete={onDelete}
-      />
     </>
   );
 };
