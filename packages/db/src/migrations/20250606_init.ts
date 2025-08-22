@@ -16,6 +16,7 @@ import {
   TableName,
   UserColumnName,
   VoteColumnName,
+  VoteFKName,
   VoterColumnName,
   VoterFKName,
   VoterGroupColumnName,
@@ -366,7 +367,7 @@ async function addVoteForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.vote)
     .addForeignKeyConstraint(
-      VoteColumnName.electionId,
+      VoteFKName.electionId,
       [VoteColumnName.electionId],
       TableName.election,
       [DefaultColumnName.id],
@@ -377,7 +378,7 @@ async function addVoteForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.vote)
     .addForeignKeyConstraint(
-      VoteColumnName.voterId,
+      VoteFKName.voterId,
       [VoteColumnName.voterId],
       TableName.voter,
       [DefaultColumnName.id],

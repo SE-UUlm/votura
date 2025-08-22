@@ -138,6 +138,11 @@ export enum VoterFKName {
   voterGroupId = 'voterVoterGroupIdFK',
 }
 
+export enum VoteFKName {
+  electionId = 'voteElectionIdFK',
+  voterId = 'voteVoterIdFk',
+}
+
 export enum VoterRegisterFKName {
   ballotPaperId = 'voterRegisterBallotPaperIdFK',
   voterId = 'voterRegisterVoterIdFK',

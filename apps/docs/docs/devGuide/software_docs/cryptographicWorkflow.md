@@ -111,35 +111,39 @@ To Make explaining the format easier the following example is given:
           "Candidate1Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "Candidate2Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
             "challenge": 2345,
             "response": 234567
           },
           "Candidate3Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "No Vote": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "Invalid": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           }
@@ -148,35 +152,40 @@ To Make explaining the format easier the following example is given:
           "Candidate1Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "Candidate2Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "Candidate3Id": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "No Vote": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
           "Invalid": {
             "alpha": 32345,
             "beta": 2345,
-            "commitment": 235,
+            "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           }

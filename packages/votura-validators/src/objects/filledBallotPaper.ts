@@ -56,7 +56,7 @@ export const filledBallotPaperObject = z.object({
                 }),
                 beta: z.number().register(voturaMetadataRegistry, {
                   description:
-                    'Second part f the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
+                    'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
                   example: 67890,
                 }),
                 commitment1: z.number().register(voturaMetadataRegistry, {
