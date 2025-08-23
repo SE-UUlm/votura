@@ -43,5 +43,5 @@ test('should create and delete an election', async ({ page }) => {
   await expect(page.getByRole('dialog', { name: 'Deleting election' })).toBeVisible();
   await page.getByRole('button', { name: 'Delete' }).click();
   await expect(page).toHaveURL('/elections');
-  await expect(page.getByText(election.name)).not.toBeVisible();
+  await expect(page.getByRole('heading', { name: election.name })).not.toBeVisible();
 });
