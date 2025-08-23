@@ -19,7 +19,7 @@ test.describe('Election', () => {
     await expect(page).toHaveURL('/elections');
   });
 
-  test('should create an election', async ({ page }) => {
+  test('should create and delete an election', async ({ page }) => {
     await page.getByRole('button', { name: 'New Election' }).click();
     await page.getByLabel('Name').fill(election.name);
     if (election.description !== undefined) {
@@ -40,11 +40,6 @@ test.describe('Election', () => {
     if (election.description !== undefined) {
       await expect(page.getByText(election.description)).toBeVisible();
     }
-  });
-
-  test('should delete an election', async ({ page }) => {
-    await page.getByRole('link', { name: election.name }).click();
-    await expect(page.getByRole('heading', { name: election.name })).toBeVisible();
 
     await page.getByRole('button', { name: 'Settings' }).click();
     await page.getByRole('menuitem', { name: 'Delete election' }).click();
