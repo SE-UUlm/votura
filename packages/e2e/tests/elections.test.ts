@@ -45,7 +45,7 @@ test.describe('Election', () => {
   test('should delete an election', async ({ page }) => {
     await page.getByRole('link', { name: election.name }).click();
     await expect(page.getByRole('heading', { name: election.name })).toBeVisible();
-    
+
     await page.getByRole('button', { name: 'Settings' }).click();
     await page.getByRole('menuitem', { name: 'Delete election' }).click();
     await expect(page.getByRole('dialog', { name: 'Deleting election' })).toBeVisible();
