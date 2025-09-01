@@ -1,7 +1,7 @@
 import type { OpenAPIV3 } from 'openapi-types';
 import {
-  insertableVoterGroupObjectSchema,
   selectableVoterGroupObjectSchema,
+  updateableVoterGroupObjectSchema,
 } from '../../objects/voterGroup.js';
 import {
   response400,
@@ -35,7 +35,7 @@ export const voterGroupIdPathObject: OpenAPIV3.PathItemObject = {
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: insertableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
+          schema: updateableVoterGroupObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
