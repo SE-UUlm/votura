@@ -39,31 +39,6 @@ export async function checkCandidateUuid(
 }
 
 /**
- * Checks if a candidate with the given ID exists in the database.
- * If the candidate does not exist, it sends a 404 Not Found response with an error message.
- * If the candidate exists, it calls the next middleware function.
- *
- * @param candidateId The ID of the candidate to check for existence.
- * @param res The response object to send errors to.
- * @param next The next middleware function to call if the candidate exists.
- */
-export async function checkCandidateExistsHelper(
-  candidateId: Candidate['id'],
-  res: Response<Response404>,
-  next: NextFunction,
-): Promise<void> {
-  if (!(await checkCandidateExistsService(candidateId))) {
-    res.status(HttpStatusCode.notFound).json(
-      response404Object.parse({
-        message: 'The provided candidate does not exist!',
-      }),
-    );
-  } else {
-    next();
-  }
-}
-
-/**
  * Wrapper function for checkCandidateExistsHelper that checks if a candidate with the given ID in the request parameters exists.
  * If it does not exist, it sends a 404 Not Found response, otherwise it calls the next middleware function.
  *
@@ -76,29 +51,10 @@ export async function checkCandidateExists(
   res: Response<Response404>,
   next: NextFunction,
 ): Promise<void> {
-  await checkCandidateExistsHelper(req.params.candidateId, res, next);
-}
-
-/**
- * Checks if the candidate with the given ID belongs to the election with the given ID.
- * If the candidate does not belong to the election, it sends a 400 Bad Request response with an error message.
- * If the candidate belongs to the election, it calls the next middleware function.
- *
- * @param electionId The ID of the election to check against.
- * @param candidateId The ID of the candidate to check.
- * @param res The response object to send errors to.
- * @param next The next middleware function to call if the candidate belongs to the election.
- */
-export async function checkElectionIsParentHelper(
-  electionId: Election['id'],
-  candidateId: Candidate['id'],
-  res: Response<Response400>,
-  next: NextFunction,
-): Promise<void> {
-  if (!(await isElectionParentOfCandidate(electionId, candidateId))) {
-    res.status(HttpStatusCode.badRequest).json(
-      response400Object.parse({
-        message: 'The provided candidate does not belong to the provided election.',
+  if (!(await checkCandidateExistsService(req.params.candidateId))) {
+    res.status(HttpStatusCode.notFound).json(
+      response404Object.parse({
+        message: 'The provided candidate does not exist!',
       }),
     );
   } else {
@@ -119,7 +75,15 @@ export async function checkElectionIsParent(
   res: Response<Response400>,
   next: NextFunction,
 ): Promise<void> {
-  await checkElectionIsParentHelper(req.params.electionId, req.params.candidateId, res, next);
+  if (!(await isElectionParentOfCandidate(req.params.electionId, req.params.candidateId))) {
+    res.status(HttpStatusCode.badRequest).json(
+      response400Object.parse({
+        message: 'The provided candidate does not belong to the provided election.',
+      }),
+    );
+  } else {
+    next();
+  }
 }
 
 export const defaultCandidateChecks = [

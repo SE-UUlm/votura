@@ -23,9 +23,10 @@ import {
   updateVoterGroup as updatePersistentVoterGroup,
   updateVoterGroupPubKey,
 } from '../services/voterGroups.service.js';
+import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 import {
-  isVoterGroupValidationError,
   validateInsertableVoterGroup,
+  validateUpdateableVoterGroup,
 } from './bodyChecks/voterGroupChecks.js';
 
 export const createVoterGroup = async (
@@ -37,7 +38,7 @@ export const createVoterGroup = async (
 ): Promise<void> => {
   const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
 
-  if (isVoterGroupValidationError(validationResult)) {
+  if (isBodyCheckValidationError(validationResult)) {
     res
       .status(validationResult.status)
       .json(response4XXObject.parse({ message: validationResult.message }));
@@ -67,9 +68,9 @@ export const updateVoterGroup = async (
     { user: SelectableUser }
   >,
 ): Promise<void> => {
-  const validationResult = await validateInsertableVoterGroup(req.body, res.locals.user.id);
+  const validationResult = await validateUpdateableVoterGroup(req.body, res.locals.user.id);
 
-  if (isVoterGroupValidationError(validationResult)) {
+  if (isBodyCheckValidationError(validationResult)) {
     res
       .status(validationResult.status)
       .json(response4XXObject.parse({ message: validationResult.message }));
