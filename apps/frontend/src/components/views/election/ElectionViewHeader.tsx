@@ -4,6 +4,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
+import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
@@ -21,17 +22,29 @@ export interface ElectionViewHeaderProps {
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
   const navigate = useNavigate();
-  const { trigger, isMutating } = useUpdateElection(election.id);
+  const { trigger: deleteTrigger } = useDeleteElection({
+    electionId: election.id,
+  });
+  const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
 
-  const onDelete = () => {
-    // deleteElection(election.id); TODO: Implement election deletion (see #147)
-    notifications.show(getDeleteSuccessElectionConfig(election.name));
-    navigate('/elections');
-    return;
+  const onDelete = async () => {
+    try {
+      await deleteTrigger();
+      notifications.show(getDeleteSuccessElectionConfig(election.name));
+      navigate('/elections');
+    } catch (e: unknown) {
+      const message =
+        e instanceof Error ? e.message : 'Could not delete election. Please try again.';
+      notifications.show({
+        title: 'Deletion failed',
+        message: message,
+        color: 'red',
+      });
+    }
   };
 
   const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
-    await trigger(mutatedElection);
+    await updateTrigger(mutatedElection);
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
