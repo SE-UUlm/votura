@@ -12,6 +12,18 @@ export type Generated<T> =
 
 export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
+export type Json = JsonValue;
+
+export type JsonArray = JsonValue[];
+
+export type JsonObject = {
+  [x: string]: JsonValue | undefined;
+};
+
+export type JsonPrimitive = boolean | number | string | null;
+
+export type JsonValue = JsonArray | JsonObject | JsonPrimitive;
+
 export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
@@ -122,6 +134,15 @@ export interface User {
   verified: Generated<boolean>;
 }
 
+export interface Vote {
+  createdAt: Generated<Timestamp>;
+  electionId: string;
+  filledBallotPaper: Json;
+  id: Generated<string>;
+  modifiedAt: Generated<Timestamp>;
+  voterId: string | null;
+}
+
 export interface Voter {
   createdAt: Generated<Timestamp>;
   id: Generated<string>;
@@ -158,6 +179,7 @@ export interface DB {
   'cron.job_run_details': CronJobRunDetails;
   election: Election;
   user: User;
+  vote: Vote;
   voter: Voter;
   voterGroup: VoterGroup;
   voterRegister: VoterRegister;
