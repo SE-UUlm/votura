@@ -89,17 +89,17 @@ This generalization maintains the privacy, integrity, and verifiability guarante
 #### Data format for vote transfer to the server
 
 As explained above, votes are encrypted by the frontend using El Gamal, which requires exactly one option (e.g. of a ballot paper section) being set as voted (g^1).
-This effectively means, that for encryption purposes, a ballot paper section, where a voter can cast four votes, needs to be internally structured as shown in the below table:
+This means that for encryption purposes, a ballot paper section in which a voter can cast four votes must be internally structured as shown in the table below:
 
 ![Tabular representation of a ballot paper section for encryption](../../../static/drawio/voteBallotPaperSectionTable.svg)
 
 In this table, representing a single ballot paper section, a voter has chosen to give two of four possible votes in the section to candidate 1.
-Another vote was given to candidate 2 and the last vote was not given to any candidate.
+The third vote was cast for candidate 2, while the fourth vote was not assigned to any candidate.
 If the ballot paper section had been invalid, for each possible vote in the table, "Invalid" would be set by the frontend chosen.
 This would then propagate to all other ballot paper sections of the ballot paper, each one represented by another table.
 
 To send these tables to the backend, a JSON Object is used, as shown in the documentation of the `/voting/castVote` backend-API.
-To Make explaining the format easier the following example is given:
+To make explaining the format easier, the following example is given:
 
 ```json
 {
@@ -196,8 +196,9 @@ To Make explaining the format easier the following example is given:
 }
 ```
 
-The keys `sectionId` and `CandidateXId` really are version 4 UUIDs but replacing them with a description of what they are makes it easier to explain the concept.
-Also, all numbers in the example are kept short for brevity, but are a maximum of 2048 bits long in reality.
+The keys `sectionId` and `CandidateXId` are actually UUIDv4s, but for clarity we replace them with descriptive labels when explaining the concept.
+Also, all numbers in the example are shortened for brevity.
+In reality they are up to 2048 bits long.
 
 The above JSON Object represents a ballot paper with one ballot paper section, in which a voter may cast up to two votes.
 Each JSON Object in the `votes`-array corresponds to one of these votes or one column in the previously shown table.
