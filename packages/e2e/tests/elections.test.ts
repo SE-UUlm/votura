@@ -10,7 +10,7 @@ const election: InsertableElection = {
   votingEndAt: '2025-07-25T13:21:13.087Z',
 };
 
-test('should create an election', async ({ page }) => {
+test('should create and delete an election', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Email').fill('user@votura.org');
   await page.getByLabel('Password').fill('HelloVotura1!');
@@ -37,4 +37,11 @@ test('should create an election', async ({ page }) => {
   if (election.description !== undefined) {
     await expect(page.getByText(election.description)).toBeVisible();
   }
+
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('menuitem', { name: 'Delete election' }).click();
+  await expect(page.getByRole('dialog', { name: 'Deleting election' })).toBeVisible();
+  await page.getByRole('button', { name: 'Delete' }).click();
+  await expect(page).toHaveURL('/elections');
+  await expect(page.getByRole('heading', { name: election.name })).not.toBeVisible();
 });
