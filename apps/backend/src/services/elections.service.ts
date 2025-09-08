@@ -169,6 +169,24 @@ export const deleteElection = async (
   return db.deleteFrom('election').where('id', '=', electionId).executeTakeFirst();
 };
 
+/**
+ * Gets the voting start date of the election with the given ID.
+ * Expects that the election exists.
+ * @param electionId The ID of the election to check.
+ * @returns The voting start date of the election.
+ */
+export const getElectionVotingStart = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<Date> => {
+  const result = await db
+    .selectFrom('election')
+    .select('votingStartAt')
+    .where('id', '=', electionId)
+    .executeTakeFirstOrThrow();
+
+  return result.votingStartAt;
+};
+
 export const checkElectionExists = async (
   electionId: Selectable<DBElection>['id'],
 ): Promise<boolean> => {
@@ -228,22 +246,4 @@ export const isElectionGeneratingKeys = async (
     .executeTakeFirstOrThrow();
 
   return result.pubKey === null && result.configFrozen;
-};
-
-/**
- * Gets the voting start date of the election with the given ID.
- * Expects that the election exists.
- * @param electionId The ID of the election to check.
- * @returns The voting start date of the election.
- */
-export const getElectionVotingStart = async (
-  electionId: Selectable<DBElection>['id'],
-): Promise<Date> => {
-  const result = await db
-    .selectFrom('election')
-    .select('votingStartAt')
-    .where('id', '=', electionId)
-    .executeTakeFirstOrThrow();
-
-  return result.votingStartAt;
 };
