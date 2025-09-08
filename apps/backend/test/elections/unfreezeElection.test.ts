@@ -76,6 +76,15 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
         .set('Authorization', `Bearer ${tokens.accessToken}`);
       let parseResult = selectableElectionObject.safeParse(res1.body);
 
+      // wait until the election has a pubKey (prerequisite for getting voter tokens)
+      while (parseResult.data?.pubKey === undefined) {
+        await sleep(5000);
+        const res2 = await request(app)
+          .get(`/elections/${election?.id}`)
+          .set('Authorization', `Bearer ${tokens.accessToken}`);
+        parseResult = selectableElectionObject.safeParse(res2.body);
+      }
+
       // get voter tokens
       const tokensRes = await request(app)
         .get(voterTokensPath)
@@ -85,14 +94,6 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
       const pubKey = await getVoterGroupPubKey(voterGroupId);
       if (pubKey === null) {
         throw new Error('Public key for voter group is null');
-      }
-
-      while (parseResult.data?.pubKey === undefined) {
-        await sleep(5000);
-        const res2 = await request(app)
-          .get(`/elections/${election?.id}`)
-          .set('Authorization', `Bearer ${tokens.accessToken}`);
-        parseResult = selectableElectionObject.safeParse(res2.body);
       }
 
       const res = await request(app)

@@ -1,5 +1,6 @@
 import {
   parameter,
+  selectableElectionObject,
   type ApiTokenUser,
   type SelectableElection,
   type SelectableVoterGroup,
@@ -20,13 +21,14 @@ import {
   demoUser,
   voterGroupNoBallotPapers,
 } from '../mockData.js';
+import { sleep } from '../utils.js';
 import { createBallotPaper } from './../../src/services/ballotPapers.service.js';
 import {
   addCandidateToBallotPaperSection,
   createBallotPaperSection,
 } from './../../src/services/ballotPaperSections.service.js';
 import { createCandidate } from './../../src/services/candidates.service.js';
-import { createElection, freezeElection } from './../../src/services/elections.service.js';
+import { createElection } from './../../src/services/elections.service.js';
 import { createVoterGroup, getVoterGroupPubKey } from './../../src/services/voterGroups.service.js';
 
 describe(`GET /voterGroups/:${parameter.voterGroupId}/createVoterTokens`, () => {
@@ -54,12 +56,34 @@ describe(`GET /voterGroups/:${parameter.voterGroupId}/createVoterTokens`, () => 
     await addCandidateToBallotPaperSection(ballotPaperSection.id, candidate.id);
     const demoVoterGroup = { ...voterGroupNoBallotPapers, ballotPapers: [ballotPaper.id] };
     voterGroup = await createVoterGroup(demoVoterGroup, user.id);
-    election = await freezeElection(election.id);
 
     tokens = generateUserTokens(user.id);
 
     requestPath = `/voterGroups/${voterGroup.id}/createVoterTokens`;
-  });
+    const electionPath = `/elections/${election.id}`;
+    const freezePath = `/elections/${election.id}/freeze`;
+
+    // freeze the election
+    let res = await request(app)
+      .put(freezePath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
+    let parseResult = selectableElectionObject.safeParse(res.body);
+    if (!parseResult.success) {
+      throw new Error('Failed to parse election 1');
+    }
+
+    // wait for the election to have a public key (prerequisite for creating voter tokens
+    while (parseResult.data?.pubKey === undefined) {
+      await sleep(5000);
+      res = await request(app)
+        .get(electionPath)
+        .set('Authorization', `Bearer ${tokens.accessToken}`);
+      parseResult = selectableElectionObject.safeParse(res.body);
+      if (!parseResult.success) {
+        throw new Error('Failed to parse election after waiting');
+      }
+    }
+  }, 30000 /* 30 seconds */);
 
   it('200: should create the voter tokens for the voter group', async () => {
     const res = await request(app)
