@@ -10,6 +10,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
+import { BallotPaperBodyCheckValidationErrorMessage } from '../../src/controllers/bodyChecks/ballotPaperChecks.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import {
@@ -86,7 +87,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     expect(parseResult.success).toBe(true);
     if (parseResult.success === true) {
       expect(parseResult.data.message).toBe(
-        'The max votes for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+        BallotPaperBodyCheckValidationErrorMessage.maxVotesExceeded,
       );
     }
   });
@@ -104,7 +105,7 @@ describe(`PUT /elections/:${parameter.electionId}/ballotPapers/:${parameter.ball
     expect(parseResult.success).toBe(true);
     if (parseResult.success === true) {
       expect(parseResult.data.message).toBe(
-        'The max votes per candidate for the ballot paper can not be lower than for any of the linked ballot paper sections.',
+        BallotPaperBodyCheckValidationErrorMessage.maxVotesPerCandidateExceeded,
       );
     }
   });

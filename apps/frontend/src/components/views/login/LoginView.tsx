@@ -85,7 +85,9 @@ export const LoginView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
-          <Button variant="light">Sign Up</Button>
+          <Button variant="light" onClick={() => navigate('/register')}>
+            Sign Up
+          </Button>
           <Divider />
           <Group justify="space-between">
             <Text size={'sm'}>Can't login anymore?</Text>

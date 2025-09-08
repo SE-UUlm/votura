@@ -5,6 +5,7 @@ import { AuthedRouterOutlet } from './components/AuthedRouterOutlet.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
+import { RegisterView } from './components/views/login/RegisterView.tsx';
 
 export const browserRouter = createBrowserRouter([
   {
@@ -15,6 +16,11 @@ export const browserRouter = createBrowserRouter([
     path: '/login',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: LoginView,
+  },
+  {
+    path: '/register',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: RegisterView,
   },
   {
     // eslint-disable-next-line @typescript-eslint/naming-convention

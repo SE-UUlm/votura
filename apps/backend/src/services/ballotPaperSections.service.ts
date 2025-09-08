@@ -116,16 +116,12 @@ export const addCandidateToBallotPaperSection = async (
 export const removeCandidateFromBallotPaperSection = async (
   ballotPaperSectionId: Selectable<DBBallotPaperSection>['id'],
   candidateId: Selectable<DBCandidate>['id'],
-): Promise<SelectableBallotPaperSection | null> => {
-  const result = await db
+): Promise<SelectableBallotPaperSection> => {
+  await db
     .deleteFrom('ballotPaperSectionCandidate')
     .where('ballotPaperSectionId', '=', ballotPaperSectionId)
     .where('candidateId', '=', candidateId)
-    .executeTakeFirst();
-
-  if (result.numDeletedRows < 1n) {
-    return null;
-  }
+    .executeTakeFirstOrThrow();
 
   // get updated ballot paper section
   return getBallotPaperSection(ballotPaperSectionId);
