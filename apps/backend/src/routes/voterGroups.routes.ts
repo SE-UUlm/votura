@@ -12,6 +12,7 @@ import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import {
   checkVoterGroupElectionsNotFrozen,
+  checkVoterTokensMayBeCreated,
   defaultVoterGroupChecks,
 } from '../middlewares/pathParamChecks/voterGroupChecks.js';
 import { MimeType } from '../middlewares/utils.js';
@@ -50,5 +51,6 @@ voterGroupsRouter.get(
   `/:${parameter.voterGroupId}/createVoterTokens`,
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultVoterGroupChecks,
+  checkVoterTokensMayBeCreated,
   createVoterTokens,
 );
