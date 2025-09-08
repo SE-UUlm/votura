@@ -52,7 +52,9 @@ test.describe('Ballot Paper', () => {
     await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('menuitem', { name: 'Edit' }).click();
     await page.getByRole('textbox', { name: 'Description' }).fill('This is ballot paper two');
-    await page.getByRole('button', { name: 'Save changes' }).click();
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await saveButton.click();
+    await expect(saveButton).not.toBeVisible();
     await expect(page.getByText('This is ballot paper two')).toBeVisible();
   });
 

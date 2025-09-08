@@ -24,6 +24,7 @@ import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
 import { createVoterTokensPathObject } from './voterGroups/createVoterTokensPathObject.js';
 import { voterGroupIdPathObject } from './voterGroups/voterGroupIdPathObject.js';
 import { voterGroupsPathObject } from './voterGroups/voterGroupsPathObject.js';
+import { castVotePathObject } from './voting/castVotePathObject.js';
 import { votingElectionsPathObject } from './voting/votingElectionsPathObject.js';
 
 export const voturaOpenApiSchema: OpenAPIV3.Document = {
@@ -144,6 +145,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/voterGroups/{${parameter.voterGroupId}}`]: voterGroupIdPathObject,
     [`/voterGroups/{${parameter.voterGroupId}}/createVoterTokens`]: createVoterTokensPathObject,
     [`/voting/getElections`]: votingElectionsPathObject,
+    [`/voting/castVote`]: castVotePathObject,
     [`/heartbeat`]: heartbeatPathObject,
   },
 };
