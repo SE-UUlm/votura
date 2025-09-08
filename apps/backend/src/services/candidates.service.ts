@@ -83,6 +83,12 @@ export const deleteCandidate = async (
   return db.deleteFrom('candidate').where('id', '=', candidateId).executeTakeFirst();
 };
 
+/**
+ * Checks if a candidate is linked to a specific ballot paper section.
+ * @param candidateId The ID of the candidate to check.
+ * @param ballotPaperSectionId The ID of the ballot paper section to check.
+ * @returns True if the candidate is linked to the ballot paper section, false otherwise.
+ */
 export const isCandidateLinkedToBallotPaperSection = async (
   candidateId: Selectable<DBCandidate>['id'],
   ballotPaperSectionId: Selectable<DBBallotPaper>['id'],

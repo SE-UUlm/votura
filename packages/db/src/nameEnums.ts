@@ -15,6 +15,7 @@ export enum TableName {
   voterGroup = 'voterGroup',
   voter = 'voter',
   voterRegister = 'voterRegister',
+  vote = 'vote',
 }
 
 // --- Column names ---
@@ -101,6 +102,12 @@ export enum VoterRegisterColumnName {
   voterId = 'voterId',
 }
 
+export enum VoteColumnName {
+  filledBallotPaper = 'filledBallotPaper',
+  electionId = 'electionId',
+  voterId = 'voterId',
+}
+
 // Foreign key constraint names
 export enum ElectionFKName {
   electionCreatorId = 'electionElectionCreatorIdFK',
@@ -129,6 +136,11 @@ export enum VoterGroupFKName {
 
 export enum VoterFKName {
   voterGroupId = 'voterVoterGroupIdFK',
+}
+
+export enum VoteFKName {
+  electionId = 'voteElectionIdFK',
+  voterId = 'voteVoterIdFk',
 }
 
 export enum VoterRegisterFKName {

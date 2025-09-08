@@ -11,6 +11,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
+import { BallotPaperCandidateValidationErrorMessage } from '../../src/controllers/bodyChecks/ballotPaperSectionChecks.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import {
@@ -81,7 +82,9 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(res.type).toBe('application/json');
     const parseResult = response404Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
-    expect(parseResult.data?.message).toBe('The provided candidate does not exist!');
+    expect(parseResult.data?.message).toBe(
+      BallotPaperCandidateValidationErrorMessage.candidateNotFound,
+    );
   });
   it('400: should return error for candidate not linked to election', async () => {
     const res = await request(app)
@@ -94,7 +97,7 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe(
-      'The provided candidate does not belong to the provided election.',
+      BallotPaperCandidateValidationErrorMessage.electionNotParent,
     );
   });
   it('200: should remove a candidate from a ballot paper section', async () => {
@@ -121,12 +124,12 @@ describe(`DEL /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send({ candidateId: candidate?.id }); // candidate already removed
 
-    expect(res.status).toBe(HttpStatusCode.notFound);
+    expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
-    const parseResult = response404Object.safeParse(res.body);
+    const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe(
-      'Candidate not linked to ballot paper section, no candidate was removed.',
+      BallotPaperCandidateValidationErrorMessage.candidateNotLinked,
     );
   });
 });

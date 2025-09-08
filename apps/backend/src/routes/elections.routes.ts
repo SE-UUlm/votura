@@ -34,13 +34,6 @@ import {
 } from '../controllers/elections.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
-import {
-  checkCandidateNotLinkedToBallotPaperSection,
-  checkCandidateUuidInsertable,
-  checkCandidateUuidRemovable,
-  defaultBallotPaperSectionCandidateChecks,
-} from '../middlewares/bodyChecks/ballotPaperSectionCandidateChecks.js';
-import { maxVotesCheckFor, RequestTypeMaxVotesCheck } from '../middlewares/maxVotesCheckFor.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
@@ -123,7 +116,6 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
-  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperUpdate),
   updateBallotPaper,
 );
 electionsRouter.get(
@@ -150,7 +142,6 @@ electionsRouter.post(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
-  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperSectionCreate),
   createBallotPaperSection,
 );
 electionsRouter.get(
@@ -168,7 +159,6 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  maxVotesCheckFor(RequestTypeMaxVotesCheck.ballotPaperSectionUpdate),
   updateBallotPaperSection,
 );
 electionsRouter.get(
@@ -196,9 +186,6 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  checkCandidateUuidInsertable,
-  ...defaultBallotPaperSectionCandidateChecks,
-  checkCandidateNotLinkedToBallotPaperSection,
   addCandidateToBallotPaperSection,
 );
 electionsRouter.delete(
@@ -209,8 +196,6 @@ electionsRouter.delete(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  checkCandidateUuidRemovable,
-  ...defaultBallotPaperSectionCandidateChecks,
   removeCandidateFromBallotPaperSection,
 );
 

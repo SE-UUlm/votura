@@ -25,7 +25,8 @@ When an administrative user "freezes" an election (i.e. when the election config
 
 ### El Gamal encryption
 
-Encryption starts when the voter confirms their choices and _before_ any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not. With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
+Encryption starts when the voter confirms their choices and _before_ any information is sealed and sent to the server. The voter expresses their choices by encrypting `1` or `0` for each option, depending on whether they want to support that option or not.
+With the plaintext `m` (expected as a big integer) and a randomness `r < q` a ciphertext `(alpha, beta)` is generated for each option as follows:
 
 - `alpha = g^r mod p`
 - `beta = m * y^r mod p`.
@@ -84,6 +85,124 @@ In order to preserve the semantic meaning of the encrypted votes and allow for c
 Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by a disjunctive zero-knowledge proof as described in the proof of correct encryption-section earlier. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
 
 This generalization maintains the privacy, integrity, and verifiability guarantees of the voting process, even in complex multi-section elections with variable numbers of allowable votes.
+
+#### Data format for vote transfer to the server
+
+As explained above, votes are encrypted by the frontend using El Gamal, which requires exactly one option (e.g. of a ballot paper section) being set as voted (g^1).
+This means that for encryption purposes, a ballot paper section in which a voter can cast four votes must be internally structured as shown in the table below:
+
+![Tabular representation of a ballot paper section for encryption](../../../static/drawio/voteBallotPaperSectionTable.svg)
+
+In this table, representing a single ballot paper section, a voter has chosen to give two of four possible votes in the section to candidate 1.
+The third vote was cast for candidate 2, while the fourth vote was not assigned to any candidate.
+If the ballot paper section had been invalid, for each possible vote in the table, "Invalid" would be set by the frontend chosen.
+This would then propagate to all other ballot paper sections of the ballot paper, each one represented by another table.
+
+To send these tables to the backend, a JSON Object is used, as shown in the documentation of the `/voting/castVote` backend-API.
+To make explaining the format easier, the following example is given:
+
+```json
+{
+  "ballotPaperId": "5aff7a24-ad16-47f8-8279-d6eb4e769c81",
+  "sections": {
+    "sectionId": {
+      "votes": [
+        {
+          "Candidate1Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Candidate2Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Candidate3Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "No Vote": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Invalid": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          }
+        },
+        {
+          "Candidate1Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Candidate2Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Candidate3Id": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "No Vote": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          },
+          "Invalid": {
+            "alpha": 32345,
+            "beta": 2345,
+            "commitment1": 235,
+            "commitment2": 123,
+            "challenge": 2345,
+            "response": 234567
+          }
+        }
+      ]
+    }
+  }
+}
+```
+
+The keys `sectionId` and `CandidateXId` are actually UUIDv4s, but for clarity we replace them with descriptive labels when explaining the concept.
+Also, all numbers in the example are shortened for brevity.
+In reality they are up to 2048 bits long.
+
+The above JSON Object represents a ballot paper with one ballot paper section, in which a voter may cast up to two votes.
+Each JSON Object in the `votes`-array corresponds to one of these votes or one column in the previously shown table.
+This format allows us to send all necessary data in a vote to the backend in one go, while having it all encrypted using El Gamal.
 
 #### Client- and server-side ballot validation
 
