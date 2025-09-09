@@ -1,6 +1,5 @@
 import {
   insertableUserObject,
-  refreshRequestUserObject,
   response409Object,
   response4XXObject,
   zodErrorToResponse400,
@@ -15,13 +14,14 @@ import type { Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import {
+  createNewUserTokens,
   createUser as createPersistentUser,
   deleteUser as deletePersistentUser,
   findUserBy,
-  loginUser,
   logoutUser,
-  refreshUserTokens,
 } from '../services/users.service.js';
+import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
+import { validateLoginRequest, validateTokenRefreshRequest } from './bodyChecks/userChecks.js';
 
 export type CreateUserResponse = Response<void | Response400 | Response409>;
 
@@ -63,43 +63,30 @@ export const deleteUser = async (
 export type LoginResponse = Response<ApiTokenUser | Response400 | Response401 | Response403>;
 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
-  const body: unknown = req.body;
-
-  const { data, error, success } = await insertableUserObject.safeParseAsync(body);
-  if (!success) {
-    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
+  const validationResult = await validateLoginRequest(req.body);
+  if (isBodyCheckValidationError(validationResult)) {
+    res
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
-  const loginResult = await loginUser(data);
-
-  if ('message' in loginResult) {
-    res.status(loginResult.status).json(response4XXObject.parse({ message: loginResult.message }));
-    return;
-  }
-
+  const loginResult = await createNewUserTokens(validationResult);
   res.status(HttpStatusCode.ok).json(loginResult);
 };
 
 export type RefreshTokensResponse = Response<ApiTokenUser | Response400 | Response401>;
 
-export const refreshTokens = async (req: Request, res: Response): Promise<void> => {
-  const body: unknown = req.body;
-  const { data, error, success } = await refreshRequestUserObject.safeParseAsync(body);
-  if (!success) {
-    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
-    return;
-  }
-
-  const refreshResults = await refreshUserTokens(data);
-
-  if ('message' in refreshResults) {
+export const refreshTokens = async (req: Request, res: RefreshTokensResponse): Promise<void> => {
+  const validationResult = await validateTokenRefreshRequest(req.body);
+  if (isBodyCheckValidationError(validationResult)) {
     res
-      .status(refreshResults.status)
-      .json(response4XXObject.parse({ message: refreshResults.message }));
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
+  const refreshResults = await createNewUserTokens(validationResult);
   res.status(HttpStatusCode.ok).json(refreshResults);
 };
 
