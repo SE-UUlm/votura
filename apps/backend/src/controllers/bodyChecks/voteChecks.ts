@@ -300,8 +300,9 @@ const aggregateVotes = (
 
 /**
  * Checks the aggregated results for the entire ballot paper.
- * Validates global invalid votes consistency (either all votes are invalid or none)
- * and global candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper).
+ * Validates global invalid votes consistency (either all votes are invalid or none),
+ * global candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper)
+ * and total votes against maxVotes of the ballot paper.
  * @param filledBallotPaper The filled ballot paper data.
  * @param totalVotesPerCandidate A record of total votes per candidate across all sections.
  * @param totalInvalidCount The total invalid vote count.
@@ -314,7 +315,7 @@ const validateAggregatedResults = async (
 ): Promise<VoteValidationError | null> => {
   const totalVoteCount = Object.values(filledBallotPaper.sections).flatMap((s) => s.votes).length;
 
-  // Validate global invalid votes consistency (either all votes are invalid or none are)
+  // Validate ballot paper invalid votes consistency (either all votes are invalid or none are)
   if (totalInvalidCount !== 0 && totalInvalidCount !== totalVoteCount) {
     return {
       status: HttpStatusCode.badRequest,
@@ -322,16 +323,24 @@ const validateAggregatedResults = async (
     };
   }
 
-  // Validate global candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper)
-  const { maxVotesPerCandidate: maxVotesPerCandidateBP } = await getBallotPaperMaxVotes(
-    filledBallotPaper.ballotPaperId,
-  );
+  const { maxVotes: maxVotesBP, maxVotesPerCandidate: maxVotesPerCandidateBP } =
+    await getBallotPaperMaxVotes(filledBallotPaper.ballotPaperId);
+  let totalVotesForAllCandidates = 0;
 
-  const exceedsLimit = Object.values(totalVotesPerCandidate).some(
-    (votes) => votes > maxVotesPerCandidateBP,
-  );
+  // Validate ballot paper candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper)
+  for (const votes of Object.values(totalVotesPerCandidate)) {
+    if (votes > maxVotesPerCandidateBP) {
+      return {
+        status: HttpStatusCode.badRequest,
+        message: VoteValidationErrorMessage.invalidVote,
+      };
+    }
 
-  if (exceedsLimit) {
+    totalVotesForAllCandidates += votes;
+  }
+
+  // Validate that the sum of votes for candidates does not exceed maxVotes of the ballot paper
+  if (totalVotesForAllCandidates > maxVotesBP) {
     return {
       status: HttpStatusCode.badRequest,
       message: VoteValidationErrorMessage.invalidVote,
@@ -385,6 +394,7 @@ export const validateFilledBallotPaper = async (
   }
 
   // Step 6: Process and validate sections with decryption (either all votes are invalid or none, no candidate exceeds maxVotesPerCandidate)
+  // maxVotes of the Section does not need to be checked here, as the section only contains as many votes (including 'noVote') as maxVotes, as assured by step 5
   const decryption: BallotDecryption = await createBallotDecryption(data.ballotPaperId);
   const { sections: votesInSections, error: processingError } = await processAndValidateSections(
     data,
@@ -394,7 +404,10 @@ export const validateFilledBallotPaper = async (
     return processingError;
   }
 
-  // Step 7: Aggregate votes and validate final results for the entire ballot paper (either all votes are invalid or none, no candidate exceeds maxVotesPerCandidate)
+  // Step 7: Aggregate votes and validate final results for the entire ballot paper
+  // (either all votes are invalid or none,
+  // no candidate exceeds maxVotesPerCandidate,
+  // the sum of votes for candidates over all sections is not greater than maxVotes of the ballot paper)
   const { totalVotesPerCandidate, totalInvalidCount } = aggregateVotes(votesInSections);
   const aggregationError = await validateAggregatedResults(
     data,
