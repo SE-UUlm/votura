@@ -101,7 +101,6 @@ describe('Filled Ballot Paper tests', () => {
       sections: {
         ...demoFilledBallotPaperData.sections,
         [UUIDs.section1]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section1],
           votes: [voteWithoutInvalid],
         },
       },
@@ -118,7 +117,6 @@ describe('Filled Ballot Paper tests', () => {
       sections: {
         ...demoFilledBallotPaperData.sections,
         [UUIDs.section1]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section1],
           votes: [voteWithoutNoVote],
         },
       },
@@ -137,7 +135,6 @@ describe('Filled Ballot Paper tests', () => {
       sections: {
         ...demoFilledBallotPaperData.sections,
         [UUIDs.section2]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section2],
           votes: [voteWithoutCandidates],
         },
       },

@@ -3,22 +3,35 @@ import { toJsonSchemaParams } from '../parserParams.js';
 
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
+export enum FilledBallotPaperDefaultVoteOption {
+  noVote = 'noVote',
+  invalid = 'invalid',
+}
+
 const voteStructureRefinement = (vote: Record<string, unknown>): boolean => {
   const keys = Object.keys(vote);
 
   // Check for exactly one 'noVote' field
-  const noVoteCount = keys.filter((key) => key === 'noVote').length;
+  const noVoteCount = keys.filter(
+    (key) => key === FilledBallotPaperDefaultVoteOption.noVote.toString(),
+  ).length;
   if (noVoteCount !== 1) {
     return false;
   }
 
   // Check for exactly one 'invalid' field
-  const invalidCount = keys.filter((key) => key === 'invalid').length;
+  const invalidCount = keys.filter(
+    (key) => key === FilledBallotPaperDefaultVoteOption.invalid.toString(),
+  ).length;
   if (invalidCount !== 1) {
     return false;
   }
   // Check for at least one additional UUID field (not 'noVote' or 'invalid')
-  const uuidFields = keys.filter((key) => key !== 'noVote' && key !== 'invalid');
+  const uuidFields = keys.filter(
+    (key) =>
+      key !== FilledBallotPaperDefaultVoteOption.noVote.toString() &&
+      key !== FilledBallotPaperDefaultVoteOption.invalid.toString(),
+  );
   return uuidFields.length >= 1;
 };
 
@@ -45,8 +58,8 @@ export const filledBallotPaperObject = z.object({
                   description: 'The unique identifier of the candidate.',
                   example: '123e4567-e89b-12d3-a456-426614174000',
                 }),
-                z.literal('noVote'),
-                z.literal('invalid'),
+                z.literal(FilledBallotPaperDefaultVoteOption.noVote.toString()),
+                z.literal(FilledBallotPaperDefaultVoteOption.invalid.toString()),
               ]),
               z.object({
                 alpha: z.number().register(voturaMetadataRegistry, {
