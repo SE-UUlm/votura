@@ -4,7 +4,7 @@ import {
   zodErrorToResponse400,
   type FilledBallotPaper,
 } from '@repo/votura-validators';
-import { PrivateKey } from '@votura/votura-crypto';
+import { PrivateKey } from '@votura/votura-crypto/index';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import {
   checkBallotPaperIsVotable,

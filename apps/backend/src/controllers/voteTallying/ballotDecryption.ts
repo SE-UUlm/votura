@@ -2,7 +2,7 @@ import {
   FilledBallotPaperDefaultVoteOption,
   type FilledBallotPaper,
 } from '@repo/votura-validators';
-import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto';
+import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 
 export interface DecryptedSectionResult {
