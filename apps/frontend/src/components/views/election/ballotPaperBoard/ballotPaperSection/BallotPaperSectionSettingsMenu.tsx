@@ -48,13 +48,14 @@ export const BallotPaperSectionSettingsMenu = ({
           <Menu.Item
             leftSection={<IconUserPlus size={14} />}
             onClick={mutateCandidateActions.open}
-            aria-label={'Add ballot paper section'}
+            aria-label={'Add candidate'}
           >
             Add candidate
           </Menu.Item>
           <Menu.Item
             leftSection={<IconUserCog size={14} />}
             onClick={cancidatesContextActions.open}
+            aria-label={'Edit candidates'}
           >
             Edit candidates
           </Menu.Item>
