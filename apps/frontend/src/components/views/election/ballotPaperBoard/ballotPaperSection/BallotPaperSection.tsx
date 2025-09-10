@@ -50,6 +50,8 @@ export const BallotPaperSection = ({
             )}
           </Stack>
           <BallotPaperSectionSettingsMenu
+            electionId={electionId}
+            ballotPaperSection={ballotPaperSection}
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >

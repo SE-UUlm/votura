@@ -1,7 +1,9 @@
 import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
-import { IconUserPlus } from '@tabler/icons-react';
+import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
+import { IconUserCog, IconUserPlus } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { CandidatesDrawer } from './candidates/CandidatesDrawer.tsx';
 import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
@@ -10,14 +12,19 @@ import {
 export interface BallotPaperSectionSettingsMenu extends PropsWithChildren {
   onCandidateMutate: MutateCandidateDrawerProps['onMutate'];
   isCandidateMutating: MutateCandidateDrawerProps['isMutating'];
+  electionId: SelectableElection['id'];
+  ballotPaperSection: SelectableBallotPaperSection;
 }
 
 export const BallotPaperSectionSettingsMenu = ({
   children,
   onCandidateMutate,
   isCandidateMutating,
+  electionId,
+  ballotPaperSection,
 }: BallotPaperSectionSettingsMenu): JSX.Element => {
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
+  const [candidatesContextOpen, cancidatesContextActions] = useDisclosure(false);
 
   return (
     <>
@@ -29,6 +36,12 @@ export const BallotPaperSectionSettingsMenu = ({
         title={'Create Candidate'}
         isMutating={isCandidateMutating}
       />
+      <CandidatesDrawer
+        opened={candidatesContextOpen}
+        onClose={cancidatesContextActions.close}
+        electionId={electionId}
+        ballotPaperSection={ballotPaperSection}
+      />
       <Menu position="bottom-end" offset={0}>
         <Menu.Target>{children}</Menu.Target>
         <Menu.Dropdown>
@@ -38,6 +51,12 @@ export const BallotPaperSectionSettingsMenu = ({
             aria-label={'Add ballot paper section'}
           >
             Add candidate
+          </Menu.Item>
+          <Menu.Item
+            leftSection={<IconUserCog size={14} />}
+            onClick={cancidatesContextActions.open}
+          >
+            Edit candidates
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
