@@ -24,7 +24,7 @@ export const BallotPaperSectionSettingsMenu = ({
   ballotPaperSection,
 }: BallotPaperSectionSettingsMenuProps): JSX.Element => {
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
-  const [candidatesContextOpen, cancidatesContextActions] = useDisclosure(false);
+  const [candidatesContextOpen, candidatesContextActions] = useDisclosure(false);
 
   return (
     <>
@@ -38,7 +38,7 @@ export const BallotPaperSectionSettingsMenu = ({
       />
       <CandidatesDrawer
         opened={candidatesContextOpen}
-        onClose={cancidatesContextActions.close}
+        onClose={candidatesContextActions.close}
         electionId={electionId}
         ballotPaperSection={ballotPaperSection}
       />
@@ -54,7 +54,7 @@ export const BallotPaperSectionSettingsMenu = ({
           </Menu.Item>
           <Menu.Item
             leftSection={<IconUserCog size={14} />}
-            onClick={cancidatesContextActions.open}
+            onClick={candidatesContextActions.open}
             aria-label={'Edit candidates'}
           >
             Edit candidates
