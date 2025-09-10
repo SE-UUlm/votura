@@ -55,7 +55,7 @@ export const BallotPaperSection = ({
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >
-            <ActionIcon size="md" variant="light" aria-label="Settings">
+            <ActionIcon size="md" variant="light" aria-label="Section Settings">
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSectionSettingsMenu>

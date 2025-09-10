@@ -32,7 +32,7 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
     throw Error('Election could not be created');
   }
 
-  await db
+  const ballotPaper = await db
     .insertInto('ballotPaper')
     .values({
       name: 'Ballot Paper 1',
@@ -40,6 +40,21 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
       maxVotes: 5,
       maxVotesPerCandidate: 2,
       electionId: election.id,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  if (ballotPaper === undefined) {
+    throw Error('BallotPaper could not be created');
+  }
+
+  await db
+    .insertInto('ballotPaperSection')
+    .values({
+      name: 'BPS1',
+      maxVotes: 5,
+      maxVotesPerCandidate: 2,
+      ballotPaperId: ballotPaper.id,
     })
     .returningAll()
     .executeTakeFirstOrThrow();
