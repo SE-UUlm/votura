@@ -9,7 +9,7 @@ import {
   type MutateCandidateDrawerProps,
 } from './candidates/MutateCandidateDrawer.tsx';
 
-export interface BallotPaperSectionSettingsMenu extends PropsWithChildren {
+export interface BallotPaperSectionSettingsMenuProps extends PropsWithChildren {
   onCandidateMutate: MutateCandidateDrawerProps['onMutate'];
   isCandidateMutating: MutateCandidateDrawerProps['isMutating'];
   electionId: SelectableElection['id'];
@@ -22,7 +22,7 @@ export const BallotPaperSectionSettingsMenu = ({
   isCandidateMutating,
   electionId,
   ballotPaperSection,
-}: BallotPaperSectionSettingsMenu): JSX.Element => {
+}: BallotPaperSectionSettingsMenuProps): JSX.Element => {
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [candidatesContextOpen, cancidatesContextActions] = useDisclosure(false);
 
