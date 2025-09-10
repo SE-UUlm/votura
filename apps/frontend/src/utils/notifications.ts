@@ -1,5 +1,9 @@
 import type { NotificationData } from '@mantine/notifications';
-import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
+import type {
+  SelectableBallotPaper,
+  SelectableCandidate,
+  SelectableElection,
+} from '@repo/votura-validators';
 
 export const getDeleteSuccessElectionConfig = (
   name: SelectableElection['name'],
@@ -71,3 +75,10 @@ export const getAddSuccessBallotPaperSectionConfig = (
     message: `The ballot paper section "${name}" has been created.`,
   };
 };
+
+export const getAddSuccessCandidateConfig = (
+  title: SelectableCandidate['title'],
+): NotificationData => ({
+  title: 'Success',
+  message: `The candidate "${title}" has been created.`,
+});
