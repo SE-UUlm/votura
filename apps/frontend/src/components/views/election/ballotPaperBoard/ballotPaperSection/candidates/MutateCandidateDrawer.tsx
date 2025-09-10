@@ -81,9 +81,7 @@ export const MutateCandidateDrawer = ({
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={
-                    'e.g. John Doe is memeber of the ...'
-                  }
+                  placeholder={'e.g. John Doe is memeber of the ...'}
                   autosize={true}
                   minRows={4}
                   maxRows={4}

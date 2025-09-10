@@ -13,12 +13,7 @@ export const useRemoveCandidateFromBallotPaperSection = (
   electionId?: SelectableElection['id'],
   ballotPaperId?: SelectableBallotPaper['id'],
   ballotPaperSectionId?: SelectableBallotPaperSection['id'],
-): SWRMutationResponse<
-  null,
-  Error,
-  string,
-  { candidateId: SelectableCandidate['id'] }
-> => {
+): SWRMutationResponse<null, Error, string, { candidateId: SelectableCandidate['id'] }> => {
   const shouldFetch =
     electionId !== undefined && ballotPaperId !== undefined && ballotPaperSectionId !== undefined;
 

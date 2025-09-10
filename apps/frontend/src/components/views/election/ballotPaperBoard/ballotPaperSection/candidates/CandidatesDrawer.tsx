@@ -36,12 +36,12 @@ export const CandidatesDrawer = ({
       <Text truncate="end" flex={1}>
         {candidate.title}
       </Text>
-      <Group >
+      <Group>
         <ActionIcon variant={'transparent'}>
           <IconSettings style={{ width: '70%', height: '70%' }} stroke={1.5} />
         </ActionIcon>
         <ActionIcon variant={'transparent'} color="red">
-          <IconTrash  style={{ width: '70%', height: '70%' }} stroke={1.5} />
+          <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
         </ActionIcon>
       </Group>
     </Group>
