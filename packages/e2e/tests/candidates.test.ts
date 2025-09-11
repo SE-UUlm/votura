@@ -21,7 +21,7 @@ test.describe('Candidates', () => {
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Edit candidates' }).click();
     await expect(page.getByRole('heading', { name: 'All Candidates' })).toBeVisible();
-    await expect(page.getByText('John Doe', { exact: true })).toBeVisible();
+    await expect(page.getByText('John Doe', { exact: true }).first()).toBeVisible();
     await expect(page.getByRole('checkbox')).toBeChecked();
   });
 });
