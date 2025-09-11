@@ -32,7 +32,10 @@ export const CandidatesDrawer = ({
 
   const rows = electionCandidates?.map((candidate) => (
     <Group key={candidate.id} justify="space-between" wrap={'nowrap'}>
-      <Checkbox checked={ballotPaperSection.candidateIds.includes(candidate.id)} />
+      <Checkbox
+        checked={ballotPaperSection.candidateIds.includes(candidate.id)}
+        aria-label={'candidate-checkbox'}
+      />
       <Text truncate="end" flex={1}>
         {candidate.title}
       </Text>
