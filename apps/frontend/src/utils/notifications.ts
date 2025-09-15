@@ -76,7 +76,7 @@ export const getAddSuccessBallotPaperSectionConfig = (
   };
 };
 
-export const getAddSuccessCandidateConfig = (
+export const getCreateSuccessCandidateConfig = (
   title: SelectableCandidate['title'],
 ): NotificationData => ({
   title: 'Success',

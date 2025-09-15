@@ -5,7 +5,7 @@ import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useAddCandidateToBallotPaperSection } from '../../../../../swr/ballotPaperSections/useAddCandidateToBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
-import { getAddSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
+import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
 import type { MutateCandidateDrawerProps } from './candidates/MutateCandidateDrawer.tsx';
 
@@ -34,7 +34,7 @@ export const BallotPaperSection = ({
     await triggerAddCandidate({
       candidateId: candidate.id,
     });
-    notifications.show(getAddSuccessCandidateConfig(partial.title));
+    notifications.show(getCreateSuccessCandidateConfig(partial.title));
   };
 
   return (
