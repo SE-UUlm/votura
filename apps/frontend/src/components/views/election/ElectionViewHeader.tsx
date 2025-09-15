@@ -6,6 +6,8 @@ import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
+import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
+import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getMutateSuccessElectionConfig,
@@ -26,6 +28,8 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     electionId: election.id,
   });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
+  const { trigger: freezeTrigger } = useFreezeElection(election.id);
+  const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
 
   const onDelete = async () => {
     try {
@@ -48,8 +52,12 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+    if (election.configFrozen) {
+      await unfreezeTrigger();
+    } else {
+      await freezeTrigger();
+    }
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
