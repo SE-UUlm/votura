@@ -1,5 +1,5 @@
 import {
-  FilledBallotPaperDefaultVoteOption,
+  filledBallotPaperDefaultVoteOption,
   type FilledBallotPaper,
 } from '@repo/votura-validators';
 import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto/index';
@@ -183,9 +183,9 @@ export class BallotPaperDecryption {
         throw new Error(`Missing data for candidate at index ${i}`);
       }
 
-      if (candidateId === FilledBallotPaperDefaultVoteOption.noVote.toString()) {
+      if (candidateId === filledBallotPaperDefaultVoteOption.noVote) {
         result.noVoteCount = count;
-      } else if (candidateId === FilledBallotPaperDefaultVoteOption.invalid.toString()) {
+      } else if (candidateId === filledBallotPaperDefaultVoteOption.invalid) {
         result.invalidCount = count;
       } else {
         result.candidateResults[candidateId] = count;
