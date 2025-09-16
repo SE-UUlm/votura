@@ -127,6 +127,7 @@ export const updateableElectionObjectSchema = z.toJSONSchema(
 );
 
 export const freezableElectionObject = electionObject.pick({
+  id: true,
   freezable: true,
 });
 

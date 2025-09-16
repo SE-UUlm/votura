@@ -80,16 +80,16 @@ export const getFreezableElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<FreezableElection>,
 ): Promise<void> => {
-  // find out if election is not frozen and valid
+  // If election is not frozen and valid it is freezable
   if (
     (await isElectionFrozen(req.params.electionId)) ||
     !(await isElectionValid(req.params.electionId))
   ) {
-    res.status(HttpStatusCode.ok).json({ freezable: false });
+    res.status(HttpStatusCode.ok).json({ freezable: false, id: req.params.electionId });
     return;
   }
 
-  res.status(HttpStatusCode.ok).json({ freezable: true });
+  res.status(HttpStatusCode.ok).json({ freezable: true, id: req.params.electionId });
 };
 
 export const freezeElection = async (
