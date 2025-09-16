@@ -16,7 +16,6 @@
     "check-format": "prettier --check .",
     "check-types": "tsc --noEmit",
     "lint": "eslint",
-    "test": "vitest run --coverage",
     "build": "tsc --project tsconfig.build.json"
   },
   "dependencies": {
