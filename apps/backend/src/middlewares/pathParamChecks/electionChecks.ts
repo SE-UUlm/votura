@@ -211,6 +211,75 @@ export function getValidationErrorMessage(error: CheckElectionIsValidErrors, id?
  * 3. Each ballot paper section has at least one candidate linked to it.
  * 4. The candidates linked to the ballot paper sections must be the same as the candidates linked to the election. Every candidate linked to the election must be linked to at least one ballot paper section.
  *
+ * Returns true for isValid if the election is valid.
+ * The error contains an error message, if isValid is false.
+ * Context is the id of a ballot paper or ballot paper section if the cause of
+ * the election being invalid can be pinpointed.
+ *
+ * @param electionId The ID of the election to validate
+ */
+async function isElectionValidCore(electionId: Election['id']): Promise<{
+  isValid: boolean;
+  error?: CheckElectionIsValidErrors;
+  context?: string;
+}> {
+  // Check at least one ballot paper is linked to the election
+  const ballotPapers = await getBallotPapers(electionId);
+  if (ballotPapers.length === 0) {
+    return { isValid: false, error: CheckElectionIsValidErrors.noBallotPapers };
+  }
+
+  // Check ballot papers have at least one section linked to them
+  // and that each section has at least one candidate linked to it
+  const bpsCandidateIds = new Set<Selectable<DBCandidate>['id']>();
+  for (const ballotPaper of ballotPapers) {
+    const sections = await getBallotPaperSections(ballotPaper.id);
+    if (sections.length === 0) {
+      return {
+        isValid: false,
+        error: CheckElectionIsValidErrors.noSections,
+        context: ballotPaper.id,
+      };
+    }
+
+    for (const section of sections) {
+      if (section.candidateIds.length === 0) {
+        return {
+          isValid: false,
+          error: CheckElectionIsValidErrors.noCandidates,
+          context: section.id,
+        };
+      }
+      section.candidateIds.forEach((id) => bpsCandidateIds.add(id));
+    }
+  }
+
+  // Check that the candidates linked to the ballot paper sections are the same as the candidates linked to the election
+  const electionCandidateIds = new Set(
+    (await getCandidates(electionId)).map((candidate) => candidate.id),
+  );
+  if (!setsEqual(bpsCandidateIds, electionCandidateIds)) {
+    return { isValid: false, error: CheckElectionIsValidErrors.candidateMismatch };
+  }
+
+  return { isValid: true };
+}
+
+/**
+ * Boolean check if an election is valid.
+ * Use this when you only need to know if the election is valid or not.
+ * Returns true if election is valid.
+ *
+ * @param electionId The ID of the election to validate
+ */
+export async function isElectionValid(electionId: Election['id']): Promise<boolean> {
+  const result = await isElectionValidCore(electionId);
+  return result.isValid;
+}
+
+/**
+ * Checks if an election is valid and provides detailed error responses.
+ *
  * @param req The request object containing the election ID.
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the election is valid.
@@ -220,44 +289,22 @@ export async function checkElectionIsValid(
   res: Response<Response403>,
   next: NextFunction,
 ): Promise<void> {
-  // Check at least one ballot paper is linked to the election
-  const ballotPapers = await getBallotPapers(req.params.electionId);
-  if (ballotPapers.length === 0) {
-    error403Response(res, getValidationErrorMessage(CheckElectionIsValidErrors.noBallotPapers));
-    return;
-  }
+  const result = await isElectionValidCore(req.params.electionId);
 
-  // Check ballot papers have at least one section linked to them
-  // and that each section has at least one candidate linked to it
-  const bpsCandidateIds = new Set<Selectable<DBCandidate>['id']>();
-  for (const ballotPaper of ballotPapers) {
-    const sections = await getBallotPaperSections(ballotPaper.id);
-    if (sections.length === 0) {
-      error403Response(
-        res,
-        getValidationErrorMessage(CheckElectionIsValidErrors.noSections, ballotPaper.id),
-      );
-      return;
+  if (!result.isValid) {
+    let errorMessage = '';
+
+    if (result.context !== undefined) {
+      // Error requires an ID context
+      const errorWithId = result.error as CheckElectionIsValidErrorsWithId;
+      errorMessage = getValidationErrorMessage(errorWithId, result.context);
+    } else {
+      // Error doesn't require an ID context
+      const errorWithoutId = result.error as CheckElectionIsValidErrorsWithoutId;
+      errorMessage = getValidationErrorMessage(errorWithoutId);
     }
 
-    for (const section of sections) {
-      if (section.candidateIds.length === 0) {
-        error403Response(
-          res,
-          getValidationErrorMessage(CheckElectionIsValidErrors.noCandidates, section.id),
-        );
-        return;
-      }
-      section.candidateIds.forEach((id) => bpsCandidateIds.add(id));
-    }
-  }
-
-  // Check that the candidates linked to the ballot paper sections are the same as the candidates linked to the election
-  const electionCandidateIds = new Set(
-    (await getCandidates(req.params.electionId)).map((candidate) => candidate.id),
-  );
-  if (!setsEqual(bpsCandidateIds, electionCandidateIds)) {
-    error403Response(res, getValidationErrorMessage(CheckElectionIsValidErrors.candidateMismatch));
+    error403Response(res, errorMessage);
     return;
   }
 
