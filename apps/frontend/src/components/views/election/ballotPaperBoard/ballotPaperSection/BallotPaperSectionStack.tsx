@@ -31,7 +31,11 @@ export const BallotPaperSectionStack = ({
     <ScrollArea flex={1} w={'100%'} style={{ overflowY: 'auto' }}>
       <Stack>
         {data.map((section) => (
-          <BallotPaperSection ballotPaperSection={section} />
+          <BallotPaperSection
+            key={section.id}
+            ballotPaperSection={section}
+            electionId={electionId}
+          />
         ))}
       </Stack>
     </ScrollArea>
