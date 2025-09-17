@@ -66,6 +66,10 @@ jobs:
         run: |
           cd packages/votura-validators
           npm run build
+      - name: Build packages/votura-ballot-box
+        run: |
+          cd packages/votura-ballot-box
+          npm run build
       - name: Build backend
         run: |
           cd apps/backend
