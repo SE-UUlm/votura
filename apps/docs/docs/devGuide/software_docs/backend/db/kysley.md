@@ -23,7 +23,7 @@ For example:
 DATABASE_URL="postgresql://<user>:<password>@<address>:<port>/<db-name>?schema=<schema-name>"
 ```
 
-Create a `.env` file in the root of your backend workspace and add the connection URL there:
+Create a `.env` file in the root of your backend and db directories and add the connection URL there:
 
 ```dotenv
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
@@ -97,7 +97,7 @@ export interface Database {
 }
 ```
 
-To generate a new file for our project just call `npm run gen-types`.
+**To generate a new file for the project just call** `npm run gen-types`.
 This requires the database for which you want to generate the types to be running and for you to have a .env-File in /backend containing `export DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"` with the port you are actually using.
 
 ### Database Migrations with Kysely
@@ -111,15 +111,15 @@ This means migrations have to be written by hand.
 The migrations in this project are in the `src/db/migrations` directory.
 Each migration file typically `up` and `down` functions to apply and revert schema changes. These functions will receive a Kysely instance to execute queries.
 
-The runner is in the `src/db/migrate.ts` file.
-You can run it using `npx tsx path/to/migrate.ts`.
+The runner is in the `src/migrate.ts` file in the `db`-package.
+You can run it using `npm run migrate`.
 
 ### Seeding with Kysely
 
 Seeding involves populating your database with initial data (e.g., for development or testing). Similar to migrations, Kysely doesn't have a built-in seeding mechanism, but you can create a simple script that uses Kysely to insert data.
 
-An example is in the `src/db/seed.ts` file.
-You can run it using `npx tsx path/to/seed.ts`.
+An example is in the `src/seed.ts` file in the `db`-package.
+You can run it using `npm run seed`.
 
 ### Further readings
 
