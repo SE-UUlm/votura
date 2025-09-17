@@ -41,9 +41,11 @@ The docker command should output "Hello from Docker!".
 
 Also make sure **Git Large File Storage** is installed.
 For that run
+
 ```bash
 git lfs install
 ```
+
 If git lfs is already installed this will not change anything.
 
 ## Starting with the votura repository
@@ -58,6 +60,7 @@ After cloning the repository you should also set up **signed commits**, as they 
 For this, please refer to [this tutorial](https://www.git-tower.com/blog/setting-up-ssh-for-commit-signing/).
 
 The next step is to run the following command in the root folder of your repository to **install all dependencies** of the project:
+
 ```bash
 npm install
 ```
@@ -67,6 +70,7 @@ They should each contain the following variables.
 You may change their values but `PEPPER` and `DATABASE_URL` should be the same for all files.
 
 **Backend**:
+
 ```
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
@@ -74,22 +78,26 @@ BITS_PRIME_P=20
 ```
 
 **Frontend**:
+
 ```
 VITE_API_BASE_URL="http://localhost:4000"
 ```
 
 **db**:
+
 ```
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 ```
 
 **e2e**:
+
 ```
 PEPPER="12345"
 ```
 
 **hash**:
+
 ```
 PEPPER="12345"
 ```
@@ -161,6 +169,7 @@ For a list of all commands look for the `turbo.json` file in the projects root d
 
 Instead of using the `turbo` command, you can also use `npm run` from the directory you want it to be used in.
 If you are in the `docs`-directory, running the following command will only build the docs.
+
 ```bash
 npm run build
 ```
@@ -232,7 +241,9 @@ turbo start
 This command starts all apps.
 
 For normal operation of votura you should just use the following command in the `backend` and `frontend` directories.
+
 ```bash
 npm run start
 ```
+
 After running these commands you can view the frontend in your browser.
