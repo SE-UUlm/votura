@@ -14,7 +14,7 @@ toc_max_heading_level: 3
 
 :::info
 
-For Windows users we reccomend developing inside of WSL 2.
+For Windows users we recommend developing inside of WSL 2.
 A tutorial for setting it up can be found [here](https://learn.microsoft.com/en-us/windows/wsl/install).
 After the WSL has been installed, just install a Linux distribution you are comfortable with.
 
@@ -24,7 +24,7 @@ Before you can start developing with votura, you need to install the following:
 
 - [git](https://git-scm.com/)
 - [node.js](https://nodejs.org/en/) (we recommend using [nvm](https://github.com/nvm-sh/nvm))
-- [docker](https://www.docker.com/) (for Windows Users we reccomend using Docker Desktop and configuring it to use the WSL 2 backend)
+- [docker](https://www.docker.com/) (for Windows Users we recommend using Docker Desktop and configuring it to use the WSL 2 backend)
 
 For the installation please refer to the official documentation of the tools.
 
@@ -211,7 +211,7 @@ Your `settings.json`-file should include something like this:
 ```
 
 1. Please check all findings that Teamscale reports in your PR in GitHub and fix them.
-2. If you think there is a rule activated that is not useful for the votura project, please bring this up in the next meeting, so that it can be discussed with the whole team. If the team concludes the rule isn't usefull, it can be reconfigured in the Teamscale webview.
+2. If you think there is a rule activated that is not useful for the votura project, please bring this up in the next meeting, so that it can be discussed with the whole team. If the team concludes the rule isn't useful, it can be reconfigured in the Teamscale webview.
 3. If you think the complaining rule is useful in general, but not for your specific case, you can add tolerate this finding with a comment in the Teamscale UI.
 
 ##### ESLint
@@ -220,7 +220,7 @@ Your `settings.json`-file should include something like this:
 turbo lint
 ```
 
-This command checks the code against the default rules apllied by [ESLint](https://typescript-eslint.io/).
+This command checks the code against the default rules applied by [ESLint](https://typescript-eslint.io/).
 You can also use ESLint directly in VSCode by installing the extension.
 
 #### Format votura
@@ -230,7 +230,7 @@ turbo format
 ```
 
 This command formats the code using [Prettier](https://prettier.io/).
-Without propper formatting your PR will fail the pipeline.
+Without proper formatting your PR will fail the pipeline.
 
 #### Start all development servers
 
