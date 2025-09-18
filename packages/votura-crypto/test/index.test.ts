@@ -23,7 +23,9 @@ describe('PublicKey', () => {
 
     const encryptedText = publicKey.encrypt(plaintext, randomness);
 
-    expect(encryptedText[0][0]).toBe(modPow(publicKey.getGenerator(), randomness, publicKey.getPrimeP()));
+    expect(encryptedText[0][0]).toBe(
+      modPow(publicKey.getGenerator(), randomness, publicKey.getPrimeP()),
+    );
     expect(encryptedText[0][1]).toBe(
       modMultiply(
         [plaintext, modPow(publicKey.getPublicKey(), randomness, publicKey.getPrimeP())],
@@ -248,15 +250,26 @@ describe('ZeroKnowledgeProof', () => {
       const cipherT = ciphertexts[i];
       if (plainT !== undefined && cipherT !== undefined) {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-        const simulatedProof: ZKProof = (zkp as any).createSimulatedEncryptionProof(plainT, cipherT);
+        const simulatedProof: ZKProof = (zkp as any).createSimulatedEncryptionProof(
+          plainT,
+          cipherT,
+        );
         simulatedZKPs.push(simulatedProof);
       }
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const proof: ZKProof = (zkp as any).createRealEncryptionProof(simulatedZKPs, realIndex, randomness);
+    const proof: ZKProof = (zkp as any).createRealEncryptionProof(
+      simulatedZKPs,
+      realIndex,
+      randomness,
+    );
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const proof2: ZKProof = (zkp as any).createRealEncryptionProof(simulatedZKPs, realIndex, randomness);
+    const proof2: ZKProof = (zkp as any).createRealEncryptionProof(
+      simulatedZKPs,
+      realIndex,
+      randomness,
+    );
 
     expect(proof.commitment.length).toBe(2);
     expect(typeof proof.challenge).toBe('bigint');
@@ -307,21 +320,35 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid).toBe(true);
 
     const invalidProof1: ZKProof = {
-      commitment: [(validProof.commitment[0] + 1n) % publicKey.getPrimeP(), validProof.commitment[1]],
+      commitment: [
+        (validProof.commitment[0] + 1n) % publicKey.getPrimeP(),
+        validProof.commitment[1],
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const isValid1: boolean = (zkp as any).verifyEncryptionProof(plaintext, ciphertext, invalidProof1);
+    const isValid1: boolean = (zkp as any).verifyEncryptionProof(
+      plaintext,
+      ciphertext,
+      invalidProof1,
+    );
     expect(isValid1).toBe(false);
 
     const invalidProof2: ZKProof = {
-      commitment: [validProof.commitment[0], (validProof.commitment[1] + 1n) % publicKey.getPrimeP()],
+      commitment: [
+        validProof.commitment[0],
+        (validProof.commitment[1] + 1n) % publicKey.getPrimeP(),
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const isValid2: boolean = (zkp as any).verifyEncryptionProof(plaintext, ciphertext, invalidProof2);
+    const isValid2: boolean = (zkp as any).verifyEncryptionProof(
+      plaintext,
+      ciphertext,
+      invalidProof2,
+    );
     expect(isValid2).toBe(false);
 
     const invalidProof3: ZKProof = {
@@ -330,7 +357,11 @@ describe('ZeroKnowledgeProof', () => {
       response: validProof.response,
     };
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const isValid3: boolean = (zkp as any).verifyEncryptionProof(plaintext, ciphertext, invalidProof3);
+    const isValid3: boolean = (zkp as any).verifyEncryptionProof(
+      plaintext,
+      ciphertext,
+      invalidProof3,
+    );
     expect(isValid3).toBe(false);
 
     const invalidProof4: ZKProof = {
@@ -339,7 +370,11 @@ describe('ZeroKnowledgeProof', () => {
       response: (validProof.response + 1n) % publicKey.getPrimeQ(),
     };
     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const isValid4: boolean = (zkp as any).verifyEncryptionProof(plaintext, ciphertext, invalidProof4);
+    const isValid4: boolean = (zkp as any).verifyEncryptionProof(
+      plaintext,
+      ciphertext,
+      invalidProof4,
+    );
     expect(isValid4).toBe(false);
   });
 
@@ -407,7 +442,10 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid).toBe(true);
 
     const invalidProof1: ZKProof = {
-      commitment: [(validProof.commitment[0] + 1n) % publicKey.getPrimeP(), validProof.commitment[1]],
+      commitment: [
+        (validProof.commitment[0] + 1n) % publicKey.getPrimeP(),
+        validProof.commitment[1],
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
@@ -415,7 +453,10 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid1).toBe(false);
 
     const invalidProof2: ZKProof = {
-      commitment: [validProof.commitment[0], (validProof.commitment[1] + 1n) % publicKey.getPrimeP()],
+      commitment: [
+        validProof.commitment[0],
+        (validProof.commitment[1] + 1n) % publicKey.getPrimeP(),
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };

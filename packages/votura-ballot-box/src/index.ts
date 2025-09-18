@@ -1,1 +1,4 @@
-export { BallotPaperSectionDecryption, type DecryptedSection } from './decryption/ballotPaperSection.js';
+export {
+  BallotPaperSectionDecryption,
+  type DecryptedSection,
+} from './decryption/ballotPaperSection.js';

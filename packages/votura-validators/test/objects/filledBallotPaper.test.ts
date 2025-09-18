@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { filledBallotPaperObject, type FilledBallotPaper } from '../../src/objects/filledBallotPaper.js';
+import {
+  filledBallotPaperObject,
+  type FilledBallotPaper,
+} from '../../src/objects/filledBallotPaper.js';
 
 describe('Filled Ballot Paper tests', () => {
   enum UUIDs {
@@ -18,7 +21,7 @@ describe('Filled Ballot Paper tests', () => {
     commitment2: BigInt(11),
     challenge: BigInt(13),
     response: BigInt(17),
-  }
+  };
 
   const demoFilledBallotPaperData: FilledBallotPaper = {
     ballotPaperId: UUIDs.ballotPaper,
@@ -27,16 +30,16 @@ describe('Filled Ballot Paper tests', () => {
         votes: [
           {
             noVote: {
-              ...dummyVote
+              ...dummyVote,
             },
             invalid: {
-              ...dummyVote
+              ...dummyVote,
             },
             [UUIDs.candidate1]: {
-              ...dummyVote
+              ...dummyVote,
             },
             [UUIDs.candidate2]: {
-              ...dummyVote
+              ...dummyVote,
             },
           },
         ],
@@ -45,13 +48,13 @@ describe('Filled Ballot Paper tests', () => {
         votes: [
           {
             noVote: {
-              ...dummyVote
+              ...dummyVote,
             },
             invalid: {
-              ...dummyVote
+              ...dummyVote,
             },
             [UUIDs.candidate3]: {
-              ...dummyVote
+              ...dummyVote,
             },
           },
         ],

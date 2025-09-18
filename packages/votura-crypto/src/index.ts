@@ -94,7 +94,7 @@ export class PrivateKey extends PublicKey {
   /**
    * Decrypts the given ciphertext using the private key.
    * The returned value is an encoded plaintext, which is generator ^ (number of votes) mod primeP.
-   * @param ciphertext 
+   * @param ciphertext
    * @returns The encoded plaintext (generator ^ (number of votes) mod primeP)
    */
   public decrypt(ciphertext: Ciphertext): bigint {
@@ -339,7 +339,10 @@ export class ZeroKnowledgeProof {
 
     const check1a = modPow(this.pk.getGenerator(), zkProof.response, this.pk.getPrimeP());
     const check1b = modMultiply(
-      [modPow(this.pk.getPublicKey(), zkProof.challenge, this.pk.getPrimeP()), zkProof.commitment[0]],
+      [
+        modPow(this.pk.getPublicKey(), zkProof.challenge, this.pk.getPrimeP()),
+        zkProof.commitment[0],
+      ],
       this.pk.getPrimeP(),
     );
 
@@ -423,7 +426,8 @@ export class ZeroKnowledgeProof {
     let realChallenge = disjunctiveChallenge;
     simulatedZKPs.forEach((proof, index) => {
       if (index !== realIndex) {
-        realChallenge = modAdd([realChallenge, -proof.challenge], this.pk.getPrimeQ()) % this.pk.getPrimeQ();
+        realChallenge =
+          modAdd([realChallenge, -proof.challenge], this.pk.getPrimeQ()) % this.pk.getPrimeQ();
       }
     });
 

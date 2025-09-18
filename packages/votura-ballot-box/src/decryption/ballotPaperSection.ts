@@ -42,7 +42,11 @@ export class BallotPaperSectionDecryption {
     // Calculate g^i mod p for i = 0 to maxVotes
     // This allows us to convert encrypted sums back to vote counts
     for (let i = 0; i <= maxVotes; i++) {
-      const encoded = modPow(this.privateKey.getGenerator(), BigInt(i), this.privateKey.getPrimeP());
+      const encoded = modPow(
+        this.privateKey.getGenerator(),
+        BigInt(i),
+        this.privateKey.getPrimeP(),
+      );
       this.discreteLogLookup.set(encoded, i);
     }
   }
