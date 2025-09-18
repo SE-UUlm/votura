@@ -135,6 +135,10 @@ export class PrivateKey extends PublicKey {
       response: response,
     };
   }
+
+  public getPrivateKey(): bigint {
+    return this.privateKey;
+  }
 }
 
 export class KeyPair {
