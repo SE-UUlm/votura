@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { filledBallotPaperObject } from '../../src/objects/filledBallotPaper.js';
+import { filledBallotPaperObject, type FilledBallotPaper } from '../../src/objects/filledBallotPaper.js';
 
 describe('Filled Ballot Paper tests', () => {
   enum UUIDs {
@@ -11,43 +11,32 @@ describe('Filled Ballot Paper tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
 
-  const demoFilledBallotPaperData = {
+  const dummyVote = {
+    alpha: BigInt(5),
+    beta: BigInt(3),
+    commitment1: BigInt(7),
+    commitment2: BigInt(11),
+    challenge: BigInt(13),
+    response: BigInt(17),
+  }
+
+  const demoFilledBallotPaperData: FilledBallotPaper = {
     ballotPaperId: UUIDs.ballotPaper,
     sections: {
       [UUIDs.section1]: {
         votes: [
           {
             noVote: {
-              alpha: 12345,
-              beta: 67890,
-              commitment1: 11111,
-              commitment2: 22222,
-              challenge: 33333,
-              response: 44444,
+              ...dummyVote
             },
             invalid: {
-              alpha: 98765,
-              beta: 43210,
-              commitment1: 55555,
-              commitment2: 66666,
-              challenge: 77777,
-              response: 88888,
+              ...dummyVote
             },
             [UUIDs.candidate1]: {
-              alpha: 13579,
-              beta: 24680,
-              commitment1: 97531,
-              commitment2: 86420,
-              challenge: 75319,
-              response: 64208,
+              ...dummyVote
             },
             [UUIDs.candidate2]: {
-              alpha: 11223,
-              beta: 33445,
-              commitment1: 55667,
-              commitment2: 77889,
-              challenge: 99001,
-              response: 12234,
+              ...dummyVote
             },
           },
         ],
@@ -56,28 +45,13 @@ describe('Filled Ballot Paper tests', () => {
         votes: [
           {
             noVote: {
-              alpha: 54321,
-              beta: 19876,
-              commitment1: 19283,
-              commitment2: 37465,
-              challenge: 55647,
-              response: 73829,
+              ...dummyVote
             },
             invalid: {
-              alpha: 10293,
-              beta: 48576,
-              commitment1: 92837,
-              commitment2: 46510,
-              challenge: 83749,
-              response: 20184,
+              ...dummyVote
             },
             [UUIDs.candidate3]: {
-              alpha: 56789,
-              beta: 12345,
-              commitment1: 67890,
-              commitment2: 23456,
-              challenge: 78901,
-              response: 34567,
+              ...dummyVote
             },
           },
         ],
@@ -92,7 +66,7 @@ describe('Filled Ballot Paper tests', () => {
 
   it('Should throw error if "invalid"-key is not present in vote object', () => {
     // Create copy of the first object in votes for UUIDs.section1
-    const voteWithoutInvalid = { ...demoFilledBallotPaperData.sections[UUIDs.section1].votes[0] };
+    const voteWithoutInvalid = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
     // remove the invalid field in the copied object
     delete voteWithoutInvalid.invalid;
 
@@ -110,7 +84,7 @@ describe('Filled Ballot Paper tests', () => {
   });
 
   it('Should throw error if "noVote"-key is not present in vote object', () => {
-    const voteWithoutNoVote = { ...demoFilledBallotPaperData.sections[UUIDs.section1].votes[0] };
+    const voteWithoutNoVote = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
     delete voteWithoutNoVote.noVote;
 
     const result = filledBallotPaperObject.safeParse({
@@ -128,7 +102,7 @@ describe('Filled Ballot Paper tests', () => {
 
   it('Should throw error if no candidate (UUID) key is present in vote object', () => {
     const voteWithoutCandidates = {
-      ...demoFilledBallotPaperData.sections[UUIDs.section2].votes[0],
+      ...demoFilledBallotPaperData.sections[UUIDs.section2]?.votes[0],
     };
     delete voteWithoutCandidates[UUIDs.candidate3];
 

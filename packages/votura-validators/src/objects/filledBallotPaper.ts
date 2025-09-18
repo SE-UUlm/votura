@@ -62,32 +62,32 @@ export const filledBallotPaperObject = z.object({
                 z.literal(filledBallotPaperDefaultVoteOption.invalid),
               ]),
               z.object({
-                alpha: z.number().register(voturaMetadataRegistry, {
+                alpha: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
                   example: 12345,
                 }),
-                beta: z.number().register(voturaMetadataRegistry, {
+                beta: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
                   example: 67890,
                 }),
-                commitment1: z.number().register(voturaMetadataRegistry, {
+                commitment1: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
                   example: 1345789,
                 }),
-                commitment2: z.number().register(voturaMetadataRegistry, {
+                commitment2: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
                   example: 9072314,
                 }),
-                challenge: z.number().register(voturaMetadataRegistry, {
+                challenge: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
                   example: 76687914,
                 }),
-                response: z.number().register(voturaMetadataRegistry, {
+                response: z.bigint().register(voturaMetadataRegistry, {
                   description:
                     'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
                   example: 2013945,
