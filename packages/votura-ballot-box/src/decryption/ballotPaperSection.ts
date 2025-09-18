@@ -5,7 +5,7 @@ import {
 import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 
-export interface DecryptedSectionResult {
+export interface DecryptedSection {
   sectionId: string;
   candidateResults: Record<string, number>;
   noVoteCount: number;
@@ -15,7 +15,7 @@ export interface DecryptedSectionResult {
 type SectionVotes = FilledBallotPaper['sections'][string];
 type VoteRecord = SectionVotes['votes'][number];
 
-export class BallotPaperDecryption {
+export class BallotPaperSectionDecryption {
   private readonly privateKey: PrivateKey;
 
   private readonly tallying: Tallying;
@@ -42,7 +42,7 @@ export class BallotPaperDecryption {
     // Calculate g^i mod p for i = 0 to maxVotes
     // This allows us to convert encrypted sums back to vote counts
     for (let i = 0; i <= maxVotes; i++) {
-      const encoded = modPow(this.privateKey.generator, BigInt(i), this.privateKey.primeP);
+      const encoded = modPow(this.privateKey.getGenerator(), BigInt(i), this.privateKey.getPrimeP());
       this.discreteLogLookup.set(encoded, i);
     }
   }
@@ -55,7 +55,7 @@ export class BallotPaperDecryption {
    * @param sectionId The ID of the section being processed
    * @returns Decrypted results with vote counts per candidate
    */
-  public decryptSection(section: SectionVotes, sectionId: string): DecryptedSectionResult {
+  public decryptSection(section: SectionVotes, sectionId: string): DecryptedSection {
     if (!this.discreteLogLookup) {
       throw new Error('Lookup table not initialized. Call calculateLookupTable() first.');
     }
@@ -64,7 +64,7 @@ export class BallotPaperDecryption {
     const orderedCiphertexts = this.extractAllCiphertexts(section, orderedCandidateIds);
     const orderedVoteCounts = this.decryptAndConvertVotes(orderedCiphertexts);
 
-    return this.buildDecryptedResult(sectionId, orderedCandidateIds, orderedVoteCounts);
+    return this.buildDecryptedSection(sectionId, orderedCandidateIds, orderedVoteCounts);
   }
 
   /**
@@ -161,14 +161,14 @@ export class BallotPaperDecryption {
   }
 
   /**
-   * Builds the final decrypted result by mapping vote counts to candidates.
+   * Builds the final decrypted section by mapping vote counts to candidates.
    */
-  private buildDecryptedResult(
+  private buildDecryptedSection(
     sectionId: string,
     candidateIds: string[],
     voteCounts: number[],
-  ): DecryptedSectionResult {
-    const result: DecryptedSectionResult = {
+  ): DecryptedSection {
+    const result: DecryptedSection = {
       sectionId,
       candidateResults: {},
       noVoteCount: 0,
