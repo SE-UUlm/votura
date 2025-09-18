@@ -8,10 +8,4 @@ hide_table_of_contents: false
 draft: false
 ---
 
-:::warning
-
-This page is still under construction and will be updated soon.
-
-:::
-
 ![The overall frontend architecture.](../../../static/drawio/frontend_overview.svg)
