@@ -62,7 +62,9 @@ To stop the containers created by docker compose run
 ```bash
 docker compose down
 ```
+
 or
+
 ```bash
 npm run postgres-down
 ```
