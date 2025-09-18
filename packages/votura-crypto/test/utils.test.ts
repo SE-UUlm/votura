@@ -25,20 +25,20 @@ describe('Utility Functions', () => {
   voturaTest('getFiatShamirChallenge', ({ keyPair, ciphertext, randomness }) => {
     const { publicKey } = keyPair;
 
-    const commitmentA = modPow(publicKey.generator, randomness, publicKey.primeP);
-    const commitmentB = modPow(ciphertext[0], randomness, publicKey.primeP);
+    const commitmentA = modPow(publicKey.getGenerator(), randomness, publicKey.getPrimeP());
+    const commitmentB = modPow(ciphertext[0], randomness, publicKey.getPrimeP());
 
     const partsToHash: string[] = [];
     partsToHash.push(commitmentA.toString());
     partsToHash.push(commitmentB.toString());
 
-    const challenge = getFiatShamirChallenge(partsToHash, publicKey.primeQ);
-    const challenge2 = getFiatShamirChallenge(partsToHash, publicKey.primeQ);
+    const challenge = getFiatShamirChallenge(partsToHash, publicKey.getPrimeQ());
+    const challenge2 = getFiatShamirChallenge(partsToHash, publicKey.getPrimeQ());
 
     expect(challenge).toBe(challenge2);
     expect(typeof challenge).toBe('bigint');
     expect(challenge >= 0n).toBe(true);
-    expect(challenge < publicKey.primeQ).toBe(true);
+    expect(challenge < publicKey.getPrimeQ()).toBe(true);
   });
 
   voturaTest('getGeneratorForPrimes', () => {
