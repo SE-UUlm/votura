@@ -31,7 +31,7 @@ DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 
 ## Using the provided docker development database
 
-With the included `docker-compose.yml` file in the backend project, you can easily spin up a local development database
+With the included `docker-compose.yml` file in the `db`-package, you can easily spin up a local development database
 using Docker Compose.
 
 For that you will need:
@@ -41,7 +41,7 @@ For that you will need:
 
 ### Starting the development database
 
-Navigate to the backend workspace root and run the following command to start the service in the background:
+Navigate to the `db`-package root and run the following command to start the service in the background:
 
 ```bash
 docker compose up -d
@@ -57,11 +57,14 @@ docker ps -a
 
 ### Stopping the development database
 
-To stop the containers created by docker compose run:
+To stop the containers created by docker compose run
 
 ```bash
 docker compose down
-# or use the npm script "npm run postgres-down"
+```
+or
+```bash
+npm run postgres-down
 ```
 
 ## Working with Kysely
@@ -97,8 +100,8 @@ export interface Database {
 }
 ```
 
-**To generate a new file for the project just call** `npm run gen-types`.
-This requires the database for which you want to generate the types to be running and for you to have a .env-File in /backend containing `export DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"` with the port you are actually using.
+**To generate a new file for the project just call** `npm run gen-types` in the `db` folder.
+This requires the database for which you want to generate the types to be running and for you to have a .env-File in `db` folder containing `DATABASE_URL="postgresql://<user>:<password>@<address>:<port>/<db-name>?schema=<schema-name>"` with the user, password, ip and port you are actually using.
 
 ### Database Migrations with Kysely
 
