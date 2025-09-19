@@ -56,6 +56,18 @@ describe('BallotPaperSectionDecryption tests', () => {
     );
   });
 
+  it('should throw if calculateLookupTable called with negative maxVotes', () => {
+    expect(() => {
+      decryption?.calculateLookupTable(-1);
+    }).toThrowError('maxVotes must be a non-negative integer');
+  });
+
+  it('should calculate lookup table without errors', () => {
+    expect(() => {
+      decryption?.calculateLookupTable(10);
+    }).not.toThrow();
+  });
+
   it('should extract all ciphertexts correctly', () => {
     const parseResult = filledBallotPaperObject.safeParse({
       ballotPaperId: UUIDs.ballotPaper,
@@ -70,7 +82,7 @@ describe('BallotPaperSectionDecryption tests', () => {
     const ciphertexts = decryption?.['extractAllCiphertexts'](
       dummySection,
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption?.['extractCandidateIds'](dummySection),
+      decryption['extractCandidateIds'](dummySection),
     );
     expect(ciphertexts).toEqual([
       [
@@ -86,18 +98,6 @@ describe('BallotPaperSectionDecryption tests', () => {
         [dummyVote.alpha, dummyVote.beta], // noVote
       ],
     ]);
-  });
-
-  it('should throw if calculateLookupTable called with negative maxVotes', () => {
-    expect(() => {
-      decryption?.calculateLookupTable(-1);
-    }).toThrowError('maxVotes must be a non-negative integer');
-  });
-
-  it('should calculate lookup table without errors', () => {
-    expect(() => {
-      decryption?.calculateLookupTable(10);
-    }).not.toThrow();
   });
 
   it('should throw error when extracting candidate IDs from section with no votes', () => {
@@ -145,7 +145,7 @@ describe('BallotPaperSectionDecryption tests', () => {
       decryption?.['extractAllCiphertexts'](
         sectionWithMissingVoteData,
         // eslint-disable-next-line @typescript-eslint/dot-notation
-        decryption?.['extractCandidateIds'](dummySection),
+        decryption['extractCandidateIds'](dummySection),
       );
     }).toThrowError(`Missing vote data for candidate ${UUIDs.candidate2}`);
   });
