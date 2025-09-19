@@ -1,5 +1,5 @@
 import { filledBallotPaperObject } from '@repo/votura-validators';
-import { getKeyPair, type Ciphertext, type KeyPair } from '@votura/votura-crypto/index';
+import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperSectionDecryption } from '../../src/decryption/ballotPaperSection.js';
 
@@ -76,8 +76,13 @@ describe('BallotPaperSectionDecryption tests', () => {
     });
     expect(parseResult.success).toBe(true);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const candidateIds = (decryption as any).extractCandidateIds(dummySection);
+    if (decryption === null) {
+      throw new Error('Decryption instance is null');
+    }
+
+    // Accessing private method via bracket notation for testing purposes
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const candidateIds = decryption['extractCandidateIds'](dummySection);
     expect(candidateIds).toEqual([UUIDs.candidate1, UUIDs.candidate2, 'invalid', 'noVote']); // manually ordered in alphabetical order
   });
 
@@ -90,11 +95,16 @@ describe('BallotPaperSectionDecryption tests', () => {
     });
     expect(parseResult.success).toBe(true);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-    const ciphertexts: Ciphertext[][] = (decryption as any).extractAllCiphertexts(
+    if (decryption === null) {
+      throw new Error('Decryption instance is null');
+    }
+
+    // Accessing private method via bracket notation for testing purposes
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const ciphertexts = decryption['extractAllCiphertexts'](
       dummySection,
-      // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-member-access
-      (decryption as any).extractCandidateIds(dummySection),
+      // eslint-disable-next-line @typescript-eslint/dot-notation
+      decryption['extractCandidateIds'](dummySection),
     );
     console.log('Extracted ciphertexts:', ciphertexts);
     expect(ciphertexts).toEqual([
