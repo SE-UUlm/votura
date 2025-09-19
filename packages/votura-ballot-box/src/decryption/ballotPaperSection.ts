@@ -183,8 +183,15 @@ export class BallotPaperSectionDecryption {
       const candidateId = candidateIds[i];
       const count = voteCounts[i];
 
-      if (candidateId === undefined || count === undefined) {
-        throw new Error(`Missing data for candidate at index ${i}`);
+      if (candidateId === undefined) {
+        // should never happen in normal operation, but typescript needs to know that candidateId is defined
+        throw new Error(`Candidate ID is undefined at index ${i}`);
+      }
+      if (count === undefined) {
+        const lengthMismatch = candidateIds.length !== voteCounts.length;
+        throw new Error(
+          `Vote count is undefined at index ${i}. Length mismatch: ${lengthMismatch}`,
+        );
       }
 
       if (candidateId === filledBallotPaperDefaultVoteOption.noVote) {
