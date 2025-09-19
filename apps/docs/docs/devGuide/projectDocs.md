@@ -12,6 +12,18 @@ We are using [Docusaurus](https://docusaurus.io/) for our documentation.
 The documentation is hosted on [GitHub Pages](https://pages.github.com/) and is public available [here](https://se-uulm.github.io/votura/).
 Every push or pull request to the `main` or `develop` branch of the `votura` repository will trigger a GitHub Action that builds the documentation and deploys it to GitHub Pages.
 
+## API documentation
+
+The API documentation of the backend is generated from the `packages/votura-validators/generated/voturaApiSchema.json` file.
+To generate this file, you need to go to `packages/votura-validators` and run:
+
+```bash
+npm run persist-schema
+```
+
+This generates the `voturaApiSchema.json` file.
+This is a valid OpenAPI definition file, you can open it with a Swagger UI or similar tools to visualize the API endpoints.
+
 ## Update the documentation
 
 You have already found the documentation, and you can familiarize yourself with the structure and the content.
@@ -27,32 +39,20 @@ npm run start
 ```
 
 This will start a local server on `http://localhost:3000` where you can preview your changes.
+Make sure that you have generated a `voturaApiSchema.json` file before.
 
 If you want to create a new page, please use the template file `apps/docs/docs/_templatePage.md` as a starting point.
 
-## API documentation
-
-The API documentation of the backend is generated from the `openapi.yaml` file in the `apps/backend` folder.
-To generate the API documentation, you need to run the following command in the `apps/backend` folder:
-
-```bash
-npm run docusaurus gen-api-docs all
-```
-
 :::note
 
-If you only change the `openapi.yaml` files this will not trigger a new build of the docs.
-You need to delete the `api` folder in the docs or run `npm run docusaurus clean-api-docs all` in the `docs` workspace and need to build them again.
-
-The easy way is to use `npm run build` in the `docs` workspace, this command will cleanly regenerate the api docs automatically.
+If you only change the `voturaApiSchema.json` files this will not trigger a new build of the docs (if you have started the dev-server with `npm run start`).
+You need to restart the dev-server, then the api-pages will be updated.
 
 :::
 
-If you want to update or create new API specification I highly recommend you to use a live Swagger UI render (or something similar) in your IDE.
-
 ## Include PlantUML or DrawIO diagrams
 
-You visualize your documentation with diagrams you can use [PlantUML](https://plantuml.com/) or [DrawIO](https://app.diagrams.net/).
+To visualize your documentation with diagrams you can use [PlantUML](https://plantuml.com/) or [DrawIO](https://app.diagrams.net/).
 
 ### PlantUML
 
@@ -67,6 +67,13 @@ This SVG file you can include in your documentation with the following syntax:
 So please do not commit the generated SVG files to the repository.
 You don't have to worry about that, because the GitHub Action will take care of that.
 
+:::note
+
+If you build the docs locally you have to provide a valid SVG file.
+The SVG files are only generated in the GitHub Action.
+
+:::
+
 ### DrawIO
 
 To include DrawIO diagrams in your documentation, you need to save your DrawIO source file `myFile.drawio` in the `apps/docs/static/drawio/` folder.
@@ -79,6 +86,13 @@ This SVG file you can include in your documentation with the following syntax:
 
 So please do not commit the generated SVG files to the repository.
 You don't have to worry about that, because the GitHub Action will take care of that.
+
+:::note
+
+If you build the docs locally you have to provide a valid SVG file.
+The SVG files are only generated in the GitHub Action.
+
+:::
 
 ## Versions
 

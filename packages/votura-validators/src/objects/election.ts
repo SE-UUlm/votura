@@ -26,11 +26,14 @@ export const electionObject = z.object({
       'The start date of the voting process of the election. This date needs to be in the future.',
   }),
   votingEndAt: z.iso.datetime().register(voturaMetadataRegistry, {
-    description: 'The end date of the voting process of the election. ',
+    description:
+      'The end date of the voting process of the election. This date needs to be in the future and greater than the `votingStart` date. ',
+  }),
+  freezable: z.boolean().default(true).register(voturaMetadataRegistry, {
+    description: 'Indicates if the configuration of the election can be frozen.',
   }),
   configFrozen: z.boolean().default(false).register(voturaMetadataRegistry, {
-    description:
-      'Indicates if the configuration of the election is frozen. This date needs to be in the future and greater than the `votingStart` date.',
+    description: 'Indicates if the configuration of the election is frozen.',
   }),
   allowInvalidVotes: z.boolean().default(false).register(voturaMetadataRegistry, {
     description:
@@ -120,5 +123,17 @@ export type UpdateableElection = z.infer<typeof updateableElectionObject>;
 
 export const updateableElectionObjectSchema = z.toJSONSchema(
   updateableElectionObject,
+  toJsonSchemaParams,
+);
+
+export const freezableElectionObject = electionObject.pick({
+  id: true,
+  freezable: true,
+});
+
+export type FreezableElection = z.infer<typeof freezableElectionObject>;
+
+export const freezableElectionObjectSchema = z.toJSONSchema(
+  freezableElectionObject,
   toJsonSchemaParams,
 );

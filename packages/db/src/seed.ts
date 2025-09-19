@@ -10,11 +10,7 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
       passwordHash: await hashPassword('HelloVotura1!', getPepper()),
     })
     .returningAll()
-    .executeTakeFirst();
-
-  if (user === undefined) {
-    throw Error('User could not be created');
-  }
+    .executeTakeFirstOrThrow();
 
   const election = await db
     .insertInto('election')
@@ -26,13 +22,9 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
       votingEndAt: new Date('2024-07-30T15:51:28.071Z'),
     })
     .returningAll()
-    .executeTakeFirst();
+    .executeTakeFirstOrThrow();
 
-  if (election === undefined) {
-    throw Error('Election could not be created');
-  }
-
-  await db
+  const ballotPaper = await db
     .insertInto('ballotPaper')
     .values({
       name: 'Ballot Paper 1',
@@ -40,6 +32,17 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
       maxVotes: 5,
       maxVotesPerCandidate: 2,
       electionId: election.id,
+    })
+    .returningAll()
+    .executeTakeFirstOrThrow();
+
+  await db
+    .insertInto('ballotPaperSection')
+    .values({
+      name: 'BPS1',
+      maxVotes: 5,
+      maxVotesPerCandidate: 2,
+      ballotPaperId: ballotPaper.id,
     })
     .returningAll()
     .executeTakeFirstOrThrow();

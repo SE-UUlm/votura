@@ -1,4 +1,8 @@
-import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
+import type {
+  SelectableBallotPaper,
+  SelectableBallotPaperSection,
+  SelectableElection,
+} from '@repo/votura-validators';
 
 export const apiRoutes = {
   base: import.meta.env.VITE_API_BASE_URL as string,
@@ -18,7 +22,18 @@ export const apiRoutes = {
           electionId: SelectableElection['id'],
           ballotPaperId: SelectableBallotPaper['id'],
         ): string => `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections`,
+        candidates: {
+          base: (
+            electionId: SelectableElection['id'],
+            ballotPaperId: SelectableBallotPaper['id'],
+            ballotPaperSectionId: SelectableBallotPaperSection['id'],
+          ): string =>
+            `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections/${ballotPaperSectionId}/candidates`,
+        },
       },
+    },
+    candidates: {
+      base: (id: SelectableElection['id']): string => `/elections/${id}/candidates`,
     },
   },
   users: {
