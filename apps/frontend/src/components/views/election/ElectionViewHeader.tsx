@@ -5,11 +5,13 @@ import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
-import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
+import { useGetElectionFreezable } from '../../../swr/elections/useGetElectionFreezable.ts';
 import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
+import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
@@ -56,6 +58,11 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     if (election.configFrozen) {
       await unfreezeTrigger();
     } else {
+      const freezable = useGetElectionFreezable(election.id);
+      if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
+        notifications.show(getElectionNotFreezableConfig(election.name));
+        return;
+      }
       await freezeTrigger();
     }
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
