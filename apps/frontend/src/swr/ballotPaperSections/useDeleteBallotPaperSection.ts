@@ -1,7 +1,7 @@
-import {
-  type SelectableBallotPaper,
-  type SelectableBallotPaperSection,
-  type SelectableElection,
+import type {
+  SelectableBallotPaper,
+  SelectableBallotPaperSection,
+  SelectableElection,
 } from '@repo/votura-validators';
 import { mutate } from 'swr';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
