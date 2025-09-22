@@ -33,7 +33,9 @@ export const useDeleteBallotPaperSection = ({
     deleter,
     {
       onSuccess: () => {
-        void mutate(apiRoutes.elections.ballotPapers.ballotPaperSections.base);
+        void mutate(
+          apiRoutes.elections.ballotPapers.ballotPaperSections.base(electionId, ballotPaperId),
+        );
       },
     },
   );
