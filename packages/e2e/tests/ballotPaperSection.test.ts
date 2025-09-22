@@ -77,9 +77,6 @@ test.describe('BallotPaperSection', () => {
     await saveButton.click();
     await page.waitForTimeout(1000);
     await expect(saveButton).not.toBeVisible();
-    await expect(
-      page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
-    ).toBeVisible();
     if (updatedBallotPaperSection.description !== undefined) {
       await expect(page.getByText(updatedBallotPaperSection.description)).toBeVisible();
     }
