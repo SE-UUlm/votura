@@ -92,6 +92,7 @@ export const BallotPaperSectionSettingsMenu = ({
           <Menu.Item
             leftSection={<IconEdit size={14} />}
             onClick={mutateSectionContextActions.open}
+            aria-label={'Edit section'}
           >
             Edit section
           </Menu.Item>

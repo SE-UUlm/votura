@@ -8,6 +8,13 @@ const ballotPaperSection: UpdateableBallotPaperSection = {
   maxVotesPerCandidate: 2,
 };
 
+const updatedBallotPaperSection: UpdateableBallotPaperSection = {
+  name: 'My updated BPS',
+  description: 'My updated BPS Description',
+  maxVotes: 4,
+  maxVotesPerCandidate: 3,
+};
+
 test.describe('BallotPaperSection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
@@ -45,5 +52,40 @@ test.describe('BallotPaperSection', () => {
     if (ballotPaperSection.description !== undefined) {
       await expect(page.getByText(ballotPaperSection.description).first()).toBeVisible();
     }
+  });
+
+  test('should update a ballot paper section', async ({ page }) => {
+    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
+    await page.getByRole('button', { name: 'Section Settings' }).click();
+    await page.getByRole('menuitem', { name: 'Edit section' }).click();
+    await page.getByRole('textbox', { name: 'Name' }).fill(updatedBallotPaperSection.name);
+    if (updatedBallotPaperSection.description !== undefined) {
+      await page.getByRole('textbox', { name: 'Description' }).fill(updatedBallotPaperSection.description);
+    }
+    await page
+      .getByRole('textbox', {
+        name: 'Maximum votes',
+        exact: true,
+      })
+      .fill(updatedBallotPaperSection.maxVotes.toString());
+    await page
+      .getByRole('textbox', { name: 'Maximum votes per candidate' })
+      .fill(updatedBallotPaperSection.maxVotesPerCandidate.toString());
+    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    await saveButton.click();
+    await expect(saveButton).not.toBeVisible();
+    await expect(page.getByText(updatedBallotPaperSection.name, { exact: true }).first()).toBeVisible();
+    if (updatedBallotPaperSection.description !== undefined) {
+      await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
+    }
+  });
+
+  test('should delete a ballot paper section', async ({ page }) => {
+    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
+    await page.getByRole('button', { name: 'Section Settings' }).click();
+    await page.getByRole('menuitem', { name: 'Delete section' }).click();
+    await page.getByRole('button', { name: 'Delete' }).click();
+    await page.waitForTimeout(1000);
+    await expect(page.getByText(ballotPaperSection.name, { exact: true }).first()).not.toBeVisible();
   });
 });
