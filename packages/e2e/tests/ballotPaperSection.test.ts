@@ -81,7 +81,7 @@ test.describe('BallotPaperSection', () => {
       page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
     ).toBeVisible();
     if (updatedBallotPaperSection.description !== undefined) {
-      await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
+      await expect(page.getByText(updatedBallotPaperSection.description)).toBeVisible();
     }
   });
 
