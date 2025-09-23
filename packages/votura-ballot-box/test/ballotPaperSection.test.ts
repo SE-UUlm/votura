@@ -1,4 +1,4 @@
-import { type PlainBallotPaper } from '@repo/votura-validators';
+import type { PlainBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperSectionDecryption, BallotPaperSectionEncryption } from '../src/index.js';

@@ -1,4 +1,4 @@
-import { type PlainBallotPaper } from '@repo/votura-validators';
+import type { PlainBallotPaper } from '@repo/votura-validators';
 import {
   ZeroKnowledgeProof,
   type Ciphertext,
@@ -43,9 +43,6 @@ export class BallotPaperSectionEncryption {
    * @returns Encrypted vote of a single ballot paper section
    */
   public encryptSection(section: SectionVotes, sectionId: string): EncryptedSection {
-    if (!section) {
-      throw new Error(`Section ${sectionId} is undefined or null.`);
-    }
     const encryptedVotes: EncryptedSection['votes'] = [];
     const allRandomnessForAudit: bigint[] = [];
 
@@ -115,7 +112,7 @@ export class BallotPaperSectionEncryption {
     candidateIds: string[],
   ): [Ciphertext[], number, bigint] {
     const ciphertexts: Ciphertext[] = [];
-    let voteRandomness: bigint = -1n;
+    let voteRandomness = -1n;
 
     const realIndex = candidateIds.findIndex((id) => vote[id] === 1);
 
@@ -139,6 +136,10 @@ export class BallotPaperSectionEncryption {
       } else {
         // use same randomness for the entire vote
         const [ciphertext, randomness] = this.publicKey.encrypt(encodedPlaintext, voteRandomness);
+        if (randomness !== voteRandomness) {
+          // this should never happen
+          throw new Error('Different randomness values used while encrypting the same vote.');
+        }
         ciphertexts.push(ciphertext);
       }
     }
@@ -161,15 +162,15 @@ export class BallotPaperSectionEncryption {
       const ciphertext = ciphertexts[i];
       const zkProof = zkProofs[i];
 
-      if (!candidateId) {
+      if (candidateId === undefined) {
         // should never happen in normal operation, but typescript needs to know candidateId is defined
         throw new Error(`Candidate ID is undefined at index ${i}.`);
       }
-      if (!ciphertext) {
+      if (ciphertext === undefined) {
         // should never happen in normal operation, but typescript needs to know ciphertext is defined
         throw new Error(`Ciphertext is undefined at index ${i}.`);
       }
-      if (!zkProof) {
+      if (zkProof === undefined) {
         // should never happen in normal operation, but typescript needs to know zkProof is defined
         throw new Error(`Zero-knowledge-proof is undefined at index ${i}.`);
       }

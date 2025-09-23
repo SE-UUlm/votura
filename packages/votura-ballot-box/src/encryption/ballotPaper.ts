@@ -1,5 +1,5 @@
-import { type FilledBallotPaper, type PlainBallotPaper } from '@repo/votura-validators';
-import { type PublicKey } from '@votura/votura-crypto/index';
+import type { FilledBallotPaper, PlainBallotPaper } from '@repo/votura-validators';
+import type { PublicKey } from '@votura/votura-crypto/index';
 import { BallotPaperSectionEncryption } from './ballotPaperSection.js';
 
 export class BallotPaperEncryption {
@@ -16,10 +16,6 @@ export class BallotPaperEncryption {
    * @returns Encrypted vote of a complete ballot paper
    */
   public encryptBallotPaper(plainBallotPaper: PlainBallotPaper): FilledBallotPaper {
-    if (!plainBallotPaper) {
-      throw new Error(`Plain Ballot Paper is undefined or null.`);
-    }
-
     const sectionEncryption = new BallotPaperSectionEncryption(this.publicKey);
     const encryptedSections: FilledBallotPaper['sections'] = {};
 
