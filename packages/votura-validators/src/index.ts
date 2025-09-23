@@ -4,6 +4,7 @@ export * from './objects/candidate.js';
 export * from './objects/election.js';
 export * from './objects/filledBallotPaper.js';
 export * from './objects/identifiableObject.js';
+export * from './objects/plainBallotPaper.js';
 export * from './objects/response.js';
 export * from './objects/user.js';
 export * from './objects/voterGroup.js';
