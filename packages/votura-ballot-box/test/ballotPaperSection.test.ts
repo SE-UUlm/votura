@@ -11,7 +11,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
     candidate1 = '9112c5e8-53ef-44cb-b9aa-47a97b0cae51',
     candidate2 = 'f792d5ca-65aa-4167-8f83-06e909051005',
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
-  };
+  }
 
   let decryption: BallotPaperSectionDecryption | null = null;
   let encryption: BallotPaperSectionEncryption | null = null;
@@ -30,20 +30,47 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       sections: {
         [UUIDs.section1]: {
           votes: [
-            { [UUIDs.candidate1]: 0, [UUIDs.candidate2]: 1, [UUIDs.candidate3]: 0, noVote: 0, invalid: 0 },
-            { [UUIDs.candidate1]: 1, [UUIDs.candidate2]: 0, [UUIDs.candidate3]: 0, noVote: 0, invalid: 0 },
-            { [UUIDs.candidate1]: 0, [UUIDs.candidate2]: 1, [UUIDs.candidate3]: 0, noVote: 0, invalid: 0 },
-            { [UUIDs.candidate1]: 0, [UUIDs.candidate2]: 0, [UUIDs.candidate3]: 0, noVote: 1, invalid: 0 },
-          ]
-        }
-      }
+            {
+              [UUIDs.candidate1]: 0,
+              [UUIDs.candidate2]: 1,
+              [UUIDs.candidate3]: 0,
+              noVote: 0,
+              invalid: 0,
+            },
+            {
+              [UUIDs.candidate1]: 1,
+              [UUIDs.candidate2]: 0,
+              [UUIDs.candidate3]: 0,
+              noVote: 0,
+              invalid: 0,
+            },
+            {
+              [UUIDs.candidate1]: 0,
+              [UUIDs.candidate2]: 1,
+              [UUIDs.candidate3]: 0,
+              noVote: 0,
+              invalid: 0,
+            },
+            {
+              [UUIDs.candidate1]: 0,
+              [UUIDs.candidate2]: 0,
+              [UUIDs.candidate3]: 0,
+              noVote: 1,
+              invalid: 0,
+            },
+          ],
+        },
+      },
     };
 
     // encryption: PlainBallotPaper section => FilledBallotPaper section
     if (!encryption || !plainBallotPaper.sections[UUIDs.section1]) {
       throw new Error('Encryption and Section1 are null or undefined.');
     }
-    const encryptedSection = encryption.encryptSection(plainBallotPaper.sections[UUIDs.section1], UUIDs.section1);
+    const encryptedSection = encryption.encryptSection(
+      plainBallotPaper.sections[UUIDs.section1],
+      UUIDs.section1,
+    );
 
     // decryption: FilledBallotPaper section => DecryptedSection
     if (!decryption) {
