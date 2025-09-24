@@ -105,7 +105,7 @@ describe('BallotPaperEncryption tests', () => {
       }
       expect(encryptedSection.votes).toHaveLength(plainSectionVotes.length);
 
-      const expectedKeys = Object.keys(plainSectionVotes[0]!).sort();
+      const expectedKeys = Object.keys(plainSectionVotes[0] as Record<string, number>).sort();
       for (const vote of encryptedSection.votes) {
         expect(Object.keys(vote).sort()).toEqual(expectedKeys);
       }
