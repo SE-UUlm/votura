@@ -61,28 +61,24 @@ describe('BallotPaperEncryption tests', () => {
           votes: [
             {
               [UUIDs.candidate1]: 0,
-              [UUIDs.candidate2]: 0,
               [UUIDs.candidate3]: 1,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
-              [UUIDs.candidate2]: 0,
               [UUIDs.candidate3]: 1,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 1,
-              [UUIDs.candidate2]: 0,
               [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
-              [UUIDs.candidate2]: 0,
               [UUIDs.candidate3]: 1,
               noVote: 0,
               invalid: 0,
