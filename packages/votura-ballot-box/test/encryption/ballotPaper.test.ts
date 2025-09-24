@@ -17,7 +17,7 @@ describe('BallotPaperEncryption tests', () => {
   let keyPair: KeyPair | null = null;
 
   beforeAll(async () => {
-    keyPair = await getKeyPair(32);
+    keyPair = await getKeyPair(20);
     encryption = new BallotPaperEncryption(keyPair.publicKey);
   });
 
