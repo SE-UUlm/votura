@@ -83,6 +83,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       candidateResults: {
         [UUIDs.candidate1]: 1,
         [UUIDs.candidate2]: 2,
+        [UUIDs.candidate3]: 0,
       },
       noVoteCount: 1,
       invalidCount: 0,

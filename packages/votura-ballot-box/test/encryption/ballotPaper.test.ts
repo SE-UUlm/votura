@@ -89,22 +89,25 @@ describe('BallotPaperEncryption tests', () => {
     };
 
     if (!encryption) {
-      throw new Error('Encryption and Section1 are null or undefined.');
+      throw new Error('Encryption is null or undefined.');
     }
     const encryptedBallotPaper = encryption.encryptBallotPaper(plainBallotPaper);
     expect(encryptedBallotPaper.ballotPaperId).toBe(UUIDs.ballotPaper);
-    expect(encryptedBallotPaper.sections).toHaveLength(2);
+    expect(Object.keys(encryptedBallotPaper.sections)).toHaveLength(2);
     expect(Object.keys(encryptedBallotPaper.sections).sort()).toEqual(
       [UUIDs.section1, UUIDs.section2].sort(),
     );
 
-    for (const section of Object.values(encryptedBallotPaper.sections)) {
-      expect(section.votes).toHaveLength(4);
+    for (const [sectionId, encryptedSection] of Object.entries(encryptedBallotPaper.sections)) {
+      const plainSectionVotes = plainBallotPaper.sections[sectionId]?.votes;
+      if (!plainSectionVotes) {
+        throw new Error('PlainSectionVotes is null or undefined.');
+      }
+      expect(encryptedSection.votes).toHaveLength(plainSectionVotes.length);
 
-      for (const vote of section.votes) {
-        expect(Object.keys(vote).sort()).toEqual(
-          [UUIDs.candidate1, UUIDs.candidate2, UUIDs.candidate3, 'noVote', 'invalid'].sort(),
-        );
+      const expectedKeys = Object.keys(plainSectionVotes[0]!).sort();
+      for (const vote of encryptedSection.votes) {
+        expect(Object.keys(vote).sort()).toEqual(expectedKeys);
       }
     }
   });
