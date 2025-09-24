@@ -33,24 +33,28 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 1,
+              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 1,
               [UUIDs.candidate2]: 0,
+              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 1,
+              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 0,
+              [UUIDs.candidate3]: 0,
               noVote: 1,
               invalid: 0,
             },
@@ -79,6 +83,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       candidateResults: {
         [UUIDs.candidate1]: 1,
         [UUIDs.candidate2]: 2,
+        [UUIDs.candidate3]: 0,
       },
       noVoteCount: 1,
       invalidCount: 0,
