@@ -73,12 +73,6 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       throw new Error('Decryption is null or undefined.');
     }
     decryption.calculateLookupTable(4);
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const lookupMap = decryption['discreteLogLookup'];
-    console.log(
-      'DEBUG lookupMap keys as string:',
-      lookupMap ? [...lookupMap.keys()].map((k) => k.toString()) : null,
-    );
     const result = decryption.decryptSection(encryptedSection, UUIDs.section1);
     expect(result).toEqual({
       sectionId: UUIDs.section1,
