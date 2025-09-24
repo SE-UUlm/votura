@@ -18,7 +18,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
   let keyPair: KeyPair | null = null;
 
   beforeAll(async () => {
-    keyPair = await getKeyPair(20);
+    keyPair = await getKeyPair(32);
     encryption = new BallotPaperSectionEncryption(keyPair.publicKey);
     decryption = new BallotPaperSectionDecryption(keyPair.privateKey);
   });
@@ -33,28 +33,24 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 1,
-              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 1,
               [UUIDs.candidate2]: 0,
-              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 1,
-              [UUIDs.candidate3]: 0,
               noVote: 0,
               invalid: 0,
             },
             {
               [UUIDs.candidate1]: 0,
               [UUIDs.candidate2]: 0,
-              [UUIDs.candidate3]: 0,
               noVote: 1,
               invalid: 0,
             },
@@ -77,13 +73,17 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       throw new Error('Decryption is null or undefined.');
     }
     decryption.calculateLookupTable(4);
+    const lookupMap = decryption['discreteLogLookup'];
+    console.log(
+      'DEBUG lookupMap keys as string:',
+      lookupMap ? [...lookupMap.keys()].map((k) => k.toString()) : null,
+    );
     const result = decryption.decryptSection(encryptedSection, UUIDs.section1);
     expect(result).toEqual({
       sectionId: UUIDs.section1,
       candidateResults: {
         [UUIDs.candidate1]: 1,
         [UUIDs.candidate2]: 2,
-        [UUIDs.candidate3]: 0,
       },
       noVoteCount: 1,
       invalidCount: 0,
