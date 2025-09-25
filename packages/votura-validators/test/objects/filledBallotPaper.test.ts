@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest';
+import { z } from 'zod/v4';
 import {
+  filledBallotPaperDefaultVoteOption,
   filledBallotPaperObject,
-  type FilledBallotPaper,
 } from '../../src/objects/filledBallotPaper.js';
 
 describe('Filled Ballot Paper tests', () => {
@@ -14,66 +15,45 @@ describe('Filled Ballot Paper tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
 
-  const dummyVote = {
-    alpha: BigInt(5),
-    beta: BigInt(3),
-    commitment1: BigInt(7),
-    commitment2: BigInt(11),
-    challenge: BigInt(13),
-    response: BigInt(17),
+  const dummyVote1: Record<string, unknown> = {
+    [UUIDs.candidate1]: {},
+    [UUIDs.candidate2]: {},
+    [UUIDs.candidate3]: {},
+    [filledBallotPaperDefaultVoteOption.noVote]: {},
+    [filledBallotPaperDefaultVoteOption.invalid]: {},
+  };
+  const dummyVote2: Record<string, unknown> = {
+    [UUIDs.candidate1]: {},
+    [UUIDs.candidate3]: {},
+    [filledBallotPaperDefaultVoteOption.noVote]: {},
+    [filledBallotPaperDefaultVoteOption.invalid]: {},
   };
 
-  const demoFilledBallotPaperData: FilledBallotPaper = {
+  const filledBallotPaper = filledBallotPaperObject(z.any());
+  const demoFilledBallotPaperData: z.infer<typeof filledBallotPaper> = {
     ballotPaperId: UUIDs.ballotPaper,
     sections: {
       [UUIDs.section1]: {
-        votes: [
-          {
-            noVote: {
-              ...dummyVote,
-            },
-            invalid: {
-              ...dummyVote,
-            },
-            [UUIDs.candidate1]: {
-              ...dummyVote,
-            },
-            [UUIDs.candidate2]: {
-              ...dummyVote,
-            },
-          },
-        ],
+        votes: [dummyVote1],
       },
       [UUIDs.section2]: {
-        votes: [
-          {
-            noVote: {
-              ...dummyVote,
-            },
-            invalid: {
-              ...dummyVote,
-            },
-            [UUIDs.candidate3]: {
-              ...dummyVote,
-            },
-          },
-        ],
+        votes: [dummyVote2],
       },
     },
   };
 
   it('Should not throw error as the object is as expected', () => {
-    const result = filledBallotPaperObject.safeParse(demoFilledBallotPaperData);
+    const result = filledBallotPaper.safeParse(demoFilledBallotPaperData);
     expect(result.success).toBe(true);
   });
 
-  it('Should throw error if "invalid"-key is not present in vote object', () => {
+  it('Should throw error if "invalid"-key is missing in vote object', () => {
     // Create copy of the first object in votes for UUIDs.section1
     const voteWithoutInvalid = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
     // remove the invalid field in the copied object
-    delete voteWithoutInvalid.invalid;
+    delete voteWithoutInvalid[filledBallotPaperDefaultVoteOption.invalid];
 
-    const result = filledBallotPaperObject.safeParse({
+    const result = filledBallotPaper.safeParse({
       ...demoFilledBallotPaperData,
       sections: {
         ...demoFilledBallotPaperData.sections,
@@ -86,11 +66,11 @@ describe('Filled Ballot Paper tests', () => {
     expect(result.success).toBe(false);
   });
 
-  it('Should throw error if "noVote"-key is not present in vote object', () => {
+  it('Should throw error if "noVote"-key is missing in vote object', () => {
     const voteWithoutNoVote = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
-    delete voteWithoutNoVote.noVote;
+    delete voteWithoutNoVote[filledBallotPaperDefaultVoteOption.noVote];
 
-    const result = filledBallotPaperObject.safeParse({
+    const result = filledBallotPaper.safeParse({
       ...demoFilledBallotPaperData,
       sections: {
         ...demoFilledBallotPaperData.sections,
@@ -109,7 +89,7 @@ describe('Filled Ballot Paper tests', () => {
     };
     delete voteWithoutCandidates[UUIDs.candidate3];
 
-    const result = filledBallotPaperObject.safeParse({
+    const result = filledBallotPaper.safeParse({
       ...demoFilledBallotPaperData,
       sections: {
         ...demoFilledBallotPaperData.sections,

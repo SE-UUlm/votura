@@ -1,9 +1,10 @@
 import {
   filledBallotPaperDefaultVoteOption,
-  type FilledBallotPaper,
+  type EncryptedFilledBallotPaper,
 } from '@repo/votura-validators';
 import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
+import { getExtractCandidateIds } from '../utils.js';
 
 export interface DecryptedSection {
   sectionId: string;
@@ -12,7 +13,7 @@ export interface DecryptedSection {
   invalidCount: number;
 }
 
-type SectionVotes = FilledBallotPaper['sections'][string];
+type SectionVotes = EncryptedFilledBallotPaper['sections'][string];
 type VoteRecord = SectionVotes['votes'][number];
 
 export class BallotPaperSectionDecryption {
@@ -64,25 +65,11 @@ export class BallotPaperSectionDecryption {
       throw new Error('Lookup table not initialized. Call calculateLookupTable() first.');
     }
 
-    const orderedCandidateIds = this.extractCandidateIds(section);
+    const orderedCandidateIds = getExtractCandidateIds(section);
     const orderedCiphertexts = this.extractAllCiphertexts(section, orderedCandidateIds);
     const orderedVoteCounts = this.decryptAndConvertVotes(orderedCiphertexts);
 
     return this.buildDecryptedSection(sectionId, orderedCandidateIds, orderedVoteCounts);
-  }
-
-  /**
-   * Extracts and returns a consistent ordering of candidate IDs from the first vote.
-   * The ordering is alphabetical to ensure consistency across all votes.
-   */
-  private extractCandidateIds(section: SectionVotes): string[] {
-    const firstVote = section.votes[0];
-    if (!firstVote) {
-      // should never happen due to zod validation, but typescript doesn't know that
-      throw new Error('No votes found in section');
-    }
-
-    return Object.keys(firstVote).sort((a, b) => a.localeCompare(b));
   }
 
   /**

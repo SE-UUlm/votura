@@ -1,7 +1,8 @@
-import type { PlainBallotPaper } from '@repo/votura-validators';
+import type { PlainFilledBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { BallotPaperSectionDecryption, BallotPaperSectionEncryption } from '../src/index.js';
+import { BallotPaperSectionDecryption } from '../src/decryption/ballotPaperSection.js';
+import { BallotPaperSectionEncryption } from '../src/encryption/ballotPaperSection.js';
 
 describe('Integration test: encrypt and decrypt a ballot paper section', () => {
   enum UUIDs {
@@ -24,8 +25,8 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
   });
 
   it('should encrypt and decrypt a section with votes [B, A, B, noVote]', () => {
-    // input: PlainBallotPaper section
-    const plainBallotPaper: PlainBallotPaper = {
+    // input: PlainFilledBallotPaper section
+    const plainFilledBallotPaper: PlainFilledBallotPaper = {
       ballotPaperId: UUIDs.ballotPaper,
       sections: {
         [UUIDs.section1]: {
@@ -63,12 +64,12 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       },
     };
 
-    // encryption: PlainBallotPaper section => FilledBallotPaper section
-    if (!encryption || !plainBallotPaper.sections[UUIDs.section1]) {
+    // encryption: PlainFilledBallotPaper section => FilledBallotPaper section
+    if (!encryption || !plainFilledBallotPaper.sections[UUIDs.section1]) {
       throw new Error('Encryption and Section1 are null or undefined.');
     }
-    const encryptedSection = encryption.encryptSection(
-      plainBallotPaper.sections[UUIDs.section1],
+    const [encryptedSection] = encryption.encryptSection(
+      plainFilledBallotPaper.sections[UUIDs.section1],
       UUIDs.section1,
     );
 

@@ -1,4 +1,4 @@
-import type { PlainBallotPaper } from '@repo/votura-validators';
+import type { PlainFilledBallotPaper } from '@repo/votura-validators';
 import {
   ZeroKnowledgeProof,
   type Ciphertext,
@@ -6,6 +6,7 @@ import {
   type ZKProof,
 } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
+import { getExtractCandidateIds } from '../utils.js';
 
 export interface EncryptedSection {
   sectionId: string;
@@ -21,13 +22,18 @@ export interface EncryptedSection {
     }
   >[];
 }
+export interface AuditableVote {
+  ciphertexts: Ciphertext[];
+  randomness: bigint;
+}
 
-type SectionVotes = PlainBallotPaper['sections'][string];
+type SectionVotes = PlainFilledBallotPaper['sections'][string];
 type VoteRecord = SectionVotes['votes'][number];
 type EncryptedVote = EncryptedSection['votes'][number];
 
 export class BallotPaperSectionEncryption {
   private readonly publicKey: PublicKey;
+
   private readonly zkProof: ZeroKnowledgeProof;
 
   public constructor(publicKey: PublicKey) {
@@ -36,17 +42,21 @@ export class BallotPaperSectionEncryption {
   }
 
   /**
-   * Encrypts the vote of a single ballot paper section and returns the encrypted vote as EncryptedSection.
+   * Encrypts a single ballot paper section and returns the encryption as EncryptedSection.
    * Expects that the ballot paper the section stems from has been validated using the zod plainBallotPaper schema.
+   * Additionally returns an array of AuditObjects needed for the auditing process.
    * @param section The ballot paper section to encrypt
    * @param sectionId The ID of the section being processed
-   * @returns Encrypted vote of a single ballot paper section
+   * @returns Encryption of a single ballot paper section, and all AuditObjects for every vote
    */
-  public encryptSection(section: SectionVotes, sectionId: string): EncryptedSection {
+  public encryptSection(
+    section: SectionVotes,
+    sectionId: string,
+  ): [EncryptedSection, AuditableVote[]] {
     const encryptedVotes: EncryptedSection['votes'] = [];
-    const allRandomnessForAudit: bigint[] = [];
+    const auditableVotes: AuditableVote[] = [];
 
-    const orderedCandidateIds = this.extractCandidateIds(section);
+    const orderedCandidateIds = getExtractCandidateIds(section);
     for (const vote of section.votes) {
       const [ciphertexts, realIndex, randomness] = this.extractAndEncryptVotes(
         vote,
@@ -62,45 +72,13 @@ export class BallotPaperSectionEncryption {
         ciphertexts,
         zkProofs,
       );
+      const auditableVote = { ciphertexts: ciphertexts, randomness: randomness };
 
       encryptedVotes.push(encryptedVoteRecord);
-      allRandomnessForAudit.push(randomness);
+      auditableVotes.push(auditableVote);
     }
 
-    return { sectionId, votes: encryptedVotes };
-  }
-
-  /**
-   * Extracts and returns a consistent ordering of candidate IDs from the first vote.
-   * The ordering is alphabetical to ensure consistency across all votes.
-   */
-  private extractCandidateIds(section: SectionVotes): string[] {
-    const firstVote = section.votes[0];
-    if (!firstVote) {
-      // should never happen due to zod validation, but typescript doesn't know that
-      throw new Error('No votes found in section.');
-    }
-    const candidateIds = Object.keys(firstVote).sort((a, b) => a.localeCompare(b));
-
-    for (let i = 1; i < section.votes.length; i++) {
-      const vote = section.votes[i];
-      if (!vote) {
-        // should never happen due to zod validation, but typescript doesn't know that
-        throw new Error('No votes found in section.');
-      }
-      const keys = Object.keys(vote).sort((a, b) => a.localeCompare(b));
-      if (keys.length !== candidateIds.length) {
-        throw new Error(
-          `Inconsistent vote structure at index ${i}: different number of candidates.`,
-        );
-      }
-      for (let j = 0; j < keys.length; j++) {
-        if (keys[j] !== candidateIds[j]) {
-          throw new Error(`Inconsistent vote structure at index ${i}: different candidateIds.`);
-        }
-      }
-    }
-    return candidateIds;
+    return [{ sectionId, votes: encryptedVotes }, auditableVotes];
   }
 
   /**
@@ -135,11 +113,7 @@ export class BallotPaperSectionEncryption {
         ciphertexts.push(ciphertext);
       } else {
         // use same randomness for the entire vote
-        const [ciphertext, randomness] = this.publicKey.encrypt(encodedPlaintext, voteRandomness);
-        if (randomness !== voteRandomness) {
-          // this should never happen
-          throw new Error('Different randomness values used while encrypting the same vote.');
-        }
+        const [ciphertext] = this.publicKey.encrypt(encodedPlaintext, voteRandomness);
         ciphertexts.push(ciphertext);
       }
     }

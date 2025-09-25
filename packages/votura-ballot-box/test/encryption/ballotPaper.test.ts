@@ -1,4 +1,4 @@
-import type { PlainBallotPaper } from '@repo/votura-validators';
+import type { PlainFilledBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperEncryption } from '../../src/encryption/ballotPaper.js';
@@ -22,7 +22,7 @@ describe('BallotPaperEncryption tests', () => {
   });
 
   it('should encrypt a complete ballot paper with multiple sections correctly', () => {
-    const plainBallotPaper: PlainBallotPaper = {
+    const plainFilledBallotPaper: PlainFilledBallotPaper = {
       ballotPaperId: UUIDs.ballotPaper,
       sections: {
         [UUIDs.section1]: {
@@ -91,15 +91,15 @@ describe('BallotPaperEncryption tests', () => {
     if (!encryption) {
       throw new Error('Encryption is null or undefined.');
     }
-    const encryptedBallotPaper = encryption.encryptBallotPaper(plainBallotPaper);
+    const [encryptedBallotPaper] = encryption.encryptBallotPaper(plainFilledBallotPaper);
     expect(encryptedBallotPaper.ballotPaperId).toBe(UUIDs.ballotPaper);
     expect(Object.keys(encryptedBallotPaper.sections)).toHaveLength(2);
-    expect(Object.keys(encryptedBallotPaper.sections).sort()).toEqual(
-      [UUIDs.section1, UUIDs.section2].sort(),
+    expect(Object.keys(encryptedBallotPaper.sections).sort((a, b) => a.localeCompare(b))).toEqual(
+      [UUIDs.section1, UUIDs.section2].sort((a, b) => a.localeCompare(b)),
     );
 
     for (const [sectionId, encryptedSection] of Object.entries(encryptedBallotPaper.sections)) {
-      const plainSectionVotes = plainBallotPaper.sections[sectionId]?.votes;
+      const plainSectionVotes = plainFilledBallotPaper.sections[sectionId]?.votes;
       if (!plainSectionVotes) {
         throw new Error('PlainSectionVotes is null or undefined.');
       }

@@ -38,74 +38,36 @@ const voteStructureRefinement = (vote: Record<string, unknown>): boolean => {
 const voteStructureRefinementMessage =
   "Each vote must contain exactly one 'noVote' field, exactly one 'invalid' field, and at least one additional UUID field";
 
-export const filledBallotPaperObject = z.object({
-  ballotPaperId: z.uuidv4().register(voturaMetadataRegistry, {
-    description: 'The unique identifier of the voted/filled ballot paper.',
-    example: '123e4567-e89b-12d3-a456-426614174000',
-  }),
-  sections: z.record(
-    z.uuidv4().register(voturaMetadataRegistry, {
-      description: 'The unique identifier of the voted/filled ballot paper section.',
+export const filledBallotPaperObject = <T extends z.ZodType<Record<string, unknown>>>(
+  voteSchema: T,
+) =>
+  z.object({
+    ballotPaperId: z.uuidv4().register(voturaMetadataRegistry, {
+      description: 'The unique identifier of the voted/filled ballot paper.',
       example: '123e4567-e89b-12d3-a456-426614174000',
     }),
-    z.object({
-      votes: z
-        .array(
-          z
-            .record(
-              z.union([
-                z.uuidv4().register(voturaMetadataRegistry, {
-                  description: 'The unique identifier of the candidate.',
-                  example: '123e4567-e89b-12d3-a456-426614174000',
-                }),
-                z.literal(filledBallotPaperDefaultVoteOption.noVote),
-                z.literal(filledBallotPaperDefaultVoteOption.invalid),
-              ]),
-              z.object({
-                alpha: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-                  example: 12345,
-                }),
-                beta: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-                  example: 67890,
-                }),
-                commitment1: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-                  example: 1345789,
-                }),
-                commitment2: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-                  example: 9072314,
-                }),
-                challenge: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-                  example: 76687914,
-                }),
-                response: z.bigint().register(voturaMetadataRegistry, {
-                  description:
-                    'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-                  example: 2013945,
-                }),
-              }),
-            )
-            .refine(voteStructureRefinement, {
-              message: voteStructureRefinementMessage,
-            }),
-        )
-        .min(1),
-    }),
-  ),
-});
+    sections: z.record(
+      z.uuidv4().register(voturaMetadataRegistry, {
+        description: 'The unique identifier of the voted/filled ballot paper section.',
+        example: '123e4567-e89b-12d3-a456-426614174000',
+      }),
+      z.object({
+        votes: z
+          .array(
+            voteSchema.refine(
+              (vote) => voteStructureRefinement(vote as unknown as Record<string, unknown>),
+              {
+                message: voteStructureRefinementMessage,
+              },
+            ),
+          )
+          .min(1),
+      }),
+    ),
+  });
 
 export type FilledBallotPaper = z.infer<typeof filledBallotPaperObject>;
 
-export const filledBallotPaperObjectSchema = z.toJSONSchema(
-  filledBallotPaperObject,
-  toJsonSchemaParams,
-);
+export const filledBallotPaperObjectSchema = <T extends z.ZodType<Record<string, unknown>>>(
+  voteSchema: T,
+) => z.toJSONSchema(filledBallotPaperObject(voteSchema), toJsonSchemaParams);
