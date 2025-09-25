@@ -1,7 +1,4 @@
-import {
-  type EncryptedFilledBallotPaper,
-  type PlainFilledBallotPaper,
-} from '@repo/votura-validators';
+import type { EncryptedFilledBallotPaper, PlainFilledBallotPaper } from '@repo/votura-validators';
 
 type PlainSectionVotes = PlainFilledBallotPaper['sections'][string];
 type EncryptedSectionVotes = EncryptedFilledBallotPaper['sections'][string];
