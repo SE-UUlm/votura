@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest';
-import { z } from 'zod/v4';
-import type { EncryptedVote, PlainVote } from '../../src/objects/filledBallotPaper.js';
+import type z from 'zod/v4';
 import {
   encryptedFilledBallotPaperObject,
   filledBallotPaperDefaultVoteOption,
   plainFilledBallotPaperObject,
+  type EncryptedVote,
+  type PlainVote,
 } from '../../src/objects/filledBallotPaper.js';
 
 describe('Filled Ballot Paper tests', () => {

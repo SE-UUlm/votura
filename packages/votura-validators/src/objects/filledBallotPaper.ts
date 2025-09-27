@@ -112,7 +112,36 @@ const voteCountRefinement = (vote: Record<string, unknown>): boolean => {
 const voteCountRefinementMessage =
   'Each vote must have exactly one option set to 1, all other options must be 0.';
 
-const filledBallotPaperObject = <T extends PlainVote | EncryptedVote>(voteSchema: z.ZodType<T>) =>
+type FilledBallotPaper<T extends PlainVote | EncryptedVote> = z.ZodObject<
+  {
+    ballotPaperId: z.ZodUUID;
+    sections: z.ZodRecord<
+      z.ZodUUID,
+      z.ZodObject<
+        {
+          votes: z.ZodArray<
+            z.ZodRecord<
+              z.ZodUnion<
+                readonly [
+                  z.ZodUUID,
+                  z.ZodLiteral<typeof filledBallotPaperDefaultVoteOption.noVote>,
+                  z.ZodLiteral<typeof filledBallotPaperDefaultVoteOption.invalid>,
+                ]
+              >,
+              z.ZodType<T>
+            >
+          >;
+        },
+        z.core.$strip
+      >
+    >;
+  },
+  z.core.$strip
+>;
+
+const filledBallotPaperObject = <T extends PlainVote | EncryptedVote>(
+  voteSchema: z.ZodType<T>,
+): FilledBallotPaper<T> =>
   z.object({
     ballotPaperId: z.uuidv4().register(voturaMetadataRegistry, {
       description: 'The unique identifier of the voted/filled ballot paper.',
@@ -152,10 +181,6 @@ const filledBallotPaperObject = <T extends PlainVote | EncryptedVote>(voteSchema
       }),
     ),
   });
-
-export type FilledBallotPaper<T extends PlainVote | EncryptedVote> = z.infer<
-  typeof filledBallotPaperObject<T>
->;
 
 export const plainFilledBallotPaperObject = filledBallotPaperObject(plainVoteObject);
 export type PlainFilledBallotPaper = z.infer<typeof plainFilledBallotPaperObject>;
