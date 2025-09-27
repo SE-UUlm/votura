@@ -1,8 +1,11 @@
 import { describe, expect, it } from 'vitest';
 import { z } from 'zod/v4';
 import {
+  encryptedFilledBallotPaperObject,
   filledBallotPaperDefaultVoteOption,
-  filledBallotPaperObject,
+  plainFilledBallotPaperObject,
+  type EncryptedVote,
+  type PlainVote,
 } from '../../src/objects/filledBallotPaper.js';
 
 describe('Filled Ballot Paper tests', () => {
@@ -15,50 +18,101 @@ describe('Filled Ballot Paper tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
 
-  const dummyVote1: Record<string, unknown> = {
-    [UUIDs.candidate1]: {},
-    [UUIDs.candidate2]: {},
-    [UUIDs.candidate3]: {},
-    [filledBallotPaperDefaultVoteOption.noVote]: {},
-    [filledBallotPaperDefaultVoteOption.invalid]: {},
-  };
-  const dummyVote2: Record<string, unknown> = {
-    [UUIDs.candidate1]: {},
-    [UUIDs.candidate3]: {},
-    [filledBallotPaperDefaultVoteOption.noVote]: {},
-    [filledBallotPaperDefaultVoteOption.invalid]: {},
+  const dummyEncryptedVote: EncryptedVote = {
+    alpha: BigInt(5),
+    beta: BigInt(3),
+    commitment1: BigInt(7),
+    commitment2: BigInt(11),
+    challenge: BigInt(13),
+    response: BigInt(17),
   };
 
-  const filledBallotPaper = filledBallotPaperObject(z.any());
-  const demoFilledBallotPaperData: z.infer<typeof filledBallotPaper> = {
+  const dummyEncryptedVotes1: Record<string, EncryptedVote> = {
+    [UUIDs.candidate1]: { ...dummyEncryptedVote },
+    [UUIDs.candidate2]: { ...dummyEncryptedVote },
+    [UUIDs.candidate3]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.noVote]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.invalid]: { ...dummyEncryptedVote },
+  };
+  const dummyEncryptedVotes2: Record<string, EncryptedVote> = {
+    [UUIDs.candidate1]: { ...dummyEncryptedVote },
+    [UUIDs.candidate2]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.noVote]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.invalid]: { ...dummyEncryptedVote },
+  };
+  const dummyEncryptedVotes3: Record<string, EncryptedVote> = {
+    [UUIDs.candidate3]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.noVote]: { ...dummyEncryptedVote },
+    [filledBallotPaperDefaultVoteOption.invalid]: { ...dummyEncryptedVote },
+  };
+
+  const dummyPlainVotes1: Record<string, PlainVote> = {
+    [UUIDs.candidate1]: 0,
+    [UUIDs.candidate2]: 1,
+    [UUIDs.candidate3]: 0,
+    [filledBallotPaperDefaultVoteOption.noVote]: 0,
+    [filledBallotPaperDefaultVoteOption.invalid]: 0,
+  };
+  const dummyPlainVotes2: Record<string, PlainVote> = {
+    [UUIDs.candidate1]: 1,
+    [UUIDs.candidate2]: 0,
+    [filledBallotPaperDefaultVoteOption.noVote]: 0,
+    [filledBallotPaperDefaultVoteOption.invalid]: 0,
+  };
+  const dummyPlainVotes3: Record<string, PlainVote> = {
+    [UUIDs.candidate3]: 0,
+    [filledBallotPaperDefaultVoteOption.noVote]: 1,
+    [filledBallotPaperDefaultVoteOption.invalid]: 0,
+  };
+
+  const demoEncryptedFilledBallotPaperData: z.infer<typeof encryptedFilledBallotPaperObject> = {
     ballotPaperId: UUIDs.ballotPaper,
     sections: {
       [UUIDs.section1]: {
-        votes: [dummyVote1],
+        votes: [dummyEncryptedVotes1],
       },
       [UUIDs.section2]: {
-        votes: [dummyVote2],
+        votes: [dummyEncryptedVotes2, dummyEncryptedVotes3],
       },
     },
   };
 
-  it('Should not throw error as the object is as expected', () => {
-    const result = filledBallotPaper.safeParse(demoFilledBallotPaperData);
+  const demoPlainFilledBallotPaperData: z.infer<typeof plainFilledBallotPaperObject> = {
+    ballotPaperId: UUIDs.ballotPaper,
+    sections: {
+      [UUIDs.section1]: {
+        votes: [dummyPlainVotes1],
+      },
+      [UUIDs.section2]: {
+        votes: [dummyPlainVotes2, dummyPlainVotes3],
+      },
+    },
+  };
+
+  it('Should not throw error as the EncryptedBallotPaper object is as expected', () => {
+    const result = encryptedFilledBallotPaperObject.safeParse(demoEncryptedFilledBallotPaperData);
+    expect(result.success).toBe(true);
+  });
+
+  it('Should not throw error as the PlainBallotPaper object is as expected', () => {
+    const result = plainFilledBallotPaperObject.safeParse(demoPlainFilledBallotPaperData);
     expect(result.success).toBe(true);
   });
 
   it('Should throw error if "invalid"-key is missing in vote object', () => {
     // Create copy of the first object in votes for UUIDs.section1
-    const voteWithoutInvalid = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
+    const voteWithoutInvalid = {
+      ...demoPlainFilledBallotPaperData.sections[UUIDs.section1]?.votes[0],
+    };
     // remove the invalid field in the copied object
     delete voteWithoutInvalid[filledBallotPaperDefaultVoteOption.invalid];
 
-    const result = filledBallotPaper.safeParse({
-      ...demoFilledBallotPaperData,
+    const result = plainFilledBallotPaperObject.safeParse({
+      ...demoPlainFilledBallotPaperData,
       sections: {
-        ...demoFilledBallotPaperData.sections,
+        ...demoPlainFilledBallotPaperData.sections,
         [UUIDs.section1]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section1],
+          ...demoPlainFilledBallotPaperData.sections[UUIDs.section1],
           votes: [voteWithoutInvalid],
         },
       },
@@ -67,15 +121,17 @@ describe('Filled Ballot Paper tests', () => {
   });
 
   it('Should throw error if "noVote"-key is missing in vote object', () => {
-    const voteWithoutNoVote = { ...demoFilledBallotPaperData.sections[UUIDs.section1]?.votes[0] };
+    const voteWithoutNoVote = {
+      ...demoEncryptedFilledBallotPaperData.sections[UUIDs.section1]?.votes[0],
+    };
     delete voteWithoutNoVote[filledBallotPaperDefaultVoteOption.noVote];
 
-    const result = filledBallotPaper.safeParse({
-      ...demoFilledBallotPaperData,
+    const result = encryptedFilledBallotPaperObject.safeParse({
+      ...demoEncryptedFilledBallotPaperData,
       sections: {
-        ...demoFilledBallotPaperData.sections,
+        ...demoEncryptedFilledBallotPaperData.sections,
         [UUIDs.section1]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section1],
+          ...demoEncryptedFilledBallotPaperData.sections[UUIDs.section1],
           votes: [voteWithoutNoVote],
         },
       },
@@ -85,17 +141,75 @@ describe('Filled Ballot Paper tests', () => {
 
   it('Should throw error if no candidate (UUID) key is present in vote object', () => {
     const voteWithoutCandidates = {
-      ...demoFilledBallotPaperData.sections[UUIDs.section2]?.votes[0],
+      ...demoPlainFilledBallotPaperData.sections[UUIDs.section2]?.votes[1],
     };
     delete voteWithoutCandidates[UUIDs.candidate3];
 
-    const result = filledBallotPaper.safeParse({
-      ...demoFilledBallotPaperData,
+    const result = plainFilledBallotPaperObject.safeParse({
+      ...demoPlainFilledBallotPaperData,
       sections: {
-        ...demoFilledBallotPaperData.sections,
+        ...demoPlainFilledBallotPaperData.sections,
         [UUIDs.section2]: {
-          ...demoFilledBallotPaperData.sections[UUIDs.section2],
+          ...demoPlainFilledBallotPaperData.sections[UUIDs.section2],
           votes: [voteWithoutCandidates],
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('Should throw error if object consists of both plain and encrypted votes', () => {
+    const voteWithMixedTypes = {
+      ballotPaperId: UUIDs.ballotPaper,
+      sections: {
+        [UUIDs.section1]: {
+          votes: [dummyPlainVotes1],
+        },
+        [UUIDs.section2]: {
+          votes: [dummyEncryptedVotes2, dummyEncryptedVotes3],
+        },
+      },
+    };
+
+    const resultPlain = plainFilledBallotPaperObject.safeParse(voteWithMixedTypes);
+    expect(resultPlain.success).toBe(false);
+
+    const resultEncrypted = encryptedFilledBallotPaperObject.safeParse(voteWithMixedTypes);
+    expect(resultEncrypted.success).toBe(false);
+  });
+
+  it('Should throw error if no option is set to 1', () => {
+    const invalidVote = {
+      ...demoPlainFilledBallotPaperData.sections[UUIDs.section1]?.votes[0],
+      [UUIDs.candidate2]: 0, // remove the 1
+    };
+
+    const result = plainFilledBallotPaperObject.safeParse({
+      ...demoPlainFilledBallotPaperData,
+      sections: {
+        ...demoPlainFilledBallotPaperData.sections,
+        [UUIDs.section1]: {
+          ...demoPlainFilledBallotPaperData.sections[UUIDs.section1],
+          votes: [invalidVote],
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('Should throw error if more than one option is set to 1', () => {
+    const invalidVote = {
+      ...demoPlainFilledBallotPaperData.sections[UUIDs.section2]?.votes[0],
+      [UUIDs.candidate1]: 1, // additional 1
+    };
+
+    const result = plainFilledBallotPaperObject.safeParse({
+      ...demoPlainFilledBallotPaperData,
+      sections: {
+        ...demoPlainFilledBallotPaperData.sections,
+        [UUIDs.section1]: {
+          ...demoPlainFilledBallotPaperData.sections[UUIDs.section1],
+          votes: [invalidVote],
         },
       },
     });
