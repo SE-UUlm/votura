@@ -8,6 +8,43 @@ export const filledBallotPaperDefaultVoteOption = {
   invalid: 'invalid',
 } as const;
 
+const encryptedVoteObject = z.object({
+  alpha: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
+    example: 12345,
+  }),
+  beta: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
+    example: 67890,
+  }),
+  commitment1: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
+    example: 1345789,
+  }),
+  commitment2: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
+    example: 9072314,
+  }),
+  challenge: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
+    example: 76687914,
+  }),
+  response: z.bigint().register(voturaMetadataRegistry, {
+    description:
+      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
+    example: 2013945,
+  }),
+});
+const plainVoteObject = z.number().int().min(0).max(1);
+
+export type EncryptedVote = z.infer<typeof encryptedVoteObject>;
+export type PlainVote = z.infer<typeof plainVoteObject>;
+
 const voteStructureRefinement = (vote: Record<string, unknown>): boolean => {
   const keys = Object.keys(vote);
 
@@ -41,11 +78,11 @@ const voteTypeRefinement = (vote: Record<string, unknown>): boolean => {
   const values = Object.values(vote);
 
   // Check if PlainVotes only
-  if (values.every((value) => PlainVoteObject.safeParse(value).success)) {
+  if (values.every((value) => plainVoteObject.safeParse(value).success)) {
     return true;
   }
   // Check if EncryptedVotes only
-  if (values.every((value) => EncryptedVoteObject.safeParse(value).success)) {
+  if (values.every((value) => encryptedVoteObject.safeParse(value).success)) {
     return true;
   }
 
@@ -59,7 +96,7 @@ const voteCountRefinement = (vote: Record<string, unknown>): boolean => {
   const values = Object.values(vote);
 
   // This refinement is for PlainVotes only
-  if (values.every((value) => !PlainVoteObject.safeParse(value).success)) {
+  if (values.every((value) => !plainVoteObject.safeParse(value).success)) {
     return true;
   }
 
@@ -75,49 +112,11 @@ const voteCountRefinement = (vote: Record<string, unknown>): boolean => {
 const voteCountRefinementMessage =
   'Each vote must have exactly one option set to 1, all other options must be 0.';
 
-const EncryptedVoteObject = z.object({
-  alpha: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-    example: 12345,
-  }),
-  beta: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-    example: 67890,
-  }),
-  commitment1: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-    example: 1345789,
-  }),
-  commitment2: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-    example: 9072314,
-  }),
-  challenge: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-    example: 76687914,
-  }),
-  response: z.bigint().register(voturaMetadataRegistry, {
-    description:
-      'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-    example: 2013945,
-  }),
-});
-
-export type EncryptedVote = z.infer<typeof EncryptedVoteObject>;
-
-const PlainVoteObject = z.number().int().min(0).max(1);
-export type PlainVote = z.infer<typeof PlainVoteObject>;
-
 const filledBallotPaperObject = <T extends PlainVote | EncryptedVote>(voteSchema: z.ZodType<T>) =>
   z.object({
     ballotPaperId: z.uuidv4().register(voturaMetadataRegistry, {
       description: 'The unique identifier of the voted/filled ballot paper.',
-      example: '123e4567-e89b-12d3-a456-426614174000',
+      example: '2d38c96f-42ac-4c3f-9734-7193e9c64424',
     }),
     sections: z.record(
       z.uuidv4().register(voturaMetadataRegistry, {
@@ -132,7 +131,7 @@ const filledBallotPaperObject = <T extends PlainVote | EncryptedVote>(voteSchema
                 z.union([
                   z.uuidv4().register(voturaMetadataRegistry, {
                     description: 'The unique identifier of the candidate.',
-                    example: '123e4567-e89b-12d3-a456-426614174000',
+                    example: 'f792d5ca-65aa-4167-8f83-06e909051005',
                   }),
                   z.literal(filledBallotPaperDefaultVoteOption.noVote),
                   z.literal(filledBallotPaperDefaultVoteOption.invalid),
@@ -158,12 +157,17 @@ export type FilledBallotPaper<T extends PlainVote | EncryptedVote> = z.infer<
   typeof filledBallotPaperObject<T>
 >;
 
-export const plainFilledBallotPaperObject = filledBallotPaperObject(PlainVoteObject);
+export const plainFilledBallotPaperObject = filledBallotPaperObject(plainVoteObject);
 export type PlainFilledBallotPaper = z.infer<typeof plainFilledBallotPaperObject>;
 
-export const encryptedFilledBallotPaperObject = filledBallotPaperObject(EncryptedVoteObject);
+export const encryptedFilledBallotPaperObject = filledBallotPaperObject(encryptedVoteObject);
 export type EncryptedFilledBallotPaper = z.infer<typeof encryptedFilledBallotPaperObject>;
 
-export const filledBallotPaperObjectSchema = <T extends PlainVote | EncryptedVote>(
-  voteSchema: z.ZodType<T>,
-): Record<string, any> => z.toJSONSchema(filledBallotPaperObject(voteSchema), toJsonSchemaParams);
+export const plainFilledBallotPaperObjectSchema = z.toJSONSchema(
+  plainFilledBallotPaperObject,
+  toJsonSchemaParams,
+);
+export const encryptedFilledBallotPaperObjectSchema = z.toJSONSchema(
+  encryptedFilledBallotPaperObject,
+  toJsonSchemaParams,
+);
