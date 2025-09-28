@@ -208,7 +208,7 @@ describe('Filled Ballot Paper tests', () => {
       sections: {
         ...demoPlainFilledBallotPaperData.sections,
         [UUIDs.section2]: {
-          ...demoPlainFilledBallotPaperData.sections[UUIDs.section2], 
+          ...demoPlainFilledBallotPaperData.sections[UUIDs.section2],
           votes: [invalidVote],
         },
       },
