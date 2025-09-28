@@ -200,7 +200,7 @@ describe('Filled Ballot Paper tests', () => {
   it('Should throw error if more than one option is set to 1', () => {
     const invalidVote = {
       ...demoPlainFilledBallotPaperData.sections[UUIDs.section2]?.votes[0],
-      [UUIDs.candidate1]: 1, // additional 1
+      [UUIDs.candidate2]: 1, // additional 1
     };
 
     const result = plainFilledBallotPaperObject.safeParse({
