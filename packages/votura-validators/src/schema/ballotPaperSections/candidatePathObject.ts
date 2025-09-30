@@ -31,7 +31,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
       'Adds or removes an existing candidate to / from the specified ballot paper section. ' +
       'The user of the API access token needs access to the linked ballot paper / election. ' +
       'A candidate can only be added or removed if the linked election is not frozen. ' +
-      'The candidate can not be added multiple times to the same ballot paper section.' +
+      'The candidate can not be added multiple times to the same ballot paper section. ' +
       'A candidate can only be removed if it was previously added to the ballot paper section.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateCandidateInBallotPaperSection',
