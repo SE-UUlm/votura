@@ -5,15 +5,14 @@ import type {
   Election as DBElection,
 } from '@repo/db/types';
 import {
-  insertableBallotPaperSectionCandidateObject,
   insertableBallotPaperSectionObject,
-  removableBallotPaperSectionCandidateObject,
+  updateableBallotPaperSectionCandidateObject,
   updateableBallotPaperSectionObject,
+  updateableCandidateOperationOptions,
   zodErrorToResponse400,
   type InsertableBallotPaperSection,
-  type InsertableBallotPaperSectionCandidate,
-  type RemovableBallotPaperSectionCandidate,
   type UpdateableBallotPaperSection,
+  type UpdateableBallotPaperSectionCandidate,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import { HttpStatusCode } from '../../httpStatusCode.js';
@@ -59,13 +58,13 @@ const defaultChecksInsertableBallotPaperSectionCandidate = async (
   return null;
 };
 
-export const validateInsertableBallotPaperSectionCandidate = async (
+export const validateUpdateableBallotPaperSectionCandidate = async (
   body: unknown,
   electionId: Selectable<DBElection>['id'],
   ballotPaperSectionId: Selectable<DBBallotPaperSection>['id'],
-): Promise<InsertableBallotPaperSectionCandidate | BallotPaperCandidateValidationError> => {
+): Promise<UpdateableBallotPaperSectionCandidate | BallotPaperCandidateValidationError> => {
   const { data, error, success } =
-    await insertableBallotPaperSectionCandidateObject.safeParseAsync(body);
+    await updateableBallotPaperSectionCandidateObject.safeParseAsync(body);
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
@@ -81,40 +80,22 @@ export const validateInsertableBallotPaperSectionCandidate = async (
     return validationError;
   }
 
-  // candidate should not be linked to the ballot paper section already
-  if (await isCandidateLinkedToBallotPaperSection(data.candidateId, ballotPaperSectionId)) {
+  // candidate should not be linked to the ballot paper section already if operation is 'add'
+  if (
+    data.operation === updateableCandidateOperationOptions.add &&
+    (await isCandidateLinkedToBallotPaperSection(data.candidateId, ballotPaperSectionId))
+  ) {
     return {
       status: HttpStatusCode.badRequest,
       message: BallotPaperCandidateValidationErrorMessage.candidateAlreadyLinked,
     };
   }
-  return data;
-};
 
-export const validateRemovableBallotPaperSectionCandidate = async (
-  body: unknown,
-  electionId: Selectable<DBElection>['id'],
-  ballotPaperSectionId: Selectable<DBBallotPaperSection>['id'],
-): Promise<RemovableBallotPaperSectionCandidate | BallotPaperCandidateValidationError> => {
-  const { data, error, success } =
-    await removableBallotPaperSectionCandidateObject.safeParseAsync(body);
-  if (!success) {
-    return {
-      status: HttpStatusCode.badRequest,
-      message: zodErrorToResponse400(error).message,
-    };
-  }
-
-  const validationError = await defaultChecksInsertableBallotPaperSectionCandidate(
-    data.candidateId,
-    electionId,
-  );
-  if (validationError !== null) {
-    return validationError;
-  }
-
-  // candidate should be linked to the ballot paper section
-  if (!(await isCandidateLinkedToBallotPaperSection(data.candidateId, ballotPaperSectionId))) {
+  // candidate should be linked to the ballot paper section if operation is 'remove'
+  if (
+    data.operation === updateableCandidateOperationOptions.remove &&
+    !(await isCandidateLinkedToBallotPaperSection(data.candidateId, ballotPaperSectionId))
+  ) {
     return {
       status: HttpStatusCode.badRequest,
       message: BallotPaperCandidateValidationErrorMessage.candidateNotLinked,
