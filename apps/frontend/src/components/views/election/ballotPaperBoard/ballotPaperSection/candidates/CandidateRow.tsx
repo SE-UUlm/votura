@@ -2,6 +2,7 @@ import { ActionIcon, Checkbox, Group, Text } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { SelectableCandidate } from '@repo/votura-validators';
 import { IconSettings, IconTrash } from '@tabler/icons-react';
+import type { JSX } from 'react';
 import { useDeleteCandidate } from '../../../../../../swr/candidates/useDeleteCandidate.ts';
 import { useUpdateCandidate } from '../../../../../../swr/candidates/useUpdateCandidate.ts';
 import { DeleteCandidateModal, type DeleteCandidateModalProps } from './DeleteCandidateModal.tsx';
@@ -22,7 +23,7 @@ export const CandidateRow = ({
   bpsCandidates,
   onToggleCandidate,
   isMutatingToggleCandidate,
-}: CandidateRowProps) => {
+}: CandidateRowProps): JSX.Element => {
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [deleteCandidateContextOpen, deleteCandidateActions] = useDisclosure(false);
   const { trigger: triggerUpdateCandidate, isMutating: isMutatingUpdateCandidate } =
@@ -36,7 +37,7 @@ export const CandidateRow = ({
     await triggerUpdateCandidate(partial);
   };
 
-  const onCandidateDelete: DeleteCandidateModalProps['onDelete'] = async () => {
+  const onCandidateDelete: DeleteCandidateModalProps['onDelete'] = async (): Promise<void> => {
     await triggerDeleteCandidate();
   };
 
@@ -63,7 +64,7 @@ export const CandidateRow = ({
           checked={bpsCandidates.includes(candidate.id)}
           aria-label={'candidate-checkbox'}
           disabled={isMutatingToggleCandidate}
-          onChange={() => onToggleCandidate(candidate)}
+          onChange={(): void | Promise<void> => onToggleCandidate(candidate)}
         />
         <Text truncate="end" flex={1}>
           {candidate.title}
