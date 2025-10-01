@@ -2,16 +2,16 @@ import {
   response400Object,
   response404Object,
   response500Object,
+  updateableCandidateOperationOptions,
   type BallotPaper,
   type BallotPaperSection,
   type Election,
   type InsertableBallotPaperSection,
-  type InsertableBallotPaperSectionCandidate,
-  type RemovableBallotPaperSectionCandidate,
   type Response400,
   type Response404,
   type SelectableBallotPaperSection,
   type UpdateableBallotPaperSection,
+  type UpdateableBallotPaperSectionCandidate,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
@@ -26,9 +26,8 @@ import {
 } from '../services/ballotPaperSections.service.js';
 import {
   validateInsertableBallotPaperSection,
-  validateInsertableBallotPaperSectionCandidate,
-  validateRemovableBallotPaperSectionCandidate,
   validateUpdateableBallotPaperSection,
+  validateUpdateableBallotPaperSectionCandidate,
 } from './bodyChecks/ballotPaperSectionChecks.js';
 import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 
@@ -115,14 +114,14 @@ export const deleteBallotPaperSection = async (
   res.sendStatus(HttpStatusCode.noContent);
 };
 
-export const addCandidateToBallotPaperSection = async (
+export const updateCandidateInBallotPaperSection = async (
   req: Request<{
     electionId: Election['id'];
     ballotPaperSectionId: BallotPaperSection['id'];
   }>,
   res: Response<SelectableBallotPaperSection | Response400>,
 ): Promise<void> => {
-  const validationResult = await validateInsertableBallotPaperSectionCandidate(
+  const validationResult = await validateUpdateableBallotPaperSectionCandidate(
     req.body,
     req.params.electionId,
     req.params.ballotPaperSectionId,
@@ -149,56 +148,23 @@ export const addCandidateToBallotPaperSection = async (
   }
 
   // If we reach this point, the request body is valid
-  const insertableBallotPaperSectionCandidate: InsertableBallotPaperSectionCandidate =
+  const updateableBallotPaperSectionCandidate: UpdateableBallotPaperSectionCandidate =
     validationResult;
 
-  // Proceed with adding the candidate to the ballot paper section
-  const result = await addPersistentCandidateToBallotPaperSection(
-    req.params.ballotPaperSectionId,
-    insertableBallotPaperSectionCandidate.candidateId,
-  );
-  res.status(HttpStatusCode.ok).json(result);
-};
-
-export const removeCandidateFromBallotPaperSection = async (
-  req: Request<{
-    electionId: Election['id'];
-    ballotPaperSectionId: BallotPaperSection['id'];
-  }>,
-  res: Response<SelectableBallotPaperSection | Response400 | Response404>,
-): Promise<void> => {
-  const validationResult = await validateRemovableBallotPaperSectionCandidate(
-    req.body,
-    req.params.electionId,
-    req.params.ballotPaperSectionId,
-  );
-
-  if (isBodyCheckValidationError(validationResult)) {
-    switch (validationResult.status) {
-      case HttpStatusCode.badRequest:
-        res
-          .status(HttpStatusCode.badRequest)
-          .json(response400Object.parse({ message: validationResult.message }));
-        break;
-      case HttpStatusCode.notFound:
-        res
-          .status(HttpStatusCode.notFound)
-          .json(response404Object.parse({ message: validationResult.message }));
-        break;
-      default:
-        res
-          .status(HttpStatusCode.internalServerError)
-          .json(response500Object.parse({ message: undefined }));
-    }
-    return;
+  // Proceed with adding / removing the candidate to / from the ballot paper section
+  let result: SelectableBallotPaperSection | null = null;
+  if (
+    updateableBallotPaperSectionCandidate.operation === updateableCandidateOperationOptions.remove
+  ) {
+    result = await removePersistentCandidateFromBallotPaperSection(
+      req.params.ballotPaperSectionId,
+      updateableBallotPaperSectionCandidate.candidateId,
+    );
+  } else {
+    result = await addPersistentCandidateToBallotPaperSection(
+      req.params.ballotPaperSectionId,
+      updateableBallotPaperSectionCandidate.candidateId,
+    );
   }
-
-  // If we reach this point, the request body is valid
-  const removableBallotPaperSectionCandidate: RemovableBallotPaperSectionCandidate =
-    validationResult;
-  const result = await removePersistentCandidateFromBallotPaperSection(
-    req.params.ballotPaperSectionId,
-    removableBallotPaperSectionCandidate.candidateId,
-  );
   res.status(HttpStatusCode.ok).json(result);
 };
