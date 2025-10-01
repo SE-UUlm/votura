@@ -9,7 +9,7 @@ test.describe('Candidates', () => {
     await expect(page).toHaveURL('/elections');
   });
 
-  test('should create a candidate and link to ballot paper section', async ({ page }) => {
+  test('should create/link, unlink and delete a candidate', async ({ page }) => {
     await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
@@ -23,5 +23,15 @@ test.describe('Candidates', () => {
     await expect(page.getByRole('heading', { name: 'All Candidates' })).toBeVisible();
     await expect(page.getByText('John Doe', { exact: true }).first()).toBeVisible();
     await expect(page.getByRole('checkbox', { name: 'candidate-checkbox' })).toBeChecked();
+
+    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
+    await expect(page.getByText('Candidates: 0')).toBeVisible();
+    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
+    await expect(page.getByText('Candidates: 1')).toBeVisible();
+
+    await page.getByRole('button', { name: 'Delete candidate' }).click();
+    await page.getByRole('button', { name: 'Delete', exact: true }).click();
+
+    await expect(page.getByText('Candidates: 0')).toBeVisible();
   });
 });

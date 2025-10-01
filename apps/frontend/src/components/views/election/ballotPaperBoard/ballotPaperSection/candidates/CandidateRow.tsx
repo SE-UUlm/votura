@@ -70,14 +70,14 @@ export const CandidateRow = ({
           {candidate.title}
         </Text>
         <Group>
-          <ActionIcon variant={'transparent'}>
+          <ActionIcon variant={'transparent'} aria-label={'Edit candidate'}>
             <IconSettings
               style={{ width: '70%', height: '70%' }}
               stroke={1.5}
               onClick={mutateCandidateActions.open}
             />
           </ActionIcon>
-          <ActionIcon variant={'transparent'} color="red">
+          <ActionIcon variant={'transparent'} color="red" aria-label={'Delete candidate'}>
             <IconTrash
               style={{ width: '70%', height: '70%' }}
               stroke={1.5}
