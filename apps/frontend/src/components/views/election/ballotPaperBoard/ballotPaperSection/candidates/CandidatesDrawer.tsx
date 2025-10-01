@@ -9,9 +9,15 @@ import {
   Stack,
   Text,
 } from '@mantine/core';
-import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
+import {
+  type SelectableBallotPaperSection,
+  type SelectableCandidate,
+  type SelectableElection,
+  updateableCandidateOperationOptions,
+} from '@repo/votura-validators';
 import { IconSettings, IconTrash } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useUpdateCandidateInBallotPaperSection } from '../../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useGetCandidates } from '../../../../../../swr/candidates/useGetCandidates.ts';
 
 export interface CandidatesDrawerProps {
@@ -30,11 +36,33 @@ export const CandidatesDrawer = ({
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
 
+  const { trigger, isMutating } = useUpdateCandidateInBallotPaperSection(
+    electionId,
+    ballotPaperSection.ballotPaperId,
+    ballotPaperSection.id,
+  );
+
+  const onToggleCandidate = async (candidate: SelectableCandidate): Promise<void> => {
+    if (ballotPaperSection.candidateIds.includes(candidate.id)) {
+      await trigger({
+        candidateId: candidate.id,
+        operation: updateableCandidateOperationOptions.remove,
+      });
+    } else {
+      await trigger({
+        candidateId: candidate.id,
+        operation: updateableCandidateOperationOptions.add,
+      });
+    }
+  };
+
   const rows = electionCandidates?.map((candidate) => (
     <Group key={candidate.id} justify="space-between" wrap={'nowrap'}>
       <Checkbox
         checked={ballotPaperSection.candidateIds.includes(candidate.id)}
         aria-label={'candidate-checkbox'}
+        disabled={isMutating}
+        onChange={(): Promise<void> => onToggleCandidate(candidate)}
       />
       <Text truncate="end" flex={1}>
         {candidate.title}
