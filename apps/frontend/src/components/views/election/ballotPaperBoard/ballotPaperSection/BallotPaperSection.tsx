@@ -1,9 +1,13 @@
 import { ActionIcon, Center, Divider, Group, Paper, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
+import {
+  updateableCandidateOperationOptions,
+  type SelectableBallotPaperSection,
+  type SelectableElection,
+} from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
-import { useAddCandidateToBallotPaperSection } from '../../../../../swr/ballotPaperSections/useAddCandidateToBallotPaperSection.ts';
+import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
 import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
@@ -21,7 +25,7 @@ export const BallotPaperSection = ({
   const { trigger: triggerCreateCandidate, isMutating: isCandidateMutating } =
     useCreateCandidate(electionId);
   const { trigger: triggerAddCandidate, isMutating: isAddCandidateMutating } =
-    useAddCandidateToBallotPaperSection(
+    useUpdateCandidateInBallotPaperSection(
       electionId,
       ballotPaperSection.ballotPaperId,
       ballotPaperSection.id,
@@ -33,6 +37,7 @@ export const BallotPaperSection = ({
     const candidate = await triggerCreateCandidate(partial);
     await triggerAddCandidate({
       candidateId: candidate.id,
+      operation: updateableCandidateOperationOptions.add,
     });
     notifications.show(getCreateSuccessCandidateConfig(partial.title));
   };
