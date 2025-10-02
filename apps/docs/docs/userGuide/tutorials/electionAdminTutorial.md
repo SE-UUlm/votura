@@ -55,7 +55,7 @@ This is done in the elections view by clicking the `New Election` Button as can 
 ![New Election Button Screenshot](../../../static/img/newElection.png)
 
 You will then be presented with a dialog to enter the details of the election, which looks like this:
-<img src="../../../static/img/electionCreationDialogReal.png" alt="Election Creation Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/electionCreationDialogReal.png" alt="Election Creation Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 Each election needs a name, which is intended to help voters and election creators to quickly identify what the purpose of an election is.
 
@@ -75,7 +75,7 @@ It allows voters to express their protest for example.
 If invalid votes are not allowed, the voter will be notified that their vote is invalid and will have to correct it before being able to submit it.
 
 The button for private elections is currently not implemented but it could look something like this:
-<img src="../../../static/img/electionCreationDialogPenpot.png" alt="Election Creation Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/electionCreationDialogPenpot.png" alt="Election Creation Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 After filling out the form, you can create the election by clicking the `Create new election` button.
 It will then be visible in the elections view and you will automatically be redirected to the election detail view of the newly created election.
@@ -90,7 +90,7 @@ This is done in the election detail view by clicking the `New Ballot Paper` butt
 ![New Ballot Paper Button Screenshot](../../../static/img/newBallotPaper.png)
 
 Similar to the election creation, you will be presented with a dialog to enter the details of the ballot paper, which looks like this:
-<img src="../../../static/img/ballotPaperCreationDialog.png" alt="Ballot Paper Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/ballotPaperCreationDialog.png" alt="Ballot Paper Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 Each ballot paper needs a name, which is intended to help election creators to quickly identify the purpose of a ballot paper.
 This is necessary, as an election can have multiple ballot papers.
@@ -128,7 +128,7 @@ This needs to be done even if the ballot paper is only intended to have one sect
 
 Creating a ballot paper section is done by clicking the `Add Section` button in the top right corner of the ballot paper card as shown in the previous screenshot.
 You will then be presented with a dialog to enter the details of the ballot paper section, which looks like this:
-<img src="../../../static/img/ballotPaperSectionCreationDialog.png" alt="Ballot Paper Section Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/ballotPaperSectionCreationDialog.png" alt="Ballot Paper Section Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 Each ballot paper section needs a name, which is intended to help election creators and voters to quickly identify the purpose of a ballot paper section.
 A ballot paper section can for example represent a party or a group of candidates.
@@ -162,7 +162,7 @@ This is done in the edit menu of the ballot paper section by clicking the `Add C
 ![Add Candidate Button Screenshot](../../../static/img/addCandidateButton.png)
 
 Similar to the previous creation dialogs, you will be presented with a dialog to enter the details of the candidate, which looks like this:
-<img src="../../../static/img/candidateCreationDialog.png" alt="Candidate Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/candidateCreationDialog.png" alt="Candidate Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 Each candidate needs a name, which is intended to help election creators and voters to quickly identify the candidate.
 You can also add a description to the candidate, which can be used to provide more context about the candidate.
@@ -172,7 +172,7 @@ If the same candidate is added to multiple sections, the votes for that candidat
 
 Adding or removing an existing candidate to/from a ballot paper section is done in the edit menu of the ballot paper section by clicking the `Edit Candidates` button.
 The dialog that opens looks like this:
-<img src="../../../static/img/editCandidatesDialog.png" alt="Edit Candidates Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/editCandidatesDialog.png" alt="Edit Candidates Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 Here, you can see all candidates that are part of the election and can add or remove them from the section by clicking the checkbox next to their name.
 You can also delete candidates from the election entirely by clicking the trash can icon next to their name and edit them using the gear icon.
@@ -194,7 +194,7 @@ Creating a voter group is done on the `Voter Groups & Tokens` tab of the votura 
 ![New Voter Group Button Screenshot](../../../static/img/newVoterGroupButtonPenpot.png)
 
 Clicking the button opens a dialog to enter the details of the voter group, which looks like this:
-<img src="../../../static/img/newVoterGroupCreationDialogPenpot.png" alt="Voter Group Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/newVoterGroupCreationDialogPenpot.png" alt="Voter Group Creation Dialog Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 The number of voters determines how many voter tokens will be generated for the voter group when the election is frozen.
 Each real world voter should get their own voter token and thus the number of voters should match the number of real world voters in the voter group.
@@ -207,7 +207,7 @@ After filling out the form, you can create the voter group by clicking the `Crea
 
 A voter group can be edited or deleted by clicking on the gear icon next to the voter group in the voter groups list.
 The dialog for this will look something like this:
-<img src="../../../static/img/editVoterGroupDialogPenpot.png" alt="Edit Voter Group Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/editVoterGroupDialogPenpot.png" alt="Edit Voter Group Dialog Penpot Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 This is also where the voter tokens can be generated after all elections linked to the voter group have been frozen.
 
@@ -237,7 +237,7 @@ This is done in the `Voter Groups & Tokens` tab of the votura web app.
 Here, you can see a list of all voter groups that have been created.
 You can generate voter tokens for a voter group by clicking the gear icon next to the voter group and then clicking the `Generate Voter Tokens` button in the dialog that opens.
 This button is only enabled if all elections linked to the voter group have been frozen.
-<img src="../../../static/img/editVoterGroupDialogPenpot.png" alt="Generate Voter Tokens Button Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
+<img src="/votura/img/editVoterGroupDialogPenpot.png" alt="Generate Voter Tokens Button Screenshot" style={{width: '400px', maxWidth: '100%', height: 'auto'}}/>
 
 After clicking the button, the specified number of voter tokens will be generated for the voter group and can be downloaded as a file, the type of which is still to be decided.
 The voter tokens can then be distributed to the real world voters in the voter group.
