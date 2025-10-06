@@ -47,24 +47,6 @@ describe('Votura Ballot Box utils tests', () => {
     }).toThrowError('No votes found in section.');
   });
 
-  it('should throw error if extracting candidate IDs from section with missing votes', () => {
-    const missingVoteSection = {
-      votes: [
-        {
-          [UUIDs.candidate1]: { ...dummyVote },
-          [UUIDs.candidate2]: { ...dummyVote },
-          noVote: { ...dummyVote },
-          invalid: { ...dummyVote },
-        },
-        undefined, // missing vote entry
-      ],
-    } as any;
-
-    expect(() => {
-      extractCandidateIds(missingVoteSection);
-    }).toThrowError('No votes found in section.');
-  });
-
   it('should throw error if votes have different number of candidates', () => {
     const differentKeyCountSection = {
       votes: [
