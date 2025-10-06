@@ -1,6 +1,6 @@
 import { encryptedFilledBallotPaperObject } from '@repo/votura-validators';
 import { describe, expect, it } from 'vitest';
-import { getExtractCandidateIds } from '../src/utils.js';
+import { extractCandidateIds } from '../src/utils.js';
 
 describe('Votura Ballot Box utils tests', () => {
   enum UUIDs {
@@ -43,7 +43,7 @@ describe('Votura Ballot Box utils tests', () => {
     };
 
     expect(() => {
-      getExtractCandidateIds(emptySection);
+      extractCandidateIds(emptySection);
     }).toThrowError('No votes found in section');
   });
 
@@ -56,7 +56,7 @@ describe('Votura Ballot Box utils tests', () => {
     });
     expect(parseResult.success).toBe(true);
 
-    const candidateIds = getExtractCandidateIds(dummySection);
+    const candidateIds = extractCandidateIds(dummySection);
     expect(candidateIds).toEqual([UUIDs.candidate1, UUIDs.candidate2, 'invalid', 'noVote']); // manually ordered in alphabetical order
   });
 });

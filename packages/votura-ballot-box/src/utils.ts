@@ -7,7 +7,7 @@ type EncryptedSectionVotes = EncryptedFilledBallotPaper['sections'][string];
  * Extracts and returns a consistent ordering of candidate IDs from the first vote.
  * The ordering is alphabetical to ensure consistency across all votes.
  */
-export const getExtractCandidateIds = (
+export const extractCandidateIds = (
   section: PlainSectionVotes | EncryptedSectionVotes,
 ): string[] => {
   const firstVote = section.votes[0];
@@ -19,18 +19,17 @@ export const getExtractCandidateIds = (
   for (let i = 1; i < section.votes.length; i++) {
     const vote = section.votes[i];
     if (!vote) {
-      // should never happen due to zod validation, but typescript doesn't know that
       throw new Error('No votes found in section.');
     }
-    const keys = Object.keys(vote).sort((a, b) => a.localeCompare(b));
-    if (keys.length !== candidateIds.length) {
+    const keys = Object.keys(vote).sort((a, b) => a.localeCompare(b)); // here
+    if (keys.length !== candidateIds.length) { // here
       throw new Error(`Inconsistent vote structure at index ${i}: different number of candidates.`);
     }
-    for (let j = 0; j < keys.length; j++) {
-      if (keys[j] !== candidateIds[j]) {
+    for (let j = 0; j < keys.length; j++) { // here
+      if (keys[j] !== candidateIds[j]) { // here
         throw new Error(`Inconsistent vote structure at index ${i}: different candidateIds.`);
       }
-    }
-  }
+    } // here
+  } // here
   return candidateIds;
 };

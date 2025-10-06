@@ -3,7 +3,7 @@ import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperSectionDecryption } from '../../src/decryption/ballotPaperSection.js';
-import { getExtractCandidateIds } from '../../src/utils.js';
+import { extractCandidateIds } from '../../src/utils.js';
 
 describe('BallotPaperSectionDecryption tests', () => {
   enum UUIDs {
@@ -82,7 +82,7 @@ describe('BallotPaperSectionDecryption tests', () => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     const ciphertexts = decryption?.['extractAllCiphertexts'](
       dummySection,
-      getExtractCandidateIds(dummySection),
+      extractCandidateIds(dummySection),
     );
     expect(ciphertexts).toEqual([
       [
@@ -117,7 +117,7 @@ describe('BallotPaperSectionDecryption tests', () => {
       // eslint-disable-next-line @typescript-eslint/dot-notation
       decryption?.['extractAllCiphertexts'](
         sectionWithMissingVoteData,
-        getExtractCandidateIds(dummySection),
+        extractCandidateIds(dummySection),
       );
     }).toThrowError(`Missing vote data for candidate ${UUIDs.candidate2}`);
   });

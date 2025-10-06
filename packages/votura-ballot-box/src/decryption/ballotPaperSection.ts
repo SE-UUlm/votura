@@ -4,7 +4,7 @@ import {
 } from '@repo/votura-validators';
 import { Tallying, type Ciphertext, type PrivateKey } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
-import { getExtractCandidateIds } from '../utils.js';
+import { extractCandidateIds } from '../utils.js';
 
 export interface DecryptedSection {
   sectionId: string;
@@ -65,7 +65,7 @@ export class BallotPaperSectionDecryption {
       throw new Error('Lookup table not initialized. Call calculateLookupTable() first.');
     }
 
-    const orderedCandidateIds = getExtractCandidateIds(section);
+    const orderedCandidateIds = extractCandidateIds(section);
     const orderedCiphertexts = this.extractAllCiphertexts(section, orderedCandidateIds);
     const orderedVoteCounts = this.decryptAndConvertVotes(orderedCiphertexts);
 
