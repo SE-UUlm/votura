@@ -2,7 +2,7 @@ import { encryptedFilledBallotPaperObject } from '@repo/votura-validators';
 import { describe, expect, it } from 'vitest';
 import { extractCandidateIds } from '../src/utils.js';
 
-describe('Votura Ballot Box: utils tests', () => {
+describe('Votura Ballot Box utils tests', () => {
   enum UUIDs {
     ballotPaper = '2d38c96f-42ac-4c3f-9734-7193e9c64424',
     section1 = 'f87cff56-13a4-4c69-9021-3aa864100ca8',
