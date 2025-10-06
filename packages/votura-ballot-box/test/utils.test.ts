@@ -37,14 +37,77 @@ describe('Votura Ballot Box utils tests', () => {
     ],
   };
 
-  it('should throw error when extracting candidate IDs from section with no votes', () => {
+  it('should throw error if extracting candidate IDs from section with no votes', () => {
     const emptySection = {
       votes: [],
     };
 
     expect(() => {
       extractCandidateIds(emptySection);
-    }).toThrowError('No votes found in section');
+    }).toThrowError('No votes found in section.');
+  });
+
+  it('should throw error if extracting candidate IDs from section with missing votes', () => {
+    const missingVoteSection = {
+      votes: [
+        {
+          [UUIDs.candidate1]: { ...dummyVote },
+          [UUIDs.candidate2]: { ...dummyVote },
+          noVote: { ...dummyVote },
+          invalid: { ...dummyVote },
+        },
+        undefined, // missing vote entry
+      ],
+    } as any;
+
+    expect(() => {
+      extractCandidateIds(missingVoteSection);
+    }).toThrowError('No votes found in section.');
+  });
+
+  it('should throw error if votes have different number of candidates', () => {
+    const differentKeyCountSection = {
+      votes: [
+        {
+          [UUIDs.candidate1]: { ...dummyVote },
+          [UUIDs.candidate2]: { ...dummyVote },
+          noVote: { ...dummyVote },
+          invalid: { ...dummyVote },
+        },
+        {
+          [UUIDs.candidate1]: { ...dummyVote },
+          noVote: { ...dummyVote },
+          invalid: { ...dummyVote },
+        },
+      ],
+    };
+
+    expect(() => {
+      extractCandidateIds(differentKeyCountSection);
+    }).toThrowError(/different number of candidates/);
+  });
+
+  it('should throw error if votes have mismatching candidate IDs', () => {
+    const differentKeysSection = {
+      votes: [
+        {
+          [UUIDs.candidate1]: { ...dummyVote },
+          [UUIDs.candidate2]: { ...dummyVote },
+          noVote: { ...dummyVote },
+          invalid: { ...dummyVote },
+        },
+        {
+          [UUIDs.candidate1]: { ...dummyVote },
+          [UUIDs.candidate3]: { ...dummyVote },
+          noVote: { ...dummyVote },
+          invalid: { ...dummyVote },
+        },
+      ],
+    };
+
+    expect(() => {
+      extractCandidateIds(differentKeysSection);
+    }).toThrowError(/different candidateIds/);
   });
 
   it('should extract candidate IDs correctly', () => {
