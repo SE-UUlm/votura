@@ -21,15 +21,15 @@ export const extractCandidateIds = (
     if (!vote) {
       throw new Error('No votes found in section.');
     }
-    const keys = Object.keys(vote).sort((a, b) => a.localeCompare(b)); // here
-    if (keys.length !== candidateIds.length) { // here
+    const keys = Object.keys(vote).sort((a, b) => a.localeCompare(b));
+    if (keys.length !== candidateIds.length) {
       throw new Error(`Inconsistent vote structure at index ${i}: different number of candidates.`);
     }
-    for (let j = 0; j < keys.length; j++) { // here
-      if (keys[j] !== candidateIds[j]) { // here
+    for (let j = 0; j < keys.length; j++) {
+      if (keys[j] !== candidateIds[j]) {
         throw new Error(`Inconsistent vote structure at index ${i}: different candidateIds.`);
       }
-    } // here
-  } // here
+    }
+  }
   return candidateIds;
 };
