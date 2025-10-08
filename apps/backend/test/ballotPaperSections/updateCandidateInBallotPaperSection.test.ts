@@ -3,6 +3,7 @@ import {
   response400Object,
   response404Object,
   selectableBallotPaperSectionObject,
+  updateableCandidateOperationOptions,
   type ApiTokenUser,
   type SelectableBallotPaperSection,
   type SelectableCandidate,
@@ -32,7 +33,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
   let requestPath = '';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
   let candidate: SelectableCandidate | null = null;
-  let candidate2: SelectableCandidate | null = null;
+  let unlinkedCandidate: SelectableCandidate | null = null;
   let ballotPaperSection: SelectableBallotPaperSection | null = null;
 
   beforeAll(async () => {
@@ -50,7 +51,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     ballotPaperSection = await createBallotPaperSection(demoBallotPaperSection, ballotPaper.id);
 
     candidate = await createCandidate(demoCandidate, election.id);
-    candidate2 = await createCandidate(demoCandidate2, election2.id);
+    unlinkedCandidate = await createCandidate(demoCandidate2, election2.id);
 
     requestPath = `/elections/${election.id}/ballotPapers/${ballotPaper.id}/ballotPaperSections/${ballotPaperSection.id}/candidates/`;
 
@@ -61,7 +62,7 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: candidate?.id });
+      .send({ candidateId: candidate?.id, operation: updateableCandidateOperationOptions.add });
 
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
@@ -76,12 +77,27 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: candidate?.id });
+      .send({ candidateId: candidate?.id, operation: updateableCandidateOperationOptions.add });
 
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+  });
+  it('200: should remove a candidate from a ballot paper section', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({ candidateId: candidate?.id, operation: updateableCandidateOperationOptions.remove });
+
+    expect(res.status).toBe(HttpStatusCode.ok);
+    expect(res.type).toBe('application/json');
+    const { data, success } = selectableBallotPaperSectionObject.safeParse(res.body);
+    expect(success).toBe(true);
+    if (success) {
+      expect(data.id).toBe(ballotPaperSection?.id);
+      expect(data.candidateIds).not.toContain(candidate?.id);
+    }
   });
   it('400: should return error for invalid request body', async () => {
     const res = await request(app)
@@ -98,7 +114,10 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: '1d88b483-cf68-42ef-9f1c-3bb6eea314f8' }); // valid UUID but non-existing candidate
+      .send({
+        candidateId: '1d88b483-cf68-42ef-9f1c-3bb6eea314f8',
+        operation: updateableCandidateOperationOptions.add,
+      }); // valid UUID but non-existing candidate
 
     expect(res.status).toBe(HttpStatusCode.notFound);
     expect(res.type).toBe('application/json');
@@ -112,7 +131,10 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     const res = await request(app)
       .put(requestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
-      .send({ candidateId: candidate2?.id });
+      .send({
+        candidateId: unlinkedCandidate?.id,
+        operation: updateableCandidateOperationOptions.add,
+      });
 
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');
@@ -120,6 +142,20 @@ describe(`PUT /:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}
     expect(parseResult.success).toBe(true);
     expect(parseResult.data?.message).toBe(
       BallotPaperCandidateValidationErrorMessage.electionNotParent,
+    );
+  });
+  it('400: should return error for removing unlinked candidate', async () => {
+    const res = await request(app)
+      .put(requestPath)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send({ candidateId: candidate?.id, operation: updateableCandidateOperationOptions.remove });
+
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(
+      BallotPaperCandidateValidationErrorMessage.candidateNotLinked,
     );
   });
 });

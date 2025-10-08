@@ -5,6 +5,7 @@ import {
   updateableElectionObject,
   zodErrorToResponse400,
   type Election,
+  type FreezableElection,
   type Response400,
   type Response404,
   type SelectableElection,
@@ -13,23 +14,23 @@ import {
 import { getKeyPair } from '@votura/votura-crypto/index';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { isElectionValid } from '../middlewares/pathParamChecks/electionChecks.js';
 import {
   createElection as createPersistentElection,
   deleteElection as deletePersistentElection,
   freezeElection as freezePersistentElection,
   getElection as getPersistentElection,
   getElections as getPersistentElections,
+  isElectionFrozen,
   setElectionKeys,
   unfreezeElection as unfreezePersistentElection,
   updateElection as updatePersistentElection,
 } from '../services/elections.service.js';
 
-export type CreateElectionResponse = Response<
-  SelectableElection | Response400 | Response404,
-  { user: SelectableUser }
->;
-
-export const createElection = async (req: Request, res: CreateElectionResponse): Promise<void> => {
+export const createElection = async (
+  req: Request,
+  res: Response<SelectableElection | Response400, { user: SelectableUser }>,
+): Promise<void> => {
   const body: unknown = req.body;
 
   const { data, error, success } = await insertableElectionObject.safeParseAsync(body);
@@ -43,9 +44,10 @@ export const createElection = async (req: Request, res: CreateElectionResponse):
   }
 };
 
-export type GetAllElectionsResponse = Response<SelectableElection[], { user: SelectableUser }>;
-
-export const getElections = async (_req: Request, res: GetAllElectionsResponse): Promise<void> => {
+export const getElections = async (
+  _req: Request,
+  res: Response<SelectableElection[], { user: SelectableUser }>,
+): Promise<void> => {
   const elections = await getPersistentElections(res.locals.user.id);
 
   res.status(HttpStatusCode.ok).json(elections);
@@ -53,7 +55,7 @@ export const getElections = async (_req: Request, res: GetAllElectionsResponse):
 
 export const updateElection = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableElection | Response400 | Response404>,
+  res: Response<SelectableElection | Response400>,
 ): Promise<void> => {
   const body: unknown = req.body;
   const { data, error, success } = await updateableElectionObject.safeParseAsync(body);
@@ -66,23 +68,33 @@ export const updateElection = async (
   res.status(HttpStatusCode.ok).json(selectableElection);
 };
 
-export type GetElectionRequest = Request<{ electionId: Election['id'] }>;
-export type GetElectionResponse = Response<
-  SelectableElection | Response404,
-  { user: SelectableUser }
->;
-
 export const getElection = async (
-  req: GetElectionRequest,
-  res: GetElectionResponse,
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<SelectableElection, { user: SelectableUser }>,
 ): Promise<void> => {
   const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
   res.status(HttpStatusCode.ok).json(election);
 };
 
+export const getFreezableElection = async (
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<FreezableElection>,
+): Promise<void> => {
+  // If election is not frozen and valid it is freezable
+  if (
+    (await isElectionFrozen(req.params.electionId)) ||
+    !(await isElectionValid(req.params.electionId))
+  ) {
+    res.status(HttpStatusCode.ok).json({ freezable: false, id: req.params.electionId });
+    return;
+  }
+
+  res.status(HttpStatusCode.ok).json({ freezable: true, id: req.params.electionId });
+};
+
 export const freezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableElection | Response400 | Response404>,
+  res: Response<SelectableElection>,
 ): Promise<void> => {
   let election = await freezePersistentElection(req.params.electionId);
   res.status(HttpStatusCode.ok).json(election);
@@ -98,7 +110,7 @@ export const freezeElection = async (
 
 export const unfreezeElection = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableElection | Response400 | Response404>,
+  res: Response<SelectableElection>,
 ): Promise<void> => {
   const election = await unfreezePersistentElection(req.params.electionId);
   res.status(HttpStatusCode.ok).json(election);

@@ -8,13 +8,12 @@ import {
   updateBallotPaper,
 } from '../controllers/ballotPapers.controllers.js';
 import {
-  addCandidateToBallotPaperSection,
   createBallotPaperSection,
   deleteBallotPaperSection,
   getBallotPaperSection,
   getBallotPaperSections,
-  removeCandidateFromBallotPaperSection,
   updateBallotPaperSection,
+  updateCandidateInBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
 import {
   createCandidate,
@@ -29,6 +28,7 @@ import {
   freezeElection,
   getElection,
   getElections,
+  getFreezableElection,
   unfreezeElection,
   updateElection,
 } from '../controllers/elections.controllers.js';
@@ -69,6 +69,12 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkElectionNotFrozen,
   updateElection,
+);
+electionsRouter.get(
+  `/:${parameter.electionId}/freezable`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  getFreezableElection,
 );
 electionsRouter.put(
   `/:${parameter.electionId}/freeze`,
@@ -186,17 +192,7 @@ electionsRouter.put(
   checkElectionNotFrozen,
   ...defaultBallotPaperChecks,
   ...defaultBallotPaperSectionChecks,
-  addCandidateToBallotPaperSection,
-);
-electionsRouter.delete(
-  `/:${parameter.electionId}/ballotPapers/:${parameter.ballotPaperId}/ballotPaperSections/:${parameter.ballotPaperSectionId}/candidates`,
-  acceptHeaderCheck(MimeType.applicationJson),
-  acceptBodyCheck(MimeType.applicationJson),
-  ...defaultElectionChecks,
-  checkElectionNotFrozen,
-  ...defaultBallotPaperChecks,
-  ...defaultBallotPaperSectionChecks,
-  removeCandidateFromBallotPaperSection,
+  updateCandidateInBallotPaperSection,
 );
 
 // Candidates

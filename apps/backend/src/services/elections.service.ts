@@ -92,11 +92,11 @@ export const setElectionKeys = async (
   const election = await db
     .updateTable('election')
     .set({
-      pubKey: keyPair.publicKey.publicKey.toString(),
-      privKey: keyPair.privateKey.privateKey.toString(),
-      primeP: keyPair.publicKey.primeP.toString(),
-      primeQ: keyPair.publicKey.primeQ.toString(),
-      generator: keyPair.publicKey.generator.toString(),
+      pubKey: keyPair.publicKey.getPublicKey().toString(),
+      privKey: keyPair.privateKey.getPrivateKey().toString(),
+      primeP: keyPair.publicKey.getPrimeP().toString(),
+      primeQ: keyPair.publicKey.getPrimeQ().toString(),
+      generator: keyPair.publicKey.getGenerator().toString(),
     })
     .where('id', '=', electionId)
     .returningAll()

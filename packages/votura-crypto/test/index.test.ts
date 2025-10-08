@@ -12,7 +12,8 @@ import { voturaTest } from './voturaTest.js';
 voturaTest('getKeyPair', { timeout: 120000 }, async () => {
   const bitsPrimeP = 128;
   const { privateKey } = await getKeyPair(bitsPrimeP);
-  const { primeP, primeQ } = privateKey;
+  const primeP = privateKey.getPrimeP();
+  const primeQ = privateKey.getPrimeQ();
   expect(modAdd([modMultiply([primeQ, 2n], primeP), 1n], primeP)).toBe(0n);
 });
 
@@ -22,11 +23,13 @@ describe('PublicKey', () => {
 
     const encryptedText = publicKey.encrypt(plaintext, randomness);
 
-    expect(encryptedText[0][0]).toBe(modPow(publicKey.generator, randomness, publicKey.primeP));
+    expect(encryptedText[0][0]).toBe(
+      modPow(publicKey.getGenerator(), randomness, publicKey.getPrimeP()),
+    );
     expect(encryptedText[0][1]).toBe(
       modMultiply(
-        [plaintext, modPow(publicKey.publicKey, randomness, publicKey.primeP)],
-        publicKey.primeP,
+        [plaintext, modPow(publicKey.getPublicKey(), randomness, publicKey.getPrimeP())],
+        publicKey.getPrimeP(),
       ),
     );
     expect(encryptedText[1]).toBe(randomness);
@@ -50,9 +53,9 @@ describe('PrivateKey', () => {
     expect(typeof proof.response).toBe('bigint');
 
     expect(proof.challenge >= 0n).toBe(true);
-    expect(proof.challenge < keyPair.publicKey.primeQ).toBe(true);
+    expect(proof.challenge < keyPair.publicKey.getPrimeQ()).toBe(true);
     expect(proof.response >= 0n).toBe(true);
-    expect(proof.response < keyPair.publicKey.primeQ).toBe(true);
+    expect(proof.response < keyPair.publicKey.getPrimeQ()).toBe(true);
 
     expect(proof).not.toEqual(proof2);
   });
@@ -67,22 +70,27 @@ describe('Tallying', () => {
     let expectedAlpha = 1n;
     let expectedBeta = 1n;
     for (const [a, b] of ciphertexts) {
-      expectedAlpha = modMultiply([expectedAlpha, a], publicKey.primeP);
-      expectedBeta = modMultiply([expectedBeta, b], publicKey.primeP);
+      expectedAlpha = modMultiply([expectedAlpha, a], publicKey.getPrimeP());
+      expectedBeta = modMultiply([expectedBeta, b], publicKey.getPrimeP());
     }
 
     const tally = new Tallying(publicKey);
-    const [aggAlpha, aggBeta] = tally.aggregateCiphertexts(ciphertexts);
-    const [aggAlpha2, aggBeta2] = tally.aggregateCiphertexts(ciphertexts);
+    // using bracket notation to access private method for testing purposes
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const [aggAlpha, aggBeta] = tally['aggregateCiphertexts'](ciphertexts);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const [aggAlpha2, aggBeta2] = tally['aggregateCiphertexts'](ciphertexts);
     expect([aggAlpha, aggBeta]).toEqual([expectedAlpha, expectedBeta]);
     expect([aggAlpha2, aggBeta2]).toEqual([expectedAlpha, expectedBeta]);
 
     const singleCiphertext = ciphertext;
-    const [singleAlpha, singleBeta] = tally.aggregateCiphertexts([singleCiphertext]);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const [singleAlpha, singleBeta] = tally['aggregateCiphertexts']([singleCiphertext]);
     expect(singleAlpha).toBe(singleCiphertext[0]);
     expect(singleBeta).toBe(singleCiphertext[1]);
 
-    const [emptyAlpha, emptyBeta] = tally.aggregateCiphertexts([]);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const [emptyAlpha, emptyBeta] = tally['aggregateCiphertexts']([]);
     expect(emptyAlpha).toBe(1n);
     expect(emptyBeta).toBe(1n);
   });
@@ -90,7 +98,7 @@ describe('Tallying', () => {
   voturaTest('aggregateVotes', ({ keyPair, randomness }) => {
     const { publicKey } = keyPair;
     const plainNo = 1n; // = modPow(this.pk.generator, 0);
-    const plainYes = publicKey.generator; // = modPow(this.pk.generator, 1);
+    const plainYes = publicKey.getGenerator(); // = modPow(this.pk.generator, 1);
 
     const ballotSectionA1: bigint[][] = [
       // section A: max. 4 votes, 4 choices
@@ -147,22 +155,22 @@ describe('Tallying', () => {
     const sumA: bigint[] = [3n, 2n, 3n, 0n]; // sum tallied manually
     resultA1.forEach((sum, index) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const encodedSum = modPow(publicKey.generator, sumA1[index]!, publicKey.primeP);
+      const encodedSum = modPow(publicKey.getGenerator(), sumA1[index]!, publicKey.getPrimeP());
       expect(sum).toBe(encodedSum);
     });
     resultB1.forEach((sum, index) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const encodedSum = modPow(publicKey.generator, sumB1[index]!, publicKey.primeP);
+      const encodedSum = modPow(publicKey.getGenerator(), sumB1[index]!, publicKey.getPrimeP());
       expect(sum).toBe(encodedSum);
     });
     resultA2.forEach((sum, index) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const encodedSum = modPow(publicKey.generator, sumA2[index]!, publicKey.primeP);
+      const encodedSum = modPow(publicKey.getGenerator(), sumA2[index]!, publicKey.getPrimeP());
       expect(sum).toBe(encodedSum);
     });
     resultA.forEach((sum, index) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const encodedSum = modPow(publicKey.generator, sumA[index]!, publicKey.primeP);
+      const encodedSum = modPow(publicKey.getGenerator(), sumA[index]!, publicKey.getPrimeP());
       expect(sum).toBe(encodedSum);
     });
 
@@ -202,7 +210,7 @@ describe('Tallying', () => {
     const sum1: bigint[] = [2n, 1n, 1n, 1n, 0n, 1n]; // sum tallied manually
     result1.forEach((sum, index) => {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-      const encodedSum = modPow(publicKey.generator, sum1[index]!, publicKey.primeP);
+      const encodedSum = modPow(publicKey.getGenerator(), sum1[index]!, publicKey.getPrimeP());
       expect(sum).toBe(encodedSum);
     });
   });
@@ -213,17 +221,20 @@ describe('ZeroKnowledgeProof', () => {
     const { publicKey } = keyPair;
     const zkp = new ZeroKnowledgeProof(publicKey);
 
-    const proof = zkp.createSimulatedEncryptionProof(plaintext, ciphertext);
-    const proof2 = zkp.createSimulatedEncryptionProof(plaintext, ciphertext);
+    // using bracket notation to access private method for testing purposes
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const proof: ZKProof = zkp['createSimulatedEncryptionProof'](plaintext, ciphertext);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const proof2: ZKProof = zkp['createSimulatedEncryptionProof'](plaintext, ciphertext);
 
     expect(proof.commitment.length).toBe(2);
     expect(typeof proof.challenge).toBe('bigint');
     expect(typeof proof.response).toBe('bigint');
 
     expect(proof.challenge >= 0n).toBe(true);
-    expect(proof.challenge < publicKey.primeQ).toBe(true);
+    expect(proof.challenge < publicKey.getPrimeQ()).toBe(true);
     expect(proof.response >= 0n).toBe(true);
-    expect(proof.response < publicKey.primeQ).toBe(true);
+    expect(proof.response < publicKey.getPrimeQ()).toBe(true);
 
     expect(proof).not.toEqual(proof2);
   });
@@ -240,22 +251,26 @@ describe('ZeroKnowledgeProof', () => {
       const plainT = plaintexts[i];
       const cipherT = ciphertexts[i];
       if (plainT !== undefined && cipherT !== undefined) {
-        const simulatedProof = zkp.createSimulatedEncryptionProof(plainT, cipherT);
+        // using bracket notation to access private method for testing purposes
+        // eslint-disable-next-line @typescript-eslint/dot-notation
+        const simulatedProof: ZKProof = zkp['createSimulatedEncryptionProof'](plainT, cipherT);
         simulatedZKPs.push(simulatedProof);
       }
     }
 
-    const proof = zkp.createRealEncryptionProof(simulatedZKPs, realIndex, randomness);
-    const proof2 = zkp.createRealEncryptionProof(simulatedZKPs, realIndex, randomness);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const proof: ZKProof = zkp['createRealEncryptionProof'](simulatedZKPs, realIndex, randomness);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const proof2: ZKProof = zkp['createRealEncryptionProof'](simulatedZKPs, realIndex, randomness);
 
     expect(proof.commitment.length).toBe(2);
     expect(typeof proof.challenge).toBe('bigint');
     expect(typeof proof.response).toBe('bigint');
 
     expect(proof.challenge >= 0n).toBe(true);
-    expect(proof.challenge < publicKey.primeQ).toBe(true);
+    expect(proof.challenge < publicKey.getPrimeQ()).toBe(true);
     expect(proof.response >= 0n).toBe(true);
-    expect(proof.response < publicKey.primeQ).toBe(true);
+    expect(proof.response < publicKey.getPrimeQ()).toBe(true);
 
     expect(proof).not.toEqual(proof2);
   });
@@ -278,9 +293,9 @@ describe('ZeroKnowledgeProof', () => {
       expect(typeof proof.response).toBe('bigint');
 
       expect(proof.challenge >= 0n).toBe(true);
-      expect(proof.challenge < publicKey.primeQ).toBe(true);
+      expect(proof.challenge < publicKey.getPrimeQ()).toBe(true);
       expect(proof.response >= 0n).toBe(true);
-      expect(proof.response < publicKey.primeQ).toBe(true);
+      expect(proof.response < publicKey.getPrimeQ()).toBe(true);
     });
 
     expect(proofs).not.toEqual(proofs2);
@@ -289,41 +304,56 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('verifyEncryptionProof', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;
     const zkp = new ZeroKnowledgeProof(publicKey);
-    const validProof = zkp.createSimulatedEncryptionProof(plaintext, ciphertext);
+    // using bracket notation to access private method for testing purposes
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const validProof: ZKProof = zkp['createSimulatedEncryptionProof'](plaintext, ciphertext);
 
-    const isValid = zkp.verifyEncryptionProof(plaintext, ciphertext, validProof);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const isValid: boolean = zkp['verifyEncryptionProof'](plaintext, ciphertext, validProof);
     expect(isValid).toBe(true);
 
     const invalidProof1: ZKProof = {
-      commitment: [(validProof.commitment[0] + 1n) % publicKey.primeP, validProof.commitment[1]],
+      commitment: [
+        (validProof.commitment[0] + 1n) % publicKey.getPrimeP(),
+        validProof.commitment[1],
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
-    const isValid1 = zkp.verifyEncryptionProof(plaintext, ciphertext, invalidProof1);
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const isValid1: boolean = zkp['verifyEncryptionProof'](plaintext, ciphertext, invalidProof1);
     expect(isValid1).toBe(false);
 
     const invalidProof2: ZKProof = {
-      commitment: [validProof.commitment[0], (validProof.commitment[1] + 1n) % publicKey.primeP],
+      commitment: [
+        validProof.commitment[0],
+        (validProof.commitment[1] + 1n) % publicKey.getPrimeP(),
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
-    const isValid2 = zkp.verifyEncryptionProof(plaintext, ciphertext, invalidProof2);
+
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const isValid2: boolean = zkp['verifyEncryptionProof'](plaintext, ciphertext, invalidProof2);
     expect(isValid2).toBe(false);
 
     const invalidProof3: ZKProof = {
       commitment: [validProof.commitment[0], validProof.commitment[1]],
-      challenge: (validProof.challenge + 1n) % publicKey.primeQ,
+      challenge: (validProof.challenge + 1n) % publicKey.getPrimeQ(),
       response: validProof.response,
     };
-    const isValid3 = zkp.verifyEncryptionProof(plaintext, ciphertext, invalidProof3);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const isValid3: boolean = zkp['verifyEncryptionProof'](plaintext, ciphertext, invalidProof3);
     expect(isValid3).toBe(false);
 
     const invalidProof4: ZKProof = {
       commitment: [validProof.commitment[0], validProof.commitment[1]],
       challenge: validProof.challenge,
-      response: (validProof.response + 1n) % publicKey.primeQ,
+      response: (validProof.response + 1n) % publicKey.getPrimeQ(),
     };
-    const isValid4 = zkp.verifyEncryptionProof(plaintext, ciphertext, invalidProof4);
+    // eslint-disable-next-line @typescript-eslint/dot-notation
+    const isValid4: boolean = zkp['verifyEncryptionProof'](plaintext, ciphertext, invalidProof4);
     expect(isValid4).toBe(false);
   });
 
@@ -346,7 +376,7 @@ describe('ZeroKnowledgeProof', () => {
                       const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
                         commitment:
                           index === 0
-                            ? [(proof.commitment[0] + 1n) % publicKey.primeP, proof.commitment[1]]
+                            ? [(proof.commitment[0] + 1n) % publicKey.getPrimeP(), proof.commitment[1]]
                             : [proof.commitment[0], proof.commitment[1]],
                         challenge: proof.challenge,
                         response: proof.response,
@@ -357,7 +387,7 @@ describe('ZeroKnowledgeProof', () => {
                       const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
                         commitment:
                           index === 1
-                            ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.primeP]
+                            ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.getPrimeP()]
                             : [proof.commitment[0], proof.commitment[1]],
                         challenge: proof.challenge,
                         response: proof.response,
@@ -367,7 +397,7 @@ describe('ZeroKnowledgeProof', () => {
 
                       const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
                         commitment: [proof.commitment[0], proof.commitment[1]],
-                        challenge: index === 2 ? (proof.challenge + 1n) % publicKey.primeQ : proof.challenge,
+                        challenge: index === 2 ? (proof.challenge + 1n) % publicKey.getPrimeQ() : proof.challenge,
                         response: proof.response,
                       }));
                       const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
@@ -376,7 +406,7 @@ describe('ZeroKnowledgeProof', () => {
                       const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
                         commitment: [proof.commitment[0], proof.commitment[1]],
                         challenge: proof.challenge,
-                        response: index === 3 ? (proof.response + 1n) % publicKey.primeQ : proof.response,
+                        response: index === 3 ? (proof.response + 1n) % publicKey.getPrimeQ() : proof.response,
                       }));
                       const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
                       expect(isValid4).toBe(false);
@@ -391,7 +421,10 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid).toBe(true);
 
     const invalidProof1: ZKProof = {
-      commitment: [(validProof.commitment[0] + 1n) % publicKey.primeP, validProof.commitment[1]],
+      commitment: [
+        (validProof.commitment[0] + 1n) % publicKey.getPrimeP(),
+        validProof.commitment[1],
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
@@ -399,7 +432,10 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid1).toBe(false);
 
     const invalidProof2: ZKProof = {
-      commitment: [validProof.commitment[0], (validProof.commitment[1] + 1n) % publicKey.primeP],
+      commitment: [
+        validProof.commitment[0],
+        (validProof.commitment[1] + 1n) % publicKey.getPrimeP(),
+      ],
       challenge: validProof.challenge,
       response: validProof.response,
     };
@@ -408,7 +444,7 @@ describe('ZeroKnowledgeProof', () => {
 
     const invalidProof3: ZKProof = {
       commitment: [validProof.commitment[0], validProof.commitment[1]],
-      challenge: (validProof.challenge + 1n) % publicKey.primeQ,
+      challenge: (validProof.challenge + 1n) % publicKey.getPrimeQ(),
       response: validProof.response,
     };
     const isValid3 = zkp.verifyDecryptionProof(plaintext, ciphertext, invalidProof3);
@@ -417,7 +453,7 @@ describe('ZeroKnowledgeProof', () => {
     const invalidProof4: ZKProof = {
       commitment: [validProof.commitment[0], validProof.commitment[1]],
       challenge: validProof.challenge,
-      response: (validProof.response + 1n) % publicKey.primeQ,
+      response: (validProof.response + 1n) % publicKey.getPrimeQ(),
     };
     const isValid4 = zkp.verifyDecryptionProof(plaintext, ciphertext, invalidProof4);
     expect(isValid4).toBe(false);
