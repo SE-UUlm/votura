@@ -35,6 +35,7 @@ export const ballotPaperSectionObject = z.object({
         'The user can limit the allowed number of votes per candidate.\n' +
         'This is the maximum number of votes a voter can cast on one candidate on this ballot paper sections.\n' +
         '`maxVotesPerCandidate` of a ballot paper section needs to be smaller or equal to the over all `maxVotesPerCandidate` on the linked parent ballot paper.\n' +
+        'Furthermore, `maxVotesPerCandidate` of a ballot paper section needs to be smaller or equal to the `maxVotes` of the same ballot paper section.\n' +
         'If the ballot paper section contains more votes on one candidate than the `maxVotesPerCandidate` value, the whole vote / ballot paper will be invalid.',
       example: 42,
     }),

@@ -29,10 +29,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Updates the configuration of the requested ballot paper section with the provided information.\n' +
       'The user of the API access token needs access to the linked ballot paper / election.\n' +
-      'A ballot paper section can only be updated if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A ballot paper section can only be updated if the linked election is not frozen.\n',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateBallotPaperSectionById',
     requestBody: {
@@ -71,10 +68,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     summary: 'Get a specific ballot paper section',
     description:
       'Returns the requested ballot paper section with all public information fields.\n' +
-      'The user of the API access token needs access to the linked ballot paper / election.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'The user of the API access token needs access to the linked ballot paper / election.\n',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'getBallotPaperSectionById',
     responses: {
@@ -104,10 +98,7 @@ export const ballotPaperSectionIdPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Deletes the requested ballot paper section.\n' +
       'The user of the API access token needs access to the linked ballot paper / election.\n' +
-      'A ballot paper section can only be deleted if the linked election is not frozen.\n' +
-      '\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'A ballot paper section can only be deleted if the linked election is not frozen.\n',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'deleteBallotPaperSectionById',
     responses: {
