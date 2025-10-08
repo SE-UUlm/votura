@@ -36,7 +36,7 @@ export class PublicKey {
    * Encrypts the given encoded plaintext using the public key.
    * An encoded plaintext is generator ^ (number of votes) mod primeP.
    * @param encodedPlaintext The encoded plaintext to encrypt, must be in the range [1, primeP - 1]
-   * @param randomness Optional randomness to use for encryption, must be in the range [1, primeP - 2]. If not provided, a random value will be generated.
+   * @param randomness The randomness to use for encryption, must be in the range [1, primeP - 2]. If not provided, a random value will be generated.
    * @returns The ciphertext and the randomness used for encryption.
    */
   public encrypt(
