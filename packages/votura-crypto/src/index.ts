@@ -175,7 +175,7 @@ export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
   }
 
   const generator = getGeneratorForPrimes(primeP, probablePrimeQ);
-  const privateKey = randBetween(primeP, 1n);
+  const privateKey = randBetween(modAdd([probablePrimeQ, -1n], probablePrimeQ), 1n);
   const publicKey = modPow(generator, privateKey, primeP);
 
   return new KeyPair(primeP, probablePrimeQ, generator, publicKey, privateKey);
