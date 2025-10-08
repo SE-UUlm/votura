@@ -1,5 +1,5 @@
 import {
-  FilledBallotPaperDefaultVoteOption,
+  filledBallotPaperDefaultVoteOption,
   filledBallotPaperObject,
   zodErrorToResponse400,
   type FilledBallotPaper,
@@ -121,9 +121,9 @@ const validateBallotPaperStructure = async (
 const extractCandidateIds = (
   votes: FilledBallotPaper['sections'][string]['votes'],
 ): Set<string> => {
-  const excludedKeys = [
-    FilledBallotPaperDefaultVoteOption.noVote.toString(),
-    FilledBallotPaperDefaultVoteOption.invalid.toString(),
+  const excludedKeys: string[] = [
+    filledBallotPaperDefaultVoteOption.noVote,
+    filledBallotPaperDefaultVoteOption.invalid,
   ];
 
   return new Set(
