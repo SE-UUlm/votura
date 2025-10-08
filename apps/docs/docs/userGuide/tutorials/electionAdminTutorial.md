@@ -188,7 +188,7 @@ Only the person distributing the voter tokens knows which voter token belongs to
 This ensures the privacy of the voters.
 
 A voter group can be created at any time but it can only be assigned to an election before the election is frozen and after a ballot paper has been created for the election.
-This means that voter groups must should be created after the elections have been created and before the elections are frozen.
+This means that voter groups should be created after the elections have been created and must be created before the elections are frozen.
 
 Creating a voter group is done on the `Voter Groups & Tokens` tab of the votura web app by clicking the `New Voter Group` button as shown in the following picture:
 ![New Voter Group Button Screenshot](../../../static/img/userGuide/electionAdminTutorial/newVoterGroupButtonPenpot.png)

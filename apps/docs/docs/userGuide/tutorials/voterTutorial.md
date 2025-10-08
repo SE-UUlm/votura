@@ -74,7 +74,7 @@ If your vote is invalid, a warning will be shown and you can either go back to t
 ## Step 3: [Optional] Audit your vote
 
 After submitting your vote, you will be taken to a page, where you can audit the votura web app to ensure that your vote was encrypted correctly.
-This part of the voting process ist optional, but it is recommended to do so to ensure that your vote was cast as intended.
+This part of the voting process is optional, but it is recommended to do so to ensure that your vote was cast as intended.
 
 This part of the voting process is still under development and no design of the audit page is available yet.
 Auditing can be done by using your own tool or by using the tool provided by votura.
