@@ -3,6 +3,7 @@ import { selectableVotingElectionObjectSchema } from '../../objects/votingElecti
 import {
   response400,
   response401,
+  response403,
   response406,
   response429,
   responseDefault,
@@ -41,6 +42,7 @@ export const votingElectionsPathObject: OpenAPIV3.PathItemObject = {
       },
       ...response400,
       ...response401,
+      ...response403,
       ...response406,
       ...response429,
       ...responseDefault,
