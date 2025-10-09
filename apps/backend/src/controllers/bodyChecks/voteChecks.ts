@@ -1,16 +1,18 @@
+import { BallotPaperSectionDecryption, type DecryptedSection } from '@repo/votura-ballot-box';
 import {
+  encryptedFilledBallotPaperObject,
   filledBallotPaperDefaultVoteOption,
-  filledBallotPaperObject,
   zodErrorToResponse400,
-  type FilledBallotPaper,
+  type EncryptedFilledBallotPaper,
 } from '@repo/votura-validators';
-import { PrivateKey } from '@votura/votura-crypto/index';
+import { KeyPair } from '@votura/votura-crypto/index';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import {
+  areInvalidVotesAllowedInBP,
   checkBallotPaperIsVotable,
   getBallotPaperEncryptionKeys,
   getBallotPaperMaxVotes,
-  getBallotPaperSectionCount,
+  getBallotPaperSectionIds,
 } from '../../services/ballotPapers.service.js';
 import {
   getBPSMaxVotesForBP,
@@ -18,7 +20,6 @@ import {
 } from '../../services/ballotPaperSections.service.js';
 import { checkVoterMayVoteOnBallotPaper } from '../../services/voters.service.js';
 import { setsEqual } from '../../utils.js';
-import { BallotDecryption, type DecryptedSectionResult } from '../voteTallying/ballotDecryption.js';
 import {
   isBodyCheckValidationError,
   type BodyCheckValidationError,
@@ -41,8 +42,8 @@ export interface VoteValidationError extends BodyCheckValidationError {
  */
 const validateRequestBody = async (
   body: unknown,
-): Promise<FilledBallotPaper | VoteValidationError> => {
-  const { data, error, success } = await filledBallotPaperObject.safeParseAsync(body);
+): Promise<EncryptedFilledBallotPaper | VoteValidationError> => {
+  const { data, error, success } = await encryptedFilledBallotPaperObject.safeParseAsync(body);
 
   if (!success) {
     return {
@@ -93,17 +94,17 @@ const validateElectionIsVotable = async (
 };
 
 /**
- * Check if the count of sections in the filled ballot paper matches the expected count.
+ * Check if the sections in the filled ballot paper match the expected sections.
  * @param data The filled ballot paper to validate.
  * @returns A validation error if the structure is invalid, otherwise null.
  */
 const validateBallotPaperStructure = async (
-  data: FilledBallotPaper,
+  data: EncryptedFilledBallotPaper,
 ): Promise<VoteValidationError | null> => {
-  const expectedSectionCount = await getBallotPaperSectionCount(data.ballotPaperId);
-  const actualSectionCount = Object.keys(data.sections).length;
+  const expectedSectionIds = await getBallotPaperSectionIds(data.ballotPaperId);
+  const actualSectionIds = Object.keys(data.sections);
 
-  if (actualSectionCount !== expectedSectionCount) {
+  if (!setsEqual(new Set(expectedSectionIds), new Set(actualSectionIds))) {
     return {
       status: HttpStatusCode.badRequest,
       message: VoteValidationErrorMessage.invalidVote,
@@ -115,35 +116,62 @@ const validateBallotPaperStructure = async (
 
 /**
  * Extracts candidate IDs from votes, excluding special options 'noVote' and 'invalid'.
+ * If candidate IDs are inconsistent across votes, returns null.
  * @param votes Array of vote objects from which to extract candidate IDs.
- * @returns A set of unique candidate IDs.
+ * @returns A set of unique candidate IDs or null if inconsistencies are found.
  */
 const extractCandidateIds = (
-  votes: FilledBallotPaper['sections'][string]['votes'],
-): Set<string> => {
+  votes: EncryptedFilledBallotPaper['sections'][string]['votes'],
+): Set<string> | null => {
   const excludedKeys: string[] = [
     filledBallotPaperDefaultVoteOption.noVote,
     filledBallotPaperDefaultVoteOption.invalid,
   ];
 
-  return new Set(
-    votes.flatMap((vote) => Object.keys(vote).filter((key) => !excludedKeys.includes(key))),
+  const firstVote = votes[0];
+  if (firstVote === undefined) {
+    // This case is not reachable due to length checks in validateSectionVotes()
+    // Also validateSectionVotes() makes sure the array is not sparsely populated
+    throw new Error('Votes Array is empty, cannot extract candidate IDs.');
+  }
+  const firstVoteCandidateIds = new Set(
+    Object.keys(firstVote).filter((key) => !excludedKeys.includes(key)),
   );
+
+  for (let i = 1; i < votes.length; i++) {
+    const currentVote = votes[i];
+    if (currentVote === undefined) {
+      // This case should not be reachable because validateSectionVotes() makes sure the array is not sparsely populated
+      return null;
+    }
+    const currentVoteCandidateIds = new Set(
+      Object.keys(currentVote).filter((key) => !excludedKeys.includes(key)),
+    );
+    if (!setsEqual(firstVoteCandidateIds, currentVoteCandidateIds)) {
+      return null;
+    }
+  }
+
+  return firstVoteCandidateIds;
 };
 
 /**
  * Check if each section's votes are equal to the maximum allowed votes in that section (noVote and invalid votes count towards this),
  * and if the candidate IDs in the votes match the expected candidate IDs for that section.
- * @param filledBallotPaper The filled ballot paper to validate.
+ * Also makes sure that the votes array in each section is not sparsely populated.
+ * @param encryptedFilledBallotPaper The encrypted filled ballot paper to validate.
  * @returns A validation error if any section's votes are invalid, otherwise null.
  */
 const validateSectionVotes = async (
-  filledBallotPaper: FilledBallotPaper,
+  encryptedFilledBallotPaper: EncryptedFilledBallotPaper,
 ): Promise<VoteValidationError | null> => {
-  const maxVotesPerSection = await getBPSMaxVotesForBP(filledBallotPaper.ballotPaperId);
+  const maxVotesPerSection = await getBPSMaxVotesForBP(encryptedFilledBallotPaper.ballotPaperId);
 
-  for (const [sectionId, section] of Object.entries(filledBallotPaper.sections)) {
-    const votesInSection = section.votes;
+  for (const [sectionId, section] of Object.entries(encryptedFilledBallotPaper.sections)) {
+    // mutate the votes array so that it is not sparsely populated
+    const votesInSection = section.votes.filter((v) => v !== undefined && v !== null);
+    section.votes = votesInSection;
+
     const expectedMaxVotes = maxVotesPerSection[sectionId]?.maxVotes;
 
     // Validate vote count
@@ -156,6 +184,13 @@ const validateSectionVotes = async (
 
     // Validate candidate IDs
     const candidateIdsInSection = extractCandidateIds(votesInSection);
+    if (candidateIdsInSection === null) {
+      // candidate IDs are not the same across all votes
+      return {
+        status: HttpStatusCode.badRequest,
+        message: VoteValidationErrorMessage.invalidVote,
+      };
+    }
     const expectedCandidateIds = await getCandidateIdsForBallotPaperSection(sectionId);
 
     if (!setsEqual(candidateIdsInSection, new Set(expectedCandidateIds))) {
@@ -174,11 +209,13 @@ const validateSectionVotes = async (
  * @param ballotPaperId The ID of the ballot paper to decrypt.
  * @returns A promise that resolves to a BallotDecryption instance.
  */
-const createBallotDecryption = async (ballotPaperId: string): Promise<BallotDecryption> => {
+const createBallotDecryption = async (
+  ballotPaperId: string,
+): Promise<BallotPaperSectionDecryption> => {
   const { pubKey, privKey, primeP, primeQ, generator } =
     await getBallotPaperEncryptionKeys(ballotPaperId);
 
-  const privKeyObj = new PrivateKey(
+  const keyPair = new KeyPair(
     BigInt(primeP),
     BigInt(primeQ),
     BigInt(generator),
@@ -186,21 +223,25 @@ const createBallotDecryption = async (ballotPaperId: string): Promise<BallotDecr
     BigInt(privKey),
   );
 
-  return new BallotDecryption(privKeyObj);
+  return new BallotPaperSectionDecryption(keyPair.privateKey, keyPair.publicKey);
 };
 
 /**
- * Check if the number of invalid votes in a section is either zero or equals the total number of votes in that section. If not, the section is invalid.
+ * Check if the number of invalid votes in a section is either zero or equals the total number of votes in that section.
+ * Also make sure that invalid votes are only present if they are allowed.
+ * If not, the section is invalid.
  * @param votesInSection The decrypted votes in the section.
  * @param sectionVoteCount The total number of votes in the section.
- * @returns True if the invalid vote count is valid, otherwise false.
+ * @param invalidVotesAllowed Whether invalid votes are allowed in the election the votes belong to. True if allowed.
+ * @returns True if the invalid vote count is valid and invalid votes are only used if they are allowed, otherwise false.
  */
 const validateSectionInvalidVotes = (
-  votesInSection: DecryptedSectionResult,
+  votesInSection: DecryptedSection,
   sectionVoteCount: number,
+  invalidVotesAllowed: boolean,
 ): boolean => {
   const { invalidCount } = votesInSection;
-  return invalidCount === 0 || invalidCount === sectionVoteCount;
+  return invalidCount === 0 || (invalidVotesAllowed && invalidCount === sectionVoteCount);
 };
 
 /**
@@ -210,7 +251,7 @@ const validateSectionInvalidVotes = (
  * @returns True if all candidates are within the vote limits, otherwise false.
  */
 const validateSectionCandidateVoteLimits = (
-  votesInSection: DecryptedSectionResult,
+  votesInSection: DecryptedSection,
   maxVotesPerCandidate: number,
 ): boolean => {
   return Object.values(votesInSection.candidateResults).every(
@@ -220,34 +261,49 @@ const validateSectionCandidateVoteLimits = (
 
 /**
  * Decrypts the filled ballot paper using the provided BallotDecryption instance.
+ * In this step, it is also checked, that the proofs of the ciphertexts are valid.
  * Validates each section for invalid votes consistency (either all votes are invalid or none are)
  * and candidate vote limits (no candidate exceeds maxVotesPerCandidate).
- * @param filledBallotPaper The filled ballot paper data.
+ * @param encryptedFilledBallotPaper The encrypted filled ballot paper data.
  * @param decryption The ballot decryption instance.
  * @returns The processed and validated sections, each containing the decrypted vote results, or an error.
  */
 const processAndValidateSections = async (
-  filledBallotPaper: FilledBallotPaper,
-  decryption: BallotDecryption,
-): Promise<{ sections: DecryptedSectionResult[]; error?: VoteValidationError }> => {
-  const maxVotesPerSection = await getBPSMaxVotesForBP(filledBallotPaper.ballotPaperId);
+  encryptedFilledBallotPaper: EncryptedFilledBallotPaper,
+  decryption: BallotPaperSectionDecryption,
+): Promise<{ sections: DecryptedSection[]; error?: VoteValidationError }> => {
+  const maxVotesPerSection = await getBPSMaxVotesForBP(encryptedFilledBallotPaper.ballotPaperId);
   const maxVotesValues = Object.values(maxVotesPerSection).map((v) => v.maxVotes);
 
   decryption.calculateLookupTable(Math.max(...maxVotesValues));
 
-  const votesInSections: DecryptedSectionResult[] = [];
+  const votesInSections: DecryptedSection[] = [];
 
-  for (const [sectionId, section] of Object.entries(filledBallotPaper.sections)) {
+  for (const [sectionId, section] of Object.entries(encryptedFilledBallotPaper.sections)) {
     const votesInSection = decryption.decryptSection(section, sectionId);
-    const maxVotesPerCandidate = maxVotesPerSection[sectionId]?.maxVotesPerCandidate;
+    if (typeof votesInSection === 'string') {
+      // Decryption or verification failed
+      return {
+        sections: [],
+        error: {
+          status: HttpStatusCode.badRequest,
+          message: VoteValidationErrorMessage.invalidVote,
+        },
+      };
+    }
 
+    const maxVotesPerCandidate = maxVotesPerSection[sectionId]?.maxVotesPerCandidate;
     if (maxVotesPerCandidate === undefined) {
       // should never happen but typescript doesn't know that
       throw new Error(`maxVotesPerCandidate is undefined for section ${sectionId}`);
     }
 
     // Validate invalid votes consistency (either all votes are invalid or none are)
-    if (!validateSectionInvalidVotes(votesInSection, section.votes.length)) {
+    // and that invalid votes are only present if allowed
+    const invalidVotesAllowed = await areInvalidVotesAllowedInBP(
+      encryptedFilledBallotPaper.ballotPaperId,
+    );
+    if (!validateSectionInvalidVotes(votesInSection, section.votes.length, invalidVotesAllowed)) {
       return {
         sections: [],
         error: {
@@ -281,7 +337,7 @@ const processAndValidateSections = async (
  * @returns The aggregated votes per candidate and invalid count.
  */
 const aggregateVotes = (
-  decryptedVotesInSections: DecryptedSectionResult[],
+  decryptedVotesInSections: DecryptedSection[],
 ): { totalVotesPerCandidate: Record<string, number>; totalInvalidCount: number } => {
   const totalVotesPerCandidate: Record<string, number> = {};
   let totalInvalidCount = 0;
@@ -303,17 +359,19 @@ const aggregateVotes = (
  * Validates global invalid votes consistency (either all votes are invalid or none),
  * global candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper)
  * and total votes against maxVotes of the ballot paper.
- * @param filledBallotPaper The filled ballot paper data.
+ * @param encryptedFilledBallotPaper The encrypted filled ballot paper data.
  * @param totalVotesPerCandidate A record of total votes per candidate across all sections.
  * @param totalInvalidCount The total invalid vote count.
  * @returns A validation error if any checks fail, or null if all checks pass.
  */
 const validateAggregatedResults = async (
-  filledBallotPaper: FilledBallotPaper,
+  encryptedFilledBallotPaper: EncryptedFilledBallotPaper,
   totalVotesPerCandidate: Record<string, number>,
   totalInvalidCount: number,
 ): Promise<VoteValidationError | null> => {
-  const totalVoteCount = Object.values(filledBallotPaper.sections).flatMap((s) => s.votes).length;
+  const totalVoteCount = Object.values(encryptedFilledBallotPaper.sections).flatMap(
+    (s) => s.votes,
+  ).length;
 
   // Validate ballot paper invalid votes consistency (either all votes are invalid or none are)
   if (totalInvalidCount !== 0 && totalInvalidCount !== totalVoteCount) {
@@ -324,7 +382,7 @@ const validateAggregatedResults = async (
   }
 
   const { maxVotes: maxVotesBP, maxVotesPerCandidate: maxVotesPerCandidateBP } =
-    await getBallotPaperMaxVotes(filledBallotPaper.ballotPaperId);
+    await getBallotPaperMaxVotes(encryptedFilledBallotPaper.ballotPaperId);
   let totalVotesForAllCandidates = 0;
 
   // Validate ballot paper candidate vote limits (no candidate exceeds maxVotesPerCandidate of the ballot paper)
@@ -351,17 +409,17 @@ const validateAggregatedResults = async (
 };
 
 /**
- * Checks and validates a filled ballot paper.
+ * Checks and validates an encrypted filled ballot paper.
  * If any check fails, an appropriate error is returned.
  * If all checks pass, the validated filled ballot paper is returned and can be safely stored.
  * @param body The request body containing the filled ballot paper.
  * @param voterId The ID of the voter submitting the ballot paper.
  * @returns The validated filled ballot paper or a validation error.
  */
-export const validateFilledBallotPaper = async (
+export const validateEncryptedFilledBallotPaper = async (
   body: unknown,
   voterId: string,
-): Promise<FilledBallotPaper | VoteValidationError> => {
+): Promise<EncryptedFilledBallotPaper | VoteValidationError> => {
   // Step 1: Validate request body schema
   const bodyValidationResult = await validateRequestBody(body);
   if (isBodyCheckValidationError(bodyValidationResult)) {
@@ -375,13 +433,13 @@ export const validateFilledBallotPaper = async (
     return permissionError;
   }
 
-  // Step 3: Validate if the election is votable (i.e., started, not ended, and frozen)
+  // Step 3: Validate if the election is votable (started, not ended, and frozen)
   const electionError = await validateElectionIsVotable(data.ballotPaperId);
   if (electionError !== null) {
     return electionError;
   }
 
-  // Step 4: Validate ballot paper structure (i.e., correct number of sections)
+  // Step 4: Validate ballot paper structure (only expected sections are included)
   const structureError = await validateBallotPaperStructure(data);
   if (structureError !== null) {
     return structureError;
@@ -393,9 +451,10 @@ export const validateFilledBallotPaper = async (
     return sectionError;
   }
 
-  // Step 6: Process and validate sections with decryption (either all votes are invalid or none, no candidate exceeds maxVotesPerCandidate)
+  // Step 6: Process and validate sections with decryption
+  // (either all votes are invalid or none, invalid votes are only present if allowed, no candidate exceeds maxVotesPerCandidate, all ciphertext proofs are valid)
   // maxVotes of the Section does not need to be checked here, as the section only contains as many votes (including 'noVote') as maxVotes, as assured by step 5
-  const decryption: BallotDecryption = await createBallotDecryption(data.ballotPaperId);
+  const decryption: BallotPaperSectionDecryption = await createBallotDecryption(data.ballotPaperId);
   const { sections: votesInSections, error: processingError } = await processAndValidateSections(
     data,
     decryption,

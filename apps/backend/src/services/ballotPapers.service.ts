@@ -1,6 +1,7 @@
 import { db } from '@repo/db';
 import type {
   BallotPaper as DBBallotPaper,
+  BallotPaperSection as DBBallotPaperSection,
   Election as DBElection,
   User as DBUser,
 } from '@repo/db/types';
@@ -103,16 +104,16 @@ export const getBallotPaperMaxVotes = async (
   return { maxVotes: ballotPaper.maxVotes, maxVotesPerCandidate: ballotPaper.maxVotesPerCandidate };
 };
 
-export const getBallotPaperSectionCount = async (
+export const getBallotPaperSectionIds = async (
   ballotPaperId: Selectable<DBBallotPaper>['id'],
-): Promise<number> => {
+): Promise<Selectable<DBBallotPaperSection>['id'][]> => {
   const result = await db
     .selectFrom('ballotPaperSection')
     .where('ballotPaperId', '=', ballotPaperId)
-    .select(db.fn.count<number>('id').as('count'))
-    .executeTakeFirstOrThrow();
+    .select('id')
+    .execute();
 
-  return result.count;
+  return result.map((section) => section.id);
 };
 
 export const getBallotPaperEncryptionKeys = async (
@@ -151,6 +152,24 @@ export const getBallotPaperEncryptionKeys = async (
     primeQ: string;
     generator: string;
   };
+};
+
+/**
+ * Check if invalid votes are allowed in the ballot paper.
+ * @param ballotPaperId The ID of the ballot paper to check.
+ * @returns True if invalid votes are allowed, false otherwise.
+ */
+export const areInvalidVotesAllowedInBP = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('ballotPaper')
+    .innerJoin('election', 'ballotPaper.electionId', 'election.id')
+    .where('ballotPaper.id', '=', ballotPaperId)
+    .select('election.allowInvalidVotes')
+    .executeTakeFirstOrThrow();
+
+  return result.allowInvalidVotes;
 };
 
 /**

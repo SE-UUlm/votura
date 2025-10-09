@@ -1,10 +1,15 @@
-import type { SelectableVotingElection } from '@repo/votura-validators';
+import {
+  response4XXObject,
+  type Response400,
+  type Response403,
+  type SelectableVotingElection,
+} from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { getSelectableVotingElectionForVoter } from '../services/voters.service.js';
 import { persistVote } from '../services/votes.service.js';
 import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
-import { validateFilledBallotPaper } from './bodyChecks/voteChecks.js';
+import { validateEncryptedFilledBallotPaper } from './bodyChecks/voteChecks.js';
 
 export const getElectionsForVoting = async (
   _req: Request,
@@ -19,19 +24,21 @@ export const getElectionsForVoting = async (
 
 export const castVote = async (
   req: Request,
-  res: Response<void, { voterId: string }>,
+  res: Response<void | Response400 | Response403, { voterId: string }>,
 ): Promise<void> => {
   const voterId = res.locals.voterId;
 
-  const validationResult = await validateFilledBallotPaper(req.body, voterId);
+  const validationResult = await validateEncryptedFilledBallotPaper(req.body, voterId);
   if (isBodyCheckValidationError(validationResult)) {
-    res.status(validationResult.status).send();
+    res
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
   // If we reach here, the filled ballot paper is valid and can be stored
-  const filledBallotPaper = validationResult;
-  await persistVote(voterId, filledBallotPaper);
+  const encryptedFilledBallotPaper = validationResult;
+  await persistVote(voterId, encryptedFilledBallotPaper);
 
   res.sendStatus(HttpStatusCode.noContent);
 };
