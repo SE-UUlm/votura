@@ -137,7 +137,7 @@ export interface User {
 export interface Vote {
   createdAt: Generated<Timestamp>;
   electionId: string;
-  filledBallotPaper: Json;
+  encryptedFilledBallotPaper: Json;
   id: Generated<string>;
   modifiedAt: Generated<Timestamp>;
   voterId: string | null;

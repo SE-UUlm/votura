@@ -44,7 +44,7 @@ describe('BallotPaperSectionDecryption tests', () => {
 
   beforeAll(async () => {
     keyPair = await getKeyPair(20);
-    decryption = new BallotPaperSectionDecryption(keyPair.privateKey);
+    decryption = new BallotPaperSectionDecryption(keyPair.privateKey, keyPair.publicKey);
   });
 
   it('should throw if lookup table not initialized', () => {
@@ -80,7 +80,7 @@ describe('BallotPaperSectionDecryption tests', () => {
 
     // Accessing private method via bracket notation for testing purposes
     // eslint-disable-next-line @typescript-eslint/dot-notation
-    const ciphertexts = decryption?.['extractAllCiphertexts'](
+    const ciphertexts = decryption?.['extractAndVerifyAllCiphertexts'](
       dummySection,
       extractCandidateIds(dummySection),
     );
@@ -115,7 +115,7 @@ describe('BallotPaperSectionDecryption tests', () => {
     expect(() => {
       // Accessing private method via bracket notation for testing purposes
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption?.['extractAllCiphertexts'](
+      decryption?.['extractAndVerifyAllCiphertexts'](
         sectionWithMissingVoteData,
         extractCandidateIds(dummySection),
       );

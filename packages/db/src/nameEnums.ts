@@ -103,7 +103,7 @@ export enum VoterRegisterColumnName {
 }
 
 export enum VoteColumnName {
-  filledBallotPaper = 'filledBallotPaper',
+  encryptedFilledBallotPaper = 'encryptedFilledBallotPaper',
   electionId = 'electionId',
   voterId = 'voterId',
 }

@@ -119,7 +119,7 @@ entity "vote" as votes #728376 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    filledBallotPaper : JSONB
+    encryptedFilledBallotPaper : JSONB
     --
     * electionId : Election.id <<FK>>
     ' if the vote isn't secret, voter can be saved
