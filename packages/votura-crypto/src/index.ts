@@ -411,18 +411,19 @@ export class ZeroKnowledgeProof {
 
     const partsToHash: string[] = [];
 
-    simulatedZKPs.forEach((proof, index) => {
-      if (index === realIndex) {
+    for (let i = 0; i <= simulatedZKPs.length; i++) {
+      if (i === realIndex) {
         partsToHash.push(commitmentA.toString());
         partsToHash.push(commitmentB.toString());
       }
-      partsToHash.push(proof.commitment[0].toString());
-      partsToHash.push(proof.commitment[1].toString());
-    });
-
-    if (partsToHash.length === realIndex) {
-      partsToHash.push(commitmentA.toString());
-      partsToHash.push(commitmentB.toString());
+      if (i < simulatedZKPs.length) {
+        const proof = simulatedZKPs[i];
+        if (!proof) {
+          throw new Error(`Missing simulated proof at index ${i}`);
+        }
+        partsToHash.push(proof.commitment[0].toString());
+        partsToHash.push(proof.commitment[1].toString());
+      }
     }
 
     const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
