@@ -363,8 +363,13 @@ describe('ZeroKnowledgeProof', () => {
   voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
     const { publicKey } = keyPair;
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
+    const encodedPlaintexts = plaintexts.map((_, i) =>
+      modPow(publicKey.getGenerator(), i === realIndex ? 1n : 0n, publicKey.getPrimeP()),
+    );
+    const ciphertexts: Ciphertext[] = encodedPlaintexts.map(
+      (ep) => publicKey.encrypt(ep, randomness)[0],
+    );
 
     const zkp = new ZeroKnowledgeProof(publicKey);
     const debug = new TestZKP(publicKey);
@@ -482,7 +487,7 @@ class TestZKP {
     const disjunctiveZKPs: ZKProof[] = [];
 
     ciphertexts.forEach((ciphertext, index) => {
-      const choice = 1n; // = modPow(this.pk.generator, 0);
+      const choice = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
       if (index !== realIndex) {
         console.warn(
           `simulate proof (index = ${index}, ciphertext: [${ciphertext[0]}, ${ciphertext[1]}])`,
@@ -605,8 +610,8 @@ class TestZKP {
     }
 
     ciphertexts.forEach((ciphertext, index) => {
-      const choice0 = 1n; // = modPow(this.pk.generator, 0);
-      const choice1 = this.pk.getGenerator(); // = modPow(this.pk.generator, 1);
+      const choice0 = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
+      const choice1 = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP()); // = generator
       const zkProof = zkProofs[index];
       if (zkProof === undefined) {
         console.warn(`DEBUG: Invalid input: zkProof[${index}] is undefined`);
