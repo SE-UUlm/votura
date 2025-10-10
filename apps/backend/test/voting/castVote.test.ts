@@ -335,7 +335,7 @@ describe(`POST /voting/castVote`, () => {
     }
   }, 60_000 /* 60 seconds timeout */);
 
-  // invalid request body (does not meet schema specifications)
+  // Step 1: invalid request body (does not meet schema specifications)
   it('400: request body does not meet zod schema specifications', async () => {
     const res = await request(app)
       .post(submitVotePath)
@@ -350,7 +350,7 @@ describe(`POST /voting/castVote`, () => {
     expect(parseResult.success).toBe(true);
   });
 
-  // election is not votable (not started yet, or already ended, not frozen)
+  // Step 3: election is not votable (not started yet, or already ended, not frozen)
   it('403: election is not votable (not started yet)', async () => {
     if (unvotableElectionPubKey === null || unvotableBallotPaper === null) {
       throw new Error('Unvotable election or ballot paper is null');
@@ -388,7 +388,7 @@ describe(`POST /voting/castVote`, () => {
     expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.electionNotVotable);
   });
 
-  // sent ballot paper does not contain expected sections
+  // Step 4: sent ballot paper does not contain expected sections
   it('400: sent ballot paper does not contain expected sections', async () => {
     if (
       invalidAllowedElectionPubKey === null ||
@@ -444,8 +444,8 @@ describe(`POST /voting/castVote`, () => {
     expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
   });
 
-  // sent section does not contain expected amount of votes
-  it('400: A section does not contain expected amount of votes', async () => {
+  // Step 5.1: sent section does not contain expected amount of votes
+  it('400: section does not contain expected amount of votes', async () => {
     if (
       invalidAllowedElectionPubKey === null ||
       invalidAllowedBallotPaper === null ||
@@ -511,28 +511,942 @@ describe(`POST /voting/castVote`, () => {
     expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
   });
 
-  // sent sections candidates are not the same across all votes - make sure the checks can deal with sparsely populated arrays
+  // Step 5.2: sent sections candidates are not the same across all votes
+  it('400: section contains votes with different candidates', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
 
-  // sent section does not contain expected candidateIds
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
 
-  // sent section failed decryption
+    // remove candidate 2 from section 1 vote 1
+    const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
+    if (section1 === undefined) throw new Error('Test setup failed');
+    const vote1 = section1.votes[0];
+    if (vote1 === undefined) throw new Error('Test setup failed');
+    delete vote1[invalidAllowedCandidate2.id];
 
-  // sent section contains invalid votes, but invalid votes are not allowed
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
 
-  // sent section failed invalid vote consistency
+  // Step 5.3: sent section does not contain expected candidateIds
+  it('400: section does not contain the expected candidate IDs', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
 
-  // sent section candidate exceeds maxVotesPerCandidate
+    // candidates the same across all votes but Ids are not the ones linked to the sections
+    const randomCandidate1 = randomUUID();
+    const randomCandidate2 = randomUUID();
 
-  // sent ballot paper has invalid and valid sections
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [randomCandidate1]: 1,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [randomCandidate1]: 0,
+          [randomCandidate2]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
 
-  // candidate violates maxVotesPerCandidate of ballot paper (but not of sections)
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
 
-  // maxVotes of ballot paper is violated
+  // Step 6.1: sent section failed decryption
+  it('400: section failed decryption', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    // Tamper with the ciphertext to cause a decryption failure
+    const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
+    if (section1 === undefined) throw new Error('Test setup failed');
+    const vote = section1.votes[0];
+    if (vote === undefined) throw new Error('Test setup failed');
+    const candidateVote = vote[invalidAllowedCandidate1.id];
+    if (candidateVote === undefined) throw new Error('Test setup failed');
+    candidateVote.alpha = '1345654';
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 6.2: sent section contains invalid votes, but invalid votes are not allowed
+  it('400: section contains invalid votes, but invalid votes are not allowed', async () => {
+    if (
+      invalidForbiddenElectionPubKey === null ||
+      invalidForbiddenBallotPaper === null ||
+      invalidForbiddenBallotPaperSection1 === null ||
+      invalidForbiddenBallotPaperSection2 === null ||
+      invalidForbiddenCandidate1 === null ||
+      invalidForbiddenCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidForbiddenElectionPubKey,
+      invalidForbiddenBallotPaper.id,
+      invalidForbiddenBallotPaperSection1.id,
+      invalidForbiddenBallotPaperSection2.id,
+      [
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 1,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+      ],
+      [
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 6.3: sent section failed invalid vote consistency
+  it('400: section failed invalid vote consistency check', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          // invalid vote
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 6.4: sent section candidate exceeds maxVotesPerCandidate
+  it('400: A section candidate exceeds maxVotesPerCandidate', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          // 3 votes for candidate 1, 2 are allowed
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 7.1: sent ballot paper has invalid and valid sections
+  it('400: Ballot paper has invalid and valid sections', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 1,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 7.2: candidate violates maxVotesPerCandidate of ballot paper (but not of sections)
+  it('400: Candidate violates maxVotesPerCandidate of ballot paper', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        // 3 Votes allowed per candidate, 4 submitted
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
+
+  // Step 7.3: maxVotes of ballot paper is violated
+  it('400: maxVotes of ballot paper is violated', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        // 5 votes allowd across all sections, 6 submitted
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.invalidVote);
+  });
 
   // valid vote
+  it('204: valid vote is cast successfully', async () => {
+    if (
+      invalidForbiddenElectionPubKey === null ||
+      invalidForbiddenBallotPaper === null ||
+      invalidForbiddenBallotPaperSection1 === null ||
+      invalidForbiddenBallotPaperSection2 === null ||
+      invalidForbiddenCandidate1 === null ||
+      invalidForbiddenCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
 
-  // voter is not allowed to vote on the given ballot paper (because the ballot paper does not exist, or the voter is not assigned to the ballot paper, or the voter has already voted)
-  //it('403: voter is not allowed to vote on the given ballot paper as they already voted', async () => {
-  //
-  //});
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidForbiddenElectionPubKey,
+      invalidForbiddenBallotPaper.id,
+      invalidForbiddenBallotPaperSection1.id,
+      invalidForbiddenBallotPaperSection2.id,
+      [
+        {
+          [invalidForbiddenCandidate1.id]: 1,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidForbiddenCandidate1.id]: 0,
+          [invalidForbiddenCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const res = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res.statusCode).toBe(HttpStatusCode.noContent);
+  });
+
+  // Step 2: voter is not allowed to vote on the given ballot paper (because the ballot paper does not exist, or the voter is not assigned to the ballot paper, or the voter has already voted)
+  it('403: voter is not allowed to vote on the given ballot paper as they already voted', async () => {
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null ||
+      invalidAllowedBallotPaperSection2 === null ||
+      invalidAllowedCandidate1 === null ||
+      invalidAllowedCandidate2 === null
+    ) {
+      throw new Error('Test setup failed');
+    }
+
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      [
+        {
+          [invalidAllowedCandidate1.id]: 1,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+      [
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+        {
+          [invalidAllowedCandidate1.id]: 0,
+          [invalidAllowedCandidate2.id]: 0,
+          [filledBallotPaperDefaultVoteOption.noVote]: 1,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    // First vote
+    const res1 = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res1.statusCode).toBe(HttpStatusCode.noContent);
+
+    // Second vote
+    const res2 = await request(app)
+      .post(submitVotePath)
+      .set('Authorization', `Bearer ${voterToken}`)
+      .send(ballotPaper);
+    expect(res2.statusCode).toBe(HttpStatusCode.forbidden);
+    expect(res2.type).toBe('application/json');
+    const parseResult = response403Object.safeParse(res2.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(VoteValidationErrorMessage.notAllowedToVote);
+  });
 });
