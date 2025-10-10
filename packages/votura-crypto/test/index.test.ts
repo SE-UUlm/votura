@@ -5,7 +5,7 @@ import { describe, expect } from 'vitest';
 import {
   type Ciphertext,
   getKeyPair,
-  PublicKey,
+  type PublicKey,
   Tallying,
   ZeroKnowledgeProof,
   type ZKProof,
@@ -493,7 +493,11 @@ class TestZKP {
     ciphertexts.forEach((ciphertext, index) => {
       const choice = 1n; // = modPow(this.pk.generator, 0);
       if (index !== realIndex) {
-        console.warn(`simulate proof (index = ${index}, ciphertext: ${ciphertext})`);
+        if (!ciphertext) {
+          console.warn(`guard: this should never happen`);
+        } else {
+          console.warn(`simulate proof (index = ${index}, ciphertext: ${ciphertext})`);
+        }
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
       }
@@ -674,7 +678,11 @@ class TestZKP {
     console.warn(
       `...and random challenge = ${zkProof.challenge} and response = ${zkProof.response}`,
     );
-    console.warn(`...is correct for ciphertext = ${ciphertext} ?`);
+    if (!ciphertext) {
+      console.warn(`guard: this should never happen`);
+    } else {
+      console.warn(`...is correct for ciphertext = ${ciphertext} ?`);
+    }
 
     const check1a = modPow(this.pk.getGenerator(), zkProof.response, this.pk.getPrimeP());
     const check1b = modMultiply(
