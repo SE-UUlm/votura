@@ -32,7 +32,7 @@ export const castVote = async (
   if (isBodyCheckValidationError(validationResult)) {
     res
       .status(validationResult.status)
-      .json(response4XXObject.parse({ message: validationResult.message }));
+      .json(response4XXObject.parse({ message: validationResult.message.slice(0, 256) }));
     return;
   }
 
