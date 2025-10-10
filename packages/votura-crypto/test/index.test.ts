@@ -494,7 +494,7 @@ class TestZKP {
       const choice = 1n; // = modPow(this.pk.generator, 0);
       if (index !== realIndex) {
         console.warn(
-          `simulate proof (index = ${index}, ciphertext: [${ciphertext[0]}, ${ciphertext[1]}])`
+          `simulate proof (index = ${index}, ciphertext: [${ciphertext[0]}, ${ciphertext[1]}])`,
         );
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
