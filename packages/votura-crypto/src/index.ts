@@ -36,12 +36,12 @@ export class PublicKey {
    * Encrypts the given encoded plaintext using the public key.
    * An encoded plaintext is generator ^ (number of votes) mod primeP.
    * @param encodedPlaintext The encoded plaintext to encrypt, must be in the range [1, primeP - 1]
-   * @param randomness The randomness to use for encryption, must be in the range [1, primeP - 2]. If not provided, a random value will be generated.
+   * @param randomness The randomness to use for encryption, must be in the range [1, primeQ - 2]. If not provided, a random value will be generated.
    * @returns The ciphertext and the randomness used for encryption.
    */
   public encrypt(
     encodedPlaintext: bigint,
-    randomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
+    randomness: bigint = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 1n),
   ): [Ciphertext, bigint] {
     if (encodedPlaintext === 0n) {
       throw Error('Cannot encrypt 0 with El Gamal!');
@@ -100,7 +100,7 @@ export class PrivateKey extends PublicKey {
   public decrypt(ciphertext: Ciphertext): bigint {
     return modMultiply(
       [
-        modPow(ciphertext[0], modAdd([this.primeQ, -this.privateKey], this.primeP), this.primeP),
+        modPow(ciphertext[0], modAdd([this.primeQ, -this.privateKey], this.primeQ), this.primeP),
         ciphertext[1],
       ],
       this.primeP,
@@ -113,7 +113,7 @@ export class PrivateKey extends PublicKey {
    * @returns The zero-knowledge proof.
    */
   public createDecryptionProof(ciphertext: Ciphertext): ZKProof {
-    const w = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 0n);
+    const w = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 1n);
 
     const commitmentA = modPow(this.generator, w, this.primeP);
     const commitmentB = modPow(ciphertext[0], w, this.primeP);
@@ -404,7 +404,7 @@ export class ZeroKnowledgeProof {
     realIndex: number,
     randomness: bigint,
   ): ZKProof {
-    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 0n);
+    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
 
     const commitmentA = modPow(this.pk.getGenerator(), w, this.pk.getPrimeP());
     const commitmentB = modPow(this.pk.getPublicKey(), w, this.pk.getPrimeP());
@@ -415,12 +415,9 @@ export class ZeroKnowledgeProof {
       if (index === realIndex) {
         partsToHash.push(commitmentA.toString());
         partsToHash.push(commitmentB.toString());
-        partsToHash.push(proof.commitment[0].toString());
-        partsToHash.push(proof.commitment[1].toString());
-      } else {
-        partsToHash.push(proof.commitment[0].toString());
-        partsToHash.push(proof.commitment[1].toString());
       }
+      partsToHash.push(proof.commitment[0].toString());
+      partsToHash.push(proof.commitment[1].toString());
     });
 
     if (partsToHash.length === realIndex) {
