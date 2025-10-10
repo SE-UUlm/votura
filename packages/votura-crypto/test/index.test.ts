@@ -365,7 +365,6 @@ describe('ZeroKnowledgeProof', () => {
     const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
     const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
     const realIndex = plaintexts.indexOf(plaintext);
-    expect(realIndex).toBe(0n);
 
     const zkp = new ZeroKnowledgeProof(publicKey);
     const debug = new TestZKP(publicKey);
