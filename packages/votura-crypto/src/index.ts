@@ -415,11 +415,18 @@ export class ZeroKnowledgeProof {
       if (index === realIndex) {
         partsToHash.push(commitmentA.toString());
         partsToHash.push(commitmentB.toString());
+        partsToHash.push(proof.commitment[0].toString());
+        partsToHash.push(proof.commitment[1].toString());
       } else {
         partsToHash.push(proof.commitment[0].toString());
         partsToHash.push(proof.commitment[1].toString());
       }
     });
+
+    if (partsToHash.length === realIndex) {
+      partsToHash.push(commitmentA.toString());
+      partsToHash.push(commitmentB.toString());
+    }
 
     const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
 
