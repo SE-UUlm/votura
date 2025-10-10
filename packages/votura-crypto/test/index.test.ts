@@ -409,14 +409,6 @@ describe('ZeroKnowledgeProof', () => {
       challenge: proof.challenge,
       response: index === 3 ? (proof.response + 1n) % publicKey.getPrimeQ() : proof.response,
     }));
-    let tempString = `invalidProofs4 consist of... `;
-    invalidProofs4.forEach((proof, index) => {
-      tempString += `(index: ${index}) `;
-      tempString += `commitment: [${proof.commitment[0]}, ${proof.commitment[1]}] `;
-      tempString += `challenge: ${proof.challenge} `;
-      tempString += `response: ${proof.response} `;
-    });
-    console.warn(tempString);
     const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
     expect(isValid4).toBe(false);
   });

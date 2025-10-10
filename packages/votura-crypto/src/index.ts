@@ -283,9 +283,14 @@ export class ZeroKnowledgeProof {
       return false;
     }
 
-    ciphertexts.forEach((ciphertext, index) => {
-      const choice0 = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
-      const choice1 = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP()); // = generator
+    const choice0 = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
+    const choice1 = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP()); // = generator
+    for (let index = 0; index < ciphertexts.length; index++) {
+      const ciphertext = ciphertexts[index];
+      if (ciphertext === undefined) {
+        console.warn(`Invalid input: ciphertext[${index}] is undefined`);
+        return false;
+      }
       const zkProof = zkProofs[index];
       if (zkProof === undefined) {
         console.warn(`Invalid input: zkProof[${index}] is undefined`);
@@ -298,7 +303,7 @@ export class ZeroKnowledgeProof {
         console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
-    });
+    }
 
     const partsToHash: string[] = [];
 
