@@ -1,5 +1,5 @@
 import { modAdd, modInv, modMultiply, modPow, randBetween } from 'bigint-crypto-utils';
-import { getFiatShamirChallenge } from './utils.js';
+import { getFiatShamirChallenge } from '../src/utils.js';
 // import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { describe, expect } from 'vitest';
 import {
