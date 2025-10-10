@@ -131,7 +131,7 @@ const extractCandidateIds = (
   const firstVote = votes[0];
   if (firstVote === undefined) {
     // This case is not reachable due to length checks in validateSectionVotes()
-    // Also validateSectionVotes() makes sure the array is not sparsely populated
+    // Also the Zod schema makes sure the array is not sparsely populated
     throw new Error('Votes Array is empty, cannot extract candidate IDs.');
   }
   const firstVoteCandidateIds = new Set(
@@ -141,7 +141,7 @@ const extractCandidateIds = (
   for (let i = 1; i < votes.length; i++) {
     const currentVote = votes[i];
     if (currentVote === undefined) {
-      // This case should not be reachable because validateSectionVotes() makes sure the array is not sparsely populated
+      // This case should not be reachable because the Zod schema makes sure the array is not sparsely populated
       return null;
     }
     const currentVoteCandidateIds = new Set(
@@ -158,7 +158,6 @@ const extractCandidateIds = (
 /**
  * Check if each section's votes are equal to the maximum allowed votes in that section (noVote and invalid votes count towards this),
  * and if the candidate IDs in the votes match the expected candidate IDs for that section.
- * Also makes sure that the votes array in each section is not sparsely populated.
  * @param encryptedFilledBallotPaper The encrypted filled ballot paper to validate.
  * @returns A validation error if any section's votes are invalid, otherwise null.
  */
@@ -168,10 +167,7 @@ const validateSectionVotes = async (
   const maxVotesPerSection = await getBPSMaxVotesForBP(encryptedFilledBallotPaper.ballotPaperId);
 
   for (const [sectionId, section] of Object.entries(encryptedFilledBallotPaper.sections)) {
-    // mutate the votes array so that it is not sparsely populated
-    const votesInSection = section.votes.filter((v) => v !== undefined && v !== null);
-    section.votes = votesInSection;
-
+    const votesInSection = section.votes;
     const expectedMaxVotes = maxVotesPerSection[sectionId]?.maxVotes;
 
     // Validate vote count
