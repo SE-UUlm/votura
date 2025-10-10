@@ -19,8 +19,7 @@ The issue is the place to discuss the problem, feature request and possible solu
 Issues should be linked to an epic.
 This is done by adding the Epic issue as a parent issue and adding the relevant epic label.
 
-Generally speaking, Issues for new Features should follow the following workflow:
-![issueTagFlow](../apps/docs/static/drawio/epicFlow.svg)
+Generally speaking, Issues for new Features should follow [this workflow diagram](https://github.com/SE-UUlm/votura/blob/develop/apps/docs/static/drawio/epicFlow.svg).
 
 If a Feature is relevant to the frontend, the first issue should be a Penpot Design issue and its name should start with "[PP] ...".  
 Similarly, if a Feature is relevant to the backend, the first issue should be a Design issue for the database and its name should start with "[DB] ...".  
