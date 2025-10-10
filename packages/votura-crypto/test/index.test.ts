@@ -1,8 +1,11 @@
-import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
+import { modAdd, modInv, modMultiply, modPow, randBetween } from 'bigint-crypto-utils';
+import { getFiatShamirChallenge } from './utils.js';
+// import { modAdd, modMultiply, modPow } from 'bigint-crypto-utils';
 import { describe, expect } from 'vitest';
 import {
   type Ciphertext,
   getKeyPair,
+  PublicKey,
   Tallying,
   ZeroKnowledgeProof,
   type ZKProof,
@@ -357,56 +360,69 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid4).toBe(false);
   });
 
-  voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
-    const { publicKey } = keyPair;
-    const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
-    const realIndex = plaintexts.indexOf(plaintext);
+  voturaTest(
+    'verifyDisjunctiveEncryptionProof',
+    ({ keyPair, plaintext, randomness, ciphertext }) => {
+      const { publicKey } = keyPair;
+      const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
+      const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
+      expect(ciphertexts[0]).toBe(ciphertext);
+      const realIndex = plaintexts.indexOf(plaintext);
+      expect(realIndex).toBe(0n);
 
-    const zkp = new ZeroKnowledgeProof(publicKey);
-    const validProofs = zkp.createDisjunctiveEncryptionProof(ciphertexts, realIndex, randomness);
+      const zkp = new ZeroKnowledgeProof(publicKey);
+      const debug = new TestZKP(publicKey);
+      console.warn(`--- starting creation ---`);
+      const validProofs = debug.createDisjunctiveEncryptionProof(
+        ciphertexts,
+        realIndex,
+        randomness,
+      );
+      console.warn(`--- ended creation - starting verification ---`);
 
-    const isValid = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, validProofs);
-    expect(isValid).toBe(true);
+      const isValid = debug.verifyDisjunctiveEncryptionProof(ciphertexts, validProofs);
+      console.warn(`--- ended verification ---`);
+      expect(isValid).toBe(true);
 
-    const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment:
-        index === 0
-          ? [(proof.commitment[0] + 1n) % publicKey.getPrimeP(), proof.commitment[1]]
-          : [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: proof.response,
-    }));
-    const isValid1 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs1);
-    expect(isValid1).toBe(false);
+      const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
+        commitment:
+          index === 0
+            ? [(proof.commitment[0] + 1n) % publicKey.getPrimeP(), proof.commitment[1]]
+            : [proof.commitment[0], proof.commitment[1]],
+        challenge: proof.challenge,
+        response: proof.response,
+      }));
+      const isValid1 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs1);
+      expect(isValid1).toBe(false);
 
-    const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment:
-        index === 1
-          ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.getPrimeP()]
-          : [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: proof.response,
-    }));
-    const isValid2 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs2);
-    expect(isValid2).toBe(false);
+      const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
+        commitment:
+          index === 1
+            ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.getPrimeP()]
+            : [proof.commitment[0], proof.commitment[1]],
+        challenge: proof.challenge,
+        response: proof.response,
+      }));
+      const isValid2 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs2);
+      expect(isValid2).toBe(false);
 
-    const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: [proof.commitment[0], proof.commitment[1]],
-      challenge: index === 2 ? (proof.challenge + 1n) % publicKey.getPrimeQ() : proof.challenge,
-      response: proof.response,
-    }));
-    const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
-    expect(isValid3).toBe(false);
+      const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
+        commitment: [proof.commitment[0], proof.commitment[1]],
+        challenge: index === 2 ? (proof.challenge + 1n) % publicKey.getPrimeQ() : proof.challenge,
+        response: proof.response,
+      }));
+      const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
+      expect(isValid3).toBe(false);
 
-    const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: index === 3 ? (proof.response + 1n) % publicKey.getPrimeQ() : proof.response,
-    }));
-    const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
-    expect(isValid4).toBe(false);
-  });
+      const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
+        commitment: [proof.commitment[0], proof.commitment[1]],
+        challenge: proof.challenge,
+        response: index === 3 ? (proof.response + 1n) % publicKey.getPrimeQ() : proof.response,
+      }));
+      const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
+      expect(isValid4).toBe(false);
+    },
+  );
 
   voturaTest('verifyDecryptionProof', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;
@@ -455,3 +471,242 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid4).toBe(false);
   });
 });
+
+class TestZKP {
+  private readonly pk: PublicKey;
+
+  public constructor(pk: PublicKey) {
+    this.pk = pk;
+  }
+
+  createDisjunctiveEncryptionProof(
+    ciphertexts: Ciphertext[],
+    realIndex: number,
+    randomness: bigint,
+  ): ZKProof[] {
+    if (realIndex < 0 || realIndex >= ciphertexts.length) {
+      throw new Error('DEBUG: realIndex is out of bounds');
+    }
+
+    const disjunctiveZKPs: ZKProof[] = [];
+
+    ciphertexts.forEach((ciphertext, index) => {
+      const choice = 1n; // = modPow(this.pk.generator, 0);
+      if (index !== realIndex) {
+        console.warn(`simulate proof (index = ${index}, ciphertext: ${ciphertext})`);
+        const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
+        disjunctiveZKPs.push(simulatedProof);
+      }
+    });
+    let tempString = `only simulated disjunctiveZKPs: `;
+    disjunctiveZKPs.forEach((proof, index) => {
+      tempString += `(index=${index}) A=${proof.commitment[0]}, B=${proof.commitment[1]} `;
+    });
+    console.warn(tempString);
+
+    console.warn(`create real proof (index = ${realIndex})`);
+    const realProof = this.createRealEncryptionProof(disjunctiveZKPs, realIndex, randomness);
+    disjunctiveZKPs.splice(realIndex, 0, realProof);
+    tempString = `now all disjunctiveZKPs: `;
+    disjunctiveZKPs.forEach((proof, index) => {
+      tempString += `(index=${index}) A=${proof.commitment[0]}, B=${proof.commitment[1]} `;
+    });
+    console.warn(tempString);
+
+    return disjunctiveZKPs;
+  }
+
+  private createSimulatedEncryptionProof(plaintext: bigint, ciphertext: Ciphertext): ZKProof {
+    const challenge = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 0n);
+    const response = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 0n);
+
+    const inversePlaintext = modInv(plaintext, this.pk.getPrimeP());
+    const betaOverPlaintext = modMultiply([ciphertext[1], inversePlaintext], this.pk.getPrimeP());
+
+    const commitmentA = modMultiply(
+      [
+        modInv(modPow(ciphertext[0], challenge, this.pk.getPrimeP()), this.pk.getPrimeP()),
+        modPow(this.pk.getGenerator(), response, this.pk.getPrimeP()),
+      ],
+      this.pk.getPrimeP(),
+    );
+    const commitmentB = modMultiply(
+      [
+        modInv(modPow(betaOverPlaintext, challenge, this.pk.getPrimeP()), this.pk.getPrimeP()),
+        modPow(this.pk.getPublicKey(), response, this.pk.getPrimeP()),
+      ],
+      this.pk.getPrimeP(),
+    );
+
+    console.warn(`simulated commitmentA = ${commitmentA}, commitmentB = ${commitmentB}`);
+    console.warn(`...for random challenge = ${challenge} and response = ${response}`);
+
+    return {
+      commitment: [commitmentA, commitmentB],
+      challenge: challenge,
+      response: response,
+    };
+  }
+
+  private createRealEncryptionProof(
+    simulatedZKPs: ZKProof[],
+    realIndex: number,
+    randomness: bigint,
+  ): ZKProof {
+    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
+
+    const commitmentA = modPow(this.pk.getGenerator(), w, this.pk.getPrimeP());
+    const commitmentB = modPow(this.pk.getPublicKey(), w, this.pk.getPrimeP());
+    console.warn(`real commitmentA = ${commitmentA}, commitmentB = ${commitmentB}`);
+
+    const partsToHash: string[] = [];
+
+    for (let i = 0; i <= simulatedZKPs.length; i++) {
+      if (i === realIndex) {
+        console.warn(`push real commitments (index = ${i})`);
+        partsToHash.push(commitmentA.toString());
+        partsToHash.push(commitmentB.toString());
+      }
+      if (i < simulatedZKPs.length) {
+        const proof = simulatedZKPs[i];
+        if (!proof) {
+          throw new Error(`DEBUG: Missing simulated proof at index ${i}`);
+        }
+        console.warn(`push simulated commitments (index = ${i})`);
+        partsToHash.push(proof.commitment[0].toString());
+        partsToHash.push(proof.commitment[1].toString());
+      }
+    }
+
+    const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
+    console.warn(`therefore disjunctiveChallenge = ${disjunctiveChallenge}`);
+
+    let realChallenge = disjunctiveChallenge;
+    simulatedZKPs.forEach((proof, index) => {
+      if (index !== realIndex) {
+        realChallenge =
+          modAdd([realChallenge, -proof.challenge], this.pk.getPrimeQ()) % this.pk.getPrimeQ();
+      }
+    });
+    console.warn(`this gives a realChallenge = ${realChallenge}`);
+
+    const response = modAdd(
+      [w, modMultiply([randomness, realChallenge], this.pk.getPrimeQ())],
+      this.pk.getPrimeQ(),
+    );
+    console.warn(`...and a response = ${response}`);
+
+    return {
+      commitment: [commitmentA, commitmentB],
+      challenge: realChallenge,
+      response: response,
+    };
+  }
+
+  verifyDisjunctiveEncryptionProof(ciphertexts: Ciphertext[], zkProofs: ZKProof[]): boolean {
+    if (ciphertexts.length !== zkProofs.length) {
+      console.warn(
+        `DEBUG: Bad number of proofs (expected ${ciphertexts.length}, found ${zkProofs.length})`,
+      );
+      return false;
+    }
+
+    ciphertexts.forEach((ciphertext, index) => {
+      const choice0 = 1n; // = modPow(this.pk.generator, 0);
+      const choice1 = this.pk.getGenerator(); // = modPow(this.pk.generator, 1);
+      const zkProof = zkProofs[index];
+      if (zkProof === undefined) {
+        console.warn(`DEBUG: Invalid input: zkProof[${index}] is undefined`);
+        return false;
+      }
+      console.warn(`encrypted a simulated proof?`);
+      const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
+      console.warn(`==> encrypted a simulated proof: ${isValid0}`);
+      console.warn(`encrypted a real proof?`);
+      const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
+      console.warn(`==> encrypted a real proof: ${isValid1}`);
+      if (!isValid0 && !isValid1) {
+        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions,@typescript-eslint/no-base-to-string
+        console.warn(`DEBUG: Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
+        return false;
+      }
+    });
+
+    const partsToHash: string[] = [];
+
+    zkProofs.forEach((proof) => {
+      partsToHash.push(proof.commitment[0].toString());
+      partsToHash.push(proof.commitment[1].toString());
+    });
+
+    const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
+
+    const actualChallenge = zkProofs.reduce(
+      (sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()),
+      0n,
+    );
+
+    if (expectedChallenge !== actualChallenge) {
+      console.warn(
+        `DEBUG: Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`,
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  private verifyEncryptionProof(
+    plaintext: bigint,
+    ciphertext: Ciphertext,
+    zkProof: ZKProof,
+  ): boolean {
+    if (
+      modPow(zkProof.commitment[0], this.pk.getPrimeQ(), this.pk.getPrimeP()) !== 1n ||
+      modPow(zkProof.commitment[1], this.pk.getPrimeQ(), this.pk.getPrimeP()) !== 1n
+    ) {
+      console.warn(`DEBUG: Invalid commitment in proof: A or B not in the correct group!`);
+      return false;
+    }
+    console.warn(
+      `proof with commitmentA = ${zkProof.commitment[0]}, commitmentB = ${zkProof.commitment[1]}`,
+    );
+    console.warn(
+      `...and random challenge = ${zkProof.challenge} and response = ${zkProof.response}`,
+    );
+    console.warn(`...is correct for ciphertext = ${ciphertext} ?`);
+
+    const check1a = modPow(this.pk.getGenerator(), zkProof.response, this.pk.getPrimeP());
+    const check1b = modMultiply(
+      [modPow(ciphertext[0], zkProof.challenge, this.pk.getPrimeP()), zkProof.commitment[0]],
+      this.pk.getPrimeP(),
+    );
+
+    if (check1a !== check1b) {
+      console.warn(
+        `DEBUG: First verification check failed: g^response != commitmentA * alpha^challenge!`,
+      );
+      console.warn(`checkA = ${check1a} vs. checkB = ${check1b}`);
+      return false;
+    }
+
+    const inversePlaintext = modInv(plaintext, this.pk.getPrimeP());
+    const betaOverPlaintext = modMultiply([ciphertext[1], inversePlaintext], this.pk.getPrimeP());
+
+    const check2a = modPow(this.pk.getPublicKey(), zkProof.response, this.pk.getPrimeP());
+    const check2b = modMultiply(
+      [modPow(betaOverPlaintext, zkProof.challenge, this.pk.getPrimeP()), zkProof.commitment[1]],
+      this.pk.getPrimeP(),
+    );
+
+    if (check2a !== check2b) {
+      console.warn(
+        `DEBUG: Second verification check failed: y^response != commitmentB * (beta/m)^challenge!`,
+      );
+      console.warn(`checkA = ${check2a} vs. checkB = ${check2b}`);
+      return false;
+    }
+
+    return true;
+  }
+}
