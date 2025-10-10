@@ -79,17 +79,17 @@ describe('BallotPaperSectionEncryption tests', () => {
 
       for (const value of Object.values(vote)) {
         expect(value).toHaveProperty('alpha');
-        expect(typeof value.alpha).toBe('bigint');
+        expect(typeof value.alpha).toBe('string');
         expect(value).toHaveProperty('beta');
-        expect(typeof value.beta).toBe('bigint');
+        expect(typeof value.beta).toBe('string');
         expect(value).toHaveProperty('commitment1');
-        expect(typeof value.commitment1).toBe('bigint');
+        expect(typeof value.commitment1).toBe('string');
         expect(value).toHaveProperty('commitment2');
-        expect(typeof value.commitment2).toBe('bigint');
+        expect(typeof value.commitment2).toBe('string');
         expect(value).toHaveProperty('challenge');
-        expect(typeof value.challenge).toBe('bigint');
+        expect(typeof value.challenge).toBe('string');
         expect(value).toHaveProperty('response');
-        expect(typeof value.response).toBe('bigint');
+        expect(typeof value.response).toBe('string');
       }
     }
   });

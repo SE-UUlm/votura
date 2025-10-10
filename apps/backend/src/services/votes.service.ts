@@ -3,44 +3,6 @@ import type { BallotPaper as DBBallotPaper, Voter as DBVoter } from '@repo/db/ty
 import type { EncryptedFilledBallotPaper } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 
-const BIGINT_STRING_DELIMITER = '__BIGINT__';
-
-/**
- * Custom replacer function for JSON.stringify to handle BigInt values.
- * @param key The key of the property being stringified.
- * @param value The value of the property being stringified.
- * @returns The processed value.
- */
-const replacer: (this: unknown, key: string, value: unknown) => unknown = (key, value) => {
-  if (typeof value === 'bigint') {
-    return `${BIGINT_STRING_DELIMITER}${value.toString()}${BIGINT_STRING_DELIMITER}`;
-  }
-  return value;
-};
-
-/**
- * Custom reviver function for JSON.parse to handle BigInt values.
- * @param key The key of the property being parsed.
- * @param value The value of the property being parsed.
- * @returns The processed value.
- */
-// TODO: remove the next line when the reviver is used
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-const reviver: (this: unknown, key: string, value: unknown) => unknown = (key, value) => {
-  if (
-    typeof value === 'string' &&
-    value.startsWith(BIGINT_STRING_DELIMITER) &&
-    value.endsWith(BIGINT_STRING_DELIMITER)
-  ) {
-    const bigIntString = value.slice(
-      BIGINT_STRING_DELIMITER.length,
-      -BIGINT_STRING_DELIMITER.length,
-    );
-    return BigInt(bigIntString);
-  }
-  return value;
-};
-
 /**
  * Persists a filled ballot paper for a given voter.
  * Depending on whether the election is private or not, the voterId is included in the vote or not.
@@ -69,7 +31,7 @@ export async function persistVote(
     await trx
       .insertInto('vote')
       .values({
-        encryptedFilledBallotPaper: JSON.stringify(encryptedFilledBallotPaper, replacer),
+        encryptedFilledBallotPaper: encryptedFilledBallotPaper,
         electionId: election.id,
         voterId: voterId ?? (election.private ? null : voterId),
       })

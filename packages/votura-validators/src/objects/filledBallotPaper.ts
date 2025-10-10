@@ -9,35 +9,35 @@ export const filledBallotPaperDefaultVoteOption = {
 } as const;
 
 const encryptedVoteObject = z.object({
-  alpha: z.bigint().register(voturaMetadataRegistry, {
+  alpha: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'First part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-    example: 12345,
+    example: '12345',
   }),
-  beta: z.bigint().register(voturaMetadataRegistry, {
+  beta: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'Second part of the ciphertext determining if this option was voted on with the vote represented by the enclosing json object.',
-    example: 67890,
+    example: '67890',
   }),
-  commitment1: z.bigint().register(voturaMetadataRegistry, {
+  commitment1: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-    example: 1345789,
+    example: '1345789',
   }),
-  commitment2: z.bigint().register(voturaMetadataRegistry, {
+  commitment2: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen.',
-    example: 9072314,
+    example: '9072314',
   }),
-  challenge: z.bigint().register(voturaMetadataRegistry, {
+  challenge: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-    example: 76687914,
+    example: '76687914',
   }),
-  response: z.bigint().register(voturaMetadataRegistry, {
+  response: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
     description:
       'Part of the zero-knowledge proof to show that exactly one option in the enclosing json object was chosen. Random value for unchosen option.',
-    example: 2013945,
+    example: '2013945',
   }),
 });
 const plainVoteObject = z.number().int().min(0).max(1);

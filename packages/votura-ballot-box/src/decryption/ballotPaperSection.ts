@@ -151,9 +151,9 @@ export class BallotPaperSectionDecryption {
 
       const ciphertext: Ciphertext = [BigInt(voteData.alpha), BigInt(voteData.beta)];
       const zkProof: ZKProof = {
-        commitment: [voteData.commitment1, voteData.commitment2],
-        challenge: voteData.challenge,
-        response: voteData.response,
+        commitment: [BigInt(voteData.commitment1), BigInt(voteData.commitment2)],
+        challenge: BigInt(voteData.challenge),
+        response: BigInt(voteData.response),
       };
       ciphertexts.push(ciphertext);
       zkProofs.push(zkProof);

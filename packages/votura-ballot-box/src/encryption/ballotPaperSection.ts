@@ -13,12 +13,12 @@ export interface EncryptedSection {
   votes: Record<
     string,
     {
-      alpha: bigint;
-      beta: bigint;
-      commitment1: bigint;
-      commitment2: bigint;
-      challenge: bigint;
-      response: bigint;
+      alpha: string;
+      beta: string;
+      commitment1: string;
+      commitment2: string;
+      challenge: string;
+      response: string;
     }
   >[];
 }
@@ -150,12 +150,12 @@ export class BallotPaperSectionEncryption {
       }
 
       encryptedVoteRecord[candidateId] = {
-        alpha: ciphertext[0],
-        beta: ciphertext[1],
-        commitment1: zkProof.commitment[0],
-        commitment2: zkProof.commitment[1],
-        challenge: zkProof.challenge,
-        response: zkProof.response,
+        alpha: String(ciphertext[0]),
+        beta: String(ciphertext[1]),
+        commitment1: String(zkProof.commitment[0]),
+        commitment2: String(zkProof.commitment[1]),
+        challenge: String(zkProof.challenge),
+        response: String(zkProof.response),
       };
     }
 
