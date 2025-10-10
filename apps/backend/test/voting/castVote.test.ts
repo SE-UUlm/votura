@@ -1215,7 +1215,7 @@ describe(`POST /voting/castVote`, () => {
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
       [
-        // 5 votes allowd across all sections, 6 submitted
+        // 5 votes allowed across all sections, 6 submitted
         {
           [invalidAllowedCandidate1.id]: 1,
           [invalidAllowedCandidate2.id]: 0,
