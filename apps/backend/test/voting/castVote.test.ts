@@ -1,13 +1,16 @@
+import { BallotPaperEncryption } from '@repo/votura-ballot-box';
 import {
   filledBallotPaperDefaultVoteOption,
   response400Object,
   response403Object,
   selectableElectionObject,
+  type EncryptedFilledBallotPaper,
   type PlainFilledBallotPaper,
   type SelectableBallotPaper,
   type SelectableBallotPaperSection,
   type SelectableCandidate,
 } from '@repo/votura-validators';
+import { PublicKey } from '@votura/votura-crypto/index';
 import { randomUUID } from 'crypto';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -35,14 +38,15 @@ import {
 } from '../mockData.js';
 import { sleep } from '../utils.js';
 
-function createPlainBallotPaper(
+function createEncryptedBallotPaper(
+  publicKey: PublicKey,
   ballotPaperId: string,
   section1Id: string,
   section2Id: string,
   section1Votes: Record<string, number>[],
   section2Votes: Record<string, number>[],
-): PlainFilledBallotPaper {
-  return {
+): EncryptedFilledBallotPaper {
+  const plainBP: PlainFilledBallotPaper = {
     ballotPaperId: ballotPaperId,
     sections: {
       [section1Id]: {
@@ -53,6 +57,8 @@ function createPlainBallotPaper(
       },
     },
   };
+  const bpEncryption = new BallotPaperEncryption(publicKey);
+  return bpEncryption.encryptBallotPaper(plainBP)[0];
 }
 
 // The tests in this file are for the most part deliberately ordered in the order the checks are performed
@@ -61,10 +67,13 @@ function createPlainBallotPaper(
 describe(`POST /voting/castVote`, () => {
   const submitVotePath = '/voting/castVote';
   let voterToken: string | undefined = '';
+  let unvotableElectionPubKey: PublicKey | null = null;
   let unvotableBallotPaper: SelectableBallotPaper | null = null;
+  let invalidAllowedElectionPubKey: PublicKey | null = null;
   let invalidAllowedBallotPaper: SelectableBallotPaper | null = null;
   let invalidAllowedBallotPaperSection1: SelectableBallotPaperSection | null = null;
   let invalidAllowedBallotPaperSection2: SelectableBallotPaperSection | null = null;
+  let invalidForbiddenElectionPubKey: PublicKey | null = null;
   let invalidForbiddenBallotPaper: SelectableBallotPaper | null = null;
   let invalidForbiddenBallotPaperSection1: SelectableBallotPaperSection | null = null;
   let invalidForbiddenBallotPaperSection2: SelectableBallotPaperSection | null = null;
@@ -265,6 +274,48 @@ describe(`POST /voting/castVote`, () => {
         throw new Error('Failed to parse unvotable election');
       }
     }
+    // create public keys for each election to be able to encrypt ballot papers
+    if (
+      parseResult1.data.primeP === undefined ||
+      parseResult1.data.primeQ === undefined ||
+      parseResult1.data.generator === undefined
+    ) {
+      throw new Error('could not create PubKey for invalidAllowed Election');
+    }
+    invalidAllowedElectionPubKey = new PublicKey(
+      BigInt(parseResult1.data.primeP),
+      BigInt(parseResult1.data.primeQ),
+      BigInt(parseResult1.data.generator),
+      BigInt(parseResult1.data.pubKey),
+    );
+
+    if (
+      parseResult2.data.primeP === undefined ||
+      parseResult2.data.primeQ === undefined ||
+      parseResult2.data.generator === undefined
+    ) {
+      throw new Error('could not create PubKey for invalidForbidden Election');
+    }
+    invalidForbiddenElectionPubKey = new PublicKey(
+      BigInt(parseResult2.data.primeP),
+      BigInt(parseResult2.data.primeQ),
+      BigInt(parseResult2.data.generator),
+      BigInt(parseResult2.data.pubKey),
+    );
+
+    if (
+      parseResult3.data.primeP === undefined ||
+      parseResult3.data.primeQ === undefined ||
+      parseResult3.data.generator === undefined
+    ) {
+      throw new Error('could not create PubKey for unvotable Election');
+    }
+    unvotableElectionPubKey = new PublicKey(
+      BigInt(parseResult3.data.primeP),
+      BigInt(parseResult3.data.primeQ),
+      BigInt(parseResult3.data.generator),
+      BigInt(parseResult3.data.pubKey),
+    );
 
     // create voter token
     const voterTokenResponse = await request(app)
@@ -278,9 +329,9 @@ describe(`POST /voting/castVote`, () => {
       throw new Error('No voter token returned');
     }
 
-    // wait until 2 seconds after voting start
+    // wait until 3 seconds after voting start
     if (Date.now() < votingStartAt.getTime() + 2000) {
-      await sleep(Date.now() - votingStartAt.getTime() + 2000);
+      await sleep(votingStartAt.getTime() + 2000 - Date.now());
     }
   }, 60_000 /* 60 seconds timeout */);
 
@@ -300,16 +351,17 @@ describe(`POST /voting/castVote`, () => {
   });
 
   // election is not votable (not started yet, or already ended, not frozen)
-  it('403: election is not votable (not frozen yet)', async () => {
-    if (unvotableBallotPaper === null) {
-      throw new Error('Unvotable ballot paper is null');
+  it('403: election is not votable (not started yet)', async () => {
+    if (unvotableElectionPubKey === null || unvotableBallotPaper === null) {
+      throw new Error('Unvotable election or ballot paper is null');
     }
 
     const res = await request(app)
       .post(submitVotePath)
       .set('Authorization', `Bearer ${voterToken}`)
       .send(
-        createPlainBallotPaper(
+        createEncryptedBallotPaper(
+          unvotableElectionPubKey,
           unvotableBallotPaper.id,
           randomUUID(),
           randomUUID(),
@@ -338,23 +390,46 @@ describe(`POST /voting/castVote`, () => {
 
   // sent ballot paper does not contain expected sections
   it('400: sent ballot paper does not contain expected sections', async () => {
-    if (invalidAllowedBallotPaper === null || invalidAllowedBallotPaperSection1 === null) {
-      throw new Error('Invalid allowed ballot paper or section 1 is null');
+    if (
+      invalidAllowedElectionPubKey === null ||
+      invalidAllowedBallotPaper === null ||
+      invalidAllowedBallotPaperSection1 === null
+    ) {
+      throw new Error('Invalid allowed pubKey, ballot paper or section 1 is null');
     }
 
-    const tooLittleSectionsBallotPaper: PlainFilledBallotPaper = {
-      ballotPaperId: invalidAllowedBallotPaper.id,
-      sections: {
-        // should contain two sections, but only one is sent
-        [invalidAllowedBallotPaperSection1.id]: {
-          votes: [
-            {
-              [randomUUID()]: 1,
-              [filledBallotPaperDefaultVoteOption.noVote]: 0,
-              [filledBallotPaperDefaultVoteOption.invalid]: 0,
-            },
-          ],
+    const sectionToRemoveUuid = randomUUID();
+
+    let tooLittleSectionsBallotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      sectionToRemoveUuid,
+      [
+        {
+          [randomUUID()]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
         },
+      ],
+      [
+        {
+          [randomUUID()]: 1,
+          [filledBallotPaperDefaultVoteOption.noVote]: 0,
+          [filledBallotPaperDefaultVoteOption.invalid]: 0,
+        },
+      ],
+    );
+
+    const section1 = tooLittleSectionsBallotPaper.sections[invalidAllowedBallotPaperSection1.id];
+    if (section1 === undefined) {
+      throw new Error('Section 1 not found in created ballot paper');
+    }
+    tooLittleSectionsBallotPaper = {
+      ...tooLittleSectionsBallotPaper,
+      sections: {
+        // remove one section
+        [invalidAllowedBallotPaperSection1.id]: section1,
       },
     };
 
@@ -372,16 +447,18 @@ describe(`POST /voting/castVote`, () => {
   // sent section does not contain expected amount of votes
   it('400: A section does not contain expected amount of votes', async () => {
     if (
+      invalidAllowedElectionPubKey === null ||
       invalidAllowedBallotPaper === null ||
       invalidAllowedBallotPaperSection1 === null ||
       invalidAllowedBallotPaperSection2 === null ||
       invalidAllowedCandidate1 === null ||
       invalidAllowedCandidate2 === null
     ) {
-      throw new Error('Invalid allowed ballot paper, sections or candidates are null');
+      throw new Error('Invalid allowed pubKey, ballot paper, sections or candidates are null');
     }
 
-    const ballotPaper = createPlainBallotPaper(
+    const ballotPaper = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
