@@ -499,6 +499,7 @@ class TestZKP {
     let tempString = `only simulated disjunctiveZKPs: `;
     disjunctiveZKPs.forEach((proof, index) => {
       tempString += `(index=${index}) A=${proof.commitment[0]}, B=${proof.commitment[1]} `;
+      tempString += `and CHALLENGE = ${proof.challenge} `;
     });
     console.warn(tempString);
 
@@ -508,6 +509,7 @@ class TestZKP {
     tempString = `now all disjunctiveZKPs: `;
     disjunctiveZKPs.forEach((proof, index) => {
       tempString += `(index=${index}) A=${proof.commitment[0]}, B=${proof.commitment[1]} `;
+      tempString += `and CHALLENGE = ${proof.challenge} `;
     });
     console.warn(tempString);
 
@@ -578,14 +580,13 @@ class TestZKP {
 
     const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
     console.warn(`therefore disjunctiveChallenge = ${disjunctiveChallenge}`);
+    console.warn(`this should later also be the EXPECTED CHALLENGE`);
 
-    let realChallenge = disjunctiveChallenge;
-    simulatedZKPs.forEach((proof, index) => {
-      if (index !== realIndex) {
-        realChallenge =
-          modAdd([realChallenge, -proof.challenge], this.pk.getPrimeQ()) % this.pk.getPrimeQ();
-      }
-    });
+    const realChallenge =
+      simulatedZKPs.reduce(
+        (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
+        disjunctiveChallenge,
+      ) % this.pk.getPrimeQ();
     console.warn(`this gives a realChallenge = ${realChallenge}`);
 
     const response = modAdd(
@@ -636,13 +637,18 @@ class TestZKP {
       partsToHash.push(proof.commitment[0].toString());
       partsToHash.push(proof.commitment[1].toString());
     });
+    let tempString = `all zkProofs: `;
+    zkProofs.forEach((proof, index) => {
+      tempString += `(index=${index}) A=${proof.commitment[0]}, B=${proof.commitment[1]} `;
+      tempString += `and CHALLENGE = ${proof.challenge} `;
+    });
+    console.warn(tempString);
 
     const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
 
-    const actualChallenge = zkProofs.reduce(
-      (sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()),
-      0n,
-    );
+    const actualChallenge =
+      zkProofs.reduce((sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()), 0n) %
+      this.pk.getPrimeQ();
 
     if (expectedChallenge !== actualChallenge) {
       console.warn(
