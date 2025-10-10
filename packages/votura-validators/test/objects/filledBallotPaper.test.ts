@@ -19,12 +19,12 @@ describe('Filled Ballot Paper tests', () => {
   }
 
   const dummyEncryptedVote: EncryptedVote = {
-    alpha: BigInt(5),
-    beta: BigInt(3),
-    commitment1: BigInt(7),
-    commitment2: BigInt(11),
-    challenge: BigInt(13),
-    response: BigInt(17),
+    alpha: "5",
+    beta: "3",
+    commitment1: "7",
+    commitment2: "11",
+    challenge: "13",
+    response: "17",
   };
 
   const dummyEncryptedVotes1: Record<string, EncryptedVote> = {
