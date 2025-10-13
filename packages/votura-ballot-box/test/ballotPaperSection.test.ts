@@ -19,7 +19,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
   let keyPair: KeyPair | null = null;
 
   beforeAll(async () => {
-    keyPair = await getKeyPair(10);
+    keyPair = await getKeyPair(20);
     encryption = new BallotPaperSectionEncryption(keyPair.publicKey);
     decryption = new BallotPaperSectionDecryption(keyPair.privateKey, keyPair.publicKey);
   });
