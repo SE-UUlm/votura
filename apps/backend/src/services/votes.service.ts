@@ -33,7 +33,7 @@ export async function persistVote(
       .values({
         encryptedFilledBallotPaper: encryptedFilledBallotPaper,
         electionId: election.id,
-        voterId: voterId ?? (election.private ? null : voterId),
+        voterId: election.private ? null : voterId,
       })
       .executeTakeFirstOrThrow();
 
