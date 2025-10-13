@@ -160,8 +160,7 @@ export class BallotPaperSectionDecryption {
     }
 
     // Verify all ciphertexts for this vote
-    // const allValid = this.zkp.verifyDisjunctiveEncryptionProof(ciphertexts, zkProofs);
-    const allValid = true; // TODO: Use verifyDisjunctiveEncryptionProof
+    const allValid = this.zkp.verifyDisjunctiveEncryptionProof(ciphertexts, zkProofs);
 
     // If any proof is invalid, return null
     return allValid ? ciphertexts : null;
