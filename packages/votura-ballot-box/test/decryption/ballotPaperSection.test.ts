@@ -1,8 +1,9 @@
-import { filledBallotPaperObject } from '@repo/votura-validators';
+import { encryptedFilledBallotPaperObject } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperSectionDecryption } from '../../src/decryption/ballotPaperSection.js';
+import { extractCandidateIds } from '../../src/utils.js';
 
 describe('BallotPaperSectionDecryption tests', () => {
   enum UUIDs {
@@ -69,7 +70,7 @@ describe('BallotPaperSectionDecryption tests', () => {
   });
 
   it('should extract all ciphertexts correctly', () => {
-    const parseResult = filledBallotPaperObject.safeParse({
+    const parseResult = encryptedFilledBallotPaperObject.safeParse({
       ballotPaperId: UUIDs.ballotPaper,
       sections: {
         [UUIDs.section1]: dummySection,
@@ -81,8 +82,7 @@ describe('BallotPaperSectionDecryption tests', () => {
     // eslint-disable-next-line @typescript-eslint/dot-notation
     const ciphertexts = decryption?.['extractAllCiphertexts'](
       dummySection,
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption['extractCandidateIds'](dummySection),
+      extractCandidateIds(dummySection),
     );
     expect(ciphertexts).toEqual([
       [
@@ -98,33 +98,6 @@ describe('BallotPaperSectionDecryption tests', () => {
         [dummyVote.alpha, dummyVote.beta], // noVote
       ],
     ]);
-  });
-
-  it('should throw error when extracting candidate IDs from section with no votes', () => {
-    const emptySection = {
-      votes: [],
-    };
-
-    expect(() => {
-      // Accessing private method via bracket notation for testing purposes
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption?.['extractCandidateIds'](emptySection);
-    }).toThrowError('No votes found in section');
-  });
-
-  it('should extract candidate IDs correctly', () => {
-    const parseResult = filledBallotPaperObject.safeParse({
-      ballotPaperId: UUIDs.ballotPaper,
-      sections: {
-        [UUIDs.section1]: dummySection,
-      },
-    });
-    expect(parseResult.success).toBe(true);
-
-    // Accessing private method via bracket notation for testing purposes
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const candidateIds = decryption?.['extractCandidateIds'](dummySection);
-    expect(candidateIds).toEqual([UUIDs.candidate1, UUIDs.candidate2, 'invalid', 'noVote']); // manually ordered in alphabetical order
   });
 
   it('should throw error when extracting ciphertexts from candidate with no vote data', () => {
@@ -144,8 +117,7 @@ describe('BallotPaperSectionDecryption tests', () => {
       // eslint-disable-next-line @typescript-eslint/dot-notation
       decryption?.['extractAllCiphertexts'](
         sectionWithMissingVoteData,
-        // eslint-disable-next-line @typescript-eslint/dot-notation
-        decryption['extractCandidateIds'](dummySection),
+        extractCandidateIds(dummySection),
       );
     }).toThrowError(`Missing vote data for candidate ${UUIDs.candidate2}`);
   });
