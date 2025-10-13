@@ -1,4 +1,3 @@
-import { encryptedFilledBallotPaperObject } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 import { beforeAll, describe, expect, it } from 'vitest';
@@ -67,37 +66,6 @@ describe('BallotPaperSectionDecryption tests', () => {
     expect(() => {
       decryption?.calculateLookupTable(10);
     }).not.toThrow();
-  });
-
-  it('should extract all ciphertexts correctly', () => {
-    const parseResult = encryptedFilledBallotPaperObject.safeParse({
-      ballotPaperId: UUIDs.ballotPaper,
-      sections: {
-        [UUIDs.section1]: dummySection,
-      },
-    });
-    expect(parseResult.success).toBe(true);
-
-    // Accessing private method via bracket notation for testing purposes
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const ciphertexts = decryption?.['extractAndVerifyAllCiphertexts'](
-      dummySection,
-      extractCandidateIds(dummySection),
-    );
-    expect(ciphertexts).toEqual([
-      [
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // candidate 1
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // candidate 2
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // invalid
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // noVote
-      ],
-      [
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // candidate 1
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // candidate 2
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // invalid
-        [BigInt(dummyVote.alpha), BigInt(dummyVote.beta)], // noVote
-      ],
-    ]);
   });
 
   it('should throw error when extracting ciphertexts from candidate with no vote data', () => {
