@@ -1356,6 +1356,8 @@ describe(`POST /voting/castVote`, () => {
       .post(submitVotePath)
       .set('Authorization', `Bearer ${voterToken}`)
       .send(ballotPaper);
+
+    console.log('response body:', res.body);
     expect(res.statusCode).toBe(HttpStatusCode.noContent);
   });
 
@@ -1436,6 +1438,7 @@ describe(`POST /voting/castVote`, () => {
       .post(submitVotePath)
       .set('Authorization', `Bearer ${voterToken}`)
       .send(ballotPaper);
+    console.log('response body:', res1.body);
     expect(res1.statusCode).toBe(HttpStatusCode.noContent);
 
     // Second vote

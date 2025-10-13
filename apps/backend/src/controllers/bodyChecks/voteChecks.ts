@@ -416,36 +416,42 @@ export const validateEncryptedFilledBallotPaper = async (
   body: unknown,
   voterId: string,
 ): Promise<EncryptedFilledBallotPaper | VoteValidationError> => {
+  console.log('00000000000000000000000');
   // Step 1: Validate request body schema
   const bodyValidationResult = await validateRequestBody(body);
   if (isBodyCheckValidationError(bodyValidationResult)) {
     return bodyValidationResult;
   }
   const data = bodyValidationResult;
+  console.log('111111111111111111111111');
 
   // Step 2: Validate if the ballot paper exists, the voter is assigned to it, and they haven't voted yet
   const permissionError = await validateBallotPaperStatus(voterId, data.ballotPaperId);
   if (permissionError !== null) {
     return permissionError;
   }
+  console.log('22222222222222222222222222');
 
   // Step 3: Validate if the election is votable (started, not ended, and frozen)
   const electionError = await validateElectionIsVotable(data.ballotPaperId);
   if (electionError !== null) {
     return electionError;
   }
+  console.log('33333333333333333333333');
 
   // Step 4: Validate ballot paper structure (only expected sections are included)
   const structureError = await validateBallotPaperStructure(data);
   if (structureError !== null) {
     return structureError;
   }
+  console.log('44444444444444444444444');
 
   // Step 5: Validate section votes and candidate IDs (vote count equals maxVotes, candidate IDs are the ones linked to the section)
   const sectionError = await validateSectionVotes(data);
   if (sectionError !== null) {
     return sectionError;
   }
+  console.log('55555555555555555555555555555');
 
   // Step 6: Process and validate sections with decryption
   // (either all votes are invalid or none, invalid votes are only present if allowed, no candidate exceeds maxVotesPerCandidate, all ciphertext proofs are valid)
@@ -458,6 +464,7 @@ export const validateEncryptedFilledBallotPaper = async (
   if (processingError !== undefined) {
     return processingError;
   }
+  console.log('66666666666666666666666666666');
 
   // Step 7: Aggregate votes and validate final results for the entire ballot paper
   // (either all votes are invalid or none,
@@ -472,6 +479,7 @@ export const validateEncryptedFilledBallotPaper = async (
   if (aggregationError !== null) {
     return aggregationError;
   }
+  console.log('77777777777777777777777777777');
 
   return data;
 };
