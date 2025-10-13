@@ -85,7 +85,9 @@ describe(`POST /voting/castVote`, () => {
   beforeAll(async () => {
     await createUser(demoUser);
     const user = await findUserBy({ email: demoUser.email });
-    if (user === null) throw new Error('User was not created successfully in the database');
+    if (user === null) {
+      throw new Error('User was not created successfully in the database');
+    }
 
     // create two votable elections, both with a ballot paper, two sections and two candidates each
     // one allowing invalid votes, one not allowing invalid votes
@@ -585,9 +587,13 @@ describe(`POST /voting/castVote`, () => {
 
     // remove candidate 2 from section 1 vote 1
     const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
-    if (section1 === undefined) throw new Error('Test setup failed');
+    if (section1 === undefined) {
+      throw new Error('Test setup failed');
+    }
     const vote1 = section1.votes[0];
-    if (vote1 === undefined) throw new Error('Test setup failed');
+    if (vote1 === undefined) {
+      throw new Error('Test setup failed');
+    }
     delete vote1[invalidAllowedCandidate2.id];
 
     const res = await request(app)
@@ -760,11 +766,17 @@ describe(`POST /voting/castVote`, () => {
 
     // Tamper with the ciphertext to cause a decryption failure
     const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
-    if (section1 === undefined) throw new Error('Test setup failed');
+    if (section1 === undefined) {
+      throw new Error('Test setup failed');
+    }
     const vote = section1.votes[0];
-    if (vote === undefined) throw new Error('Test setup failed');
+    if (vote === undefined) {
+      throw new Error('Test setup failed');
+    }
     const candidateVote = vote[invalidAllowedCandidate1.id];
-    if (candidateVote === undefined) throw new Error('Test setup failed');
+    if (candidateVote === undefined) {
+      throw new Error('Test setup failed');
+    }
     candidateVote.alpha = '1345654';
 
     const res = await request(app)
