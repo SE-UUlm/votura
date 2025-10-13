@@ -262,7 +262,7 @@ export class ZeroKnowledgeProof {
     const disjunctiveZKPs: ZKProof[] = [];
 
     ciphertexts.forEach((ciphertext, index) => {
-      const choice = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
+      const choice = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
       if (index !== realIndex) {
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
@@ -283,8 +283,8 @@ export class ZeroKnowledgeProof {
       return false;
     }
 
-    const choice0 = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP()); // = 1n
-    const choice1 = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP()); // = generator
+    const choice0 = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
+    const choice1 = this.pk.getGenerator(); // = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP());
     for (let index = 0; index < ciphertexts.length; index++) {
       const ciphertext = ciphertexts[index];
       if (ciphertext === undefined) {
@@ -314,9 +314,10 @@ export class ZeroKnowledgeProof {
 
     const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
 
-    const actualChallenge =
-      zkProofs.reduce((sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()), 0n) %
-      this.pk.getPrimeQ();
+    const actualChallenge = zkProofs.reduce(
+      (sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()),
+      0n,
+    );
 
     if (expectedChallenge !== actualChallenge) {
       console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
@@ -432,11 +433,10 @@ export class ZeroKnowledgeProof {
 
     const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
 
-    const realChallenge =
-      simulatedZKPs.reduce(
-        (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
-        disjunctiveChallenge,
-      ) % this.pk.getPrimeQ();
+    const realChallenge = simulatedZKPs.reduce(
+      (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
+      disjunctiveChallenge,
+    );
 
     const response = modAdd(
       [w, modMultiply([randomness, realChallenge], this.pk.getPrimeQ())],
