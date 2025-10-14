@@ -12,6 +12,7 @@ import {
 } from '@repo/votura-validators';
 import { PublicKey } from '@votura/votura-crypto/index';
 import { randomUUID } from 'crypto';
+import { cloneDeep } from 'lodash';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -38,6 +39,36 @@ import {
 } from '../mockData.js';
 import { sleep } from '../utils.js';
 
+/**
+ * Generates an array of fully-formed vote objects from a simple list of choices.
+ *
+ * @param allOptions An array of all possible candidate and default option IDs for a section.
+ * @param choices A simple array of the IDs being voted for. The length of this array
+ * determines how many vote objects are created.
+ * @returns An array of vote objects ready to be used in createEncryptedBallotPaper.
+ */
+function generateVoteObjects(allOptions: string[], choices: string[]): Record<string, number>[] {
+  return choices.map((choice) => {
+    const voteObject: Record<string, number> = {};
+    for (const option of allOptions) {
+      voteObject[option] = option === choice ? 1 : 0;
+    }
+    return voteObject;
+  });
+}
+
+/**
+ * Generates an encryptedFilledBallotPaper filled with the information given to it.
+ * It is assumed that the ballot paper has two sections.
+ *
+ * @param publicKey The public key of the election the ballot paper belongs to
+ * @param ballotPaperId The ID of the ballot paper to encrypt
+ * @param section1Id The ID of the first section of the ballot paper
+ * @param section2Id The ID of the second section of the ballot paper
+ * @param section1Votes An array of vote records for section 1, each only containing one chosen option
+ * @param section2Votes An array of vote records for section 2, each only containing one chosen option
+ * @returns An encrypted ballot paper ready to be sent to the backend
+ */
 function createEncryptedBallotPaper(
   publicKey: PublicKey,
   ballotPaperId: string,
@@ -69,18 +100,27 @@ describe(`POST /voting/castVote`, () => {
   let voterToken: string | undefined = '';
   let unvotableElectionPubKey: PublicKey | null = null;
   let unvotableBallotPaper: SelectableBallotPaper | null = null;
+
   let invalidAllowedElectionPubKey: PublicKey | null = null;
   let invalidAllowedBallotPaper: SelectableBallotPaper | null = null;
   let invalidAllowedBallotPaperSection1: SelectableBallotPaperSection | null = null;
   let invalidAllowedBallotPaperSection2: SelectableBallotPaperSection | null = null;
+  let invalidAllowedCandidate1: SelectableCandidate | null = null;
+  let invalidAllowedCandidate2: SelectableCandidate | null = null;
+  let invalidAllowedVoteOptions: string[] = [];
+
   let invalidForbiddenElectionPubKey: PublicKey | null = null;
   let invalidForbiddenBallotPaper: SelectableBallotPaper | null = null;
   let invalidForbiddenBallotPaperSection1: SelectableBallotPaperSection | null = null;
   let invalidForbiddenBallotPaperSection2: SelectableBallotPaperSection | null = null;
-  let invalidAllowedCandidate1: SelectableCandidate | null = null;
-  let invalidAllowedCandidate2: SelectableCandidate | null = null;
   let invalidForbiddenCandidate1: SelectableCandidate | null = null;
   let invalidForbiddenCandidate2: SelectableCandidate | null = null;
+  let invalidForbiddenVoteOptions: string[] = [];
+
+  let validEncryptedInvalidAllowedBP: EncryptedFilledBallotPaper = {
+    ballotPaperId: '',
+    sections: {},
+  };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -159,6 +199,19 @@ describe(`POST /voting/castVote`, () => {
       { ...demoCandidate, title: 'Invalid forbidden Candidate 2' },
       invalidForbiddenElection.id,
     );
+
+    invalidAllowedVoteOptions = [
+      invalidAllowedCandidate1.id,
+      invalidAllowedCandidate2.id,
+      filledBallotPaperDefaultVoteOption.noVote,
+      filledBallotPaperDefaultVoteOption.invalid,
+    ];
+    invalidForbiddenVoteOptions = [
+      invalidForbiddenCandidate1.id,
+      invalidForbiddenCandidate2.id,
+      filledBallotPaperDefaultVoteOption.noVote,
+      filledBallotPaperDefaultVoteOption.invalid,
+    ];
 
     await addCandidateToBallotPaperSection(
       invalidAllowedBallotPaperSection1.id,
@@ -319,6 +372,28 @@ describe(`POST /voting/castVote`, () => {
       BigInt(parseResult3.data.pubKey),
     );
 
+    // create valid encrypted ballot paper
+    validEncryptedInvalidAllowedBP = createEncryptedBallotPaper(
+      invalidAllowedElectionPubKey,
+      invalidAllowedBallotPaper.id,
+      invalidAllowedBallotPaperSection1.id,
+      invalidAllowedBallotPaperSection2.id,
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // Candidate 1, 3x noVote
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // Candidate 2, 3x noVote
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+    );
+
     // create voter token
     const voterTokenResponse = await request(app)
       .get(`/voterGroups/${voterGroup.id}/createVoterTokens`)
@@ -464,42 +539,17 @@ describe(`POST /voting/castVote`, () => {
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
+      generateVoteObjects(invalidAllowedVoteOptions, [
         // 2 votes Candidate1, 1 vote Candidate2, 1 noVote
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        // only 1 vote, but 4 expected
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(
+        invalidAllowedVoteOptions,
+        [invalidAllowedCandidate2.id], // only 1 vote, but 4 expected
+      ),
     );
 
     const res = await request(app)
@@ -515,75 +565,12 @@ describe(`POST /voting/castVote`, () => {
 
   // Step 5.2: sent sections candidates are not the same across all votes
   it('400: section contains votes with different candidates', async () => {
-    if (
-      invalidAllowedElectionPubKey === null ||
-      invalidAllowedBallotPaper === null ||
-      invalidAllowedBallotPaperSection1 === null ||
-      invalidAllowedBallotPaperSection2 === null ||
-      invalidAllowedCandidate1 === null ||
-      invalidAllowedCandidate2 === null
-    ) {
+    if (invalidAllowedBallotPaperSection1 === null || invalidAllowedCandidate2 === null) {
       throw new Error('Test setup failed');
     }
 
-    const ballotPaper = createEncryptedBallotPaper(
-      invalidAllowedElectionPubKey,
-      invalidAllowedBallotPaper.id,
-      invalidAllowedBallotPaperSection1.id,
-      invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-    );
+    // deeply clone as otherwise the changes in validEncryptedBallotPaper would persist
+    const ballotPaper = cloneDeep(validEncryptedInvalidAllowedBP);
 
     // remove candidate 2 from section 1 vote 1
     const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
@@ -618,67 +605,35 @@ describe(`POST /voting/castVote`, () => {
       throw new Error('Test setup failed');
     }
 
-    // candidates the same across all votes but Ids are not the ones linked to the sections
+    // candidates are the same across all votes but Ids are not the ones linked to the sections
     const randomCandidate1 = randomUUID();
     const randomCandidate2 = randomUUID();
+    const ballotPaperCandidates = [
+      randomCandidate1,
+      randomCandidate2,
+      filledBallotPaperDefaultVoteOption.noVote,
+      filledBallotPaperDefaultVoteOption.invalid,
+    ];
 
     const ballotPaper = createEncryptedBallotPaper(
       invalidAllowedElectionPubKey,
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [randomCandidate1]: 1,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [randomCandidate1]: 0,
-          [randomCandidate2]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(ballotPaperCandidates, [
+        // random Candidate 1, 3x noVote
+        randomCandidate1,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(ballotPaperCandidates, [
+        // random Candidate 2, 3x noVote
+        randomCandidate2,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -694,75 +649,12 @@ describe(`POST /voting/castVote`, () => {
 
   // Step 6.1: sent section failed decryption
   it('400: section failed decryption', async () => {
-    if (
-      invalidAllowedElectionPubKey === null ||
-      invalidAllowedBallotPaper === null ||
-      invalidAllowedBallotPaperSection1 === null ||
-      invalidAllowedBallotPaperSection2 === null ||
-      invalidAllowedCandidate1 === null ||
-      invalidAllowedCandidate2 === null
-    ) {
+    if (invalidAllowedBallotPaperSection1 === null || invalidAllowedCandidate1 === null) {
       throw new Error('Test setup failed');
     }
 
-    const ballotPaper = createEncryptedBallotPaper(
-      invalidAllowedElectionPubKey,
-      invalidAllowedBallotPaper.id,
-      invalidAllowedBallotPaperSection1.id,
-      invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-    );
+    // deeply clone as otherwise the changes would persist in validEncryptedBallotPaper
+    const ballotPaper = cloneDeep(validEncryptedInvalidAllowedBP);
 
     // Tamper with the ciphertext to cause a decryption failure
     const section1 = ballotPaper.sections[invalidAllowedBallotPaperSection1.id];
@@ -808,58 +700,20 @@ describe(`POST /voting/castVote`, () => {
       invalidForbiddenBallotPaper.id,
       invalidForbiddenBallotPaperSection1.id,
       invalidForbiddenBallotPaperSection2.id,
-      [
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 1,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-      ],
-      [
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-      ],
+      generateVoteObjects(invalidForbiddenVoteOptions, [
+        // Candidate 1 x2, Candidate 2 x1, invalid
+        invalidForbiddenCandidate1.id,
+        invalidForbiddenCandidate1.id,
+        invalidForbiddenCandidate2.id,
+        filledBallotPaperDefaultVoteOption.invalid,
+      ]),
+      generateVoteObjects(invalidForbiddenVoteOptions, [
+        // Candidate 2, noVote x2, invalid
+        invalidForbiddenCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.invalid,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -891,59 +745,20 @@ describe(`POST /voting/castVote`, () => {
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          // invalid vote
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // all valid
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 1x invalid, rest valid
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.invalid,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -975,59 +790,20 @@ describe(`POST /voting/castVote`, () => {
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          // 3 votes for candidate 1, 2 are allowed
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 3 votes for candidate 1, 2 are allowed
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // valid section
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -1059,58 +835,20 @@ describe(`POST /voting/castVote`, () => {
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 1,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 4x invalid
+        filledBallotPaperDefaultVoteOption.invalid,
+        filledBallotPaperDefaultVoteOption.invalid,
+        filledBallotPaperDefaultVoteOption.invalid,
+        filledBallotPaperDefaultVoteOption.invalid,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // valid section
+        invalidAllowedCandidate2.id,
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -1137,64 +875,26 @@ describe(`POST /voting/castVote`, () => {
       throw new Error('Test setup failed');
     }
 
+    // maxVotesPerCandidate is 3 for the ballot paper
     const ballotPaper = createEncryptedBallotPaper(
       invalidAllowedElectionPubKey,
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        // 3 Votes allowed per candidate, 4 submitted
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 2x Candidate 1, 2x noVote
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 2x Candidate 1, 2x noVote
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -1221,64 +921,26 @@ describe(`POST /voting/castVote`, () => {
       throw new Error('Test setup failed');
     }
 
+    // 5 votes are allowed, 6 submitted
     const ballotPaper = createEncryptedBallotPaper(
       invalidAllowedElectionPubKey,
       invalidAllowedBallotPaper.id,
       invalidAllowedBallotPaperSection1.id,
       invalidAllowedBallotPaperSection2.id,
-      [
-        // 5 votes allowed across all sections, 6 submitted
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 1,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // Candidate 1, 2x Candidate 2, noVote
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate2.id,
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidAllowedVoteOptions, [
+        // 2x Candidate 1, Candidate 2, noVote
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate1.id,
+        invalidAllowedCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -1310,58 +972,20 @@ describe(`POST /voting/castVote`, () => {
       invalidForbiddenBallotPaper.id,
       invalidForbiddenBallotPaperSection1.id,
       invalidForbiddenBallotPaperSection2.id,
-      [
-        {
-          [invalidForbiddenCandidate1.id]: 1,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidForbiddenCandidate1.id]: 0,
-          [invalidForbiddenCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
+      generateVoteObjects(invalidForbiddenVoteOptions, [
+        // Candidate 1, 3x noVote
+        invalidForbiddenCandidate1.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
+      generateVoteObjects(invalidForbiddenVoteOptions, [
+        // Candidate 2, 3x noVote
+        invalidForbiddenCandidate2.id,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+        filledBallotPaperDefaultVoteOption.noVote,
+      ]),
     );
 
     const res = await request(app)
@@ -1385,64 +1009,7 @@ describe(`POST /voting/castVote`, () => {
       throw new Error('Test setup failed');
     }
 
-    const ballotPaper = createEncryptedBallotPaper(
-      invalidAllowedElectionPubKey,
-      invalidAllowedBallotPaper.id,
-      invalidAllowedBallotPaperSection1.id,
-      invalidAllowedBallotPaperSection2.id,
-      [
-        {
-          [invalidAllowedCandidate1.id]: 1,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 0,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-      [
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-        {
-          [invalidAllowedCandidate1.id]: 0,
-          [invalidAllowedCandidate2.id]: 0,
-          [filledBallotPaperDefaultVoteOption.noVote]: 1,
-          [filledBallotPaperDefaultVoteOption.invalid]: 0,
-        },
-      ],
-    );
+    const ballotPaper = validEncryptedInvalidAllowedBP;
 
     // First vote
     const res1 = await request(app)
