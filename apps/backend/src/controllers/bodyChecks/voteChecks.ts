@@ -5,7 +5,7 @@ import {
   zodErrorToResponse400,
   type EncryptedFilledBallotPaper,
 } from '@repo/votura-validators';
-import { KeyPair } from '@votura/votura-crypto/index';
+import { PrivateKey } from '@votura/votura-crypto/index';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import {
   areInvalidVotesAllowedInBP,
@@ -211,7 +211,7 @@ const createBallotDecryption = async (
   const { pubKey, privKey, primeP, primeQ, generator } =
     await getBallotPaperEncryptionKeys(ballotPaperId);
 
-  const keyPair = new KeyPair(
+  const privateKey = new PrivateKey(
     BigInt(primeP),
     BigInt(primeQ),
     BigInt(generator),
@@ -219,7 +219,7 @@ const createBallotDecryption = async (
     BigInt(privKey),
   );
 
-  return new BallotPaperSectionDecryption(keyPair.privateKey, keyPair.publicKey);
+  return new BallotPaperSectionDecryption(privateKey);
 };
 
 /**

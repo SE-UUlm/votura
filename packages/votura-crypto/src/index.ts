@@ -182,9 +182,9 @@ export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
 };
 
 export class Tallying {
-  private readonly pk: PublicKey;
+  private readonly pk: PublicKey | PrivateKey;
 
-  public constructor(pk: PublicKey) {
+  public constructor(pk: PublicKey | PrivateKey) {
     this.pk = pk;
   }
 
@@ -244,9 +244,9 @@ export class Tallying {
 }
 
 export class ZeroKnowledgeProof {
-  private readonly pk: PublicKey;
+  private readonly pk: PublicKey | PrivateKey;
 
-  public constructor(pk: PublicKey) {
+  public constructor(pk: PublicKey | PrivateKey) {
     this.pk = pk;
   }
 

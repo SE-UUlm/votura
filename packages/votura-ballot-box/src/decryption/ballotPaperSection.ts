@@ -7,7 +7,6 @@ import {
   ZeroKnowledgeProof,
   type Ciphertext,
   type PrivateKey,
-  type PublicKey,
   type ZKProof,
 } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
@@ -38,10 +37,10 @@ export class BallotPaperSectionDecryption {
 
   private discreteLogLookup: Map<bigint, number> | null = null;
 
-  public constructor(privateKey: PrivateKey, publicKey: PublicKey) {
+  public constructor(privateKey: PrivateKey) {
     this.privateKey = privateKey;
     this.tallying = new Tallying(privateKey);
-    this.zkp = new ZeroKnowledgeProof(publicKey);
+    this.zkp = new ZeroKnowledgeProof(privateKey);
   }
 
   /**
