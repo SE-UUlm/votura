@@ -43,7 +43,7 @@ describe('BallotPaperSectionDecryption tests', () => {
 
   beforeAll(async () => {
     keyPair = await getKeyPair(20);
-    decryption = new BallotPaperSectionDecryption(keyPair.privateKey, keyPair.publicKey);
+    decryption = new BallotPaperSectionDecryption(keyPair.privateKey);
   });
 
   it('should throw if lookup table not initialized', () => {
