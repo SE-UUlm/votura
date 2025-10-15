@@ -12,12 +12,12 @@ describe('Votura Ballot Box utils tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
   const dummyVote = {
-    alpha: BigInt(5),
-    beta: BigInt(3),
-    commitment1: BigInt(7),
-    commitment2: BigInt(11),
-    challenge: BigInt(13),
-    response: BigInt(17),
+    alpha: '5',
+    beta: '3',
+    commitment1: '7',
+    commitment2: '11',
+    challenge: '13',
+    response: '17',
   };
 
   const dummySection = {

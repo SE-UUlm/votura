@@ -95,7 +95,7 @@ This means that for encryption purposes, a ballot paper section in which a voter
 
 In this table, representing a single ballot paper section, a voter has chosen to give two of four possible votes in the section to candidate 1.
 The third vote was cast for candidate 2, while the fourth vote was not assigned to any candidate.
-If the ballot paper section had been invalid, for each possible vote in the table, "Invalid" would be set by the frontend chosen.
+If the ballot paper section had been invalid, for each possible vote in the table, "invalid" would be set by the frontend chosen.
 This would then propagate to all other ballot paper sections of the ballot paper, each one represented by another table.
 
 To send these tables to the backend, a JSON Object is used, as shown in the documentation of the `/voting/castVote` backend-API.
@@ -120,6 +120,7 @@ To make explaining the format easier, the following example is given:
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
@@ -131,7 +132,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "No Vote": {
+          "noVote": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -139,7 +140,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "Invalid": {
+          "invalid": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -173,7 +174,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "No Vote": {
+          "noVote": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -181,7 +182,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "Invalid": {
+          "invalid": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,

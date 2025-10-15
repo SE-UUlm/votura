@@ -7,7 +7,7 @@ import {
 import type { Selectable } from 'kysely';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { getBallotPaperMaxVotes } from '../../services/ballotPapers.service.js';
-import { getBPSMaxVotesForBP } from '../../services/ballotPaperSections.service.js';
+import { getMaxBPSMaxVotesForBP } from '../../services/ballotPaperSections.service.js';
 import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
 //----------- Ballot Paper MaxVotes and MaxVotesPerCandidate Checks -----------
@@ -41,7 +41,7 @@ export const validateUpdateableBallotPaper = async (
   }
 
   const { maxVotes: maxVotesFromSections, maxVotesPerCandidate: maxVotesPerCandidateFromSections } =
-    await getBPSMaxVotesForBP(ballotPaperId);
+    await getMaxBPSMaxVotesForBP(ballotPaperId);
 
   // Check if the new maxVotes and maxVotesPerCandidate are valid against the sections
   let message = '';

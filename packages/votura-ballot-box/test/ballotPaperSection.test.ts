@@ -64,7 +64,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       },
     };
 
-    // encryption: PlainFilledBallotPaper section => FilledBallotPaper section
+    // encryption: PlainFilledBallotPaper section => encryptedFilledBallotPaper section
     if (!encryption || !plainFilledBallotPaper.sections[UUIDs.section1]) {
       throw new Error('Encryption and Section1 are null or undefined.');
     }
@@ -73,7 +73,7 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       UUIDs.section1,
     );
 
-    // decryption: FilledBallotPaper section => DecryptedSection
+    // decryption: encryptedFilledBallotPaper section => DecryptedSection
     if (!decryption) {
       throw new Error('Decryption is null or undefined.');
     }

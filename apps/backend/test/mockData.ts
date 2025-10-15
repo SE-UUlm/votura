@@ -38,6 +38,14 @@ export const demoElection2 = insertableElectionObject.parse({
   votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
 });
+export const invalidAllowedElection = insertableElectionObject.parse({
+  name: 'My test election with invalid votes allowed',
+  description: 'My test election description with invalid votes allowed',
+  private: true,
+  votingStartAt: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
+  votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
+  allowInvalidVotes: true,
+});
 export const brokenElection = {
   name: 'My broken election',
   private: 123,
