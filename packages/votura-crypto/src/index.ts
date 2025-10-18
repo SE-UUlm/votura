@@ -36,12 +36,12 @@ export class PublicKey {
    * Encrypts the given encoded plaintext using the public key.
    * An encoded plaintext is generator ^ (number of votes) mod primeP.
    * @param encodedPlaintext The encoded plaintext to encrypt, must be in the range [1, primeP - 1]
-   * @param randomness Optional randomness to use for encryption, must be in the range [1, primeP - 2]. If not provided, a random value will be generated.
+   * @param randomness The randomness to use for encryption, must be in the range [1, primeQ - 2]. If not provided, a random value will be generated.
    * @returns The ciphertext and the randomness used for encryption.
    */
   public encrypt(
     encodedPlaintext: bigint,
-    randomness: bigint = randBetween(modAdd([this.primeP, -1n], this.primeP), 1n),
+    randomness: bigint = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 1n),
   ): [Ciphertext, bigint] {
     if (encodedPlaintext === 0n) {
       throw Error('Cannot encrypt 0 with El Gamal!');
@@ -100,7 +100,7 @@ export class PrivateKey extends PublicKey {
   public decrypt(ciphertext: Ciphertext): bigint {
     return modMultiply(
       [
-        modPow(ciphertext[0], modAdd([this.primeQ, -this.privateKey], this.primeP), this.primeP),
+        modPow(ciphertext[0], modAdd([this.primeQ, -this.privateKey], this.primeQ), this.primeP),
         ciphertext[1],
       ],
       this.primeP,
@@ -113,7 +113,7 @@ export class PrivateKey extends PublicKey {
    * @returns The zero-knowledge proof.
    */
   public createDecryptionProof(ciphertext: Ciphertext): ZKProof {
-    const w = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 0n);
+    const w = randBetween(modAdd([this.primeQ, -1n], this.primeQ), 1n);
 
     const commitmentA = modPow(this.generator, w, this.primeP);
     const commitmentB = modPow(ciphertext[0], w, this.primeP);
@@ -175,16 +175,16 @@ export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
   }
 
   const generator = getGeneratorForPrimes(primeP, probablePrimeQ);
-  const privateKey = randBetween(primeP, 1n);
+  const privateKey = randBetween(modAdd([probablePrimeQ, -1n], probablePrimeQ), 1n);
   const publicKey = modPow(generator, privateKey, primeP);
 
   return new KeyPair(primeP, probablePrimeQ, generator, publicKey, privateKey);
 };
 
 export class Tallying {
-  private readonly pk: PublicKey;
+  private readonly pk: PublicKey | PrivateKey;
 
-  public constructor(pk: PublicKey) {
+  public constructor(pk: PublicKey | PrivateKey) {
     this.pk = pk;
   }
 
@@ -244,9 +244,9 @@ export class Tallying {
 }
 
 export class ZeroKnowledgeProof {
-  private readonly pk: PublicKey;
+  private readonly pk: PublicKey | PrivateKey;
 
-  public constructor(pk: PublicKey) {
+  public constructor(pk: PublicKey | PrivateKey) {
     this.pk = pk;
   }
 
@@ -262,7 +262,7 @@ export class ZeroKnowledgeProof {
     const disjunctiveZKPs: ZKProof[] = [];
 
     ciphertexts.forEach((ciphertext, index) => {
-      const choice = 1n; // = modPow(this.pk.generator, 0);
+      const choice = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
       if (index !== realIndex) {
         const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
         disjunctiveZKPs.push(simulatedProof);
@@ -283,9 +283,14 @@ export class ZeroKnowledgeProof {
       return false;
     }
 
-    ciphertexts.forEach((ciphertext, index) => {
-      const choice0 = 1n; // = modPow(this.pk.generator, 0);
-      const choice1 = this.pk.getGenerator(); // = modPow(this.pk.generator, 1);
+    const choice0 = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
+    const choice1 = this.pk.getGenerator(); // = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP());
+    for (let index = 0; index < ciphertexts.length; index++) {
+      const ciphertext = ciphertexts[index];
+      if (ciphertext === undefined) {
+        console.warn(`Invalid input: ciphertext[${index}] is undefined`);
+        return false;
+      }
       const zkProof = zkProofs[index];
       if (zkProof === undefined) {
         console.warn(`Invalid input: zkProof[${index}] is undefined`);
@@ -298,7 +303,7 @@ export class ZeroKnowledgeProof {
         console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
         return false;
       }
-    });
+    }
 
     const partsToHash: string[] = [];
 
@@ -404,32 +409,34 @@ export class ZeroKnowledgeProof {
     realIndex: number,
     randomness: bigint,
   ): ZKProof {
-    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 0n);
+    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
 
     const commitmentA = modPow(this.pk.getGenerator(), w, this.pk.getPrimeP());
     const commitmentB = modPow(this.pk.getPublicKey(), w, this.pk.getPrimeP());
 
     const partsToHash: string[] = [];
 
-    simulatedZKPs.forEach((proof, index) => {
-      if (index === realIndex) {
+    for (let i = 0; i <= simulatedZKPs.length; i++) {
+      if (i === realIndex) {
         partsToHash.push(commitmentA.toString());
         partsToHash.push(commitmentB.toString());
-      } else {
+      }
+      if (i < simulatedZKPs.length) {
+        const proof = simulatedZKPs[i];
+        if (!proof) {
+          throw new Error(`Missing simulated proof at index ${i}`);
+        }
         partsToHash.push(proof.commitment[0].toString());
         partsToHash.push(proof.commitment[1].toString());
       }
-    });
+    }
 
     const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
 
-    let realChallenge = disjunctiveChallenge;
-    simulatedZKPs.forEach((proof, index) => {
-      if (index !== realIndex) {
-        realChallenge =
-          modAdd([realChallenge, -proof.challenge], this.pk.getPrimeQ()) % this.pk.getPrimeQ();
-      }
-    });
+    const realChallenge = simulatedZKPs.reduce(
+      (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
+      disjunctiveChallenge,
+    );
 
     const response = modAdd(
       [w, modMultiply([randomness, realChallenge], this.pk.getPrimeQ())],

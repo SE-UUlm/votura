@@ -35,6 +35,7 @@ export const ballotPaperSectionObject = z.object({
         'The user can limit the allowed number of votes per candidate.\n' +
         'This is the maximum number of votes a voter can cast on one candidate on this ballot paper sections.\n' +
         '`maxVotesPerCandidate` of a ballot paper section needs to be smaller or equal to the over all `maxVotesPerCandidate` on the linked parent ballot paper.\n' +
+        'Furthermore, `maxVotesPerCandidate` of a ballot paper section needs to be smaller or equal to the `maxVotes` of the same ballot paper section.\n' +
         'If the ballot paper section contains more votes on one candidate than the `maxVotesPerCandidate` value, the whole vote / ballot paper will be invalid.',
       example: 42,
     }),
@@ -106,32 +107,30 @@ export const updateableBallotPaperSectionObjectSchema = z.toJSONSchema(
   toJsonSchemaParams,
 );
 
-export const insertableBallotPaperSectionCandidateObject = z.object({
+export const updateableCandidateOperationOptions = {
+  add: 'add',
+  remove: 'remove',
+} as const;
+
+export const updateableBallotPaperSectionCandidateObject = z.object({
   candidateId: candidateObject.shape.id.register(voturaMetadataRegistry, {
-    description: 'The ID of the candidate that should be part of this ballot paper section.',
+    description:
+      'The ID of the candidate that should be added to or removed from this ballot paper section.',
   }),
+  operation: z
+    .enum([updateableCandidateOperationOptions.add, updateableCandidateOperationOptions.remove])
+    .register(voturaMetadataRegistry, {
+      description:
+        'The operation to perform: add or remove the candidate from the ballot paper section.',
+      example: updateableCandidateOperationOptions.add,
+    }),
 });
 
-export type InsertableBallotPaperSectionCandidate = z.infer<
-  typeof insertableBallotPaperSectionCandidateObject
+export type UpdateableBallotPaperSectionCandidate = z.infer<
+  typeof updateableBallotPaperSectionCandidateObject
 >;
 
-export const insertableBallotPaperSectionCandidateObjectSchema = z.toJSONSchema(
-  insertableBallotPaperSectionCandidateObject,
-  toJsonSchemaParams,
-);
-
-export const removableBallotPaperSectionCandidateObject = z.object({
-  candidateId: candidateObject.shape.id.register(voturaMetadataRegistry, {
-    description: 'The ID of the candidate that should be removed from this ballot paper section.',
-  }),
-});
-
-export type RemovableBallotPaperSectionCandidate = z.infer<
-  typeof removableBallotPaperSectionCandidateObject
->;
-
-export const removableBallotPaperSectionCandidateObjectSchema = z.toJSONSchema(
-  removableBallotPaperSectionCandidateObject,
+export const updateableBallotPaperSectionCandidateObjectSchema = z.toJSONSchema(
+  updateableBallotPaperSectionCandidateObject,
   toJsonSchemaParams,
 );

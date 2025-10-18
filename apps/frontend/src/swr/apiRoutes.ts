@@ -1,6 +1,7 @@
 import type {
   SelectableBallotPaper,
   SelectableBallotPaperSection,
+  SelectableCandidate,
   SelectableElection,
 } from '@repo/votura-validators';
 
@@ -38,6 +39,10 @@ export const apiRoutes = {
     },
     candidates: {
       base: (id: SelectableElection['id']): string => `/elections/${id}/candidates`,
+      byId: (
+        electionId: SelectableElection['id'],
+        candidateId: SelectableCandidate['id'],
+      ): string => `/elections/${electionId}/candidates/${candidateId}`,
     },
   },
   users: {

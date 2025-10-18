@@ -1,18 +1,14 @@
+import { Box, Drawer, Loader, type ModalProps, Stack } from '@mantine/core';
 import {
-  ActionIcon,
-  Box,
-  Checkbox,
-  Drawer,
-  Group,
-  Loader,
-  type ModalProps,
-  Stack,
-  Text,
-} from '@mantine/core';
-import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
-import { IconSettings, IconTrash } from '@tabler/icons-react';
+  type SelectableBallotPaperSection,
+  type SelectableCandidate,
+  type SelectableElection,
+  updateableCandidateOperationOptions,
+} from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useUpdateCandidateInBallotPaperSection } from '../../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useGetCandidates } from '../../../../../../swr/candidates/useGetCandidates.ts';
+import { CandidateRow } from './CandidateRow.tsx';
 
 export interface CandidatesDrawerProps {
   opened: ModalProps['opened'];
@@ -30,25 +26,37 @@ export const CandidatesDrawer = ({
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
 
-  const rows = electionCandidates?.map((candidate) => (
-    <Group key={candidate.id} justify="space-between" wrap={'nowrap'}>
-      <Checkbox
-        checked={ballotPaperSection.candidateIds.includes(candidate.id)}
-        aria-label={'candidate-checkbox'}
+  const { trigger: triggerUpdateCandidateInBPS, isMutating: isMutatingUpdateCandidateInBPS } =
+    useUpdateCandidateInBallotPaperSection(
+      electionId,
+      ballotPaperSection.ballotPaperId,
+      ballotPaperSection.id,
+    );
+
+  const onToggleCandidate = async (candidate: SelectableCandidate): Promise<void> => {
+    if (ballotPaperSection.candidateIds.includes(candidate.id)) {
+      await triggerUpdateCandidateInBPS({
+        candidateId: candidate.id,
+        operation: updateableCandidateOperationOptions.remove,
+      });
+    } else {
+      await triggerUpdateCandidateInBPS({
+        candidateId: candidate.id,
+        operation: updateableCandidateOperationOptions.add,
+      });
+    }
+  };
+
+  const rows = electionCandidates
+    ?.sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+    .map((candidate) => (
+      <CandidateRow
+        candidate={candidate}
+        bpsCandidates={ballotPaperSection.candidateIds}
+        onToggleCandidate={onToggleCandidate}
+        isMutatingToggleCandidate={isMutatingUpdateCandidateInBPS}
       />
-      <Text truncate="end" flex={1}>
-        {candidate.title}
-      </Text>
-      <Group>
-        <ActionIcon variant={'transparent'}>
-          <IconSettings style={{ width: '70%', height: '70%' }} stroke={1.5} />
-        </ActionIcon>
-        <ActionIcon variant={'transparent'} color="red">
-          <IconTrash style={{ width: '70%', height: '70%' }} stroke={1.5} />
-        </ActionIcon>
-      </Group>
-    </Group>
-  ));
+    ));
 
   return (
     <Drawer.Root opened={opened} onClose={onClose} position={'right'} offset={16} radius={'md'}>

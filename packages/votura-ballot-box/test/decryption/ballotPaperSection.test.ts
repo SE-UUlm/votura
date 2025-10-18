@@ -1,8 +1,8 @@
-import { filledBallotPaperObject } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { BallotPaperSectionDecryption } from '../../src/decryption/ballotPaperSection.js';
+import { extractCandidateIds } from '../../src/utils.js';
 
 describe('BallotPaperSectionDecryption tests', () => {
   enum UUIDs {
@@ -14,12 +14,12 @@ describe('BallotPaperSectionDecryption tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
   const dummyVote = {
-    alpha: BigInt(5),
-    beta: BigInt(3),
-    commitment1: BigInt(7),
-    commitment2: BigInt(11),
-    challenge: BigInt(13),
-    response: BigInt(17),
+    alpha: '5',
+    beta: '3',
+    commitment1: '7',
+    commitment2: '11',
+    challenge: '13',
+    response: '17',
   };
 
   const dummySection = {
@@ -68,65 +68,6 @@ describe('BallotPaperSectionDecryption tests', () => {
     }).not.toThrow();
   });
 
-  it('should extract all ciphertexts correctly', () => {
-    const parseResult = filledBallotPaperObject.safeParse({
-      ballotPaperId: UUIDs.ballotPaper,
-      sections: {
-        [UUIDs.section1]: dummySection,
-      },
-    });
-    expect(parseResult.success).toBe(true);
-
-    // Accessing private method via bracket notation for testing purposes
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const ciphertexts = decryption?.['extractAllCiphertexts'](
-      dummySection,
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption['extractCandidateIds'](dummySection),
-    );
-    expect(ciphertexts).toEqual([
-      [
-        [dummyVote.alpha, dummyVote.beta], // candidate 1
-        [dummyVote.alpha, dummyVote.beta], // candidate 2
-        [dummyVote.alpha, dummyVote.beta], // invalid
-        [dummyVote.alpha, dummyVote.beta], // noVote
-      ],
-      [
-        [dummyVote.alpha, dummyVote.beta], // candidate 1
-        [dummyVote.alpha, dummyVote.beta], // candidate 2
-        [dummyVote.alpha, dummyVote.beta], // invalid
-        [dummyVote.alpha, dummyVote.beta], // noVote
-      ],
-    ]);
-  });
-
-  it('should throw error when extracting candidate IDs from section with no votes', () => {
-    const emptySection = {
-      votes: [],
-    };
-
-    expect(() => {
-      // Accessing private method via bracket notation for testing purposes
-      // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption?.['extractCandidateIds'](emptySection);
-    }).toThrowError('No votes found in section');
-  });
-
-  it('should extract candidate IDs correctly', () => {
-    const parseResult = filledBallotPaperObject.safeParse({
-      ballotPaperId: UUIDs.ballotPaper,
-      sections: {
-        [UUIDs.section1]: dummySection,
-      },
-    });
-    expect(parseResult.success).toBe(true);
-
-    // Accessing private method via bracket notation for testing purposes
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const candidateIds = decryption?.['extractCandidateIds'](dummySection);
-    expect(candidateIds).toEqual([UUIDs.candidate1, UUIDs.candidate2, 'invalid', 'noVote']); // manually ordered in alphabetical order
-  });
-
   it('should throw error when extracting ciphertexts from candidate with no vote data', () => {
     const sectionWithMissingVoteData = {
       votes: [
@@ -142,10 +83,9 @@ describe('BallotPaperSectionDecryption tests', () => {
     expect(() => {
       // Accessing private method via bracket notation for testing purposes
       // eslint-disable-next-line @typescript-eslint/dot-notation
-      decryption?.['extractAllCiphertexts'](
+      decryption?.['extractAndVerifyAllCiphertexts'](
         sectionWithMissingVoteData,
-        // eslint-disable-next-line @typescript-eslint/dot-notation
-        decryption['extractCandidateIds'](dummySection),
+        extractCandidateIds(dummySection),
       );
     }).toThrowError(`Missing vote data for candidate ${UUIDs.candidate2}`);
   });

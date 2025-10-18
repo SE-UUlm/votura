@@ -1,8 +1,7 @@
 import type { OpenAPIV3 } from 'openapi-types';
 import {
-  insertableBallotPaperSectionCandidateObjectSchema,
-  removableBallotPaperSectionCandidateObjectSchema,
   selectableBallotPaperSectionObjectSchema,
+  updateableBallotPaperSectionCandidateObjectSchema,
 } from '../../objects/ballotPaperSection.js';
 import { ballotPaperIdParameter } from '../ballotPapers/ballotPaperIdParameter.js';
 import { electionIdParameter } from '../elections/electionIdParameter.js';
@@ -27,20 +26,21 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
   parameters: [electionIdParameter, ballotPaperIdParameter, ballotPaperSectionIdParameter],
   put: {
     tags: [Tag.ballotPaperSections],
-    summary: 'Add a candidate to a ballot paper section',
+    summary: 'Add or remove a candidate to / from a ballot paper section',
     description:
-      'Adds an existing candidate to the specified ballot paper section. ' +
+      'Adds or removes an existing candidate to / from the specified ballot paper section. ' +
       'The user of the API access token needs access to the linked ballot paper / election. ' +
-      'A candidate can only be added if the linked election is not frozen. ' +
-      'The candidate can not be added multiple times to the same ballot paper section.',
+      'A candidate can only be added or removed if the linked election is not frozen. ' +
+      'The candidate can not be added multiple times to the same ballot paper section. ' +
+      'A candidate can only be removed if it was previously added to the ballot paper section.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
-    operationId: 'addCandidateToBallotPaperSection',
+    operationId: 'updateCandidateInBallotPaperSection',
     requestBody: {
       required: true,
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: insertableBallotPaperSectionCandidateObjectSchema as OpenAPIV3.SchemaObject,
+          schema: updateableBallotPaperSectionCandidateObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -49,48 +49,7 @@ export const candidatePathObject: OpenAPIV3.PathItemObject = {
       200: {
         description:
           'OK. The request was successfully executed. ' +
-          'The candidate is now added to the ballot paper section.',
-        content: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          'application/json': {
-            schema: selectableBallotPaperSectionObjectSchema as OpenAPIV3.SchemaObject,
-          },
-        },
-      },
-      ...response400,
-      ...response401,
-      ...response403,
-      ...response404,
-      ...response406,
-      ...response415,
-      ...response429,
-      ...responseDefault,
-    },
-  },
-  delete: {
-    tags: [Tag.ballotPaperSections],
-    summary: 'Remove a candidate from a ballot paper section',
-    description:
-      'Removes an existing candidate from the specified ballot paper section.\n' +
-      'The user of the API access token needs access to the linked ballot paper / election. ' +
-      'A candidate can only be removed from the ballot paper section if the linked election is not frozen.',
-    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
-    operationId: 'removeCandidateFromBallotPaperSection',
-    requestBody: {
-      required: true,
-      content: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'application/json': {
-          schema: removableBallotPaperSectionCandidateObjectSchema as OpenAPIV3.SchemaObject,
-        },
-      },
-    },
-    responses: {
-      // eslint-disable-next-line @typescript-eslint/naming-convention
-      200: {
-        description:
-          'OK. The request was successfully executed. ' +
-          'The candidate was removed from the ballot paper section.',
+          'The candidate is now added to / removed from the ballot paper section.',
         content: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
