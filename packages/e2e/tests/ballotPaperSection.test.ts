@@ -73,5 +73,13 @@ test.describe('BallotPaperSection', () => {
     const saveButton = page.getByRole('button', { name: 'Save changes' });
     await saveButton.click();
     await expect(saveButton).not.toBeVisible();
+
+    await page.getByRole('button', { name: 'Section Settings' }).click();
+    await page.getByRole('menuitem', { name: 'Delete section' }).click();
+    await page.getByRole('button', { name: 'Delete' }).click();
+    await page.waitForTimeout(1000);
+    await expect(
+      page.getByText(ballotPaperSection.name, { exact: true }).first(),
+    ).not.toBeVisible();
   });
 });
