@@ -24,7 +24,7 @@ test.describe('BallotPaperSection', () => {
     await expect(page).toHaveURL('/elections');
   });
 
-  test('should create a ballot paper section', async ({ page }) => {
+  test('should create, update and delete a ballot paper section', async ({ page }) => {
     await page
       .getByRole('row', { name: 'Election 1 This is election' })
       .getByLabel('Settings')
@@ -52,10 +52,7 @@ test.describe('BallotPaperSection', () => {
     if (ballotPaperSection.description !== undefined) {
       await expect(page.getByText(ballotPaperSection.description).first()).toBeVisible();
     }
-  });
 
-  test('should update a ballot paper section', async ({ page }) => {
-    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Edit section' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill(updatedBallotPaperSection.name);
@@ -78,12 +75,9 @@ test.describe('BallotPaperSection', () => {
     await page.waitForTimeout(1000);
     await expect(saveButton).not.toBeVisible();
     if (updatedBallotPaperSection.description !== undefined) {
-      await expect(page.getByText(updatedBallotPaperSection.description)).toBeVisible();
+      await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
     }
-  });
 
-  test('should delete a ballot paper section', async ({ page }) => {
-    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Delete section' }).click();
     await page.getByRole('button', { name: 'Delete' }).click();
