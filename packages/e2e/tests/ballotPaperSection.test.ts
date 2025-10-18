@@ -73,6 +73,12 @@ test.describe('BallotPaperSection', () => {
     const saveButton = page.getByRole('button', { name: 'Save changes' });
     await saveButton.click();
     await expect(saveButton).not.toBeVisible();
+    await expect(
+      page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
+    ).toBeVisible();
+    if (updatedBallotPaperSection.description !== undefined) {
+      await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
+    }
 
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Delete section' }).click();
