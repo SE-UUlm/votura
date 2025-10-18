@@ -7,9 +7,9 @@ import {
 } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
-import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useDeleteBallotPaperSection } from '../../../../../swr/ballotPaperSections/useDeleteBallotPaperSection.ts';
 import { useUpdateBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateBallotPaperSection.ts';
+import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
 import {
   getCreateSuccessCandidateConfig,
