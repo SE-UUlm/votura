@@ -8,13 +8,6 @@ const ballotPaperSection: UpdateableBallotPaperSection = {
   maxVotesPerCandidate: 2,
 };
 
-const updatedBallotPaperSection: UpdateableBallotPaperSection = {
-  name: 'My updated BPS',
-  description: 'My updated BPS Description',
-  maxVotes: 4,
-  maxVotesPerCandidate: 3,
-};
-
 test.describe('BallotPaperSection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
