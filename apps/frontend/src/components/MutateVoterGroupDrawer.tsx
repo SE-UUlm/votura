@@ -12,14 +12,9 @@ import {
   TextInput,
 } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
-import type {
-  SelectableBallotPaper,
-  SelectableElection,
-  SelectableVoterGroup,
-  UpdateableVoterGroup,
-} from '@repo/votura-validators';
-import { type JSX, type ReactNode, useEffect, useState } from 'react';
-import { useGetBallotPapers } from '../swr/ballotPapers/useGetBallotPapers';
+import type { SelectableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
+import { type JSX, type ReactNode, useEffect } from 'react';
+import { useGetBallotPapersByElections } from '../swr/ballotPapers/useGetBallotPapersByElections';
 import { useGetElections } from '../swr/elections/useGetElections';
 
 export interface MutateVoterGroupDrawerProps {
@@ -58,33 +53,7 @@ export const MutateVoterGroupDrawer = ({
 
   const { data: elections } = useGetElections();
 
-  const [ballotPapersByElection, setBallotPapersByElection] = useState<
-    Record<string, SelectableBallotPaper[]>
-  >({});
-
-  useEffect(() => {
-    if (!elections || elections.length === 0) {
-      setBallotPapersByElection({});
-      return;
-    }
-
-    const fetchAllBallotPapers = async (): Promise<void> => {
-      const result: Record<string, SelectableBallotPaper[]> = {};
-      await Promise.all(
-        elections.map(async (election: SelectableElection) => {
-          const { data } = useGetBallotPapers(election.id);
-          if (data) {
-            result[election.id] = data;
-          }
-        }),
-      );
-      setBallotPapersByElection(result);
-    };
-
-    void fetchAllBallotPapers();
-    // to prevent infinite render loops
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [elections]);
+  const ballotPapersByElection = useGetBallotPapersByElections(elections);
 
   useEffect(() => {
     if (!opened) return;
