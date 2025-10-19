@@ -28,7 +28,6 @@ test('should create, update and delete a voter group', async ({ page }) => {
   // create voter group
   await page.waitForSelector('[data-testid="new-voter-group-btn"]', { state: 'attached' });
   const newVoterGroupBtn = page.locator('[data-testid="new-voter-group-btn"]');
-  console.warn('DEBUG: show content');
   console.warn(await page.content());
   await expect(newVoterGroupBtn).toBeVisible();
   await newVoterGroupBtn.click();
