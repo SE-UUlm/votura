@@ -55,6 +55,7 @@ export const VoterGroupsView = (): JSX.Element => {
           <Title order={1}>Voter Groups</Title>
           <Button
             leftSection={<IconPlus size={16} />}
+            data-testid="new-voter-group-btn"
             variant="light"
             onClick={mutateModalActions.open}
           >
