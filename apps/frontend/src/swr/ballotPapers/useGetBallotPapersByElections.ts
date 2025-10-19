@@ -30,7 +30,7 @@ export const useGetBallotPapersByElections = (
       return;
     }
 
-    const electionIds = elections.map(e => e.id).join(',');
+    const electionIds = elections.map((e) => e.id).join(',');
     if (lastElectionIdsRef.current === electionIds) return;
     lastElectionIdsRef.current = electionIds;
 
