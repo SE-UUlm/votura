@@ -8,8 +8,6 @@ import { apiRoutes } from '../apiRoutes.ts';
 import { getterFactory } from '../getterFactory.ts';
 import { toArraySchema } from '../toArraySchema.ts';
 
-const lastElectionIdsRef = useRef<string>('');
-
 /**
  * Fetches ballot papers for a list of elections and returns a mapping keyed by election id.
  * Reason: Calling hooks (e.g. useGetBallotPapers) inside loops or conditionally violates React's Rules of Hooks.
@@ -29,6 +27,8 @@ export const useGetBallotPapersByElections = (
       setBallotPapersByElection({});
       return;
     }
+
+    const lastElectionIdsRef = useRef<string>('');
 
     const electionIds = elections.map((e) => e.id).join(',');
     if (lastElectionIdsRef.current === electionIds) return;
