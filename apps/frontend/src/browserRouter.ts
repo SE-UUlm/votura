@@ -6,6 +6,7 @@ import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
 import { RegisterView } from './components/views/login/RegisterView.tsx';
+import { VoterGroupsView } from './components/views/voterGroups/VoterGroupsView.tsx';
 
 export const browserRouter = createBrowserRouter([
   {
@@ -42,6 +43,16 @@ export const browserRouter = createBrowserRouter([
                 path: `:${parameter.electionId}`,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 Component: ElectionView,
+              },
+            ],
+          },
+          {
+            path: '/voterGroups',
+            children: [
+              {
+                index: true,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Component: VoterGroupsView,
               },
             ],
           },
