@@ -3,10 +3,12 @@ import {
   selectableBallotPaperObject,
   type SelectableElection,
 } from '@repo/votura-validators';
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { apiRoutes } from '../apiRoutes.ts';
 import { getterFactory } from '../getterFactory.ts';
 import { toArraySchema } from '../toArraySchema.ts';
+
+const lastElectionIdsRef = useRef<string>('');
 
 /**
  * Fetches ballot papers for a list of elections and returns a mapping keyed by election id.
@@ -27,6 +29,10 @@ export const useGetBallotPapersByElections = (
       setBallotPapersByElection({});
       return;
     }
+
+    const electionIds = elections.map(e => e.id).join(',');
+    if (lastElectionIdsRef.current === electionIds) return;
+    lastElectionIdsRef.current = electionIds;
 
     let cancelled = false;
 
