@@ -73,7 +73,7 @@ export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element =
             <ActionIcon
               variant="subtle"
               aria-label="Details"
-              onClick={() => {
+              onClick={(): void => {
                 navigate(`/voterGroups/${voterGroup.id}`);
               }}
             >

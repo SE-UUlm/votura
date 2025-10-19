@@ -146,7 +146,7 @@ export const MutateVoterGroupDrawer = ({
                             key={ballotPaper.id}
                             label={ballotPaper.name}
                             checked={form.values.ballotPapers.includes(ballotPaper.id)}
-                            onChange={() => handleBallotPaperToggle(ballotPaper.id)}
+                            onChange={(): void => handleBallotPaperToggle(ballotPaper.id)}
                           />
                         ))
                       ) : (
