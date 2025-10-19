@@ -51,7 +51,7 @@ export const useGetBallotPapersByElections = (
 
     void fetchAllBallotPapers();
 
-    return () => {
+    return (): void => {
       cancelled = true;
     };
     // to prevent infinite render loops
