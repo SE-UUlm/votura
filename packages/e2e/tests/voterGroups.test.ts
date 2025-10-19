@@ -26,7 +26,9 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await expect(page).toHaveURL('/voterGroups');
 
   // create voter group
-  await page.getByRole('button', { name: 'New Voter Group' }).click();
+  const newVoterBtn = page.getByRole('button', { name: 'New Voter Group' });
+  expect(newVoterBtn).toBeVisible();
+  await newVoterBtn.click();
   await page.getByLabel('Voter group name').fill(voterGroup.name);
   if (voterGroup.description !== undefined) {
     await page.getByLabel('Voter group description').fill(voterGroup.description);
