@@ -27,6 +27,11 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // create voter group
   const newVoterBtn = page.getByRole('button', { name: 'New Voter Group' });
+  console.warn('content before waiting');
+  console.warn(await page.content());
+  await page.waitForLoadState('networkidle');
+  console.warn('content after waiting');
+  console.warn(await page.content());
   await expect(newVoterBtn).toBeVisible();
   await newVoterBtn.click();
   await page.getByLabel('Voter group name').fill(voterGroup.name);
