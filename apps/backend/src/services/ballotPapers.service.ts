@@ -1,6 +1,7 @@
 import { db } from '@repo/db';
 import type {
   BallotPaper as DBBallotPaper,
+  BallotPaperSection as DBBallotPaperSection,
   Election as DBElection,
   User as DBUser,
 } from '@repo/db/types';
@@ -80,6 +81,95 @@ export const deleteBallotPaper = async (
   ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<DeleteResult> => {
   return db.deleteFrom('ballotPaper').where('id', '=', ballotPaperId).executeTakeFirst();
+};
+
+/**
+ * Get the maxVotes and maxVotesPerCandidate for the ballot paper with the given ballotPaperId
+ *
+ * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate from
+ * @returns A promise that resolves to the maxVotes and maxVotesPerCandidate values if successful, or null if unsuccessful
+ */
+export const getBallotPaperMaxVotes = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<{
+  maxVotes: DBBallotPaper['maxVotes'];
+  maxVotesPerCandidate: DBBallotPaper['maxVotesPerCandidate'];
+}> => {
+  const ballotPaper = await db
+    .selectFrom('ballotPaper')
+    .select(['maxVotes', 'maxVotesPerCandidate'])
+    .where('id', '=', ballotPaperId)
+    .executeTakeFirstOrThrow();
+
+  return { maxVotes: ballotPaper.maxVotes, maxVotesPerCandidate: ballotPaper.maxVotesPerCandidate };
+};
+
+export const getBallotPaperSectionIds = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<Selectable<DBBallotPaperSection>['id'][]> => {
+  const result = await db
+    .selectFrom('ballotPaperSection')
+    .where('ballotPaperId', '=', ballotPaperId)
+    .select('id')
+    .execute();
+
+  return result.map((section) => section.id);
+};
+
+export const getBallotPaperEncryptionKeys = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<{
+  pubKey: string;
+  privKey: string;
+  primeP: string;
+  primeQ: string;
+  generator: string;
+}> => {
+  const result = await db
+    .selectFrom('ballotPaper')
+    .innerJoin('election', 'ballotPaper.electionId', 'election.id')
+    .where('ballotPaper.id', '=', ballotPaperId)
+    .where('election.configFrozen', '=', true)
+    .where('election.pubKey', 'is not', null)
+    .where('election.privKey', 'is not', null)
+    .where('election.primeP', 'is not', null)
+    .where('election.primeQ', 'is not', null)
+    .where('election.generator', 'is not', null)
+    .select([
+      'election.pubKey',
+      'election.privKey',
+      'election.primeP',
+      'election.primeQ',
+      'election.generator',
+    ])
+    .executeTakeFirstOrThrow();
+
+  // 'as' assertions are safe here due to the 'is not null' checks above
+  return result as {
+    pubKey: string;
+    privKey: string;
+    primeP: string;
+    primeQ: string;
+    generator: string;
+  };
+};
+
+/**
+ * Check if invalid votes are allowed in the ballot paper.
+ * @param ballotPaperId The ID of the ballot paper to check.
+ * @returns True if invalid votes are allowed, false otherwise.
+ */
+export const areInvalidVotesAllowedInBP = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('ballotPaper')
+    .innerJoin('election', 'ballotPaper.electionId', 'election.id')
+    .where('ballotPaper.id', '=', ballotPaperId)
+    .select('election.allowInvalidVotes')
+    .executeTakeFirstOrThrow();
+
+  return result.allowInvalidVotes;
 };
 
 /**
@@ -174,27 +264,6 @@ export const checkBallotPapersElectionNotFrozen = async (
   return frozenElectionExists === undefined;
 };
 
-/**
- * Get the maxVotes and maxVotesPerCandidate for the ballot paper with the given ballotPaperId
- *
- * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate from
- * @returns A promise that resolves to the maxVotes and maxVotesPerCandidate values if successful, or null if unsuccessful
- */
-export const getBallotPaperMaxVotes = async (
-  ballotPaperId: Selectable<DBBallotPaper>['id'],
-): Promise<{
-  maxVotes: DBBallotPaper['maxVotes'];
-  maxVotesPerCandidate: DBBallotPaper['maxVotesPerCandidate'];
-}> => {
-  const ballotPaper = await db
-    .selectFrom('ballotPaper')
-    .select(['maxVotes', 'maxVotesPerCandidate'])
-    .where('id', '=', ballotPaperId)
-    .executeTakeFirstOrThrow();
-
-  return { maxVotes: ballotPaper.maxVotes, maxVotesPerCandidate: ballotPaper.maxVotesPerCandidate };
-};
-
 export const isElectionParentOfBallotPaper = async (
   electionId: Selectable<DBElection>['id'],
   ballotPaperId: Selectable<DBBallotPaper>['id'],
@@ -204,6 +273,27 @@ export const isElectionParentOfBallotPaper = async (
     .select(['electionId'])
     .where('id', '=', ballotPaperId)
     .where('electionId', '=', electionId)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+/**
+ * Checks if the election the ballot paper belongs to is votable (start date reached, end date not reached and frozen).
+ * @param ballotPaperId The id of the ballot paper to check.
+ * @returns A promise that resolves to true if the ballot paper is votable, false otherwise.
+ */
+export const checkBallotPaperIsVotable = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('ballotPaper')
+    .innerJoin('election', 'ballotPaper.electionId', 'election.id')
+    .select('election.id')
+    .where('ballotPaper.id', '=', ballotPaperId)
+    .where('election.votingStartAt', '<=', new Date())
+    .where('election.votingEndAt', '>=', new Date())
+    .where('election.configFrozen', '=', true)
     .executeTakeFirst();
 
   return result !== undefined;

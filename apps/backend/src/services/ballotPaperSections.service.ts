@@ -12,16 +12,21 @@ import type {
 import type { DeleteResult, Selectable } from 'kysely';
 import { spreadableOptional } from '../utils.js';
 
-const ballotPaperSectionTransformer = async (
-  ballotPaperSection: Selectable<DBBallotPaperSection>,
-): Promise<SelectableBallotPaperSection> => {
-  // get candidateIds related to ballotPaperSection
+export const getCandidateIdsForBallotPaperSection = async (
+  ballotPaperSectionId: Selectable<DBBallotPaperSection>['id'],
+): Promise<Selectable<DBCandidate>['id'][]> => {
   const candidateIds = await db
     .selectFrom('ballotPaperSectionCandidate')
     .select('candidateId')
-    .where('ballotPaperSectionId', '=', ballotPaperSection.id)
+    .where('ballotPaperSectionId', '=', ballotPaperSectionId)
     .execute();
 
+  return candidateIds.map((candidate) => candidate.candidateId);
+};
+
+const ballotPaperSectionTransformer = async (
+  ballotPaperSection: Selectable<DBBallotPaperSection>,
+): Promise<SelectableBallotPaperSection> => {
   return {
     id: ballotPaperSection.id,
     modifiedAt: ballotPaperSection.modifiedAt.toISOString(),
@@ -30,7 +35,7 @@ const ballotPaperSectionTransformer = async (
     ...spreadableOptional(ballotPaperSection, 'description'),
     maxVotes: ballotPaperSection.maxVotes,
     maxVotesPerCandidate: ballotPaperSection.maxVotesPerCandidate,
-    candidateIds: candidateIds.map((candidate) => candidate.candidateId),
+    candidateIds: await getCandidateIdsForBallotPaperSection(ballotPaperSection.id),
     ballotPaperId: ballotPaperSection.ballotPaperId,
   };
 };
@@ -129,12 +134,38 @@ export const removeCandidateFromBallotPaperSection = async (
 
 /**
  * Get the maximum votes (maxVotes and maxVotesPerCandidate) for the sections of a ballot paper.
- * Only the maximum of all sections is returned.
+ * Returns a mapping from sectionId to its maxVotes and maxVotesPerCandidate.
  *
  * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate of its related sections from.
  * @return A promise that resolves to an object containing the maximum votes and maximum votes per candidate or 0 if no sections are found.
  */
 export const getBPSMaxVotesForBP = async (
+  ballotPaperId: Selectable<DBBallotPaper>['id'],
+): Promise<
+  Record<Selectable<DBBallotPaperSection>['id'], { maxVotes: number; maxVotesPerCandidate: number }>
+> => {
+  const result = await db
+    .selectFrom('ballotPaperSection')
+    .select(['id', 'maxVotes', 'maxVotesPerCandidate'])
+    .where('ballotPaperId', '=', ballotPaperId)
+    .execute();
+
+  return Object.fromEntries(
+    result.map((section) => [
+      section.id,
+      { maxVotes: section.maxVotes, maxVotesPerCandidate: section.maxVotesPerCandidate },
+    ]),
+  );
+};
+
+/**
+ * Get the maximum votes (maxVotes and maxVotesPerCandidate) for the sections of a ballot paper.
+ * Only the maximum of all sections is returned.
+ *
+ * @param ballotPaperId The id of the ballot paper to get maxVotes and maxVotesPerCandidate of its related sections from.
+ * @return A promise that resolves to an object containing the maximum votes and maximum votes per candidate or 0 if no sections are found.
+ */
+export const getMaxBPSMaxVotesForBP = async (
   ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<{
   maxVotes: DBBallotPaperSection['maxVotes'];

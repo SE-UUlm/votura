@@ -21,7 +21,7 @@ When an administrative user "freezes" an election (i.e. when the election config
   - `q` - prime number that divides `(p-1)`, often chosen as `q = (p-1)/2`
   - `g` - generator of the multiplicative group modulo `p`
   - `y` - public key with `y = g^x mod p`
-- and a secret key `x`, randomly chosen such that `1 < x < p`.
+- and a secret key `x`, randomly chosen such that `1 < x < q`.
 
 ### El Gamal encryption
 
@@ -62,8 +62,8 @@ Only the list of ciphertexts `[(alpha_1, beta_1), (alpha_2, beta_2), ..., (alpha
 On the server side, at first it is checked if the incoming proofs are valid. Therefore, the following statements have to be true for every ciphertext `(alpha, beta)` and its proof `{commitment, challenge, response}`, with `commitment` consisting of `(A, B)`:
 
 - `A^q = 1 mod p` and `B^q = 1 mod p` (`A` and `B` in the correct group)
-- `g^response = A * alpha^challenge`
-- `y^response = B * (beta/m)^challenge`.
+- `g^response = A * alpha^challenge mod p`
+- `y^response = B * (beta/m)^challenge mod p`.
 
 Note that the plaintext `m` does not need to be decrypted from its ciphertext `(alpha, beta)`. The server already knows every possible option the voter can chose (`Enc(0)` or `Enc(1)`). With one of these possible options the last statement must hold.
 
@@ -95,7 +95,7 @@ This means that for encryption purposes, a ballot paper section in which a voter
 
 In this table, representing a single ballot paper section, a voter has chosen to give two of four possible votes in the section to candidate 1.
 The third vote was cast for candidate 2, while the fourth vote was not assigned to any candidate.
-If the ballot paper section had been invalid, for each possible vote in the table, "Invalid" would be set by the frontend chosen.
+If the ballot paper section had been invalid, for each possible vote in the table, "invalid" would be set by the frontend chosen.
 This would then propagate to all other ballot paper sections of the ballot paper, each one represented by another table.
 
 To send these tables to the backend, a JSON Object is used, as shown in the documentation of the `/voting/castVote` backend-API.
@@ -120,6 +120,7 @@ To make explaining the format easier, the following example is given:
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
+            "commitment2": 123,
             "challenge": 2345,
             "response": 234567
           },
@@ -131,7 +132,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "No Vote": {
+          "noVote": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -139,7 +140,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "Invalid": {
+          "invalid": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -173,7 +174,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "No Vote": {
+          "noVote": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -181,7 +182,7 @@ To make explaining the format easier, the following example is given:
             "challenge": 2345,
             "response": 234567
           },
-          "Invalid": {
+          "invalid": {
             "alpha": 32345,
             "beta": 2345,
             "commitment1": 235,
@@ -208,14 +209,14 @@ This format allows us to send all necessary data in a vote to the backend in one
 
 _Before encryption begins,_ the voting client performs a complete validation of the voter's selections against all election rules defined in the configurations. These rules include, but are not limited to, a maximum number of votes per candidate or a maximum number of votes per sections. If any violations are detected - such as selecting too many options - the client alerts the voter with a corresponding message.
 
-The voter may then correct the input or, after acknowledging the warning, choose to submit the ballot as invalid. In this case, as described in the previous section, all votes on the ballot are replaced by encryptions of the implicit `invalid`-option. This approach ensures that even invalid ballots remains structurally consistent and provably formed, while being semantically marked as invalid.
+The voter may then correct the input or, after acknowledging the warning, choose to submit the ballot as invalid. In this case, as described in the previous section, all votes on the ballot are replaced by encryptions of the implicit `invalid`-option. This approach ensures that even invalid ballots remain structurally consistent and provably formed, while being semantically marked as invalid.
 
 _After submission,_ the server independently revalidates all election constraints. This step is necessary, as neither the integrity of the client nor the communication channel can be fully guaranteed.
 
 To verify that the ballot complies with all configured constraints, the server performs a homomorphic tallying of the encrypted votes (see following section). This enables detection of any violations of configured limits across sections, without decrypting individual votes. Additionally, the server verifies that the implicit `invalid`-option appears in one of the following two consistent patterns:
 
 - Either _all_ encrypted votes are for the `invalid`-option (in case of a consciously submitted invalid ballot), or
-- _none_ of the encrypted votes are for the `invalid`-option (in case od a valid submission).
+- _none_ of the encrypted votes are for the `invalid`-option (in case of a valid submission).
 
 Any deviation from these expectations, or failure of the accompanying zero-knowledge proofs, leads to rejection of the ballot. In this case, the voter is informed that the submitted ballot appears to be corrupted or malformed and has therefore been rejected. The voter is then offered the opportunity to complete and submit a new ballot.
 
@@ -278,8 +279,8 @@ With a ciphertext `(alpha, beta)` and a random value `w < q`, the proof is calcu
 
 To verify the proof of decryption the following statements have to be true for the ciphertext `(alpha, beta)`, its decryption `m` and the above proof `{commitment, challenge, response}`, with `commitment` consisting of `(A, B)`:
 
-- `g^response = A * y^challenge`
-- `alpha^response = B * (beta/m)^challenge`.
+- `g^response = A * y^challenge mod p`
+- `alpha^response = B * (beta/m)^challenge mod p`.
 
 If both equations hold the verifier can be convinced that the prover knows the secret `x`. Hence, the decryption is correct.
 

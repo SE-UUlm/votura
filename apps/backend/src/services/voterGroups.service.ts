@@ -10,7 +10,7 @@ import type { InsertableVoterGroup, SelectableVoterGroup } from '@repo/votura-va
 import type { Selectable, Transaction } from 'kysely';
 import { arraysEqual, spreadableOptional } from '../utils.js';
 
-export async function createVoters(
+async function createVoters(
   voterGroupId: Selectable<DBVoterGroup>['id'],
   numberOfVoters: number,
   trx: Transaction<DB>,
@@ -30,7 +30,7 @@ export async function createVoters(
   return voters.map((voter) => voter.id);
 }
 
-export async function linkVotersToBallotPapers(
+async function linkVotersToBallotPapers(
   voterIds: Selectable<DBVoter>['id'][],
   ballotPaperIds: Selectable<DBBallotPaper>['id'][],
   trx: Transaction<DB>,
@@ -182,7 +182,7 @@ export async function getVoterGroup(
  * @param numberOfVoters - The number of voters to remove.
  * @param trx - The database transaction to use.
  */
-export async function removeVotersFromGroup(
+async function removeVotersFromGroup(
   voterGroupId: Selectable<DBVoterGroup>['id'],
   numberOfVoters: number,
   trx: Transaction<DB>,
@@ -202,7 +202,7 @@ export async function removeVotersFromGroup(
     .executeTakeFirstOrThrow();
 }
 
-export async function clearVoterRegisterForVoterGroup(
+async function clearVoterRegisterForVoterGroup(
   voterGroupId: Selectable<DBVoterGroup>['id'],
   trx: Transaction<DB>,
 ): Promise<void> {

@@ -206,7 +206,7 @@ async function createVoteTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.vote)
     .$call(addDefaultColumns)
-    .addColumn(VoteColumnName.filledBallotPaper, 'jsonb', (col) => col.notNull())
+    .addColumn(VoteColumnName.encryptedFilledBallotPaper, 'jsonb', (col) => col.notNull())
     .addColumn(VoteColumnName.electionId, 'uuid', (col) => col.notNull())
     .addColumn(VoteColumnName.voterId, 'uuid')
     .execute();

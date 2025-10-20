@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { filledBallotPaperObjectSchema } from '../../objects/filledBallotPaper.js';
+import { encryptedFilledBallotPaperObjectSchema } from '../../objects/filledBallotPaper.js';
 import {
   response400,
   response401,
@@ -31,7 +31,7 @@ export const castVotePathObject: OpenAPIV3.PathItemObject = {
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: filledBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
+          schema: encryptedFilledBallotPaperObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },

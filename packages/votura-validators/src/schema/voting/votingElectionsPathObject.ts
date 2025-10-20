@@ -3,6 +3,7 @@ import { selectableVotingElectionObjectSchema } from '../../objects/votingElecti
 import {
   response400,
   response401,
+  response403,
   response406,
   response429,
   responseDefault,
@@ -19,10 +20,7 @@ export const votingElectionsPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Returns all elections and ballot papers for the provided voter token. ' +
       'Contains all public information about the elections and ballot papers that are necessary for the voting process. ' +
-      'Returns only elections / ballot papers where no vote was submitted by this voter token.' +
-      '\n\n' +
-      'This endpoint is currently only a draft and not implemented!\n' +
-      'When this endpoint is implemented this note will be removed.',
+      'Returns only elections / ballot papers where no vote was submitted by this voter token.',
     security: [{ [SecuritySchemaName.voturaVoterAuth]: [] }],
     operationId: 'getVotingElections',
     responses: {
@@ -44,6 +42,7 @@ export const votingElectionsPathObject: OpenAPIV3.PathItemObject = {
       },
       ...response400,
       ...response401,
+      ...response403,
       ...response406,
       ...response429,
       ...responseDefault,
