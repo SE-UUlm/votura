@@ -5,9 +5,13 @@ import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
+import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
+import { useGetElectionFreezable } from '../../../swr/elections/useGetElectionFreezable.ts';
+import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
@@ -32,6 +36,8 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
 
   const rows = data.map((election) => {
     const { trigger, isMutating } = useUpdateElection(election.id);
+    const { trigger: freezeTrigger } = useFreezeElection(election.id);
+    const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
 
     const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
       await trigger(mutatedElection);
@@ -43,7 +49,17 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       notifications.show(getDeleteSuccessElectionConfig(election.name));
     };
 
-    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
+    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+      if (election.configFrozen) {
+        await unfreezeTrigger();
+      } else {
+        const freezable = useGetElectionFreezable(election.id);
+        if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
+          notifications.show(getElectionNotFreezableConfig(election.name));
+          return;
+        }
+        await freezeTrigger();
+      }
       notifications.show(
         getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen),
       );
