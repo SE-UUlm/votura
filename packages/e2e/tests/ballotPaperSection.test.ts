@@ -54,11 +54,12 @@ test.describe('BallotPaperSection', () => {
     }
 
     await page.getByRole('button', { name: 'Section Settings' }).last().click();
-    await page.getByRole('menuitem', { name: 'Edit section' }).click();
-    await page.getByRole('textbox', { name: 'Name' }).fill(updatedBallotPaperSection.name);
+    await page.getByRole('menuitem', { name: 'Edit section' }).last().click();
+    await page.getByRole('textbox', { name: 'Name' }).last().fill(updatedBallotPaperSection.name);
     if (updatedBallotPaperSection.description !== undefined) {
       await page
         .getByRole('textbox', { name: 'Description' })
+        .last()
         .fill(updatedBallotPaperSection.description);
     }
     await page
@@ -66,11 +67,13 @@ test.describe('BallotPaperSection', () => {
         name: 'Maximum votes',
         exact: true,
       })
+      .last()
       .fill(updatedBallotPaperSection.maxVotes.toString());
     await page
       .getByRole('textbox', { name: 'Maximum votes per candidate' })
+      .last()
       .fill(updatedBallotPaperSection.maxVotesPerCandidate.toString());
-    const saveButton = page.getByRole('button', { name: 'Save changes' });
+    const saveButton = page.getByRole('button', { name: 'Save changes' }).last();
     await saveButton.click();
     await expect(saveButton).not.toBeVisible();
     await expect(
@@ -82,8 +85,8 @@ test.describe('BallotPaperSection', () => {
     await expect(page.getByText(ballotPaperSection.name, { exact: true }).first()).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Section Settings' }).last().click();
-    await page.getByRole('menuitem', { name: 'Delete section' }).click();
-    await page.getByRole('button', { name: 'Delete' }).click();
+    await page.getByRole('menuitem', { name: 'Delete section' }).last().click();
+    await page.getByRole('button', { name: 'Delete' }).last().click();
     await page.waitForTimeout(1000);
     await expect(
       page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
