@@ -3,6 +3,7 @@ import type {
   SelectableBallotPaperSection,
   SelectableCandidate,
   SelectableElection,
+  SelectableVoterGroup,
 } from '@repo/votura-validators';
 
 export const apiRoutes = {
@@ -38,6 +39,10 @@ export const apiRoutes = {
         candidateId: SelectableCandidate['id'],
       ): string => `/elections/${electionId}/candidates/${candidateId}`,
     },
+  },
+  voterGroups: {
+    base: '/voterGroups',
+    byId: (id: SelectableVoterGroup['id']): string => `/voterGroups/${id}`,
   },
   users: {
     base: '/users',
