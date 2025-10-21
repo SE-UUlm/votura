@@ -14,7 +14,7 @@ import {
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { SelectableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
-import { useGetBallotPapersByElections } from '../swr/ballotPapers/useGetBallotPapersByElections';
+import { useGetBallotPapers } from '../swr/ballotPapers/useGetBallotPapers';
 import { useGetElections } from '../swr/elections/useGetElections';
 
 export interface MutateVoterGroupDrawerProps {
@@ -52,8 +52,6 @@ export const MutateVoterGroupDrawer = ({
   });
 
   const { data: elections } = useGetElections();
-
-  const ballotPapersByElection = useGetBallotPapersByElections(elections);
 
   useEffect(() => {
     if (!opened) return;
@@ -135,28 +133,42 @@ export const MutateVoterGroupDrawer = ({
                   {...form.getInputProps('numberOfVoters')}
                 />
                 <Divider label={'Ballot Papers'} mt={'md'} />
-                {elections?.map((election) => (
-                  <Box key={election.id} mt={'sm'}>
-                    <Text fw={500}>{election.name}</Text>
-                    <Stack ml={'md'} mt={'xs'}>
-                      {ballotPapersByElection[election.id] &&
-                      ballotPapersByElection[election.id].length > 0 ? (
-                        ballotPapersByElection[election.id].map((ballotPaper) => (
-                          <Checkbox
-                            key={ballotPaper.id}
-                            label={ballotPaper.name}
-                            checked={form.values.ballotPapers.includes(ballotPaper.id)}
-                            onChange={(): void => handleBallotPaperToggle(ballotPaper.id)}
-                          />
-                        ))
-                      ) : (
-                        <Text size={'sm'} c={'dimmed'}>
-                          No ballot papers found
-                        </Text>
-                      )}
-                    </Stack>
-                  </Box>
-                ))}
+                {elections?.map((election) => {
+                  const {
+                    data: ballotPapers,
+                    isLoading: isBallotPapersLoading,
+                    error: ballotPapersError,
+                  } = useGetBallotPapers(election.id);
+                  return (
+                    <Box key={election.id} mt={'sm'}>
+                      <Text fw={500}>{election.name}</Text>
+                      <Stack ml={'md'} mt={'xs'}>
+                        {isBallotPapersLoading ? (
+                          <Text size={'sm'} c={'dimmed'}>
+                            Loading ballot papers...
+                          </Text>
+                        ) : ballotPapersError ? (
+                          <Text size={'sm'} c={'red.7'}>
+                            The ballot papers could not be loaded. Please try again.
+                          </Text>
+                        ) : ballotPapers && ballotPapers.length > 0 ? (
+                          ballotPapers.map((ballotPaper) => (
+                            <Checkbox
+                              key={ballotPaper.id}
+                              label={ballotPaper.name}
+                              checked={form.values.ballotPapers.includes(ballotPaper.id)}
+                              onChange={(): void => handleBallotPaperToggle(ballotPaper.id)}
+                            />
+                          ))
+                        ) : (
+                          <Text size={'sm'} c={'dimmed'}>
+                            No ballot papers found
+                          </Text>
+                        )}
+                      </Stack>
+                    </Box>
+                  );
+                })}
               </Stack>
             </Drawer.Body>
           </Box>
