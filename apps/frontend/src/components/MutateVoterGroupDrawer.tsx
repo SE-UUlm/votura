@@ -41,6 +41,12 @@ export const MutateVoterGroupDrawer = ({
 }: MutateVoterGroupDrawerProps): JSX.Element => {
   const form = useForm<MutateVoterGroupFormValues>({
     mode: 'controlled',
+    initialValues: {
+      name: '',
+      description: '',
+      numberOfVoters: 0,
+      ballotPapers: [],
+    },
     validate: {
       name: isNotEmpty('Name cannot be empty'),
       numberOfVoters: (value) =>
