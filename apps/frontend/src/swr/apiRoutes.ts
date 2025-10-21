@@ -21,6 +21,12 @@ export const apiRoutes = {
           electionId: SelectableElection['id'],
           ballotPaperId: SelectableBallotPaper['id'],
         ): string => `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections`,
+        byId: (
+          electionId: SelectableElection['id'],
+          ballotPaperId: SelectableBallotPaper['id'],
+          ballotPaperSectionId: SelectableBallotPaperSection['id'],
+        ): string =>
+          `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections/${ballotPaperSectionId}`,
         candidates: {
           base: (
             electionId: SelectableElection['id'],

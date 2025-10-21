@@ -82,3 +82,21 @@ export const getCreateSuccessCandidateConfig = (
   title: 'Success',
   message: `The candidate "${title}" has been created.`,
 });
+
+export const getMutateSuccessBallotPaperSectionConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The changes to the ballot paper section "${name}" have been saved.`,
+  };
+};
+
+export const getDeleteSuccessBallotPaperSectionConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The ballot paper section "${name}" has been deleted.`,
+  };
+};

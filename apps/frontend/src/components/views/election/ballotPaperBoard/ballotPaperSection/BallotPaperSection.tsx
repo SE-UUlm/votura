@@ -7,11 +7,18 @@ import {
 } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useDeleteBallotPaperSection } from '../../../../../swr/ballotPaperSections/useDeleteBallotPaperSection.ts';
+import { useUpdateBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateBallotPaperSection.ts';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
-import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
+import {
+  getCreateSuccessCandidateConfig,
+  getDeleteSuccessBallotPaperSectionConfig,
+  getMutateSuccessBallotPaperSectionConfig,
+} from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
 import type { MutateCandidateDrawerProps } from './candidates/MutateCandidateDrawer.tsx';
+import type { MutateBallotPaperSectionSectionDrawerProps } from './MutateBallotPaperSectionSectionDrawer.tsx';
 
 export interface BallotPaperSectionProps {
   electionId: SelectableElection['id'];
@@ -22,6 +29,16 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
+  const { trigger: triggerUpdate, isMutating: isUpdateMutating } = useUpdateBallotPaperSection({
+    electionId: electionId,
+    ballotPaperId: ballotPaperSection.ballotPaperId,
+    ballotPaperSectionId: ballotPaperSection.id,
+  });
+  const { trigger: triggerDelete } = useDeleteBallotPaperSection({
+    electionId: electionId,
+    ballotPaperId: ballotPaperSection.ballotPaperId,
+    ballotPaperSectionId: ballotPaperSection.id,
+  });
   const { trigger: triggerCreateCandidate, isMutating: isCandidateMutating } =
     useCreateCandidate(electionId);
   const { trigger: triggerAddCandidate, isMutating: isAddCandidateMutating } =
@@ -30,6 +47,18 @@ export const BallotPaperSection = ({
       ballotPaperSection.ballotPaperId,
       ballotPaperSection.id,
     );
+
+  const onMutate: MutateBallotPaperSectionSectionDrawerProps['onMutate'] = async (
+    mutatedBallotPaper,
+  ): Promise<void> => {
+    await triggerUpdate(mutatedBallotPaper);
+    notifications.show(getMutateSuccessBallotPaperSectionConfig(mutatedBallotPaper.name));
+  };
+
+  const onDelete = async (): Promise<void> => {
+    await triggerDelete();
+    notifications.show(getDeleteSuccessBallotPaperSectionConfig(ballotPaperSection.name));
+  };
 
   const onCandidateMutate: MutateCandidateDrawerProps['onMutate'] = async (
     partial,
@@ -57,6 +86,9 @@ export const BallotPaperSection = ({
           <BallotPaperSectionSettingsMenu
             electionId={electionId}
             ballotPaperSection={ballotPaperSection}
+            onMutate={onMutate}
+            isMutating={isUpdateMutating}
+            onDelete={onDelete}
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >
