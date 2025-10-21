@@ -79,9 +79,7 @@ test.describe('BallotPaperSection', () => {
     if (updatedBallotPaperSection.description !== undefined) {
       await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
     }
-    await expect(
-      page.getByText(ballotPaperSection.name, { exact: true }).first(),
-    ).toHaveCount(0);
+    await expect(page.getByText(ballotPaperSection.name, { exact: true }).first()).toHaveCount(0);
 
     await page.getByRole('button', { name: 'Section Settings' }).last().click();
     await page.getByRole('menuitem', { name: 'Delete section' }).click();
