@@ -136,7 +136,11 @@ export const MutateVoterGroupDrawer = ({
                   label={'Number of voters'}
                   placeholder={'e.g. 123'}
                   key={form.key('numberOfVoters')}
-                  {...form.getInputProps('numberOfVoters')}
+                  type={'number'}
+                  {...form.getInputProps('numberOfVoters', {
+                    onChange: (event: React.ChangeEvent<HTMLInputElement>) =>
+                      form.setFieldValue('numberOfVoters', Number(event.currentTarget.value)),
+                  })}
                 />
                 <Divider label={'Ballot Papers'} mt={'md'} />
                 {elections?.map((election) => {
