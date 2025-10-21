@@ -1,9 +1,8 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
-import { IconArrowRight, IconDots } from '@tabler/icons-react';
+import { IconDots } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
-import { useNavigate } from 'react-router';
 import { useDeleteVoterGroup } from '../../../swr/voterGroups/useDeleteVoterGroup.ts';
 import { useUpdateVoterGroup } from '../../../swr/voterGroups/useUpdateVoterGroup.ts';
 import {
@@ -25,8 +24,6 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
 );
 
 export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element => {
-  const navigate = useNavigate();
-
   const rows = data.map((voterGroup) => {
     const { trigger: updateTrigger, isMutating } = useUpdateVoterGroup(voterGroup.id);
     const { trigger: deleteTrigger } = useDeleteVoterGroup({ voterGroupId: voterGroup.id });
@@ -70,15 +67,6 @@ export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element =
               onMutate={onMutate}
               isMutating={isMutating}
             />
-            <ActionIcon
-              variant="subtle"
-              aria-label="Details"
-              onClick={(): void => {
-                navigate(`/voterGroups/${voterGroup.id}`);
-              }}
-            >
-              <IconArrowRight size={14} />
-            </ActionIcon>
           </Group>
         </Table.Td>
       </Table.Tr>
