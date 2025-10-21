@@ -3,7 +3,6 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
-import { useNavigate } from 'react-router';
 import { useCreateVoterGroup } from '../../../swr/voterGroups/useCreateVoterGroup.ts';
 import { useGetVoterGroups } from '../../../swr/voterGroups/useGetVoterGroups.ts';
 import { getAddSuccessVoterGroupConfig } from '../../../utils/notifications.ts';
@@ -19,12 +18,10 @@ export const VoterGroupsView = (): JSX.Element => {
   const { data, isLoading, error } = useGetVoterGroups();
 
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
-  const navigate = useNavigate();
 
   const onMutate: MutateVoterGroupDrawerProps['onMutate'] = async (partial) => {
-    const response = await trigger(partial);
+    await trigger(partial);
     notifications.show(getAddSuccessVoterGroupConfig(partial.name));
-    navigate(`/voterGroups/${response.id}`);
     return;
   };
 
