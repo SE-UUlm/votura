@@ -24,11 +24,13 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   await page.getByRole('link', { name: 'Voter Groups & Tokens' }).click();
   await expect(page).toHaveURL('/voterGroups');
+  await expect(page.getByRole('button', { name: 'New Election' })).toHaveCount(0);
 
   // create voter group
+  const html = await page.content();
+  console.warn(html.includes('data-testid="new-voter-group-btn"'));
   await page.waitForSelector('[data-testid="new-voter-group-btn"]', { state: 'attached' });
   const newVoterGroupBtn = page.locator('[data-testid="new-voter-group-btn"]');
-  console.warn(await page.content());
   await expect(newVoterGroupBtn).toBeVisible();
   await newVoterGroupBtn.click();
   await page.getByLabel('Voter group name').fill(voterGroup.name);
