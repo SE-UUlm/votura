@@ -5,6 +5,7 @@ import {
   type SelectableElection,
   type UpdateableBallotPaperSection,
 } from '@repo/votura-validators';
+import { mutate } from 'swr';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiRoutes } from '../apiRoutes.ts';
 import { putterFactory } from '../putterFactory.ts';
@@ -37,5 +38,12 @@ export const useUpdateBallotPaperSection = ({
         )
       : null,
     putterFactory(selectableBallotPaperSectionObject),
+    {
+      onSuccess: () => {
+        void mutate(
+          apiRoutes.elections.ballotPapers.ballotPaperSections.base(electionId, ballotPaperId),
+        );
+      },
+    },
   );
 };

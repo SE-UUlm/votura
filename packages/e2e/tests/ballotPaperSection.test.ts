@@ -53,7 +53,7 @@ test.describe('BallotPaperSection', () => {
       await expect(page.getByText(ballotPaperSection.description).first()).toBeVisible();
     }
 
-    await page.getByRole('button', { name: 'Section Settings' }).click();
+    await page.getByRole('button', { name: 'Section Settings' }).last().click();
     await page.getByRole('menuitem', { name: 'Edit section' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill(updatedBallotPaperSection.name);
     if (updatedBallotPaperSection.description !== undefined) {
@@ -79,13 +79,16 @@ test.describe('BallotPaperSection', () => {
     if (updatedBallotPaperSection.description !== undefined) {
       await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
     }
+    await expect(
+      page.getByText(ballotPaperSection.name, { exact: true }).first(),
+    ).toHaveCount(0);
 
-    await page.getByRole('button', { name: 'Section Settings' }).click();
+    await page.getByRole('button', { name: 'Section Settings' }).last().click();
     await page.getByRole('menuitem', { name: 'Delete section' }).click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.waitForTimeout(1000);
     await expect(
-      page.getByText(ballotPaperSection.name, { exact: true }).first(),
-    ).not.toBeVisible();
+      page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
+    ).toHaveCount(0);
   });
 });

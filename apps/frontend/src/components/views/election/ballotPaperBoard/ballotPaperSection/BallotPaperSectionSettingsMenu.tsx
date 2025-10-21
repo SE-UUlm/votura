@@ -56,6 +56,7 @@ export const BallotPaperSectionSettingsMenu = ({
         ballotPaperSection={ballotPaperSection}
       />
       <MutateBallotPaperSectionDrawer
+        ballotPaperSection={ballotPaperSection}
         title={'Edit ballot paper section'}
         opened={mutateSectionContextOpened}
         onClose={mutateSectionContextActions.close}
