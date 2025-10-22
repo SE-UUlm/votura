@@ -13,6 +13,6 @@
   "devDependencies": {
     "@repo/eslint-config": "*",
     "typescript": "^5.8.2",
-    "eslint": "^9.25.1"
+    "eslint": "^9.38.0"
   }
 }

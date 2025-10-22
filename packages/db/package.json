@@ -24,7 +24,7 @@
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@tsconfig/node22": "^22.0.1",
-    "eslint": "^9.25.1",
+    "eslint": "^9.38.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",

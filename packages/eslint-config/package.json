@@ -14,7 +14,7 @@
     "check-format": "prettier --check ."
   },
   "devDependencies": {
-    "eslint": "^9.25.1",
+    "eslint": "^9.38.0",
     "prettier": "^3.5.3",
     "eslint-config-prettier": "^10.1.2",
     "eslint-plugin-turbo": "^2.5.0",
