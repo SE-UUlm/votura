@@ -38,6 +38,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
     const { trigger, isMutating } = useUpdateElection(election.id);
     const { trigger: freezeTrigger } = useFreezeElection(election.id);
     const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
+    const freezable = useGetElectionFreezable(election.id);
 
     const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
       await trigger(mutatedElection);
@@ -53,7 +54,6 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       if (election.configFrozen) {
         await unfreezeTrigger();
       } else {
-        const freezable = useGetElectionFreezable(election.id);
         if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
           notifications.show(getElectionNotFreezableConfig(election.name));
           return;

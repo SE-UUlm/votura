@@ -32,6 +32,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
   const { trigger: freezeTrigger } = useFreezeElection(election.id);
   const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
+  const freezable = useGetElectionFreezable(election.id);
 
   const onDelete = async () => {
     try {
@@ -58,7 +59,6 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     if (election.configFrozen) {
       await unfreezeTrigger();
     } else {
-      const freezable = useGetElectionFreezable(election.id);
       if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
         notifications.show(getElectionNotFreezableConfig(election.name));
         return;
