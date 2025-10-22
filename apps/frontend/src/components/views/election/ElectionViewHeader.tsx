@@ -5,9 +5,13 @@ import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
+import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
+import { useGetElectionFreezable } from '../../../swr/elections/useGetElectionFreezable.ts';
+import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
   getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
@@ -26,6 +30,9 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     electionId: election.id,
   });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
+  const { trigger: freezeTrigger } = useFreezeElection(election.id);
+  const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
+  const freezable = useGetElectionFreezable(election.id);
 
   const onDelete = async () => {
     try {
@@ -48,8 +55,16 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+    if (election.configFrozen) {
+      await unfreezeTrigger();
+    } else {
+      if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
+        notifications.show(getElectionNotFreezableConfig(election.name));
+        return;
+      }
+      await freezeTrigger();
+    }
     notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 

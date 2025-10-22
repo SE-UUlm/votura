@@ -10,6 +10,9 @@ export const apiRoutes = {
   elections: {
     base: '/elections',
     byId: (id: SelectableElection['id']): string => `/elections/${id}`,
+    freezable: (id: SelectableElection['id']): string => `/elections/${id}/freezable`,
+    freeze: (id: SelectableElection['id']): string => `/elections/${id}/freeze`,
+    unfreeze: (id: SelectableElection['id']): string => `/elections/${id}/unfreeze`,
     ballotPapers: {
       base: (id: SelectableElection['id']): string => `/elections/${id}/ballotPapers`,
       byId: (
