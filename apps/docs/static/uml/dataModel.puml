@@ -1,0 +1,188 @@
+@startuml dataModel
+
+entity "user" as user #006b75 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * email : VARCHAR(256) <<UK>>
+    * passwordHash : VARCHAR(256)
+    * verified : BOOLEAN
+    lastLoginAt : TIMESTAMPTZ(6) | NULL
+    ' failed login attempts get reset on successful login
+    * failedLoginAttempts : INTEGER
+    emailVerificationTokenHash : VARCHAR(64) | NULL
+    emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    passwordResetTokenHash : VARCHAR(64) | NULL
+    passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    refreshTokenHash : VARCHAR(64) | NULL
+    refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    --
+}
+
+entity "accessTokenBlacklist" as jwtBlacklist #006b75 {
+    ' this table is used to store blacklisted access tokens
+    ' The jti is 36 characters long if we use UUIDv4
+    * id : UUID <<PK>>
+    --
+    * accessTokenId : UUID <<UK>>
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * expiresAt : TIMESTAMPTZ(6)
+    --
+}
+
+entity "election" as elections #b60205 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * private : BOOLEAN
+    * votingStartAt : TIMESTAMPTZ(6)
+    * votingEndAt : TIMESTAMPTZ(6)
+    * configFrozen : BOOLEAN
+    * allowInvalidVote : BOOLEAN
+    ' Is there a use case for `votesCounted`?
+    ' * votesCounted : BOOLEAN
+    ' * votesCounted : BOOLEAN
+    ' Computed values such as validVotes and invalidVotes are critical - do we really want to store them?
+    ' validVotes : NUMERIC | NULL
+    ' invalidVotes : NUMERIC | NULL
+    pubKey : NUMERIC | NULL
+    privKey : NUMERIC | NULL
+    primeP : NUMERIC | NULL
+    primeQ : NUMERIC | NULL
+    generator : NUMERIC | NULL
+    --
+    * electionCreatorId : User.id <<FK>>
+}
+
+note as N2
+The result of one election is intended 
+to be a singular decision, we 
+do not support multiple questions 
+(e.g. Vote for Admin and Vote for Treasurer) 
+in one election.
+end note
+
+entity "ballotPaper" as ballotPapers #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
+    --
+    * electionId : Election.id <<FK>>
+}
+
+entity "ballotPaperSection" as ballotPaperSections #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    * maxVotes : INTEGER
+    * maxVotesPerCandidate : INTEGER
+    --
+    * ballotPaperId : BallotPaper.id <<FK>>
+}
+
+entity "ballotPaperSectionCandidate" as ballotPaperSectionCandidates #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    --
+    * ballotPaperSectionId : BallotPaperSection.id <<FK>>
+    * candidateId : Candidate.id <<FK>>
+}
+
+entity "candidate" as candidates #fbca04 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * title : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    --
+    * electionId : Election.id <<FK>>
+}
+
+entity "vote" as votes #728376 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    encryptedFilledBallotPaper : JSONB
+    --
+    * electionId : Election.id <<FK>>
+    ' if the vote isn't secret, voter can be saved
+    voterId : voter.id <<FK>> | NULL
+}
+note as N4
+A vote is an encoded json object containing the entire filled in ballot paper.
+end note
+
+entity "voterRegister" as voterRegisters #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * voted : BOOLEAN
+    --
+    * ballotPaperId : BallotPaper.id <<FK>>
+    * voterId : Voter.id <<FK>>
+}
+
+entity "voter" as voters #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    --
+    voterGroupId: VoterGroup.id <<FK>>
+}
+note as N3
+A voter can only get one ballot paper per election,
+and with this only one vote per election.
+end note
+
+entity "voterGroup" as voterGroups #05DFA3 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * name : VARCHAR(256)
+    description : VARCHAR(256) | NULL
+    pubKey : TEXT | NULL
+    --
+    * voterGroupCreatorId : User.id <<FK>>
+}
+
+note as N1
+Timestamps are stored in UTC.
+end note
+
+user "1"--"*" elections : belongs to <
+elections "1"--"*" ballotPapers : belongs to <
+elections -- N2
+elections "1"--"*" candidates : belongs to <
+ballotPapers "1"--"*" voterRegisters : can be read by >
+voterRegisters "*"--"1" voters : has access to <
+ballotPapers "1"--"*" ballotPaperSections : belongs to <
+ballotPaperSections "1"--"*" ballotPaperSectionCandidates : contains >
+ballotPaperSectionCandidates "*"--"1" candidates : appears in <
+votes "*"--"1" elections : belongs to >
+voters "0..1"--"*" votes : belongs to \n (optional) <
+user "1"--"*" voterGroups : belongs to <
+voterGroups "1"--"1..*" voters : contains >
+voters -- N3
+votes -- N4
+
+@enduml

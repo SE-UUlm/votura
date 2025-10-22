@@ -1,0 +1,105 @@
+{
+  "$schema": "https://turborepo.com/schema.json",
+  "globalDependencies": [".env", "vitest.config.ts", "tsconfig.json"],
+  "globalEnv": [],
+  "ui": "stream",
+  "concurrency": "100%",
+  "cacheDir": ".turbo/cache",
+  "envMode": "strict",
+  "tasks": {
+    "lint": {
+      "dependsOn": [],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+    },
+    "format": {
+      "dependsOn": [],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": [],
+      "env": []
+    },
+    "check-format": {
+      "dependsOn": [],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
+    },
+    "check-types": {
+      "dependsOn": [],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": [],
+      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": ["build/**", "dist/**"],
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
+    },
+    "test": {
+      "dependsOn": ["^test"],
+      "cache": true,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": false,
+      "interactive": false,
+      "outputs": ["coverage/**", "results/**", "logs/**", "test-results/**"],
+      "env": [
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "CI",
+        "HOME",
+        "BITS_PRIME_P",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
+    },
+    "start": {
+      "dependsOn": ["^start"],
+      "cache": false,
+      "inputs": ["$TURBO_DEFAULT$"],
+      "outputLogs": "full",
+      "persistent": true,
+      "interactive": false,
+      "outputs": ["logs/**"],
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "BITS_PRIME_P",
+        "USERS_JWT_PRIV_KEY",
+        "USERS_JWT_PUB_KEY"
+      ]
+    }
+  }
+}

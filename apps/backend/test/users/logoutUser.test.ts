@@ -1,0 +1,137 @@
+import {
+  apiTokenUserObject,
+  response401Object,
+  type SelectableUser,
+} from '@repo/votura-validators';
+import request from 'supertest';
+import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
+import { app } from '../../src/app.js';
+import type { AccessTokenPayload } from '../../src/auth/types.js';
+import { verifyUserToken } from '../../src/auth/utils.js';
+import { HttpStatusCode } from '../../src/httpStatusCode.js';
+import { UserAuthErrorMessages } from '../../src/middlewares/auth.js';
+import {
+  blacklistAccessToken,
+  createUser,
+  deleteUser,
+  findUserBy,
+  setUserVerified,
+} from '../../src/services/users.service.js';
+import { demoUser } from '../mockData.js';
+
+describe(`POST /users/logout`, () => {
+  let requestPath = '';
+  let user: SelectableUser | null = null;
+  let accessToken: string | null = null;
+  let refreshToken: string | null = null;
+
+  beforeAll(async () => {
+    await createUser(demoUser);
+    user = await findUserBy({ email: demoUser.email });
+    if (user === null) {
+      throw new Error('Failed to find test user');
+    }
+
+    // set user as verified in db
+    await setUserVerified(user.id);
+
+    requestPath = '/users/logout';
+  });
+
+  beforeEach(async () => {
+    // Log in the user to create a session
+    const loginResponse = await request(app).post('/users/login').send({
+      email: demoUser.email,
+      password: demoUser.password,
+    });
+    if (loginResponse.status !== Number(HttpStatusCode.ok)) {
+      throw new Error('Failed to log in test user, status: ' + loginResponse.status);
+    }
+    const parseResult = apiTokenUserObject.safeParse(loginResponse.body);
+    if (!parseResult.success) {
+      throw new Error('Failed to parse login response');
+    }
+
+    accessToken = parseResult.data.accessToken;
+    refreshToken = parseResult.data.refreshToken;
+  });
+
+  it('200: should log out a user with valid access token', async () => {
+    if (accessToken === null) {
+      throw new Error('Access token is null');
+    }
+
+    const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
+    expect(res.status).toBe(HttpStatusCode.noContent);
+    expect(res.type).toBe('');
+  });
+
+  // Authentication middleware tests
+  it('401: should return error because of missing access token', async () => {
+    const res = await request(app).post(requestPath);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.noToken);
+  });
+
+  it('401: should return error because of invalid access token', async () => {
+    const res = await request(app).post(requestPath).set('Authorization', 'Bearer invalid_token');
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.invalidToken);
+  });
+
+  it('401: should return error because of refresh token instead of access token', async () => {
+    if (refreshToken === null) {
+      throw new Error('Refresh token is null');
+    }
+
+    const res = await request(app).post(requestPath).set('Authorization', `Bearer ${refreshToken}`);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.invalidToken);
+  });
+
+  it('401: should return error because of blacklisted access token', async () => {
+    if (accessToken === null) {
+      throw new Error('Access token is null');
+    }
+
+    // Simulate blacklisting the access token
+    const accessTokenPayload = verifyUserToken(accessToken) as AccessTokenPayload;
+    const expiresAt = new Date(accessTokenPayload.exp * 1000);
+    await blacklistAccessToken(accessTokenPayload.jti, expiresAt);
+
+    const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.blacklisted);
+  });
+
+  it('401: should return error because of user not found', async () => {
+    if (accessToken === null) {
+      throw new Error('Access token is null');
+    }
+    if (user === null) {
+      throw new Error('Test user not found');
+    }
+
+    // Delete the user before sending the request
+    await deleteUser(user.id);
+
+    const res = await request(app).post(requestPath).set('Authorization', `Bearer ${accessToken}`);
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.message).toBe(UserAuthErrorMessages.userNotFound);
+  });
+});

@@ -1,0 +1,111 @@
+import type { OpenAPIV3 } from 'openapi-types';
+import {
+  selectableElectionObjectSchema,
+  updateableElectionObjectSchema,
+} from '../../objects/election.js';
+import {
+  response400,
+  response401,
+  response403,
+  response404,
+  response406,
+  response415,
+  response429,
+  responseDefault,
+} from '../globals/responses.js';
+import { SecuritySchemaName } from '../globals/securitySchemaName.js';
+import { Tag } from '../globals/tag.js';
+import { electionIdParameter } from './electionIdParameter.js';
+
+export const electionIdPathObject: OpenAPIV3.PathItemObject = {
+  summary: 'Manage a specific election',
+  description: 'Read, update or delete a specific election.',
+  parameters: [electionIdParameter],
+  put: {
+    tags: [Tag.elections],
+    summary: 'Update a specific election',
+    description:
+      'Updates the configuration of the requested election with the provided information. The election can only be updated if the election is not frozen.',
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
+    operationId: 'updateElectionById',
+    requestBody: {
+      required: true,
+      content: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        'application/json': {
+          schema: updateableElectionObjectSchema as OpenAPIV3.SchemaObject,
+        },
+      },
+    },
+    responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      200: {
+        description: 'OK. The request was successfully executed. The election was updated.',
+        content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'application/json': {
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+          },
+        },
+      },
+      ...response400,
+      ...response401,
+      ...response403,
+      ...response404,
+      ...response406,
+      ...response415,
+      ...response429,
+      ...responseDefault,
+    },
+  },
+  get: {
+    tags: [Tag.elections],
+    summary: 'Get a specific election',
+    description: 'Returns the requested election with all public information fields.',
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
+    operationId: 'getElectionById',
+    responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      200: {
+        description:
+          'OK. The request was successfully executed. Returns the requested election with all public information fields.',
+        content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'application/json': {
+            schema: selectableElectionObjectSchema as OpenAPIV3.SchemaObject,
+          },
+        },
+      },
+      ...response400,
+      ...response401,
+      ...response403,
+      ...response404,
+      ...response406,
+      ...response429,
+      ...responseDefault,
+    },
+  },
+  delete: {
+    tags: [Tag.elections],
+    summary: 'Delete a specific election',
+    description:
+      'Deletes the requested election.' +
+      'A deletion can only be performed if the election is not frozen.' +
+      'Be aware that deleting an election will also trigger a deletion of all associated candidates, ballot papers, and votes.',
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
+    operationId: 'deleteElectionById',
+    responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      204: {
+        description: 'No Content. The request was successfully executed. The election was deleted.',
+      },
+      ...response400,
+      ...response401,
+      ...response403,
+      ...response404,
+      ...response406,
+      ...response429,
+      ...responseDefault,
+    },
+  },
+};

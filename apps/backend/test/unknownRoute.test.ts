@@ -1,0 +1,15 @@
+import { response400Object } from '@repo/votura-validators';
+import request from 'supertest';
+import { describe, expect, it } from 'vitest';
+import { app } from '../src/app.js';
+import { HttpStatusCode } from '../src/httpStatusCode.js';
+
+describe('Handle unknown routes', () => {
+  it('should return 400 for unknown route', async () => {
+    const res = await request(app).get('/unknown');
+    expect(res.status).toBe(HttpStatusCode.badRequest);
+    expect(res.type).toBe('application/json');
+    const parseResult = response400Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+});
