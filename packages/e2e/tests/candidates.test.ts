@@ -15,6 +15,7 @@ test.describe('Candidates', () => {
       .getByLabel('Details')
       .first()
       .click();
+    await page.getByRole('button', { name: 'Ballot Paper Settings' }).click();
     await page.getByRole('button', { name: 'Section Settings' }).first().click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
