@@ -16,7 +16,12 @@ test.describe('Candidates', () => {
       .first()
       .click();
     await page.getByRole('button', { name: 'Ballot Paper Settings' }).click();
-    await page.getByRole('button', { name: 'Section Settings' }).last().click();
+    await expect(page.getByText('Create a section to get started.')).toHaveCount(0);
+    const sectionsButtons = page.getByRole('button', { name: 'Section Settings' });
+    if ((await sectionsButtons.count()) === 0) {
+      throw new Error('No sections found - cannot open Section Settings');
+    }
+    await sectionsButtons.last().click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
     await page.getByRole('textbox', { name: 'Description' }).fill('John Doe Description');
