@@ -20,8 +20,8 @@ test.describe('Ballot Paper', () => {
   test('should create a ballot paper', async ({ page }) => {
     await page
       .getByRole('row', { name: 'Election 1 This is election' })
-      .getByLabel('Settings')
-      .nth(1)
+      .getByLabel('Details')
+      .first()
       .click();
     await page.getByRole('button', { name: 'New Ballot Paper' }).click();
     const nameTextbox = page.getByRole('textbox', { name: 'Name' });
@@ -46,10 +46,10 @@ test.describe('Ballot Paper', () => {
   test('should update a ballot paper', async ({ page }) => {
     await page
       .getByRole('row', { name: 'Election 1 This is election' })
-      .getByLabel('Settings')
-      .nth(1)
+      .getByLabel('Details')
+      .first()
       .click();
-    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
+    await page.getByRole('button', { name: 'Ballot Paper Settings' }).first().click();
     await page.getByRole('menuitem', { name: 'Edit' }).click();
     await page.getByRole('textbox', { name: 'Description' }).fill('This is ballot paper two');
     const saveButton = page.getByRole('button', { name: 'Save changes' });
@@ -61,10 +61,10 @@ test.describe('Ballot Paper', () => {
   test('should delete a ballot paper', async ({ page }) => {
     await page
       .getByRole('row', { name: 'Election 1 This is election' })
-      .getByLabel('Settings')
-      .nth(1)
+      .getByLabel('Details')
+      .first()
       .click();
-    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
+    await page.getByRole('button', { name: 'Ballot Paper Settings' }).first().click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.waitForTimeout(1000);

@@ -8,6 +8,13 @@ const ballotPaperSection: UpdateableBallotPaperSection = {
   maxVotesPerCandidate: 2,
 };
 
+const updatedBallotPaperSection: UpdateableBallotPaperSection = {
+  name: 'My updated BPS',
+  description: 'My updated BPS Description',
+  maxVotes: 4,
+  maxVotesPerCandidate: 1,
+};
+
 test.describe('BallotPaperSection', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
@@ -17,11 +24,11 @@ test.describe('BallotPaperSection', () => {
     await expect(page).toHaveURL('/elections');
   });
 
-  test('should create a ballot paper section', async ({ page }) => {
+  test('should create, update and delete a ballot paper section', async ({ page }) => {
     await page
       .getByRole('row', { name: 'Election 1 This is election' })
-      .getByLabel('Settings')
-      .nth(1)
+      .getByLabel('Details')
+      .first()
       .click();
     await page.getByRole('button', { name: 'Ballot Paper Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add ballot paper section' }).click();
@@ -45,5 +52,44 @@ test.describe('BallotPaperSection', () => {
     if (ballotPaperSection.description !== undefined) {
       await expect(page.getByText(ballotPaperSection.description).first()).toBeVisible();
     }
+
+    await page.getByRole('button', { name: 'Section Settings' }).last().click();
+    await page.getByRole('menuitem', { name: 'Edit section' }).last().click();
+    await page.getByRole('textbox', { name: 'Name' }).last().fill(updatedBallotPaperSection.name);
+    if (updatedBallotPaperSection.description !== undefined) {
+      await page
+        .getByRole('textbox', { name: 'Description' })
+        .last()
+        .fill(updatedBallotPaperSection.description);
+    }
+    await page
+      .getByRole('textbox', {
+        name: 'Maximum votes',
+        exact: true,
+      })
+      .last()
+      .fill(updatedBallotPaperSection.maxVotes.toString());
+    await page
+      .getByRole('textbox', { name: 'Maximum votes per candidate' })
+      .last()
+      .fill(updatedBallotPaperSection.maxVotesPerCandidate.toString());
+    const saveButton = page.getByRole('button', { name: 'Save changes' }).last();
+    await saveButton.click();
+    await expect(saveButton).not.toBeVisible();
+    await expect(
+      page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
+    ).toBeVisible();
+    if (updatedBallotPaperSection.description !== undefined) {
+      await expect(page.getByText(updatedBallotPaperSection.description).first()).toBeVisible();
+    }
+    await expect(page.getByText(ballotPaperSection.name, { exact: true }).first()).toHaveCount(0);
+
+    await page.getByRole('button', { name: 'Section Settings' }).last().click();
+    await page.getByRole('menuitem', { name: 'Delete section' }).last().click();
+    await page.getByRole('button', { name: 'Delete' }).last().click();
+    await page.waitForTimeout(1000);
+    await expect(
+      page.getByText(updatedBallotPaperSection.name, { exact: true }).first(),
+    ).toHaveCount(0);
   });
 });
