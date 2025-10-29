@@ -24,6 +24,7 @@ test.describe('Candidates', () => {
       .first()
       .click();
 
+    await page.getByRole('button', { name: 'Ballot Paper Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add ballot paper section' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill(bpSection.name);
     if (bpSection.description !== undefined) {
