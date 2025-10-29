@@ -24,30 +24,29 @@ test.describe('Candidates', () => {
       .first()
       .click();
 
-    if ((await page.getByText('Create a section to get started.').count()) > 0) {
-      await page.getByRole('menuitem', { name: 'Add ballot paper section' }).click();
-      await page.getByRole('textbox', { name: 'Name' }).fill(bpSection.name);
-      if (bpSection.description !== undefined) {
-        await page.getByRole('textbox', { name: 'Description' }).fill(bpSection.description);
-      }
-      await page
-        .getByRole('textbox', {
-          name: 'Maximum votes',
-          exact: true,
-        })
-        .fill(bpSection.maxVotes.toString());
-      await page
-        .getByRole('textbox', { name: 'Maximum votes per candidate' })
-        .fill(bpSection.maxVotesPerCandidate.toString());
-      const createButton = page.getByRole('button', { name: 'Create Section' });
-      await createButton.click();
-      await expect(createButton).not.toBeVisible();
-      await expect(page.getByText(bpSection.name, { exact: true }).first()).toBeVisible();
-      if (bpSection.description !== undefined) {
-        await expect(page.getByText(bpSection.description).first()).toBeVisible();
-      }
+    await page.getByRole('menuitem', { name: 'Add ballot paper section' }).click();
+    await page.getByRole('textbox', { name: 'Name' }).fill(bpSection.name);
+    if (bpSection.description !== undefined) {
+      await page.getByRole('textbox', { name: 'Description' }).fill(bpSection.description);
+    }
+    await page
+      .getByRole('textbox', {
+        name: 'Maximum votes',
+        exact: true,
+      })
+      .fill(bpSection.maxVotes.toString());
+    await page
+      .getByRole('textbox', { name: 'Maximum votes per candidate' })
+      .fill(bpSection.maxVotesPerCandidate.toString());
+    const createButton = page.getByRole('button', { name: 'Create Section' });
+    await createButton.click();
+    await expect(createButton).not.toBeVisible();
+    await expect(page.getByText(bpSection.name, { exact: true }).first()).toBeVisible();
+    if (bpSection.description !== undefined) {
+      await expect(page.getByText(bpSection.description).first()).toBeVisible();
     }
 
+    await expect(page.getByText('Create a section to get started.')).toHaveCount(0);
     await page.getByRole('button', { name: 'Section Settings' }).last().click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
