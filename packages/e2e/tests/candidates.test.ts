@@ -10,7 +10,11 @@ test.describe('Candidates', () => {
   });
 
   test('should create/link, unlink and delete a candidate', async ({ page }) => {
-    await page.getByRole('button', { name: 'Details' }).first().click();
+    await page
+      .getByRole('row', { name: 'Election 1 This is election' })
+      .getByLabel('Details')
+      .first()
+      .click();
     await page.getByRole('button', { name: 'Section Settings' }).first().click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
