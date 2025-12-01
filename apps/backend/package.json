@@ -82,7 +82,7 @@
     "@votura/votura-crypto": "^0.0.3",
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
-    "express": "^5.1.0",
+    "express": "^5.2.0",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.2",
