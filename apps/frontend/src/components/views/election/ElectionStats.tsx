@@ -30,7 +30,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
       </Grid.Col>
       <Grid.Col span={3}>
         <ElectionStatField
-          title={'Invalid voted allowed'}
+          title={'Invalid votes allowed'}
           content={<BooleanBadge isTrue={election.allowInvalidVotes} />}
         />
       </Grid.Col>
