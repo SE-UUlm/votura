@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Divider, Group, Paper, Stack, Text } from '@mantine/core';
+import {ActionIcon, Center, Divider, Group, Loader, Paper, Stack, Text} from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   updateableCandidateOperationOptions,
@@ -12,6 +12,7 @@ import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandi
 import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
 import type { MutateCandidateDrawerProps } from './candidates/MutateCandidateDrawer.tsx';
+import { useGetCandidates } from "../../../../../swr/candidates/useGetCandidates.ts";
 
 export interface BallotPaperSectionProps {
   electionId: SelectableElection['id'];
@@ -22,6 +23,17 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
+  const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
+      useGetCandidates(electionId);
+  const bpsCandidateRows = electionCandidates
+      ?.sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+        .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
+      .map((candidate) => (
+        <Text key={candidate.id} size="sm" truncate="end">
+          {candidate.title}
+        </Text>
+      ));
+
   const { trigger: triggerCreateCandidate, isMutating: isCandidateMutating } =
     useCreateCandidate(electionId);
   const { trigger: triggerAddCandidate, isMutating: isAddCandidateMutating } =
@@ -66,9 +78,21 @@ export const BallotPaperSection = ({
           </BallotPaperSectionSettingsMenu>
         </Group>
         <Divider />
-        <Center>
-          <Text size="sm">Candidates: {ballotPaperSection.candidateIds.length}</Text>
-        </Center>
+        <Stack>
+          {/*<Center>*/}
+          {/*  <Text size="sm">Candidates: {ballotPaperSection.candidateIds.length}</Text>*/}
+          {/*</Center>*/}
+
+          {isLoadingElectionCandidates ? (
+              <Center><Loader /></Center>
+          ) : (
+              <div>
+                <Stack gap="xs">
+                  {bpsCandidateRows}
+                </Stack>
+              </div>
+          )}
+        </Stack>
       </Stack>
     </Paper>
   );
