@@ -88,7 +88,7 @@ export const BallotPaperSection = ({
               <Loader />
             </Center>
           ) : (
-            <div>
+            <div className="bps-active-candidates">
               <Stack gap="xs">{bpsCandidateRows}</Stack>
             </div>
           )}
