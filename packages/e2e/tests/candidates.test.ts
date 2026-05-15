@@ -11,19 +11,6 @@ const getAllCandidatesText = (page: Page): Locator => {
   return page.locator(bpsAllCandidatesClass).getByText('John Doe', { exact: true }).first();
 };
 
-const toggleCandidate = async (page: Page, setActive: boolean): Promise<void> => {
-  const checkbox = page.getByRole('checkbox', { name: 'candidate-checkbox' });
-  const text = page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
-
-  if (setActive) {
-    await checkbox.check();
-    await expect(text).toBeVisible();
-  } else {
-    await checkbox.uncheck();
-    await expect(text).not.toBeVisible();
-  }
-};
-
 test.describe('Candidates', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
@@ -40,18 +27,19 @@ test.describe('Candidates', () => {
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
     await page.getByRole('textbox', { name: 'Description' }).fill('John Doe Description');
     await page.getByRole('button', { name: 'Create Candidate' }).click();
-    await expect(
-      page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true }),
-    ).toBeVisible(); // The one in the overview
+    await expect(getCandidateOverviewText(page)).toBeVisible(); // The one in the overview
 
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Edit candidates' }).click();
     await expect(page.getByRole('heading', { name: 'All Candidates' })).toBeVisible();
     await expect(getAllCandidatesText(page)).toBeVisible(); // The one in the checkbox list of all candidates
-    await expect(page.getByRole('checkbox', { name: 'candidate-checkbox' })).toBeChecked();
+    const checkbox = page.getByRole('checkbox', { name: 'candidate-checkbox' });
+    await expect(checkbox).toBeChecked();
 
-    await toggleCandidate(page, false);
-    await toggleCandidate(page, true);
+    await checkbox.click();
+    await expect(getCandidateOverviewText(page)).not.toBeVisible();
+    await checkbox.click();
+    await expect(getAllCandidatesText(page)).toBeVisible();
 
     await page.getByRole('button', { name: 'Delete candidate' }).click();
     await page.getByRole('button', { name: 'Delete', exact: true }).click();
