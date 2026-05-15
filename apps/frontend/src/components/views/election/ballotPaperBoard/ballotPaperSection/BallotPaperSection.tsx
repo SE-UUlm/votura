@@ -26,7 +26,8 @@ export const BallotPaperSection = ({
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
   const bpsCandidateRows = electionCandidates
-    ?.sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+    ?.slice()
+    .sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
     .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
     .map((candidate) => (
       <Text key={candidate.id} size="sm" truncate="end">
