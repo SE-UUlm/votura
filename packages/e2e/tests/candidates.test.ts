@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, type Locator, type Page, test } from '@playwright/test';
 
 test.describe('Candidates', () => {
   test.beforeEach(async ({ page }) => {
@@ -9,10 +9,31 @@ test.describe('Candidates', () => {
     await expect(page).toHaveURL('/elections');
   });
 
-  test('should create/link, unlink and delete a candidate', async ({ page }) => {
-    const bpsCandidatesOverviewClass = '.bps-active-candidates';
-    const bpsAllCandidatesClass = '.bps-all-candidates';
+  const bpsCandidatesOverviewClass = '.bps-active-candidates';
+  const bpsAllCandidatesClass = '.bps-all-candidates';
 
+  const getCandidateOverviewText = (page: Page): Locator => {
+    return page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
+  };
+
+  const getAllCandidatesText = (page: Page): Locator => {
+    return page.locator(bpsAllCandidatesClass).getByText('John Doe', { exact: true }).first();
+  };
+
+  const toggleCandidate = async (page: Page, setActive: boolean): Promise<void> => {
+    const checkbox = page.getByRole('checkbox', { name: 'candidate-checkbox' });
+    const text = page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
+
+    if (setActive) {
+      await checkbox.check();
+      await expect(text).toBeVisible();
+    } else {
+      await checkbox.uncheck();
+      await expect(text).not.toBeVisible();
+    }
+  };
+
+  test('should create/link, unlink and delete a candidate', async ({ page }) => {
     await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
@@ -26,25 +47,15 @@ test.describe('Candidates', () => {
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Edit candidates' }).click();
     await expect(page.getByRole('heading', { name: 'All Candidates' })).toBeVisible();
-    await expect(
-      page.locator(bpsAllCandidatesClass).getByText('John Doe', { exact: true }).first(),
-    ).toBeVisible(); // The one in the checkbox list
+    await expect(getAllCandidatesText(page)).toBeVisible(); // The one in the checkbox list of all candidates
     await expect(page.getByRole('checkbox', { name: 'candidate-checkbox' })).toBeChecked();
 
-    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
-    await expect(
-      page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true }),
-    ).not.toBeVisible(); // The one in the overview
-    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
-    await expect(
-      page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true }),
-    ).toBeVisible(); // The one in the overview
+    await toggleCandidate(page, false);
+    await toggleCandidate(page, true);
 
     await page.getByRole('button', { name: 'Delete candidate' }).click();
     await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-    await expect(
-      page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true }),
-    ).not.toBeVisible(); // The one in the overview
+    await expect(getCandidateOverviewText(page)).not.toBeVisible(); // The one in the overview
   });
 });
