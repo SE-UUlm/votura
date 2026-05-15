@@ -1,5 +1,29 @@
 import { expect, type Locator, type Page, test } from '@playwright/test';
 
+const bpsCandidatesOverviewClass = '.bps-active-candidates';
+const bpsAllCandidatesClass = '.bps-all-candidates';
+
+const getCandidateOverviewText = (page: Page): Locator => {
+  return page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
+};
+
+const getAllCandidatesText = (page: Page): Locator => {
+  return page.locator(bpsAllCandidatesClass).getByText('John Doe', { exact: true }).first();
+};
+
+const toggleCandidate = async (page: Page, setActive: boolean): Promise<void> => {
+  const checkbox = page.getByRole('checkbox', { name: 'candidate-checkbox' });
+  const text = page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
+
+  if (setActive) {
+    await checkbox.check();
+    await expect(text).toBeVisible();
+  } else {
+    await checkbox.uncheck();
+    await expect(text).not.toBeVisible();
+  }
+};
+
 test.describe('Candidates', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
@@ -8,30 +32,6 @@ test.describe('Candidates', () => {
     await page.getByRole('button', { name: 'Login' }).click();
     await expect(page).toHaveURL('/elections');
   });
-
-  const bpsCandidatesOverviewClass = '.bps-active-candidates';
-  const bpsAllCandidatesClass = '.bps-all-candidates';
-
-  const getCandidateOverviewText = (page: Page): Locator => {
-    return page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
-  };
-
-  const getAllCandidatesText = (page: Page): Locator => {
-    return page.locator(bpsAllCandidatesClass).getByText('John Doe', { exact: true }).first();
-  };
-
-  const toggleCandidate = async (page: Page, setActive: boolean): Promise<void> => {
-    const checkbox = page.getByRole('checkbox', { name: 'candidate-checkbox' });
-    const text = page.locator(bpsCandidatesOverviewClass).getByText('John Doe', { exact: true });
-
-    if (setActive) {
-      await checkbox.check();
-      await expect(text).toBeVisible();
-    } else {
-      await checkbox.uncheck();
-      await expect(text).not.toBeVisible();
-    }
-  };
 
   test('should create/link, unlink and delete a candidate', async ({ page }) => {
     await page.getByRole('button', { name: 'Settings' }).nth(1).click();
