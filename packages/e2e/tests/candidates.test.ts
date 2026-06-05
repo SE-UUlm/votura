@@ -20,6 +20,7 @@ test.describe('Candidates', () => {
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');
     await page.getByRole('textbox', { name: 'Description' }).fill('John Doe Description');
     await page.getByRole('button', { name: 'Create Candidate' }).click();
+    await expect(page.getByText('Candidates: 1')).toBeVisible();
 
     const overview = page.locator(overviewClass).getByText('John Doe', { exact: true });
     const all = page.locator(allClass).getByText('John Doe', { exact: true }).first();
@@ -33,8 +34,10 @@ test.describe('Candidates', () => {
 
     await page.getByRole('checkbox', { name: checkboxName }).click();
     await expect(overview).not.toBeVisible();
+    await expect(page.getByText('Candidates: 0')).toBeVisible();
     await page.getByRole('checkbox', { name: checkboxName }).click();
     await expect(overview).toBeVisible();
+    await expect(page.getByText('Candidates: 1')).toBeVisible();
 
     await page.getByRole('button', { name: 'Delete candidate' }).click();
     await page.getByRole('button', { name: 'Delete', exact: true }).click();
