@@ -61,6 +61,9 @@ export const BallotPaperSection = ({
         <Group justify={'space-between'} align={'start'}>
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaperSection.name}</Text>
+            <Text c="dimmed" size="sm">
+              Candidates: {ballotPaperSection.candidateIds.length}
+            </Text>
             {ballotPaperSection.description !== undefined && (
               <Text lineClamp={2} c="dimmed" size="sm">
                 {ballotPaperSection.description}
@@ -80,10 +83,6 @@ export const BallotPaperSection = ({
         </Group>
         <Divider />
         <Stack>
-          {/*<Center>*/}
-          {/*  <Text size="sm">Candidates: {ballotPaperSection.candidateIds.length}</Text>*/}
-          {/*</Center>*/}
-
           {isLoadingElectionCandidates ? (
             <Center>
               <Loader />
