@@ -117,7 +117,7 @@ jobs:
           cd ./apps/docs/
           npm run build
       - name: Upload Build Artifact
-        uses: actions/upload-pages-artifact@v3
+        uses: actions/upload-pages-artifact@v5
         with:
           path: ./apps/docs/build
 
