@@ -101,7 +101,7 @@ jobs:
           cache: npm
           cache-dependency-path: package-lock.json
       - name: Download all workflow run artifacts
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@v8
         with:
           path: ./apps/docs/static/
       - run: cp -r ./apps/docs/static/uml_svg/* ./apps/docs/static/uml/
