@@ -1,0 +1,102 @@
+import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
+import {
+    DefaultColumnName, FailedLoginAttemptColumnName,
+    TableName,
+} from '../nameEnums.js';
+
+// --- Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
+    return ctb
+        .addColumn(DefaultColumnName.id, 'uuid', (col) =>
+            col.primaryKey().defaultTo(sql`gen_random_uuid()`),
+        )
+        .addColumn(DefaultColumnName.createdAt, 'timestamptz(6)', (col) =>
+            col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
+        )
+        .addColumn(DefaultColumnName.modifiedAt, 'timestamptz(6)', (col) =>
+            col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
+        )
+        .addCheckConstraint(
+            'modified_after_created',
+            sql`"modifiedAt" >= "createdAt"`,
+        );
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createFailedLoginAttemptTable(db: Kysely<any>): Promise<void> {
+    return db.schema
+        .createTable(TableName.failedLoginAttempt)
+        .$call(addDefaultColumns)
+        .addColumn(FailedLoginAttemptColumnName.ipAddress, 'bytea', (col) => col.notNull().unique())
+        .addColumn(FailedLoginAttemptColumnName.failedAttempts, 'integer', (col) => col.notNull().defaultTo(0))
+        .addColumn(FailedLoginAttemptColumnName.blockedUntil, 'timestamptz(6)')
+        .execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createTables(db: Kysely<any>): Promise<void> {
+    await createFailedLoginAttemptTable(db);
+}
+
+// --- Modified At Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function createModifiedAtFunction(db: Kysely<any>): Promise<void> {
+    await sql`
+        CREATE OR REPLACE FUNCTION update_modified_at_column()
+            RETURNS TRIGGER AS $BODY$
+        BEGIN
+            NEW.${sql.raw(`"${DefaultColumnName.modifiedAt}"`)} = NOW();
+            RETURN NEW;
+        END;
+        $BODY$ LANGUAGE plpgsql;
+    `.execute(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function addModifiedAtTriggers(db: Kysely<any>): Promise<void> {
+    const tables = [
+        TableName.failedLoginAttempt,
+    ];
+
+    for (const tableName of tables) {
+        await sql`
+      CREATE TRIGGER ${sql.raw(tableName)}_modified_at_trigger
+        BEFORE UPDATE
+        ON ${sql.table(tableName)}
+        FOR EACH ROW
+        EXECUTE FUNCTION update_modified_at_column();
+    `.execute(db);
+    }
+}
+
+// --- Drop Helper Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function dropFunctions(db: Kysely<any>): Promise<void> {
+    await sql`
+    DROP FUNCTION IF EXISTS update_modified_at_column();
+  `.execute(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function dropTables(db: Kysely<any>): Promise<void> {
+    // Drop tables in reverse order of creation to handle foreign key dependencies
+    await db.schema.dropTable(TableName.failedLoginAttempt).ifExists().execute();
+}
+
+// --- Main Migration Functions ---
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function up(db: Kysely<any>): Promise<void> {
+    await createModifiedAtFunction(db);
+
+    await createTables(db);
+
+    await addModifiedAtTriggers(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function down(db: Kysely<any>): Promise<void> {
+    // Drop tables (this automatically drops all triggers, constraints, and indexes)
+    await dropTables(db);
+    await dropFunctions(db);
+}
