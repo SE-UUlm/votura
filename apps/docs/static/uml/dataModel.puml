@@ -169,6 +169,16 @@ note as N1
 Timestamps are stored in UTC.
 end note
 
+entity "failedLoginAttempt" #006b75 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * ipAddress : BYTEA <<UK>>
+    * failedAttempts : INTEGER
+    blockedUntil : TIMESTAMPTZ(6) | NULL
+}
+
 user "1"--"*" elections : belongs to <
 elections "1"--"*" ballotPapers : belongs to <
 elections -- N2
