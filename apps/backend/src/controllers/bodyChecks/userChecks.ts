@@ -4,11 +4,13 @@ import {
   insertableUserObject,
   refreshRequestUserObject,
   zodErrorToResponse400,
+  type Response429,
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { findDBUserBy } from '../../services/users.service.js';
-import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
+import {findDBUserBy } from '../../services/users.service.js';
+import { getRetryIn, recordFailedLoginAttempt} from '../../services/loginAttempt.service.js';
+import type { BodyCheckValidationError } from "./bodyCheckValidationError.js";
 
 export enum LoginRequestValidationErrorMessage {
   invalidCredentials = 'Invalid credentials.',
@@ -17,16 +19,28 @@ export enum LoginRequestValidationErrorMessage {
 
 export interface LoginRequestValidationError extends BodyCheckValidationError {
   message: LoginRequestValidationErrorMessage | string;
+  retryIn?: Response429['retryIn'];
 }
 
 export const validateLoginRequest = async (
   reqBody: unknown,
+  ipAddress: string,
 ): Promise<User['id'] | LoginRequestValidationError> => {
   const { data, error, success } = await insertableUserObject.safeParseAsync(reqBody);
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
       message: zodErrorToResponse400(error).message,
+    };
+  }
+
+  // Check whether IP address is blocked
+  const retryInBeforeAttempt = await getRetryIn(ipAddress);
+  if (retryInBeforeAttempt !== null) {
+    return {
+      status: HttpStatusCode.tooManyRequests,
+      message: 'Too many failed login attempts. Please try again later.',
+      retryIn: retryInBeforeAttempt,
     };
   }
 
@@ -47,6 +61,17 @@ export const validateLoginRequest = async (
     getPepper(),
   );
   if (!isValidPassword) {
+    // If the user got blocked, send the response with retry information
+    const retryInAfterAttempt = await recordFailedLoginAttempt(ipAddress);
+    if (retryInAfterAttempt !== null) {
+      return {
+        status: HttpStatusCode.tooManyRequests,
+        message: 'Too many failed login attempts. Please try again later.',
+        retryIn: retryInAfterAttempt,
+      };
+    }
+
+    // Otherwise, send an invalid password message
     return {
       status: HttpStatusCode.unauthorized,
       message: LoginRequestValidationErrorMessage.invalidCredentials,
