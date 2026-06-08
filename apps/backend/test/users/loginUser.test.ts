@@ -3,6 +3,7 @@ import {
   insertableUserObject,
   response400Object,
   response401Object,
+  response429Object,
   type SelectableUser,
 } from '@repo/votura-validators';
 import request from 'supertest';
@@ -83,5 +84,51 @@ describe(`POST /users/login`, () => {
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+  });
+
+  it('429: should return error on the 3rd failed login attempt', async () => {
+    // 1st failed attempt
+    let res = await request(app)
+      .post(requestPath)
+      .send({
+        email: loginUser.email,
+        password: loginUser.password + 'invalid',
+      });
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+
+    // 2nd failed attempt
+    res = await request(app)
+      .post(requestPath)
+      .send({
+        email: loginUser.email,
+        password: loginUser.password + 'invalid',
+      });
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+
+    // 3rd attempt should be blocked
+    res = await request(app)
+      .post(requestPath)
+      .send({
+        email: loginUser.email,
+        password: loginUser.password + 'invalid',
+      });
+
+    expect(res.status).toBe(HttpStatusCode.tooManyRequests);
+    expect(res.type).toBe('application/json');
+    const parseResult = response429Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (parseResult.success) {
+      expect(parseResult.data.retryIn).toBeDefined();
+      expect(parseResult.data.retryIn?.seconds).toBe(8);
+    }
+
+    // 4th attempt (even with valid password) should still be blocked
+    res = await request(app)
+      .post(requestPath)
+      .send({
+        email: loginUser.email,
+        password: loginUser.password,
+      });
+    expect(res.status).toBe(HttpStatusCode.tooManyRequests);
   });
 });
