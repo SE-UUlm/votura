@@ -12,6 +12,8 @@ jobs:
       labels: ubuntu-latest
     container:
       image: ubuntu:24.04
+      env:
+        DEBIAN_FRONTEND: noninteractive
     continue-on-error: false
     timeout-minutes: 30
 
