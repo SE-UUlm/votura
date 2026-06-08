@@ -32,14 +32,17 @@ jobs:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
+      - name: Remove yarn (conflicts with postman-code-generators postinstall)
+        run: |
+          corepack disable 2>/dev/null || true
+          while command -v yarn >/dev/null 2>&1; do
+            echo "removing $(command -v yarn)"
+            rm -f "$(command -v yarn)" "$(command -v yarnpkg)" 2>/dev/null || true
+            hash -r
+          done
+          command -v yarn >/dev/null 2>&1 && echo "WARNING: yarn still found at $(command -v yarn)" || echo "yarn fully removed"
       - name: Install npm dependencies
         run: npm ci
-      - name: Remove yarn
-        run: |
-          rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg /usr/bin/yarn /usr/bin/yarnpkg
-          npm uninstall -g yarn 2>/dev/null || true
-          hash -r
-          which yarn 2>/dev/null && echo "WARNING: yarn still found" || echo "yarn removed"
       - name: Generate .env file in backend
         run: |
           cd apps/backend
