@@ -36,12 +36,16 @@ jobs:
         uses: actions/cache@v4
         id: playwright-cache
         with:
-          path: /root/.cache/ms-playwright
+          path: /__w/playwright-browsers
           key: playwright-chromium-${{ hashFiles('packages/e2e/package.json') }}
       - name: Install Playwright Browsers
         if: steps.playwright-cache.outputs.cache-hit != 'true'
+        env:
+          PLAYWRIGHT_BROWSERS_PATH: /__w/playwright-browsers
         run: npx playwright install chromium --with-deps
         working-directory: packages/e2e
+      - name: Set Playwright browsers path
+        run: echo "PLAYWRIGHT_BROWSERS_PATH=/__w/playwright-browsers" >> $GITHUB_ENV
       - name: Generate .env file in backend
         run: |
           cd apps/backend
