@@ -11,7 +11,9 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: ubuntu:24.04
+      image: mcr.microsoft.com/playwright:v1.53.2-noble
+      env:
+        DEBIAN_FRONTEND: noninteractive
     continue-on-error: false
     timeout-minutes: 30
 
@@ -32,20 +34,12 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
-      - name: Cache Playwright browsers
-        uses: actions/cache@v4
-        id: playwright-cache
-        with:
-          path: /__w/playwright-browsers
-          key: playwright-chromium-${{ hashFiles('packages/e2e/package.json') }}
-      - name: Install Playwright Browsers
-        if: steps.playwright-cache.outputs.cache-hit != 'true'
-        env:
-          PLAYWRIGHT_BROWSERS_PATH: /__w/playwright-browsers
-        run: npx playwright install chromium --with-deps
-        working-directory: packages/e2e
-      - name: Set Playwright browsers path
-        run: echo "PLAYWRIGHT_BROWSERS_PATH=/__w/playwright-browsers" >> $GITHUB_ENV
+      - name: Remove yarn
+        run: |
+          rm -f /usr/local/bin/yarn /usr/local/bin/yarnpkg /usr/bin/yarn /usr/bin/yarnpkg
+          npm uninstall -g yarn 2>/dev/null || true
+          hash -r
+          which yarn 2>/dev/null && echo "WARNING: yarn still found" || echo "yarn removed"
       - name: Generate .env file in backend
         run: |
           cd apps/backend
