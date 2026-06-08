@@ -11,9 +11,7 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: ubuntu:24.04
-      env:
-        DEBIAN_FRONTEND: noninteractive
+      image: mcr.microsoft.com/playwright:v1.53.2-noble
     continue-on-error: false
     timeout-minutes: 30
 
@@ -34,10 +32,6 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
-      - name: Install Playwright Browsers
-        run: |
-          cd packages/e2e
-          npm run install-browsers
       - name: Generate .env file in backend
         run: |
           cd apps/backend
