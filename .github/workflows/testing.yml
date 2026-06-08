@@ -11,9 +11,10 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.53.2-noble
+      image: mcr.microsoft.com/playwright:v1.56.0-noble
       env:
         DEBIAN_FRONTEND: noninteractive
+        PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
     continue-on-error: false
     timeout-minutes: 30
 
