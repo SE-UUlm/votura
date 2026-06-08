@@ -123,12 +123,10 @@ describe(`POST /users/login`, () => {
     }
 
     // 4th attempt (even with valid password) should still be blocked
-    res = await request(app)
-      .post(requestPath)
-      .send({
-        email: loginUser.email,
-        password: loginUser.password,
-      });
+    res = await request(app).post(requestPath).send({
+      email: loginUser.email,
+      password: loginUser.password,
+    });
     expect(res.status).toBe(HttpStatusCode.tooManyRequests);
   });
 });

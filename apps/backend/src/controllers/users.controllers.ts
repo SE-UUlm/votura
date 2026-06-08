@@ -1,6 +1,7 @@
 import {
   insertableUserObject,
   response409Object,
+  response429Object,
   response4XXObject,
   zodErrorToResponse400,
   type ApiTokenUser,
@@ -10,11 +11,11 @@ import {
   type Response409,
   type Response429,
   type SelectableUser,
-  response429Object,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { resetFailedLoginAttempt } from '../services/loginAttempt.service.js';
 import {
   createNewUserTokens,
   createUser as createPersistentUser,
@@ -24,7 +25,6 @@ import {
 } from '../services/users.service.js';
 import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
 import { validateLoginRequest, validateTokenRefreshRequest } from './bodyChecks/userChecks.js';
-import { resetFailedLoginAttempt } from '../services/loginAttempt.service.js';
 
 export type CreateUserResponse = Response<void | Response400 | Response409>;
 
@@ -63,19 +63,21 @@ export const deleteUser = async (
   res.sendStatus(HttpStatusCode.noContent);
 };
 
-export type LoginResponse = Response<ApiTokenUser | Response400 | Response401 | Response403 | Response429>;
+export type LoginResponse = Response<
+  ApiTokenUser | Response400 | Response401 | Response403 | Response429
+>;
 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
   const ipAddress = req.ip ?? '0.0.0.0';
   const validationResult = await validateLoginRequest(req.body, ipAddress);
   if (isBodyCheckValidationError(validationResult)) {
     if (validationResult.status === HttpStatusCode.tooManyRequests) {
-      res
-        .status(HttpStatusCode.tooManyRequests)
-        .json(response429Object.parse({
+      res.status(HttpStatusCode.tooManyRequests).json(
+        response429Object.parse({
           message: validationResult.message,
           retryIn: validationResult.retryIn ?? { hours: 0, minutes: 0, seconds: 0 },
-        }));
+        }),
+      );
       return;
     }
 

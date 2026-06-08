@@ -1,16 +1,16 @@
 import { getPepper, verifyPassword } from '@repo/hash';
 import {
-  type User,
   insertableUserObject,
   refreshRequestUserObject,
   zodErrorToResponse400,
   type Response429,
+  type User,
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import {findDBUserBy } from '../../services/users.service.js';
-import { getRetryIn, recordFailedLoginAttempt} from '../../services/loginAttempt.service.js';
-import type { BodyCheckValidationError } from "./bodyCheckValidationError.js";
+import { getRetryIn, recordFailedLoginAttempt } from '../../services/loginAttempt.service.js';
+import { findDBUserBy } from '../../services/users.service.js';
+import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
 export enum LoginRequestValidationErrorMessage {
   invalidCredentials = 'Invalid credentials.',

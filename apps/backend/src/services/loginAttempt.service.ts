@@ -1,9 +1,7 @@
 import { db } from '@repo/db';
-import type {
-  FailedLoginAttempt as DBFailedLoginAttempt,
-} from '@repo/db/types';
+import type { FailedLoginAttempt as DBFailedLoginAttempt } from '@repo/db/types';
+import type { Response429 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
-import type { Response429 } from "@repo/votura-validators";
 
 function ipToBuffer(ip: string): Buffer {
   return Buffer.from(ip, 'utf-8');
@@ -21,9 +19,7 @@ export async function getFailedLoginAttempt(
   return failedLoginAttempt ?? null;
 }
 
-export async function getRetryIn(
-    ipAddress: string,
-): Promise<Response429['retryIn'] | null> {
+export async function getRetryIn(ipAddress: string): Promise<Response429['retryIn'] | null> {
   const failedLoginAttempt = await getFailedLoginAttempt(ipAddress);
   if (failedLoginAttempt?.blockedUntil && failedLoginAttempt.blockedUntil > new Date()) {
     const retryInMs = failedLoginAttempt.blockedUntil.getTime() - Date.now();
@@ -35,7 +31,7 @@ export async function getRetryIn(
 
     return { hours, minutes, seconds };
   }
-  
+
   return null;
 }
 
@@ -66,7 +62,9 @@ async function upsertFailedLoginAttemptEntry(
   }
 }
 
-export async function recordFailedLoginAttempt(ipAddress: string): Promise<Response429['retryIn'] | null> {
+export async function recordFailedLoginAttempt(
+  ipAddress: string,
+): Promise<Response429['retryIn'] | null> {
   const bufferIp = ipToBuffer(ipAddress);
   const existing = await getFailedLoginAttempt(ipAddress);
 
