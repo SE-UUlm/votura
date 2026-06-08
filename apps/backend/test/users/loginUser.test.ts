@@ -31,7 +31,7 @@ describe(`POST /users/login`, () => {
     requestPath = '/users/login';
   });
 
-  const testLogin = (email: string, password: string): Promise<Response> => {
+  const testLogin = async (email: string, password: string): Promise<Response> => {
     return request(app).post(requestPath).send({ email, password });
   };
 
