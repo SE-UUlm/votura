@@ -22,7 +22,9 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
   retryIn?: Response429['retryIn'];
 }
 
-const checkLoginBlockedError = async (ipAddress: string): Promise<LoginRequestValidationError | null> => {
+const checkLoginBlockedError = async (
+  ipAddress: string,
+): Promise<LoginRequestValidationError | null> => {
   const retryIn = await getRetryIn(ipAddress);
   if (retryIn === null) {
     return null;
