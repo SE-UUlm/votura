@@ -11,7 +11,7 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.53.2-noble
+      image: ubuntu:24.04
     continue-on-error: false
     timeout-minutes: 30
 
@@ -30,10 +30,12 @@ jobs:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Remove yarn binary
-        run: rm -f "$(which yarn)" || true
       - name: Install npm dependencies
         run: npm ci
+      - name: Install Playwright Browsers
+        run: |
+          cd packages/e2e
+          npm run install-browsers
       - name: Generate .env file in backend
         run: |
           cd apps/backend
