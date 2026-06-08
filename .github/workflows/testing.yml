@@ -32,10 +32,16 @@ jobs:
           cache-dependency-path: package-lock.json
       - name: Install npm dependencies
         run: npm ci
+      - name: Cache Playwright browsers
+        uses: actions/cache@v4
+        id: playwright-cache
+        with:
+          path: /root/.cache/ms-playwright
+          key: playwright-chromium-${{ hashFiles('packages/e2e/package.json') }}
       - name: Install Playwright Browsers
-        run: |
-          cd packages/e2e
-          npm run install-browsers
+        if: steps.playwright-cache.outputs.cache-hit != 'true'
+        run: npx playwright install chromium --with-deps
+        working-directory: packages/e2e
       - name: Generate .env file in backend
         run: |
           cd apps/backend
