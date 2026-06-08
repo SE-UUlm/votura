@@ -4,6 +4,8 @@ import {
     TableName,
 } from '../nameEnums.js';
 
+const timestampDataType = 'timestamptz(6)';
+
 // --- Helper Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilder<any, any> => {
@@ -11,10 +13,10 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilde
         .addColumn(DefaultColumnName.id, 'uuid', (col) =>
             col.primaryKey().defaultTo(sql`gen_random_uuid()`),
         )
-        .addColumn(DefaultColumnName.createdAt, 'timestamptz(6)', (col) =>
+        .addColumn(DefaultColumnName.createdAt, timestampDataType, (col) =>
             col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
         )
-        .addColumn(DefaultColumnName.modifiedAt, 'timestamptz(6)', (col) =>
+        .addColumn(DefaultColumnName.modifiedAt, timestampDataType, (col) =>
             col.notNull().defaultTo(sql`CURRENT_TIMESTAMP`),
         )
         .addCheckConstraint(
@@ -25,12 +27,12 @@ const addDefaultColumns = (ctb: CreateTableBuilder<any, any>): CreateTableBuilde
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createFailedLoginAttemptTable(db: Kysely<any>): Promise<void> {
-    return db.schema
+    await db.schema
         .createTable(TableName.failedLoginAttempt)
         .$call(addDefaultColumns)
         .addColumn(FailedLoginAttemptColumnName.ipAddress, 'bytea', (col) => col.notNull().unique())
         .addColumn(FailedLoginAttemptColumnName.failedAttempts, 'integer', (col) => col.notNull().defaultTo(0))
-        .addColumn(FailedLoginAttemptColumnName.blockedUntil, 'timestamptz(6)')
+        .addColumn(FailedLoginAttemptColumnName.blockedUntil, timestampDataType)
         .execute();
 }
 
