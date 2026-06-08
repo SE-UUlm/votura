@@ -8,7 +8,7 @@ import {
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { getRetryIn, recordFailedLoginAttempt } from '../../services/loginAttempt.service.js';
+import { getRetryIn } from '../../services/loginAttempt.service.js';
 import { findDBUserBy } from '../../services/users.service.js';
 import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
@@ -21,6 +21,24 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
   message: LoginRequestValidationErrorMessage | string;
   retryIn?: Response429['retryIn'];
 }
+
+const checkLoginBlockedError = async (ipAddress: string): Promise<LoginRequestValidationError | null> => {
+  const retryIn = await getRetryIn(ipAddress);
+  if (retryIn === null) {
+    return null;
+  }
+
+  return {
+    status: HttpStatusCode.tooManyRequests,
+    message: 'Too many failed login attempts. Please try again later.',
+    retryIn: retryIn,
+  };
+};
+
+const invalidCredentialsError = {
+  status: HttpStatusCode.unauthorized,
+  message: LoginRequestValidationErrorMessage.invalidCredentials,
+};
 
 export const validateLoginRequest = async (
   reqBody: unknown,
@@ -35,23 +53,16 @@ export const validateLoginRequest = async (
   }
 
   // Check whether IP address is blocked
-  const retryInBeforeAttempt = await getRetryIn(ipAddress);
-  if (retryInBeforeAttempt !== null) {
-    return {
-      status: HttpStatusCode.tooManyRequests,
-      message: 'Too many failed login attempts. Please try again later.',
-      retryIn: retryInBeforeAttempt,
-    };
+  const loginBlockedBeforeAttemptError = await checkLoginBlockedError(ipAddress);
+  if (loginBlockedBeforeAttemptError !== null) {
+    return loginBlockedBeforeAttemptError;
   }
 
   // Find user by email
   const user = await findDBUserBy({ email: data.email });
 
   if (user === null) {
-    return {
-      status: HttpStatusCode.unauthorized,
-      message: LoginRequestValidationErrorMessage.invalidCredentials,
-    }; // User not found
+    return invalidCredentialsError; // User not found
   }
 
   // Verify password
@@ -62,20 +73,13 @@ export const validateLoginRequest = async (
   );
   if (!isValidPassword) {
     // If the user got blocked, send the response with retry information
-    const retryInAfterAttempt = await recordFailedLoginAttempt(ipAddress);
-    if (retryInAfterAttempt !== null) {
-      return {
-        status: HttpStatusCode.tooManyRequests,
-        message: 'Too many failed login attempts. Please try again later.',
-        retryIn: retryInAfterAttempt,
-      };
+    const loginBlockedAfterAttemptError = await checkLoginBlockedError(ipAddress);
+    if (loginBlockedAfterAttemptError !== null) {
+      return loginBlockedAfterAttemptError;
     }
 
     // Otherwise, send an invalid password message
-    return {
-      status: HttpStatusCode.unauthorized,
-      message: LoginRequestValidationErrorMessage.invalidCredentials,
-    }; // Invalid password
+    return invalidCredentialsError; // Invalid password
   }
 
   // TODO: Uncomment when user verification is implemented (see issue #125)
