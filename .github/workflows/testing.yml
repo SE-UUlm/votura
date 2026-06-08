@@ -30,8 +30,8 @@ jobs:
           node-version-file: package.json
           cache: npm
           cache-dependency-path: package-lock.json
-      - name: Disable corepack
-        run: corepack disable
+      - name: Remove yarn binary
+        run: rm -f "$(which yarn)" || true
       - name: Install npm dependencies
         run: npm ci
       - name: Generate .env file in backend
