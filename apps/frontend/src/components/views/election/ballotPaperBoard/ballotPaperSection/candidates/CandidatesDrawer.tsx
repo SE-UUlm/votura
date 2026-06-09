@@ -68,7 +68,9 @@ export const CandidatesDrawer = ({
             <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body>
-            {isLoadingElectionCandidates ? <Loader /> : <Stack>{rows}</Stack>}
+            <div className="bps-all-candidates">
+              {isLoadingElectionCandidates ? <Loader /> : <Stack>{rows}</Stack>}
+            </div>
           </Drawer.Body>
         </Box>
       </Drawer.Content>

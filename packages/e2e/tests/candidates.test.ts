@@ -1,5 +1,9 @@
 import { expect, test } from '@playwright/test';
 
+const overviewClass = '.bps-active-candidates';
+const allClass = '.bps-all-candidates';
+const checkboxName = 'candidate-checkbox';
+
 test.describe('Candidates', () => {
   test.beforeEach(async ({ page }) => {
     await page.goto('/login');
@@ -18,20 +22,26 @@ test.describe('Candidates', () => {
     await page.getByRole('button', { name: 'Create Candidate' }).click();
     await expect(page.getByText('Candidates: 1')).toBeVisible();
 
+    const overview = page.locator(overviewClass).getByText('John Doe', { exact: true });
+    const all = page.locator(allClass).getByText('John Doe', { exact: true }).first();
+    await expect(overview).toBeVisible(); // The one in the overview
+
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Edit candidates' }).click();
     await expect(page.getByRole('heading', { name: 'All Candidates' })).toBeVisible();
-    await expect(page.getByText('John Doe', { exact: true }).first()).toBeVisible();
-    await expect(page.getByRole('checkbox', { name: 'candidate-checkbox' })).toBeChecked();
+    await expect(all).toBeVisible(); // The one in the checkbox list of all candidates
+    await expect(page.getByRole('checkbox', { name: checkboxName })).toBeChecked();
 
-    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
+    await page.getByRole('checkbox', { name: checkboxName }).click();
+    await expect(overview).not.toBeVisible();
     await expect(page.getByText('Candidates: 0')).toBeVisible();
-    await page.getByRole('checkbox', { name: 'candidate-checkbox' }).click();
+    await page.getByRole('checkbox', { name: checkboxName }).click();
+    await expect(overview).toBeVisible();
     await expect(page.getByText('Candidates: 1')).toBeVisible();
 
     await page.getByRole('button', { name: 'Delete candidate' }).click();
     await page.getByRole('button', { name: 'Delete', exact: true }).click();
 
-    await expect(page.getByText('Candidates: 0')).toBeVisible();
+    await expect(overview).not.toBeVisible(); // The one in the overview
   });
 });
