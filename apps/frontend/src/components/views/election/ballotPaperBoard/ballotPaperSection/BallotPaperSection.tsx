@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Divider, Group, Paper, Stack, Text } from '@mantine/core';
+import { ActionIcon, Center, Divider, Group, Loader, Paper, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   updateableCandidateOperationOptions,
@@ -9,6 +9,7 @@ import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
+import { useGetCandidates } from '../../../../../swr/candidates/useGetCandidates.ts';
 import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
 import type { MutateCandidateDrawerProps } from './candidates/MutateCandidateDrawer.tsx';
@@ -22,6 +23,18 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
+  const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
+    useGetCandidates(electionId);
+  const bpsCandidateRows = electionCandidates
+    ?.slice()
+    .sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+    .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
+    .map((candidate) => (
+      <Text key={candidate.id} size="sm" truncate="end">
+        {candidate.title}
+      </Text>
+    ));
+
   const { trigger: triggerCreateCandidate, isMutating: isCandidateMutating } =
     useCreateCandidate(electionId);
   const { trigger: triggerAddCandidate, isMutating: isAddCandidateMutating } =
@@ -48,6 +61,9 @@ export const BallotPaperSection = ({
         <Group justify={'space-between'} align={'start'}>
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaperSection.name}</Text>
+            <Text c="dimmed" size="sm">
+              Candidates: {ballotPaperSection.candidateIds.length}
+            </Text>
             {ballotPaperSection.description !== undefined && (
               <Text lineClamp={2} c="dimmed" size="sm">
                 {ballotPaperSection.description}
@@ -66,9 +82,17 @@ export const BallotPaperSection = ({
           </BallotPaperSectionSettingsMenu>
         </Group>
         <Divider />
-        <Center>
-          <Text size="sm">Candidates: {ballotPaperSection.candidateIds.length}</Text>
-        </Center>
+        <Stack>
+          {isLoadingElectionCandidates ? (
+            <Center>
+              <Loader />
+            </Center>
+          ) : (
+            <div className="bps-active-candidates">
+              <Stack gap="xs">{bpsCandidateRows}</Stack>
+            </div>
+          )}
+        </Stack>
       </Stack>
     </Paper>
   );

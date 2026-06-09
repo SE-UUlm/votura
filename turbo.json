@@ -80,7 +80,8 @@
         "HOME",
         "BITS_PRIME_P",
         "USERS_JWT_PRIV_KEY",
-        "USERS_JWT_PUB_KEY"
+        "USERS_JWT_PUB_KEY",
+        "PLAYWRIGHT_BROWSERS_PATH"
       ]
     },
     "start": {
