@@ -79,6 +79,7 @@
     "bpsc",
     "fblz",
     "Penpot",
-    "unvotable"
+    "unvotable",
+    "bytea"
   ]
 }
