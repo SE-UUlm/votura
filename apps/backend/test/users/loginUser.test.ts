@@ -91,12 +91,15 @@ describe(`POST /users/login`, () => {
   });
 
   it('429: should block logins after three failed login attempts', async () => {
+    console.log(new Date().getTime());
     const res1 = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res1.status).toBe(HttpStatusCode.unauthorized);
 
+    console.log(new Date().getTime());
     const res2 = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res2.status).toBe(HttpStatusCode.unauthorized);
 
+    console.log(new Date().getTime());
     const res3 = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res3.status).toBe(HttpStatusCode.tooManyRequests);
     expect(res3.type).toBe('application/json');
