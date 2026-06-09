@@ -16,7 +16,6 @@ export enum TableName {
   voter = 'voter',
   voterRegister = 'voterRegister',
   vote = 'vote',
-  failedLoginAttempt = 'failedLoginAttempt',
 }
 
 // --- Column names ---
@@ -147,10 +146,4 @@ export enum VoteFKName {
 export enum VoterRegisterFKName {
   ballotPaperId = 'voterRegisterBallotPaperIdFK',
   voterId = 'voterRegisterVoterIdFK',
-}
-
-export enum FailedLoginAttemptColumnName {
-  ipAddress = 'ipAddress',
-  failedAttempts = 'failedAttempts',
-  blockedUntil = 'blockedUntil',
 }
