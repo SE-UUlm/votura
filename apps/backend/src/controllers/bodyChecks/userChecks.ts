@@ -8,7 +8,7 @@ import {
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { getRetryIn } from '../../services/loginAttempt.service.js';
+import {getRetryIn, recordFailedLoginAttempt} from '../../services/loginAttempt.service.js';
 import { findDBUserBy } from '../../services/users.service.js';
 import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
@@ -25,6 +25,7 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
 const checkLoginBlockedError = async (
   ipAddress: string,
 ): Promise<LoginRequestValidationError | null> => {
+  await recordFailedLoginAttempt(ipAddress);
   const retryIn = await getRetryIn(ipAddress);
   if (retryIn === null) {
     return null;
