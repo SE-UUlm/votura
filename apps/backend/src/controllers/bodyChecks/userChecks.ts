@@ -25,7 +25,6 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
 const checkLoginBlockedError = async (
   ipAddress: string,
 ): Promise<LoginRequestValidationError | null> => {
-  await recordFailedLoginAttempt(ipAddress);
   const retryIn = await getRetryIn(ipAddress);
   if (retryIn === null) {
     return null;
@@ -75,6 +74,9 @@ export const validateLoginRequest = async (
     getPepper(),
   );
   if (!isValidPassword) {
+    // Record that the login had failed
+    await recordFailedLoginAttempt(ipAddress);
+
     // If the user got blocked, send the response with retry information
     const loginBlockedAfterAttemptError = await checkLoginBlockedError(ipAddress);
     if (loginBlockedAfterAttemptError !== null) {
