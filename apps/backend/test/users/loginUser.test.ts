@@ -57,10 +57,7 @@ describe(`POST /users/login`, () => {
     // set user as verified in db
     await setUserVerified(user.id);
 
-    const res = await request(app).post(requestPath).send({
-      email: loginUser.email,
-      password: loginUser.password,
-    });
+    const res = await testLogin(loginUser.email, loginUser.password);
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = apiTokenUserObject.safeParse(res.body);
@@ -78,12 +75,7 @@ describe(`POST /users/login`, () => {
   });
 
   it('401: should return error for invalid credentials', async () => {
-    const res = await request(app)
-      .post(requestPath)
-      .send({
-        email: loginUser.email,
-        password: loginUser.password + 'invalid',
-      });
+    const res = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
