@@ -8,7 +8,7 @@ import {
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import {getRetryIn, recordFailedLoginAttempt} from '../../services/loginAttempt.service.js';
+import { getRetryIn, recordFailedLoginAttempt } from '../../services/loginAttempt.service.js';
 import { findDBUserBy } from '../../services/users.service.js';
 import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
