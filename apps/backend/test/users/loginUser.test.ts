@@ -91,6 +91,9 @@ describe(`POST /users/login`, () => {
   });
 
   it('429: should block logins after three failed login attempts', async () => {
+    // Use correct credentials at first to reset the failed login attempts counter
+    await testLogin(loginUser.email, loginUser.password);
+
     const res1 = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res1.status).toBe(HttpStatusCode.unauthorized);
 
