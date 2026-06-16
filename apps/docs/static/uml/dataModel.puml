@@ -172,9 +172,8 @@ entity "failedLoginAttempt" #006b75 {
     --
     * createdAt : TIMESTAMPTZ(6)
     * modifiedAt : TIMESTAMPTZ(6)
-    * ipAddress : BYTEA <<UK>>
-    * failedAttempts : INTEGER
-    blockedUntil : TIMESTAMPTZ(6) | NULL
+    * ipAddress : BYTEA
+    * userId : User.id <<FK>>
 }
 
 user "1"--"*" elections : belongs to <
@@ -192,5 +191,6 @@ user "1"--"*" voterGroups : belongs to <
 voterGroups "1"--"1..*" voters : contains >
 voters -- N3
 votes -- N4
+failedLoginAttempt "*"--"0..1" user : belongs to >
 
 @enduml
