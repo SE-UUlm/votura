@@ -22,10 +22,16 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
   retryIn?: Response429['retryIn'];
 }
 
+/**
+ * Check whether the given IP address or user ID is currently blocked from logging in, and if so, return the appropriate error object
+ * @param ipAddress
+ * @param userId
+ */
 const checkLoginBlockedError = async (
   ipAddress: string,
+  userId: string | null,
 ): Promise<LoginRequestValidationError | null> => {
-  const retryIn = await getRetryIn(ipAddress);
+  const retryIn = await getRetryIn(ipAddress, userId);
   if (retryIn === null) {
     return null;
   }
@@ -42,6 +48,25 @@ const invalidCredentialsError = {
   message: LoginRequestValidationErrorMessage.invalidCredentials,
 };
 
+/**
+ * Save a failed login attempt to the database and return either a simple invalidCredentialsError, or a too many requests error, depending on whether the user was being blocked
+ * @param ipAddress
+ * @param userId
+ */
+const handleFailedLogin = async (
+  ipAddress: string,
+  userId: string | null,
+): Promise<LoginRequestValidationError> => {
+  await recordFailedLoginAttempt(ipAddress, userId);
+
+  const loginBlockedError = await checkLoginBlockedError(ipAddress, userId);
+  if (loginBlockedError) {
+    return loginBlockedError;
+  }
+
+  return invalidCredentialsError;
+};
+
 export const validateLoginRequest = async (
   reqBody: unknown,
   ipAddress: string,
@@ -54,37 +79,31 @@ export const validateLoginRequest = async (
     };
   }
 
-  // Check whether IP address is blocked
-  const loginBlockedBeforeAttemptError = await checkLoginBlockedError(ipAddress);
+  // Find user by email
+  const user = await findDBUserBy({ email: data.email });
+
+  let userId = null;
+  if (user !== null) {
+    userId = user.id;
+  }
+
+  // Check whether the IP address or the user is blocked before recording any failed login attempts
+  const loginBlockedBeforeAttemptError = await checkLoginBlockedError(ipAddress, userId);
   if (loginBlockedBeforeAttemptError !== null) {
     return loginBlockedBeforeAttemptError;
   }
 
-  // Find user by email
-  const user = await findDBUserBy({ email: data.email });
-
+  // Handle invalid email
   if (user === null) {
-    return invalidCredentialsError; // User not found
+    return handleFailedLogin(ipAddress, userId);
   }
 
   // Verify password
-  const isValidPassword: boolean = await verifyPassword(
-    user.passwordHash,
-    data.password,
-    getPepper(),
-  );
+  const isValidPassword = await verifyPassword(user.passwordHash, data.password, getPepper());
+
+  // Handle invalid password
   if (!isValidPassword) {
-    // Record that the login had failed
-    await recordFailedLoginAttempt(ipAddress);
-
-    // If the user got blocked, send the response with retry information
-    const loginBlockedAfterAttemptError = await checkLoginBlockedError(ipAddress);
-    if (loginBlockedAfterAttemptError !== null) {
-      return loginBlockedAfterAttemptError;
-    }
-
-    // Otherwise, send an invalid password message
-    return invalidCredentialsError; // Invalid password
+    return handleFailedLogin(ipAddress, userId);
   }
 
   // TODO: Uncomment when user verification is implemented (see issue #125)

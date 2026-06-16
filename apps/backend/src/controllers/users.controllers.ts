@@ -15,7 +15,7 @@ import {
 import type { Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
-import { resetFailedLoginAttempt } from '../services/loginAttempt.service.js';
+import { resetFailedLoginAttempts } from '../services/loginAttempt.service.js';
 import {
   createNewUserTokens,
   createUser as createPersistentUser,
@@ -87,7 +87,7 @@ export const login = async (req: Request, res: LoginResponse): Promise<void> => 
     return;
   }
 
-  await resetFailedLoginAttempt(ipAddress);
+  await resetFailedLoginAttempts(ipAddress, validationResult);
   const loginResult = await createNewUserTokens(validationResult);
   res.status(HttpStatusCode.ok).json(loginResult);
 };
