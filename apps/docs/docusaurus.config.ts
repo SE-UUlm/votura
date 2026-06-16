@@ -165,7 +165,7 @@ const CONFIG: Config = {
             },
             {
               label: 'Imprint',
-              href: 'https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/',
+              href: 'https://www.uni-ulm.de/rechtliche-hinweise/impressum/',
             },
             {
               label: 'GitHub',
