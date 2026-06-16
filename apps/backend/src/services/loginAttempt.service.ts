@@ -71,8 +71,10 @@ async function calculateBlockedUntil(
   const ipFailedLoginAttempts = await getFailedLoginAttemptsForIP(ipAddress);
   const ipBlockedUntil = calculateBlockedUntilForSingleVector(ipFailedLoginAttempts);
 
-  const userFailedLoginAttempts =
-    userId !== null ? await getFailedLoginAttemptsForUser(userId) : [];
+  let userFailedLoginAttempts: Selectable<DBFailedLoginAttempt>[] = [];
+  if (userId !== null) {
+    userFailedLoginAttempts = await getFailedLoginAttemptsForUser(userId);
+  }
   const userBlockedUntil = calculateBlockedUntilForSingleVector(userFailedLoginAttempts);
 
   if (ipBlockedUntil !== null && userBlockedUntil !== null) {

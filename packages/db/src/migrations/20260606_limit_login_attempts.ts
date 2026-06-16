@@ -34,6 +34,7 @@ async function createFailedLoginAttemptTable(db: Kysely<any>): Promise<void> {
     .execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function addFailedLoginAttemptForeignKeys(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.failedLoginAttempt)
