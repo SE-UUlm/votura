@@ -120,12 +120,11 @@ export interface Election {
 }
 
 export interface FailedLoginAttempt {
-  blockedUntil: Timestamp | null;
   createdAt: Generated<Timestamp>;
-  failedAttempts: Generated<number>;
   id: Generated<string>;
   ipAddress: Buffer;
   modifiedAt: Generated<Timestamp>;
+  userId: string | null;
 }
 
 export interface User {

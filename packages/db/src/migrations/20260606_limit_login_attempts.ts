@@ -1,5 +1,10 @@
 import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
-import { DefaultColumnName, FailedLoginAttemptColumnName, TableName } from '../nameEnums.js';
+import {
+  DefaultColumnName,
+  FailedLoginAttemptColumnName,
+  FailedLoginAttemptFKName,
+  TableName,
+} from '../nameEnums.js';
 
 const timestampDataType = 'timestamptz(6)';
 
@@ -24,17 +29,28 @@ async function createFailedLoginAttemptTable(db: Kysely<any>): Promise<void> {
   await db.schema
     .createTable(TableName.failedLoginAttempt)
     .$call(addDefaultColumns)
-    .addColumn(FailedLoginAttemptColumnName.ipAddress, 'bytea', (col) => col.notNull().unique())
-    .addColumn(FailedLoginAttemptColumnName.failedAttempts, 'integer', (col) =>
-      col.notNull().defaultTo(0),
+    .addColumn(FailedLoginAttemptColumnName.ipAddress, 'bytea', (col) => col.notNull())
+    .addColumn(FailedLoginAttemptColumnName.userId, 'uuid')
+    .execute();
+}
+
+async function addFailedLoginAttemptForeignKeys(db: Kysely<any>): Promise<void> {
+  await db.schema
+    .alterTable(TableName.failedLoginAttempt)
+    .addForeignKeyConstraint(
+      FailedLoginAttemptFKName.userId,
+      [FailedLoginAttemptColumnName.userId],
+      TableName.user,
+      [DefaultColumnName.id],
+      (cb) => cb.onDelete('cascade').onUpdate('cascade'),
     )
-    .addColumn(FailedLoginAttemptColumnName.blockedUntil, timestampDataType)
     .execute();
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function createTables(db: Kysely<any>): Promise<void> {
   await createFailedLoginAttemptTable(db);
+  await addFailedLoginAttemptForeignKeys(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
