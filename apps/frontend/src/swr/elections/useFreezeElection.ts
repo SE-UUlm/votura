@@ -13,6 +13,7 @@ export const useFreezeElection = (
     {
       onSuccess: () => {
         void mutate(apiRoutes.elections.base);
+        void mutate(apiRoutes.elections.byId(electionId));
       },
     },
   );
