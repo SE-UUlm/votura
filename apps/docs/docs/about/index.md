@@ -18,4 +18,4 @@ Votura is currently maintained by:
 - [@dsiev David Sievers](https://github.com/dsiev)
 - [@araschke Alexander Raschke](https://github.com/araschke)
 
-[Imprint University of Ulm](https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/)
+[Imprint University of Ulm](https://www.uni-ulm.de/rechtliche-hinweise/impressum/)
