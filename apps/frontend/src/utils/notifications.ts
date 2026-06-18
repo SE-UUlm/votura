@@ -23,6 +23,14 @@ export const getMutateSuccessElectionConfig = (
   };
 };
 
+export const getRPCErrorConfig = (message: string): NotificationData => {
+  return {
+    title: 'Error',
+    message,
+    color: 'red',
+  };
+};
+
 export const getElectionNotFreezableConfig = (name: string): NotificationData => {
   return {
     title: 'Error',

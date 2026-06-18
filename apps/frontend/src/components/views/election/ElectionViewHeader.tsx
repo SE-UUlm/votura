@@ -4,16 +4,15 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
+import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
+import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
-import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
-import { useGetElectionFreezable } from '../../../swr/elections/useGetElectionFreezable.ts';
-import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
-  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
@@ -30,9 +29,6 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     electionId: election.id,
   });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
-  const { trigger: freezeTrigger } = useFreezeElection(election.id);
-  const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
-  const freezable = useGetElectionFreezable(election.id);
 
   const onDelete = async () => {
     try {
@@ -57,15 +53,16 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
     if (election.configFrozen) {
-      await unfreezeTrigger();
+      notifications.show(await callUnfreezeElection(election.id));
     } else {
-      if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
+      const freezable = await callGetElectionFreezable(election.id);
+      if (!freezable) {
         notifications.show(getElectionNotFreezableConfig(election.name));
         return;
       }
-      await freezeTrigger();
+
+      notifications.show(await callFreezeElection(election.id));
     }
-    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
   };
 
   return (

@@ -5,15 +5,14 @@ import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
-import { useFreezeElection } from '../../../swr/elections/useFreezeElection.ts';
-import { useGetElectionFreezable } from '../../../swr/elections/useGetElectionFreezable.ts';
-import { useUnfreezeElection } from '../../../swr/elections/useUnfreezeElection.ts';
+import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
+import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
   getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
-  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
@@ -36,9 +35,6 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
 
   const rows = data.map((election) => {
     const { trigger, isMutating } = useUpdateElection(election.id);
-    const { trigger: freezeTrigger } = useFreezeElection(election.id);
-    const { trigger: unfreezeTrigger } = useUnfreezeElection(election.id);
-    const freezable = useGetElectionFreezable(election.id);
 
     const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
       await trigger(mutatedElection);
@@ -52,17 +48,16 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
 
     const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
       if (election.configFrozen) {
-        await unfreezeTrigger();
+        notifications.show(await callUnfreezeElection(election.id));
       } else {
-        if (freezable.error || freezable.data === undefined || !freezable.data.freezable) {
+        const freezable = await callGetElectionFreezable(election.id);
+        if (!freezable) {
           notifications.show(getElectionNotFreezableConfig(election.name));
           return;
         }
-        await freezeTrigger();
+
+        notifications.show(await callFreezeElection(election.id));
       }
-      notifications.show(
-        getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen),
-      );
     };
 
     return (

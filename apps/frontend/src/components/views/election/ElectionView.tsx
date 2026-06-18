@@ -63,6 +63,7 @@ export const ElectionView = (): JSX.Element => {
   }
 
   const onMutate: MutateBallotPaperDrawerProps['onMutate'] = async (update) => {
+    console.log('test');
     const response = await trigger(update);
     notifications.show(getAddSuccessBallotPaperConfig(response.name));
   };
