@@ -1,4 +1,4 @@
-import { AppShell, Box, Button, Divider, Stack } from '@mantine/core';
+import {AppShell, Box, Button, Divider, Space, Stack} from '@mantine/core';
 import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
@@ -31,6 +31,7 @@ export const AppShellLayout = (): JSX.Element => {
               label={'Elections'}
               icon={<IconNotes size={16} />}
             />
+            <Space h={'xs'} />
             <RoutingNavbarLink
               to={'/voterGroups'}
               label={'Voter Groups & Tokens'}
