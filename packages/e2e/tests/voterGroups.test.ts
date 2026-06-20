@@ -9,8 +9,8 @@ const voterGroup: InsertableVoterGroup = {
 };
 
 const updatedVoterGroup: UpdateableVoterGroup = {
-  name: 'abc',
-  description: 'def',
+  name: 'Edited Test Voter Group',
+  description: 'My updated test voter group',
   numberOfVoters: 123,
   ballotPapers: [],
 };
@@ -35,7 +35,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Create new voter group' }).click();
 
   // verify creation
-  await expect(page.getByText(voterGroup.name)).toBeVisible();
+  await expect(page.getByRole('cell', { name: updatedVoterGroup.name })).toBeVisible();
   if (voterGroup.description !== undefined) {
     await expect(page.getByText(voterGroup.description)).toBeVisible();
   }
@@ -52,7 +52,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Save changes' }).click();
 
   // verify mutation
-  await expect(page.getByText(updatedVoterGroup.name)).toBeVisible();
+  await expect(page.getByRole('cell', { name: updatedVoterGroup.name })).toBeVisible();
   if (updatedVoterGroup.description !== undefined) {
     await expect(page.getByText(updatedVoterGroup.description)).toBeVisible();
   }
@@ -66,5 +66,5 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // verify deletion
   await expect(page).toHaveURL('/voterGroups');
-  await expect(page.getByText(updatedVoterGroup.name)).not.toBeVisible();
+  await expect(page.getByRole('cell', { name: updatedVoterGroup.name })).not.toBeVisible();
 });
