@@ -2,15 +2,15 @@ import { expect, test } from '@playwright/test';
 import type { InsertableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
 
 const voterGroup: InsertableVoterGroup = {
-  name: 'Test Voter Group',
-  description: 'My test voter group',
+  name: 'abc',
+  description: 'def',
   numberOfVoters: 42,
   ballotPapers: [],
 };
 
 const updatedVoterGroup: UpdateableVoterGroup = {
-  name: 'abc',
-  description: 'def',
+  name: 'uvw',
+  description: 'xyz',
   numberOfVoters: 123,
   ballotPapers: [],
 };
