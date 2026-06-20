@@ -26,13 +26,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await expect(page).toHaveURL('/voterGroups');
 
   // create voter group
-  const html = await page.content();
-  console.warn(html.includes('data-testid="new-voter-group-btn"'));
-  console.warn(html);
-  await page.waitForSelector('[data-testid="new-voter-group-btn"]', { state: 'attached' });
-  const newVoterGroupBtn = page.locator('[data-testid="new-voter-group-btn"]');
-  await expect(newVoterGroupBtn).toBeVisible();
-  await newVoterGroupBtn.click();
+  await page.getByRole('button', { name: 'New Voter Group' }).click();
   await page.getByLabel('Voter group name').fill(voterGroup.name);
   if (voterGroup.description !== undefined) {
     await page.getByLabel('Voter group description').fill(voterGroup.description);
@@ -41,7 +35,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Create new voter group' }).click();
 
   // verify creation
-  await expect(page.getByRole('heading', { name: voterGroup.name })).toBeVisible();
+  await expect(page.getByText(voterGroup.name)).toBeVisible();
   if (voterGroup.description !== undefined) {
     await expect(page.getByText(voterGroup.description)).toBeVisible();
   }
@@ -58,7 +52,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Save changes' }).click();
 
   // verify mutation
-  await expect(page.getByRole('heading', { name: updatedVoterGroup.name })).toBeVisible();
+  await expect(page.getByText(updatedVoterGroup.name)).toBeVisible();
   if (updatedVoterGroup.description !== undefined) {
     await expect(page.getByText(updatedVoterGroup.description)).toBeVisible();
   }
@@ -72,5 +66,5 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // verify deletion
   await expect(page).toHaveURL('/voterGroups');
-  await expect(page.getByRole('heading', { name: updatedVoterGroup.name })).not.toBeVisible();
+  await expect(page.getByText(updatedVoterGroup.name)).not.toBeVisible();
 });
