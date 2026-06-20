@@ -9,8 +9,8 @@ const voterGroup: InsertableVoterGroup = {
 };
 
 const updatedVoterGroup: UpdateableVoterGroup = {
-  name: 'Edited Test Voter Group',
-  description: 'My updated test voter group',
+  name: 'abc',
+  description: 'def',
   numberOfVoters: 123,
   ballotPapers: [],
 };
