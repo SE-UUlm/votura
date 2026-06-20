@@ -35,11 +35,17 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Create new voter group' }).click();
 
   // verify creation
-  await expect(page.getByText(voterGroup.name, { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('cell', { name: voterGroup.name }).getByRole('paragraph'),
+  ).toBeVisible();
   if (voterGroup.description !== undefined) {
-    await expect(page.getByText(voterGroup.description)).toBeVisible();
+    await expect(
+      page.getByRole('cell', { name: voterGroup.description }).getByRole('paragraph'),
+    ).toBeVisible();
   }
-  await expect(page.getByText(voterGroup.numberOfVoters.toString())).toBeVisible();
+  await expect(
+    page.getByRole('cell', { name: voterGroup.numberOfVoters.toString() }).getByRole('paragraph'),
+  ).toBeVisible();
 
   // update voter group
   await page.getByRole('button', { name: 'Settings' }).click();
@@ -52,11 +58,19 @@ test('should create, update and delete a voter group', async ({ page }) => {
   await page.getByRole('button', { name: 'Save changes' }).click();
 
   // verify mutation
-  await expect(page.getByText(updatedVoterGroup.name, { exact: true })).toBeVisible();
+  await expect(
+    page.getByRole('cell', { name: updatedVoterGroup.name }).getByRole('paragraph'),
+  ).toBeVisible();
   if (updatedVoterGroup.description !== undefined) {
-    await expect(page.getByText(updatedVoterGroup.description)).toBeVisible();
+    await expect(
+      page.getByRole('cell', { name: updatedVoterGroup.description }).getByRole('paragraph'),
+    ).toBeVisible();
   }
-  await expect(page.getByText(updatedVoterGroup.numberOfVoters.toString())).toBeVisible();
+  await expect(
+    page
+      .getByRole('cell', { name: updatedVoterGroup.numberOfVoters.toString() })
+      .getByRole('paragraph'),
+  ).toBeVisible();
 
   // delete voter group
   await page.getByRole('button', { name: 'Settings' }).click();
