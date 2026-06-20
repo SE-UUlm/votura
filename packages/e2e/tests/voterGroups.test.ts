@@ -36,11 +36,11 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // verify creation
   await expect(
-    page.getByRole('cell', { name: voterGroup.name }).getByRole('paragraph'),
+    page.getByRole('cell', { name: voterGroup.name, exact: true }).getByRole('paragraph'),
   ).toBeVisible();
   if (voterGroup.description !== undefined) {
     await expect(
-      page.getByRole('cell', { name: voterGroup.description }).getByRole('paragraph'),
+      page.getByRole('cell', { name: voterGroup.description, exact: true }).getByRole('paragraph'),
     ).toBeVisible();
   }
   await expect(
@@ -59,11 +59,13 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // verify mutation
   await expect(
-    page.getByRole('cell', { name: updatedVoterGroup.name }).getByRole('paragraph'),
+    page.getByRole('cell', { name: updatedVoterGroup.name, exact: true }).getByRole('paragraph'),
   ).toBeVisible();
   if (updatedVoterGroup.description !== undefined) {
     await expect(
-      page.getByRole('cell', { name: updatedVoterGroup.description }).getByRole('paragraph'),
+      page
+        .getByRole('cell', { name: updatedVoterGroup.description, exact: true })
+        .getByRole('paragraph'),
     ).toBeVisible();
   }
   await expect(
@@ -80,5 +82,7 @@ test('should create, update and delete a voter group', async ({ page }) => {
 
   // verify deletion
   await expect(page).toHaveURL('/voterGroups');
-  await expect(page.getByText(updatedVoterGroup.name, { exact: true })).not.toBeVisible();
+  await expect(
+    page.getByRole('cell', { name: updatedVoterGroup.name, exact: true }).getByRole('paragraph'),
+  ).not.toBeVisible();
 });
