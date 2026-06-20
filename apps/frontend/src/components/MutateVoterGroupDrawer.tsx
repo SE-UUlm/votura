@@ -12,7 +12,11 @@ import {
   TextInput,
 } from '@mantine/core';
 import { isNotEmpty, useForm } from '@mantine/form';
-import type { SelectableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
+import type {
+  SelectableElection,
+  SelectableVoterGroup,
+  UpdateableVoterGroup,
+} from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { useGetBallotPapers } from '../swr/ballotPapers/useGetBallotPapers';
 import { useGetElections } from '../swr/elections/useGetElections';
@@ -29,6 +33,54 @@ export interface MutateVoterGroupDrawerProps {
 
 export interface MutateVoterGroupFormValues
   extends Pick<SelectableVoterGroup, 'name' | 'description' | 'numberOfVoters' | 'ballotPapers'> {}
+
+interface VoterGroupElectionSectionProps {
+  election: SelectableElection;
+  selectedBallotPapers: string[];
+  onBallotPaperToggle: (ballotPaperId: string) => void;
+}
+
+const VoterGroupElectionSection = ({
+  election,
+  selectedBallotPapers,
+  onBallotPaperToggle,
+}: VoterGroupElectionSectionProps): JSX.Element => {
+  const {
+    data: ballotPapers,
+    isLoading: isBallotPapersLoading,
+    error: ballotPapersError,
+  } = useGetBallotPapers(election.id);
+
+  return (
+    <Box mt={'sm'}>
+      <Text fw={500}>{election.name}</Text>
+      <Stack ml={'md'} mt={'xs'}>
+        {isBallotPapersLoading ? (
+          <Text size={'sm'} c={'dimmed'}>
+            Loading ballot papers...
+          </Text>
+        ) : ballotPapersError ? (
+          <Text size={'sm'} c={'red.7'}>
+            The ballot papers could not be loaded. Please try again.
+          </Text>
+        ) : ballotPapers && ballotPapers.length > 0 ? (
+          ballotPapers.map((ballotPaper) => (
+            <Checkbox
+              key={ballotPaper.id}
+              label={ballotPaper.name}
+              checked={selectedBallotPapers.includes(ballotPaper.id)}
+              onChange={(): void => onBallotPaperToggle(ballotPaper.id)}
+            />
+          ))
+        ) : (
+          <Text size={'sm'} c={'dimmed'}>
+            No ballot papers found
+          </Text>
+        )}
+      </Stack>
+    </Box>
+  );
+};
 
 export const MutateVoterGroupDrawer = ({
   voterGroup,
@@ -143,42 +195,14 @@ export const MutateVoterGroupDrawer = ({
                   }
                 />
                 <Divider label={'Ballot Papers'} mt={'md'} />
-                {elections?.map((election) => {
-                  const {
-                    data: ballotPapers,
-                    isLoading: isBallotPapersLoading,
-                    error: ballotPapersError,
-                  } = useGetBallotPapers(election.id);
-                  return (
-                    <Box key={election.id} mt={'sm'}>
-                      <Text fw={500}>{election.name}</Text>
-                      <Stack ml={'md'} mt={'xs'}>
-                        {isBallotPapersLoading ? (
-                          <Text size={'sm'} c={'dimmed'}>
-                            Loading ballot papers...
-                          </Text>
-                        ) : ballotPapersError ? (
-                          <Text size={'sm'} c={'red.7'}>
-                            The ballot papers could not be loaded. Please try again.
-                          </Text>
-                        ) : ballotPapers && ballotPapers.length > 0 ? (
-                          ballotPapers.map((ballotPaper) => (
-                            <Checkbox
-                              key={ballotPaper.id}
-                              label={ballotPaper.name}
-                              checked={form.values.ballotPapers.includes(ballotPaper.id)}
-                              onChange={(): void => handleBallotPaperToggle(ballotPaper.id)}
-                            />
-                          ))
-                        ) : (
-                          <Text size={'sm'} c={'dimmed'}>
-                            No ballot papers found
-                          </Text>
-                        )}
-                      </Stack>
-                    </Box>
-                  );
-                })}
+                {elections?.map((election) => (
+                  <VoterGroupElectionSection
+                    key={election.id}
+                    election={election}
+                    selectedBallotPapers={form.values.ballotPapers}
+                    onBallotPaperToggle={handleBallotPaperToggle}
+                  />
+                ))}
               </Stack>
             </Drawer.Body>
           </Box>

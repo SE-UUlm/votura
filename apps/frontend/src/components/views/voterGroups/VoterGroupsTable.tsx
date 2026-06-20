@@ -23,56 +23,60 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
   </Text>
 );
 
-export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element => {
-  const rows = data.map((voterGroup) => {
-    const { trigger: updateTrigger, isMutating } = useUpdateVoterGroup(voterGroup.id);
-    const { trigger: deleteTrigger } = useDeleteVoterGroup({ voterGroupId: voterGroup.id });
+interface VoterGroupsTableRowProps {
+  voterGroup: SelectableVoterGroup;
+}
 
-    const onMutate: MutateVoterGroupDrawerProps['onMutate'] = async (mutatedVoterGroup) => {
-      await updateTrigger(mutatedVoterGroup);
-      notifications.show(
-        getMutateSuccessVoterGroupConfig(mutatedVoterGroup?.name ?? voterGroup.name),
-      );
-    };
+const VoterGroupsTableRow = ({ voterGroup }: VoterGroupsTableRowProps): JSX.Element => {
+  const { trigger: updateTrigger, isMutating } = useUpdateVoterGroup(voterGroup.id);
+  const { trigger: deleteTrigger } = useDeleteVoterGroup({ voterGroupId: voterGroup.id });
 
-    const onDelete: DeleteVoterGroupModalProps['onDelete'] = async () => {
-      await deleteTrigger();
-      notifications.show(getDeleteSuccessVoterGroupConfig(voterGroup.name));
-    };
-
-    return (
-      <Table.Tr key={voterGroup.id}>
-        <Table.Td>
-          <TableText>{voterGroup.name}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <TableText>{voterGroup.description}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <TableText>{voterGroup.ballotPapers.length}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <TableText>{voterGroup.numberOfVoters}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
-            <VoterGroupsSettingsMenu
-              voterGroup={voterGroup}
-              targetElement={
-                <ActionIcon variant="subtle" aria-label="Settings">
-                  <IconDots size={14} />
-                </ActionIcon>
-              }
-              onDelete={onDelete}
-              onMutate={onMutate}
-              isMutating={isMutating}
-            />
-          </Group>
-        </Table.Td>
-      </Table.Tr>
+  const onMutate: MutateVoterGroupDrawerProps['onMutate'] = async (mutatedVoterGroup) => {
+    await updateTrigger(mutatedVoterGroup);
+    notifications.show(
+      getMutateSuccessVoterGroupConfig(mutatedVoterGroup?.name ?? voterGroup.name),
     );
-  });
+  };
 
+  const onDelete: DeleteVoterGroupModalProps['onDelete'] = async () => {
+    await deleteTrigger();
+    notifications.show(getDeleteSuccessVoterGroupConfig(voterGroup.name));
+  };
+
+  return (
+    <Table.Tr>
+      <Table.Td>
+        <TableText>{voterGroup.name}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{voterGroup.description}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{voterGroup.ballotPapers.length}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{voterGroup.numberOfVoters}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
+          <VoterGroupsSettingsMenu
+            voterGroup={voterGroup}
+            targetElement={
+              <ActionIcon variant="subtle" aria-label="Settings">
+                <IconDots size={14} />
+              </ActionIcon>
+            }
+            onDelete={onDelete}
+            onMutate={onMutate}
+            isMutating={isMutating}
+          />
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  );
+};
+
+export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element => {
   return (
     <Table highlightOnHover={true}>
       <Table.Thead>
@@ -84,7 +88,11 @@ export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element =
           <Table.Th />
         </Table.Tr>
       </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
+      <Table.Tbody>
+        {data.map((voterGroup) => (
+          <VoterGroupsTableRow key={voterGroup.id} voterGroup={voterGroup} />
+        ))}
+      </Table.Tbody>
     </Table>
   );
 };

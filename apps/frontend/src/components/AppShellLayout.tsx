@@ -1,4 +1,4 @@
-import {AppShell, Box, Button, Divider, Space, Stack} from '@mantine/core';
+import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
 import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
