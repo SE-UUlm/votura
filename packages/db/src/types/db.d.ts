@@ -119,6 +119,14 @@ export interface Election {
   votingStartAt: Timestamp;
 }
 
+export interface FailedLoginAttempt {
+  createdAt: Generated<Timestamp>;
+  id: Generated<string>;
+  ipAddress: Buffer;
+  modifiedAt: Generated<Timestamp>;
+  userId: string | null;
+}
+
 export interface User {
   createdAt: Generated<Timestamp>;
   email: string;
@@ -178,6 +186,7 @@ export interface DB {
   'cron.job': CronJob;
   'cron.job_run_details': CronJobRunDetails;
   election: Election;
+  failedLoginAttempt: FailedLoginAttempt;
   user: User;
   vote: Vote;
   voter: Voter;
