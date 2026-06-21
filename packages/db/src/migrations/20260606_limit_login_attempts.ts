@@ -70,21 +70,39 @@ async function addModifiedAtTriggers(db: Kysely<any>): Promise<void> {
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function createCronjobs(db: Kysely<any>): Promise<void> {
+  await sql`
+    SELECT cron.schedule(
+      'delete_old_failed_login_attempts_cron_job',
+      '0 * * * *', -- Run every hour at 0 minutes
+      $$DELETE FROM ${sql.table(TableName.failedLoginAttempt)} WHERE ${sql.raw(`"${DefaultColumnName.createdAt}"`)} < NOW() - INTERVAL '7 days'$$
+    );
+  `.execute(db);
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function dropTables(db: Kysely<any>): Promise<void> {
   // Drop tables in reverse order of creation to handle foreign key dependencies
   await db.schema.dropTable(TableName.failedLoginAttempt).ifExists().execute();
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function dropCronjobs(db: Kysely<any>): Promise<void> {
+  await sql`
+    SELECT cron.unschedule('delete_old_failed_login_attempts_cron_job');
+  `.execute(db);
 }
 
 // --- Main Migration Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
   await createTables(db);
-
   await addModifiedAtTriggers(db);
+  await createCronjobs(db);
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  // Drop tables (this automatically drops all triggers, constraints, and indexes)
+  await dropCronjobs(db);
   await dropTables(db);
 }
