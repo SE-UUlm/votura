@@ -18,6 +18,7 @@ async function getFailedLoginAttemptsForIP(
     .selectFrom('failedLoginAttempt')
     .selectAll()
     .where('ipAddress', '=', ipToBuffer(ipAddress))
+    .orderBy('createdAt', 'desc')
     .execute();
 
   return failedLoginAttempts ?? [];
@@ -34,6 +35,7 @@ async function getFailedLoginAttemptsForUser(
     .selectFrom('failedLoginAttempt')
     .selectAll()
     .where('userId', '=', userId)
+    .orderBy('createdAt', 'desc')
     .execute();
 
   return failedLoginAttempts ?? [];
@@ -47,7 +49,7 @@ function calculateBlockedUntilForSingleVector(
   failedLoginAttempts: Selectable<DBFailedLoginAttempt>[],
 ): Date | null {
   if (failedLoginAttempts.length >= 3) {
-    const latestAttempt = failedLoginAttempts[failedLoginAttempts.length - 1];
+    const latestAttempt = failedLoginAttempts[0];
     if (!latestAttempt) {
       return null;
     }
