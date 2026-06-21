@@ -151,6 +151,9 @@ export enum VoterRegisterFKName {
 
 export enum FailedLoginAttemptColumnName {
   ipAddress = 'ipAddress',
-  failedAttempts = 'failedAttempts',
-  blockedUntil = 'blockedUntil',
+  userId = 'userId',
+}
+
+export enum FailedLoginAttemptFKName {
+  userId = 'userIdFk',
 }

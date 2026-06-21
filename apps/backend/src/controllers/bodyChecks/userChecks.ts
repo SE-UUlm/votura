@@ -1,16 +1,16 @@
 import { getPepper, verifyPassword } from '@repo/hash';
 import {
-  type User,
   insertableUserObject,
   refreshRequestUserObject,
   zodErrorToResponse400,
   type Response429,
+  type User,
 } from '@repo/votura-validators';
 import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import {findDBUserBy } from '../../services/users.service.js';
-import { getRetryIn, recordFailedLoginAttempt} from '../../services/loginAttempt.service.js';
-import type { BodyCheckValidationError } from "./bodyCheckValidationError.js";
+import { getRetryIn, recordFailedLoginAttempt } from '../../services/loginAttempt.service.js';
+import { findDBUserBy } from '../../services/users.service.js';
+import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
 export enum LoginRequestValidationErrorMessage {
   invalidCredentials = 'Invalid credentials.',
@@ -21,6 +21,51 @@ export interface LoginRequestValidationError extends BodyCheckValidationError {
   message: LoginRequestValidationErrorMessage | string;
   retryIn?: Response429['retryIn'];
 }
+
+/**
+ * Check whether the given IP address or user ID is currently blocked from logging in, and if so, return the appropriate error object
+ * @param ipAddress
+ * @param userId
+ */
+const checkLoginBlockedError = async (
+  ipAddress: string,
+  userId: string | null,
+): Promise<LoginRequestValidationError | null> => {
+  const retryIn = await getRetryIn(ipAddress, userId);
+  if (retryIn === null) {
+    return null;
+  }
+
+  return {
+    status: HttpStatusCode.tooManyRequests,
+    message: 'Too many failed login attempts. Please try again later.',
+    retryIn: retryIn,
+  };
+};
+
+const invalidCredentialsError = {
+  status: HttpStatusCode.unauthorized,
+  message: LoginRequestValidationErrorMessage.invalidCredentials,
+};
+
+/**
+ * Save a failed login attempt to the database and return either a simple invalidCredentialsError, or a too many requests error, depending on whether the user was being blocked
+ * @param ipAddress
+ * @param userId
+ */
+const handleFailedLogin = async (
+  ipAddress: string,
+  userId: string | null,
+): Promise<LoginRequestValidationError> => {
+  await recordFailedLoginAttempt(ipAddress, userId);
+
+  const loginBlockedError = await checkLoginBlockedError(ipAddress, userId);
+  if (loginBlockedError) {
+    return loginBlockedError;
+  }
+
+  return invalidCredentialsError;
+};
 
 export const validateLoginRequest = async (
   reqBody: unknown,
@@ -34,48 +79,31 @@ export const validateLoginRequest = async (
     };
   }
 
-  // Check whether IP address is blocked
-  const retryInBeforeAttempt = await getRetryIn(ipAddress);
-  if (retryInBeforeAttempt !== null) {
-    return {
-      status: HttpStatusCode.tooManyRequests,
-      message: 'Too many failed login attempts. Please try again later.',
-      retryIn: retryInBeforeAttempt,
-    };
-  }
-
   // Find user by email
   const user = await findDBUserBy({ email: data.email });
 
+  let userId = null;
+  if (user !== null) {
+    userId = user.id;
+  }
+
+  // Check whether the IP address or the user is blocked before recording any failed login attempts
+  const loginBlockedBeforeAttemptError = await checkLoginBlockedError(ipAddress, userId);
+  if (loginBlockedBeforeAttemptError !== null) {
+    return loginBlockedBeforeAttemptError;
+  }
+
+  // Handle invalid email
   if (user === null) {
-    return {
-      status: HttpStatusCode.unauthorized,
-      message: LoginRequestValidationErrorMessage.invalidCredentials,
-    }; // User not found
+    return handleFailedLogin(ipAddress, userId);
   }
 
   // Verify password
-  const isValidPassword: boolean = await verifyPassword(
-    user.passwordHash,
-    data.password,
-    getPepper(),
-  );
-  if (!isValidPassword) {
-    // If the user got blocked, send the response with retry information
-    const retryInAfterAttempt = await recordFailedLoginAttempt(ipAddress);
-    if (retryInAfterAttempt !== null) {
-      return {
-        status: HttpStatusCode.tooManyRequests,
-        message: 'Too many failed login attempts. Please try again later.',
-        retryIn: retryInAfterAttempt,
-      };
-    }
+  const isValidPassword = await verifyPassword(user.passwordHash, data.password, getPepper());
 
-    // Otherwise, send an invalid password message
-    return {
-      status: HttpStatusCode.unauthorized,
-      message: LoginRequestValidationErrorMessage.invalidCredentials,
-    }; // Invalid password
+  // Handle invalid password
+  if (!isValidPassword) {
+    return handleFailedLogin(ipAddress, userId);
   }
 
   // TODO: Uncomment when user verification is implemented (see issue #125)

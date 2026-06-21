@@ -1,32 +1,105 @@
 import { db } from '@repo/db';
-import type {
-  FailedLoginAttempt as DBFailedLoginAttempt,
-} from '@repo/db/types';
+import type { FailedLoginAttempt as DBFailedLoginAttempt } from '@repo/db/types';
+import type { Response429 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
-import type { Response429 } from "@repo/votura-validators";
 
 function ipToBuffer(ip: string): Buffer {
   return Buffer.from(ip, 'utf-8');
 }
 
-export async function getFailedLoginAttempt(
+/**
+ * Get the list of failed login attempts for an IP address
+ * @param ipAddress
+ */
+async function getFailedLoginAttemptsForIP(
   ipAddress: string,
-): Promise<Selectable<DBFailedLoginAttempt> | null> {
-  const failedLoginAttempt = await db
+): Promise<Selectable<DBFailedLoginAttempt>[]> {
+  const failedLoginAttempts = await db
     .selectFrom('failedLoginAttempt')
     .selectAll()
     .where('ipAddress', '=', ipToBuffer(ipAddress))
-    .executeTakeFirst();
+    .execute();
 
-  return failedLoginAttempt ?? null;
+  return failedLoginAttempts ?? [];
 }
 
+/**
+ * Get the list of failed login attempts for a user ID
+ * @param userId
+ */
+async function getFailedLoginAttemptsForUser(
+  userId: string,
+): Promise<Selectable<DBFailedLoginAttempt>[]> {
+  const failedLoginAttempts = await db
+    .selectFrom('failedLoginAttempt')
+    .selectAll()
+    .where('userId', '=', userId)
+    .execute();
+
+  return failedLoginAttempts ?? [];
+}
+
+/**
+ * Given a list of failed login attempts, calculate until when this vector (IP or user ID) should be blocked
+ * @param failedLoginAttempts
+ */
+function calculateBlockedUntilForSingleVector(
+  failedLoginAttempts: Selectable<DBFailedLoginAttempt>[],
+): Date | null {
+  if (failedLoginAttempts.length >= 3) {
+    const latestAttempt = failedLoginAttempts[failedLoginAttempts.length - 1];
+    if (!latestAttempt) {
+      return null;
+    }
+
+    const blockedDuration = Math.pow(2, failedLoginAttempts.length); // 8s, 16s, 32s, ...
+    return new Date(latestAttempt.createdAt.getTime() + blockedDuration * 1000);
+  }
+
+  return null;
+}
+
+/**
+ * Calculate until when the client is blocked from logging in
+ * @param ipAddress
+ * @param userId
+ */
+async function calculateBlockedUntil(
+  ipAddress: string,
+  userId: string | null,
+): Promise<Date | null> {
+  const ipFailedLoginAttempts = await getFailedLoginAttemptsForIP(ipAddress);
+  const ipBlockedUntil = calculateBlockedUntilForSingleVector(ipFailedLoginAttempts);
+
+  let userFailedLoginAttempts: Selectable<DBFailedLoginAttempt>[] = [];
+  if (userId !== null) {
+    userFailedLoginAttempts = await getFailedLoginAttemptsForUser(userId);
+  }
+  const userBlockedUntil = calculateBlockedUntilForSingleVector(userFailedLoginAttempts);
+
+  if (ipBlockedUntil !== null && userBlockedUntil !== null) {
+    return ipBlockedUntil > userBlockedUntil ? ipBlockedUntil : userBlockedUntil;
+  } else if (ipBlockedUntil !== null) {
+    return ipBlockedUntil;
+  } else if (userBlockedUntil !== null) {
+    return userBlockedUntil;
+  }
+
+  return null;
+}
+
+/**
+ * Get the API response object to inform the client when they can try to log in again
+ * @param ipAddress
+ * @param userId
+ */
 export async function getRetryIn(
-    ipAddress: string,
+  ipAddress: string,
+  userId: string | null,
 ): Promise<Response429['retryIn'] | null> {
-  const failedLoginAttempt = await getFailedLoginAttempt(ipAddress);
-  if (failedLoginAttempt?.blockedUntil && failedLoginAttempt.blockedUntil > new Date()) {
-    const retryInMs = failedLoginAttempt.blockedUntil.getTime() - Date.now();
+  const blockedUntil = await calculateBlockedUntil(ipAddress, userId);
+  if (blockedUntil !== null && blockedUntil > new Date()) {
+    const retryInMs = blockedUntil.getTime() - Date.now();
     const retryInSeconds = Math.ceil(retryInMs / 1000);
 
     const hours = Math.floor(retryInSeconds / 3600);
@@ -35,61 +108,36 @@ export async function getRetryIn(
 
     return { hours, minutes, seconds };
   }
-  
+
   return null;
 }
 
-async function upsertFailedLoginAttemptEntry(
-  ipAddressBuffer: Buffer<ArrayBufferLike>,
-  failedAttempts: number,
-  blockedUntil: Date | null,
-  existingEntry: Selectable<DBFailedLoginAttempt> | null,
+/**
+ * Save a new login attempt entry to the database
+ * @param ipAddress
+ * @param userId
+ */
+export async function recordFailedLoginAttempt(
+  ipAddress: string,
+  userId: string | null,
 ): Promise<void> {
-  if (existingEntry) {
-    await db
-      .updateTable('failedLoginAttempt')
-      .set({
-        failedAttempts,
-        blockedUntil,
-      })
-      .where('ipAddress', '=', ipAddressBuffer)
-      .execute();
-  } else {
-    await db
-      .insertInto('failedLoginAttempt')
-      .values({
-        ipAddress: ipAddressBuffer,
-        failedAttempts,
-        blockedUntil,
-      })
-      .execute();
-  }
+  await db
+    .insertInto('failedLoginAttempt')
+    .values({
+      ipAddress: ipToBuffer(ipAddress),
+      userId,
+    })
+    .execute();
 }
 
-export async function recordFailedLoginAttempt(ipAddress: string): Promise<Response429['retryIn'] | null> {
-  const bufferIp = ipToBuffer(ipAddress);
-  const existing = await getFailedLoginAttempt(ipAddress);
-
-  let newFailedAttempts = 1;
-  if (existing) {
-    newFailedAttempts = existing.failedAttempts + 1;
-  }
-
-  // Don't block first three tries (1s, 2s, 4s blocks are unnecessary)
-  let blockedUntil = null;
-  if (newFailedAttempts >= 3) {
-    const blockedDuration = Math.pow(2, newFailedAttempts); // 8s, 16s, 32s, ...
-    blockedUntil = new Date(Date.now() + blockedDuration * 1000);
-  }
-
-  await upsertFailedLoginAttemptEntry(bufferIp, newFailedAttempts, blockedUntil, existing);
-
-  return getRetryIn(ipAddress);
-}
-
-export async function resetFailedLoginAttempt(ipAddress: string): Promise<void> {
+/**
+ * Delete all failed login attempt entries from the database with this IP address or user ID (e.g. after a successful login or a password reset)
+ * @param ipAddress
+ * @param userId
+ */
+export async function resetFailedLoginAttempts(ipAddress: string, userId: string): Promise<void> {
   await db
     .deleteFrom('failedLoginAttempt')
-    .where('ipAddress', '=', ipToBuffer(ipAddress))
+    .where((eb) => eb.or([eb('ipAddress', '=', ipToBuffer(ipAddress)), eb('userId', '=', userId)]))
     .execute();
 }
