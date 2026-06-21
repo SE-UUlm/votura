@@ -1,3 +1,7 @@
+### Claude ###
+.claude/
+CLAUDE.md
+
 ### http for requests
 *.http
 
