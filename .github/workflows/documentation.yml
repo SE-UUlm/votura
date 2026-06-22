@@ -134,7 +134,7 @@ jobs:
     runs-on:
       labels: linux-sp
     container:
-      image: ubuntu:24.04
+      image: node:24
     continue-on-error: false
     timeout-minutes: 10
 
