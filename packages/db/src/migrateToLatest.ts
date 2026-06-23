@@ -1,11 +1,11 @@
 import { logger } from '@repo/logger';
-import { promises as fs } from 'fs';
+import { readdir } from 'fs/promises';
 import { type Kysely, type Migration, type MigrationProvider, Migrator } from 'kysely';
 import path from 'path';
 import { pathToFileURL } from 'url';
 
 /**
- * Migration provider that loads migration files via a `file://` URL.
+ * Creates a migration provider that loads migration files via a `file://` URL.
  *
  * Kysely's built-in `FileMigrationProvider` imports migration files using the
  * raw file path. On Windows that path looks like `C:\...\migration.ts`, which
@@ -13,28 +13,29 @@ import { pathToFileURL } from 'url';
  * the path to a `file://` URL via `pathToFileURL` makes the import work on all
  * platforms.
  */
-class WindowsSafeFileMigrationProvider implements MigrationProvider {
-  constructor(private readonly migrationFolder: string) {}
-
+const createWindowsSafeMigrationProvider = (migrationFolder: string): MigrationProvider => ({
   async getMigrations(): Promise<Record<string, Migration>> {
-    const migrations: Record<string, Migration> = {};
-    const files = await fs.readdir(this.migrationFolder);
-    for (const file of files.filter((f) => f.endsWith('.ts') || f.endsWith('.js'))) {
-      const filePath = path.join(this.migrationFolder, file);
-      const fileUrl = pathToFileURL(filePath).href;
-      const migration = (await import(fileUrl)) as Migration;
-      const key = file.replace(/\.(ts|js)$/, '');
-      migrations[key] = migration;
-    }
-    return migrations;
-  }
-}
+    const files = await readdir(migrationFolder);
+    const migrationFiles = files.filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+
+    const entries = await Promise.all(
+      migrationFiles.map(async (file): Promise<[string, Migration]> => {
+        const fileUrl = pathToFileURL(path.join(migrationFolder, file)).href;
+        const migration = (await import(fileUrl)) as Migration;
+        const key = file.replace(/\.(ts|js)$/, '');
+        return [key, migration];
+      }),
+    );
+
+    return Object.fromEntries(entries);
+  },
+});
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const migrateToLatest = async (db: Kysely<any>, migrationFolder: string): Promise<void> => {
   const migrator = new Migrator({
     db,
-    provider: new WindowsSafeFileMigrationProvider(migrationFolder),
+    provider: createWindowsSafeMigrationProvider(migrationFolder),
   });
 
   const { error, results } = await migrator.migrateToLatest();
