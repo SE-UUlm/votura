@@ -27,13 +27,13 @@ Only use this guide if you deliberately want a native Windows setup.
 
 The steps on this page were verified with the following setup:
 
-| Tool       | Version       | Note                          |
-| ---------- | ------------- | ----------------------------- |
-| Windows    | 11 Pro        | –                             |
-| Node.js    | v22.x         | via nvm or direct             |
-| npm        | 11.x          | –                             |
-| Git        | 2.x           | incl. Git LFS                 |
-| PostgreSQL | 18            | installed natively, no Docker |
+| Tool       | Version | Note                          |
+| ---------- | ------- | ----------------------------- |
+| Windows    | 11 Pro  | –                             |
+| Node.js    | v22.x   | via nvm or direct             |
+| npm        | 11.x    | –                             |
+| Git        | 2.x     | incl. Git LFS                 |
+| PostgreSQL | 18      | installed natively, no Docker |
 
 ## Database without Docker
 
@@ -214,10 +214,10 @@ C:\Program Files\PostgreSQL\18\bin\psql.exe
 The `.env` files do **not** live in `apps/db`, `apps/e2e` or `apps/hash`. They belong in the
 real package directories:
 
-| Path                 | Variables                          |
-| -------------------- | ---------------------------------- |
+| Path                 | Variables                                |
+| -------------------- | ---------------------------------------- |
 | `apps/backend/.env`  | `DATABASE_URL`, `PEPPER`, `BITS_PRIME_P` |
-| `apps/frontend/.env` | `VITE_API_BASE_URL`                |
-| `packages/db/.env`   | `DATABASE_URL`, `PEPPER`           |
-| `packages/e2e/.env`  | `PEPPER`                           |
-| `packages/hash/.env` | `PEPPER`                           |
+| `apps/frontend/.env` | `VITE_API_BASE_URL`                      |
+| `packages/db/.env`   | `DATABASE_URL`, `PEPPER`                 |
+| `packages/e2e/.env`  | `PEPPER`                                 |
+| `packages/hash/.env` | `PEPPER`                                 |
