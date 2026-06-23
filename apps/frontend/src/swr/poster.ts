@@ -25,7 +25,7 @@ export const poster = async <T>(url: string, args: { arg: T }): Promise<unknown>
         error.response?.data !== undefined && hasMessage(error.response.data)
           ? error.response.data.message
           : 'We encountered an unexpected error while creating a resource. Please try again later or get in contact with us.';
-      throw new AxiosError(errorMessage);
+      throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;
     }

@@ -23,7 +23,7 @@ export const deleter = async (url: string): Promise<null> => {
         error.response?.data !== undefined && hasMessage(error.response.data)
           ? error.response.data.message
           : 'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.';
-      throw new AxiosError(errorMessage);
+      throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;
     }
