@@ -87,7 +87,7 @@ export const validateTokenRefreshRequest = async (
 
   // Verify refresh token
   const decodedToken = verifyUserToken(data.refreshToken);
-  if (decodedToken === null || decodedToken.type !== 'refresh') {
+  if (decodedToken?.type !== 'refresh') {
     return {
       status: HttpStatusCode.unauthorized,
       message: TokenRefreshRequestValidationErrorMessage.invalidToken,

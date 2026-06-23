@@ -35,7 +35,7 @@ export const authenticateAccessToken = async (
     // Verify token
     const decodedToken = verifyUserToken(bearerToken);
 
-    if (decodedToken === null || decodedToken.type !== 'access') {
+    if (decodedToken?.type !== 'access') {
       res
         .status(HttpStatusCode.unauthorized)
         .json(response401Object.parse({ message: UserAuthErrorMessages.invalidToken }));
