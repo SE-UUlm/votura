@@ -16,6 +16,8 @@ import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface ElectionsTableProps {
   data: SelectableElection[];
@@ -28,6 +30,7 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
 );
 
 export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
+  const { t } = useTranslation()
   const navigate = useNavigate();
 
   const rows = data.map((election) => {
@@ -97,9 +100,9 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Name</Table.Th>
-          <Table.Th>Description</Table.Th>
-          <Table.Th>Last modified</Table.Th>
-          <Table.Th>Frozen</Table.Th>
+          <Table.Th>{t('description', 'Description')}</Table.Th>
+          <Table.Th>{t('lastModified', 'Last modified')}</Table.Th>
+          <Table.Th>{t('frozen', 'Frozen')}</Table.Th>
           <Table.Th />
         </Table.Tr>
       </Table.Thead>

@@ -4,6 +4,8 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh';
 import { browserRouter } from '../browserRouter.ts';
 import { apiRoutes } from './apiRoutes.ts';
 import { clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage } from './authTokens.ts';
+import i18next from 'i18next';
+
 
 interface FailedRequest {
   response: {
@@ -52,7 +54,7 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   failedRequest.response.config.headers = {
     ...failedRequest.response.config.headers,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    Authorization: `Bearer ${parsed.data.accessToken}`,
+    Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', { accessToken: parsed.data.accessToken }),
   };
 
   return Promise.resolve();

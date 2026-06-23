@@ -12,6 +12,8 @@ import { RouterProvider } from 'react-router';
 import { SWRConfig } from 'swr';
 import { browserRouter } from './browserRouter.ts';
 import './i18n';
+import i18next from 'i18next';
+
 
 extend(localizedFormat);
 
@@ -22,7 +24,7 @@ createRoot(document.getElementById('root')!).render(
         onError: (err): void => {
           if (isAxiosError(err) && err.status !== 401) {
             notifications.show({
-              title: 'Error',
+              title: i18next.t('error', 'Error'),
               message: err.message,
               autoClose: 10000,
               color: 'red',

@@ -15,12 +15,15 @@ import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
+import { useTranslation } from 'react-i18next'
+
 
 export interface ElectionViewHeaderProps {
   election: SelectableElection;
 }
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
+  const { t } = useTranslation()
   const navigate = useNavigate();
   const { trigger: deleteTrigger } = useDeleteElection({
     electionId: election.id,
@@ -34,9 +37,9 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
       navigate('/elections');
     } catch (e: unknown) {
       const message =
-        e instanceof Error ? e.message : 'Could not delete election. Please try again.';
+        e instanceof Error ? e.message : t('couldNotDeleteElectionPleaseTryAgain', 'Could not delete election. Please try again.');
       notifications.show({
-        title: 'Deletion failed',
+        title: t('deletionFailed', 'Deletion failed'),
         message: message,
         color: 'red',
       });
@@ -64,7 +67,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
               navigate('/elections');
             }}
           >
-            Back to all elections
+            {t('backToAllElections', 'Back to all elections')}
           </Button>
           <Title order={3}>{election.name}</Title>
         </Group>

@@ -13,8 +13,11 @@ import {
 } from '../../MutateElectionDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export const ElectionsView = (): JSX.Element => {
+  const { t } = useTranslation()
   const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 
@@ -47,18 +50,18 @@ export const ElectionsView = (): JSX.Element => {
         title={'New Election'}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
-        mutateButtonText={'Create new election'}
+        mutateButtonText={t('createNewElection', 'Create new election')}
         isMutating={isMutating}
       />
       <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
-          <Title order={1}>Elections</Title>
+          <Title order={1}>{t('elections', 'Elections')}</Title>
           <Button
             leftSection={<IconPlus size={16} />}
             variant="light"
             onClick={mutateModalActions.open}
           >
-            New Election
+            {t('newElection', 'New Election')}
           </Button>
         </Group>
         <Divider />

@@ -1,6 +1,8 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
 import type { JSX, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next'
+
 
 export interface DeleteElectionModalProps {
   election: SelectableElection;
@@ -15,17 +17,18 @@ export const DeleteElectionModal = ({
   onClose,
   onDelete,
 }: DeleteElectionModalProps): JSX.Element => {
+  const { t } = useTranslation()
   return (
     <Modal opened={opened} onClose={onClose} title={'Deleting election'}>
-      <Text>You are about to delete the election:</Text>
+      <Text>{t('youAreAboutToDeleteTheElection', 'You are about to delete the election:')}</Text>
       <Text fw={700}>{election.name}</Text>
       <Space h={'md'} />
       <Group justify="flex-end">
         <Button variant="outline" onClick={onClose}>
-          Cancel
+          {t('cancel', 'Cancel')}
         </Button>
         <Button variant="filled" color="red" onClick={onDelete}>
-          Delete
+          {t('delete', 'Delete')}
         </Button>
       </Group>
     </Modal>

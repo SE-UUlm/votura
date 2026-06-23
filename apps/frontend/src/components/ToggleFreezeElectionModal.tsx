@@ -2,6 +2,8 @@ import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/cor
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import type { JSX, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
+
 
 export interface ToggleFreezeElectionModalProps {
   election: SelectableElection;
@@ -16,8 +18,9 @@ export const ToggleFreezeElectionModal = ({
   onClose,
   onToggleFreeze,
 }: ToggleFreezeElectionModalProps): JSX.Element => {
+  const { t } = useTranslation()
   const action = election.configFrozen ? 'Unfreeze' : 'Freeze';
-  const titleText = action + ' election config';
+  const titleText = action + t('electionConfig', ' election config');
   const redColor = 'var(--mantine-color-red-7)';
   const title = (
     <Group gap="xs">
@@ -28,20 +31,18 @@ export const ToggleFreezeElectionModal = ({
     </Group>
   );
   const message = election.configFrozen
-    ? 'Unfreezing an election allows configuration changes again, but all previously' +
-      ' issued voter tokens become invalid, and any votes that have already been cast' +
-      ' will be reset and no longer counted.'
-    : 'Freezing an election locks its configuration, no further changes can be made.';
+    ? t('unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted', 'Unfreezing an election allows configuration changes again, but all previously issued voter tokens become invalid, and any votes that have already been cast will be reset and no longer counted.')
+    : t('freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade', 'Freezing an election locks its configuration, no further changes can be made.');
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>
-      <Text c={redColor}>You are about to {action.toLowerCase()} the election:</Text>
+      <Text c={redColor}>{t('youAreAboutTo', 'You are about to')} {action.toLowerCase()} {t('theElection', 'the election:')}</Text>
       <Text fw={700} c={redColor}>
         {election.name}
       </Text>
       <Space h={'md'} />
       <Text fs="italic" c={redColor}>
-        Important:
+        {t('important', 'Important:')}
       </Text>
       <Text fs="italic" c={redColor}>
         {message}
@@ -49,7 +50,7 @@ export const ToggleFreezeElectionModal = ({
       <Space h={'md'} />
       <Group justify="flex-end">
         <Button variant="outline" onClick={onClose}>
-          Cancel
+          {t('cancel', 'Cancel')}
         </Button>
         <Button
           variant="filled"

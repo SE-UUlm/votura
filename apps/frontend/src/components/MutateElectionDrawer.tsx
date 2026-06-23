@@ -13,6 +13,8 @@ import { DateTimePicker } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next'
+
 
 export interface MutateElectionModalProps {
   election?: UpdateableElection;
@@ -39,6 +41,7 @@ export const MutateElectionDrawer = ({
   title,
   isMutating,
 }: MutateElectionModalProps): JSX.Element => {
+  const { t } = useTranslation()
   const form = useForm<MutateElectionFormValues>({
     mode: 'controlled',
     validate: {
@@ -48,8 +51,8 @@ export const MutateElectionDrawer = ({
         value
           ? new Date(value) > new Date(values.startDateTime)
             ? null
-            : 'End has to be after start'
-          : 'End date is required',
+            : t('endHasToBeAfterStart', 'End has to be after start')
+          : t('endDateIsRequired', 'End date is required'),
     },
     validateInputOnBlur: true,
   });
@@ -114,13 +117,13 @@ export const MutateElectionDrawer = ({
                 <TextInput
                   withAsterisk
                   label={'Name'}
-                  placeholder={'e.g. Student Council Election 2025'}
+                  placeholder={t('egStudentCouncilElection2025', 'e.g. Student Council Election 2025')}
                   key={form.key('name')}
                   {...form.getInputProps('name')}
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={'e.g. This years election on the student council ...'}
+                  placeholder={t('egThisYearsElectionOnTheStudentCouncil', 'e.g. This years election on the student council ...')}
                   autosize={true}
                   minRows={4}
                   maxRows={4}
@@ -130,15 +133,15 @@ export const MutateElectionDrawer = ({
                 <Group grow>
                   <DateTimePicker
                     withAsterisk
-                    label={'Start of voting period'}
-                    placeholder={'Pick a start date and time'}
+                    label={t('startOfVotingPeriod', 'Start of voting period')}
+                    placeholder={t('pickAStartDateAndTime', 'Pick a start date and time')}
                     key={form.key('startDateTime')}
                     {...form.getInputProps('startDateTime')}
                   />
                   <DateTimePicker
                     withAsterisk
-                    label={'End of voting period'}
-                    placeholder={'Pick an end date and time'}
+                    label={t('endOfVotingPeriod', 'End of voting period')}
+                    placeholder={t('pickAnEndDateAndTime', 'Pick an end date and time')}
                     key={form.key('endDateTime')}
                     {...form.getInputProps('endDateTime')}
                     disabled={!form.values.startDateTime}
@@ -148,7 +151,7 @@ export const MutateElectionDrawer = ({
                   />
                 </Group>
                 <Switch
-                  label={'Allow invalid votes'}
+                  label={t('allowInvalidVotes', 'Allow invalid votes')}
                   key={form.key('allowInvalidVotes')}
                   {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
                 />
@@ -157,7 +160,7 @@ export const MutateElectionDrawer = ({
           </Box>
           <Group justify="flex-end" m={'md'}>
             <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
+              {t('cancel', 'Cancel')}
             </Button>
             <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
               {mutateButtonText}

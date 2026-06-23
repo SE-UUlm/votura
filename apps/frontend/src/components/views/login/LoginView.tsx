@@ -20,8 +20,11 @@ import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
+import { useTranslation } from 'react-i18next'
+
 
 export const LoginView = (): JSX.Element => {
+  const { t } = useTranslation()
   const { trigger, isMutating } = useLoginUser();
   const navigate = useNavigate();
 
@@ -34,7 +37,7 @@ export const LoginView = (): JSX.Element => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : 'Invalid email address.';
+        return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
     },
   });
@@ -49,8 +52,8 @@ export const LoginView = (): JSX.Element => {
       navigate('/elections');
     } catch (e: unknown) {
       notifications.show({
-        title: 'Could not login',
-        message: 'We do not know this combination of email and password. Please try again.',
+        title: t('couldNotLogin', 'Could not login'),
+        message: t('weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain', 'We do not know this combination of email and password. Please try again.'),
         color: 'yellow',
         autoClose: 15000,
       });
@@ -76,23 +79,23 @@ export const LoginView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={'Password'}
-                placeholder={'My secure password...'}
+                placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
               <Button fullWidth type={'submit'} loading={isLoginIn || isMutating}>
-                Login
+                {t('login', 'Login')}
               </Button>
             </Stack>
           </Box>
           <Button variant="light" onClick={() => navigate('/register')}>
-            Sign Up
+            {t('signUp', 'Sign Up')}
           </Button>
           <Divider />
           <Group justify="space-between">
-            <Text size={'sm'}>Can't login anymore?</Text>
+            <Text size={'sm'}>{t('cantLoginAnymore', 'Can\'t login anymore?')}</Text>
             <Anchor component={'button'} variant="transparent" size={'sm'}>
-              Reset password
+              {t('resetPassword', 'Reset password')}
             </Anchor>
           </Group>
         </Stack>

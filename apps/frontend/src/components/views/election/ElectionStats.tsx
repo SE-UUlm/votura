@@ -4,12 +4,15 @@ import dayjs from 'dayjs';
 import type { JSX } from 'react';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface ElectionStatsProps {
   election: SelectableElection;
 }
 
 export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => {
+  const { t } = useTranslation()
   return (
     <Grid>
       <Grid.Col span={6}>
@@ -30,19 +33,19 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
       </Grid.Col>
       <Grid.Col span={3}>
         <ElectionStatField
-          title={'Invalid votes allowed'}
+          title={t('invalidVotesAllowed', 'Invalid votes allowed')}
           content={<BooleanBadge isTrue={election.allowInvalidVotes} />}
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <ElectionStatField
-          title={'Start of voting'}
+          title={t('startOfVoting', 'Start of voting')}
           content={<Text size={'sm'}>{dayjs(election.votingStartAt).format('lll')}</Text>}
         />
       </Grid.Col>
       <Grid.Col span={6}>
         <ElectionStatField
-          title={'End of voting'}
+          title={t('endOfVoting', 'End of voting')}
           content={<Text size={'sm'}>{dayjs(election.votingEndAt).format('lll')}</Text>}
         />
       </Grid.Col>

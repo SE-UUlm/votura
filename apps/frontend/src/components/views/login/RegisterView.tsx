@@ -14,8 +14,11 @@ import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
+import { useTranslation, Trans } from 'react-i18next'
+
 
 export const RegisterView = (): JSX.Element => {
+  const { t } = useTranslation()
   const { trigger, isMutating } = useRegisterUser();
   const navigate = useNavigate();
 
@@ -29,14 +32,14 @@ export const RegisterView = (): JSX.Element => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : 'Invalid email address.';
+        return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
       password: (value) => {
         const parsed = insertableUserObject.shape.password.safeParse(value);
-        return parsed.success ? null : 'Password does not meet requirements.';
+        return parsed.success ? null : t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
       },
       confirmPassword: (value, values) => {
-        return value === values.password ? null : 'Passwords do not match.';
+        return value === values.password ? null : t('passwordsDoNotMatch', 'Passwords do not match.');
       },
     },
   });
@@ -53,13 +56,11 @@ export const RegisterView = (): JSX.Element => {
       });
 
       notifications.show({
-        title: 'Almost done!',
+        title: t('almostDone', 'Almost done!'),
         message: (
-          <>
-            <strong>We have sent you a verification link.</strong>
+          <><Trans i18nKey="strongweHaveSentYouAVerificationLinkstrongBrPleaseCheckYourEmailInbox"><strong>We have sent you a verification link.</strong>
             <br />
-            Please check your email inbox.
-          </>
+            Please check your email inbox.</Trans></>
         ),
         color: 'green',
         autoClose: 15000,
@@ -69,9 +70,9 @@ export const RegisterView = (): JSX.Element => {
       const message =
         e instanceof Error
           ? e.message
-          : 'Something went wrong during registration. Please try again.';
+          : t('somethingWentWrongDuringRegistrationPleaseTryAgain', 'Something went wrong during registration. Please try again.');
       notifications.show({
-        title: 'Registration failed',
+        title: t('registrationFailed', 'Registration failed'),
         message: message,
         color: 'yellow',
         autoClose: 15000,
@@ -96,24 +97,24 @@ export const RegisterView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={'Password'}
-                placeholder={'My secure password...'}
+                placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
               <PasswordInput
                 withAsterisk
                 label={'Password confirmation'}
-                placeholder={'Repeat my secure password...'}
+                placeholder={t('repeatMySecurePassword', 'Repeat my secure password...')}
                 key={form.key('confirmPassword')}
                 {...form.getInputProps('confirmPassword')}
               />
               <Button fullWidth type={'submit'} loading={isMutating}>
-                Sign Up
+                {t('signUp', 'Sign Up')}
               </Button>
             </Stack>
           </Box>
           <Button variant="subtle" onClick={() => navigate('/login')}>
-            Back To Login
+            {t('backToLogin', 'Back To Login')}
           </Button>
         </Stack>
       </Center>

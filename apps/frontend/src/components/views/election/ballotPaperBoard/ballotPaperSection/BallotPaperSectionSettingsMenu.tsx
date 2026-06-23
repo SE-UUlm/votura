@@ -8,6 +8,8 @@ import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
 } from './candidates/MutateCandidateDrawer.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface BallotPaperSectionSettingsMenuProps extends PropsWithChildren {
   onCandidateMutate: MutateCandidateDrawerProps['onMutate'];
@@ -23,6 +25,7 @@ export const BallotPaperSectionSettingsMenu = ({
   electionId,
   ballotPaperSection,
 }: BallotPaperSectionSettingsMenuProps): JSX.Element => {
+  const { t } = useTranslation()
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [candidatesContextOpen, candidatesContextActions] = useDisclosure(false);
 
@@ -31,9 +34,9 @@ export const BallotPaperSectionSettingsMenu = ({
       <MutateCandidateDrawer
         opened={mutateCandidateContextOpen}
         onClose={mutateCandidateActions.close}
-        mutateButtonText={'Create Candidate'}
+        mutateButtonText={t('createCandidate', 'Create Candidate')}
         onMutate={onCandidateMutate}
-        title={'Create Candidate'}
+        title={t('createCandidate', 'Create Candidate')}
         isMutating={isCandidateMutating}
       />
       <CandidatesDrawer
@@ -48,16 +51,16 @@ export const BallotPaperSectionSettingsMenu = ({
           <Menu.Item
             leftSection={<IconUserPlus size={14} />}
             onClick={mutateCandidateActions.open}
-            aria-label={'Add candidate'}
+            aria-label={t('addCandidate', 'Add candidate')}
           >
-            Add candidate
+            {t('addCandidate', 'Add candidate')}
           </Menu.Item>
           <Menu.Item
             leftSection={<IconUserCog size={14} />}
             onClick={candidatesContextActions.open}
-            aria-label={'Edit candidates'}
+            aria-label={t('editCandidates', 'Edit candidates')}
           >
-            Edit candidates
+            {t('editCandidates', 'Edit candidates')}
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>

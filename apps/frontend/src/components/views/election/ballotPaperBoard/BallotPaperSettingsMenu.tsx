@@ -12,6 +12,8 @@ import {
   MutateBallotPaperSectionDrawer,
   type MutateBallotPaperSectionSectionDrawerProps,
 } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface BallotPaperSettingsMenuProps extends PropsWithChildren {
   ballotPaper: SelectableBallotPaper;
@@ -31,6 +33,7 @@ export const BallotPaperSettingsMenu = ({
   onSectionMutate,
   isSectionMutating,
 }: BallotPaperSettingsMenuProps): JSX.Element => {
+  const { t } = useTranslation()
   const [deleteContextOpened, deleteContextActions] = useDisclosure(false);
   const [mutateContextOpened, mutateContextActions] = useDisclosure(false);
   const [mutateSectionContextOpened, mutateSectionContextActions] = useDisclosure(false);
@@ -38,10 +41,10 @@ export const BallotPaperSettingsMenu = ({
   return (
     <>
       <MutateBallotPaperSectionDrawer
-        title={'Create ballot paper section'}
+        title={t('createBallotPaperSection', 'Create ballot paper section')}
         opened={mutateSectionContextOpened}
         onClose={mutateSectionContextActions.close}
-        mutateButtonText={'Create Section'}
+        mutateButtonText={t('createSection', 'Create Section')}
         onMutate={onSectionMutate}
         isMutating={isSectionMutating}
       />
@@ -49,9 +52,9 @@ export const BallotPaperSettingsMenu = ({
         ballotPaper={ballotPaper}
         opened={mutateContextOpened}
         onClose={mutateContextActions.close}
-        mutateButtonText={'Save changes'}
+        mutateButtonText={t('saveChanges', 'Save changes')}
         onMutate={onMutate}
-        title={'Edit ballot paper'}
+        title={t('editBallotPaper', 'Edit ballot paper')}
         isMutating={isMutating}
       />
       <DeleteBallotPaperModal
@@ -69,19 +72,19 @@ export const BallotPaperSettingsMenu = ({
           <Menu.Item
             leftSection={<IconSquarePlus size={14} />}
             onClick={mutateSectionContextActions.open}
-            aria-label={'Add ballot paper section'}
+            aria-label={t('addBallotPaperSection', 'Add ballot paper section')}
           >
-            Add section
+            {t('addSection', 'Add section')}
           </Menu.Item>
           <Menu.Item leftSection={<IconEdit size={14} />} onClick={mutateContextActions.open}>
-            Edit
+            {t('edit', 'Edit')}
           </Menu.Item>
           <Menu.Item
             color="red"
             leftSection={<IconTrash size={14} />}
             onClick={deleteContextActions.open}
           >
-            Delete
+            {t('delete', 'Delete')}
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>

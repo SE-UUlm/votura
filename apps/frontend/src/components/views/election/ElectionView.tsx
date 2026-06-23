@@ -25,12 +25,15 @@ import {
   MutateBallotPaperDrawer,
   type MutateBallotPaperDrawerProps,
 } from './MutateBallotPaperDrawer.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface ElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
 }
 
 export const ElectionView = (): JSX.Element => {
+  const { t } = useTranslation()
   const params = useParams<ElectionViewRouteParams>();
   const {
     data: electionData,
@@ -72,9 +75,9 @@ export const ElectionView = (): JSX.Element => {
       <MutateBallotPaperDrawer
         opened={isMutateDrawerOpen}
         onClose={mutateDrawerActions.close}
-        mutateButtonText={'Create new ballot paper'}
+        mutateButtonText={t('createNewBallotPaper', 'Create new ballot paper')}
         onMutate={onMutate}
-        title={'Create Ballot Paper'}
+        title={t('createBallotPaper', 'Create Ballot Paper')}
         isMutating={isMutating}
       />
       <Flex direction={'column'} maw={'100%'} px={'md'} flex={1} h={'100%'}>
@@ -86,13 +89,13 @@ export const ElectionView = (): JSX.Element => {
         <Divider />
         <Space h={'md'} />
         <Group justify={'space-between'}>
-          <Title order={4}>Ballot Papers</Title>
+          <Title order={4}>{t('ballotPapers', 'Ballot Papers')}</Title>
           <Button
             leftSection={<IconPlus size={16} />}
             variant="light"
             onClick={mutateDrawerActions.open}
           >
-            New Ballot Paper
+            {t('newBallotPaper', 'New Ballot Paper')}
           </Button>
         </Group>
         <Space h={'md'} />

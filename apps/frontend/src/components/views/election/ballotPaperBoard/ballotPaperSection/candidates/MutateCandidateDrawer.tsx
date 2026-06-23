@@ -12,6 +12,8 @@ import { useForm } from '@mantine/form';
 import { type UpdateableCandidate, updateableCandidateObject } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { zodResolver } from '../../../../../../utils/zodResolver.ts';
+import { useTranslation } from 'react-i18next'
+
 
 export interface MutateCandidateDrawerProps {
   candidate?: UpdateableCandidate;
@@ -32,6 +34,7 @@ export const MutateCandidateDrawer = ({
   title,
   isMutating,
 }: MutateCandidateDrawerProps): JSX.Element => {
+  const { t } = useTranslation()
   const form = useForm<UpdateableCandidate>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableCandidateObject),
@@ -75,13 +78,13 @@ export const MutateCandidateDrawer = ({
                 <TextInput
                   withAsterisk
                   label={'Name'}
-                  placeholder={'e.g. John Doe'}
+                  placeholder={t('egJohnDoe', 'e.g. John Doe')}
                   key={form.key('title')}
                   {...form.getInputProps('title')}
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={'e.g. John Doe is member of the ...'}
+                  placeholder={t('egJohnDoeIsMemberOfThe', 'e.g. John Doe is member of the ...')}
                   autosize={true}
                   minRows={4}
                   maxRows={4}
@@ -93,7 +96,7 @@ export const MutateCandidateDrawer = ({
           </Box>
           <Group justify="flex-end" m={'md'}>
             <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
+              {t('cancel', 'Cancel')}
             </Button>
             <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
               {mutateButtonText}

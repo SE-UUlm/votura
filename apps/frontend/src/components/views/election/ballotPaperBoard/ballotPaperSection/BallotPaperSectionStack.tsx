@@ -3,6 +3,8 @@ import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-val
 import type { JSX } from 'react';
 import { useGetBallotPaperSections } from '../../../../../swr/ballotPaperSections/useGetBallotPaperSections.ts';
 import { BallotPaperSection } from './BallotPaperSection.tsx';
+import { useTranslation } from 'react-i18next'
+
 
 export interface BallotPaperSectionStackProps {
   electionId?: SelectableElection['id'];
@@ -13,6 +15,7 @@ export const BallotPaperSectionStack = ({
   electionId,
   ballotPaperId,
 }: BallotPaperSectionStackProps): JSX.Element => {
+  const { t } = useTranslation()
   const { data, isLoading } = useGetBallotPaperSections(electionId, ballotPaperId);
 
   if (electionId === undefined || ballotPaperId === undefined || isLoading) {
@@ -22,7 +25,7 @@ export const BallotPaperSectionStack = ({
   if (data === undefined || data.length === 0) {
     return (
       <Text size="xs" c={'dimmed'}>
-        Create a section to get started.
+        {t('createASectionToGetStarted', 'Create a section to get started.')}
       </Text>
     );
   }
