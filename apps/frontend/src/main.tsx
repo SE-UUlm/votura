@@ -11,6 +11,7 @@ import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { SWRConfig } from 'swr';
 import { browserRouter } from './browserRouter.ts';
+import './i18n';
 
 extend(localizedFormat);
 
