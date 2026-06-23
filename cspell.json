@@ -79,6 +79,9 @@
     "bpsc",
     "fblz",
     "Penpot",
-    "unvotable"
+    "unvotable",
+    "behaviour",
+    "EFTYPE",
+    "psql"
   ]
 }
