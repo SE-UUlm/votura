@@ -83,8 +83,8 @@ export const generatePasswordResetToken = (): string => {
  */
 export const hashPasswordResetToken = (token: string): string => {
   // This hashes a random reset token for DB lookup, not a user password credential.
-  // SHA-256 is appropriate here (same pattern as hashRefreshToken above).
-  return crypto.createHash('sha256').update(token).digest('hex'); // lgtm[js/insecure-password-hash]
+  // SHA-256 is appropriate here — same pattern as hashRefreshToken above.
+  return crypto.createHash('sha256').update(token).digest('hex'); // codeql[js/insecure-password-hash]
 };
 
 export const getTokenExpiration = (token: string): Date => {
