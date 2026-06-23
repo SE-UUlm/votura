@@ -75,7 +75,20 @@ You may change their values but `PEPPER` and `DATABASE_URL` should be the same f
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 BITS_PRIME_P=20
+SMTP_HOST="localhost"
+SMTP_PORT="1025"
+SMTP_SECURE="false"
+MAIL_SENDER_NAME="Votura"
+MAIL_SENDER_EMAIL="no-reply@votura.org"
+FRONTEND_BASE_URL="http://localhost:5173"
 ```
+
+The `SMTP_*` and `MAIL_*` variables configure outgoing email (e.g. password reset emails).
+For local development they point at the [Mailpit](https://mailpit.axllent.org/) service that is
+started together with the database via `docker compose` (see the `db` package).
+You can view all emails sent during development in the Mailpit web UI at `http://localhost:8025`.
+`FRONTEND_BASE_URL` is used to build links (such as the password reset link) that point back to the
+frontend.
 
 **Frontend**:
 

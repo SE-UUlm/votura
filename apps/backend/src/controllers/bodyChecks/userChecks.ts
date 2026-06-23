@@ -1,13 +1,15 @@
 import { getPepper, verifyPassword } from '@repo/hash';
 import {
+  type PasswordResetUser,
   type User,
   insertableUserObject,
+  passwordResetUserObject,
   refreshRequestUserObject,
   zodErrorToResponse400,
 } from '@repo/votura-validators';
-import { hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
+import { hashPasswordResetToken, hashRefreshToken, verifyUserToken } from '../../auth/utils.js';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { findDBUserBy } from '../../services/users.service.js';
+import { findDBUserBy, findDBUserByPasswordResetTokenHash } from '../../services/users.service.js';
 import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
 
 export enum LoginRequestValidationErrorMessage {
@@ -121,4 +123,51 @@ export const validateTokenRefreshRequest = async (
   }
 
   return user.id; // Return user ID if validation is successful
+};
+
+// ----------- Reset Password Request Validation -----------
+export enum ResetPasswordRequestValidationErrorMessage {
+  invalidToken = 'Invalid or expired password reset token.',
+}
+
+export interface ResetPasswordRequestValidationError extends BodyCheckValidationError {
+  message: ResetPasswordRequestValidationErrorMessage | string;
+}
+
+export interface ValidatedResetPassword {
+  userId: User['id'];
+  password: PasswordResetUser['password'];
+}
+
+// Validate a reset password request -> error | { userId, new password }
+export const validateResetPasswordRequest = async (
+  reqBody: unknown,
+): Promise<ValidatedResetPassword | ResetPasswordRequestValidationError> => {
+  const { data, error, success } = await passwordResetUserObject.safeParseAsync(reqBody);
+  if (!success) {
+    return {
+      status: HttpStatusCode.badRequest,
+      message: zodErrorToResponse400(error).message,
+    };
+  }
+
+  // Find the user by the hash of the submitted raw reset token
+  const tokenHash = hashPasswordResetToken(data.passwordResetToken);
+  const user = await findDBUserByPasswordResetTokenHash(tokenHash);
+  if (user === null) {
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: ResetPasswordRequestValidationErrorMessage.invalidToken,
+    };
+  }
+
+  // Check if the reset token is expired
+  if (user.passwordResetTokenExpiresAt === null || user.passwordResetTokenExpiresAt < new Date()) {
+    return {
+      status: HttpStatusCode.unauthorized,
+      message: ResetPasswordRequestValidationErrorMessage.invalidToken,
+    };
+  }
+
+  return { userId: user.id, password: data.password };
 };

@@ -1,5 +1,7 @@
+import { getPepper, hashPassword } from '@repo/hash';
 import {
   insertableUserObject,
+  requestPasswordResetUserObject,
   response409Object,
   response4XXObject,
   zodErrorToResponse400,
@@ -12,16 +14,28 @@ import {
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
+import { generatePasswordResetToken, hashPasswordResetToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
+import { sendPasswordResetEmail } from '../mail/mailer.js';
 import {
   createNewUserTokens,
   createUser as createPersistentUser,
   deleteUser as deletePersistentUser,
+  findDBUserBy,
   findUserBy,
   logoutUser,
+  resetUserPassword,
+  setPasswordResetToken,
 } from '../services/users.service.js';
 import { isBodyCheckValidationError } from './bodyChecks/bodyCheckValidationError.js';
-import { validateLoginRequest, validateTokenRefreshRequest } from './bodyChecks/userChecks.js';
+import {
+  validateLoginRequest,
+  validateResetPasswordRequest,
+  validateTokenRefreshRequest,
+} from './bodyChecks/userChecks.js';
+
+/** Time-to-live for a password reset token in milliseconds (1 hour). */
+const PASSWORD_RESET_TOKEN_TTL_MS = 60 * 60 * 1000;
 
 export type CreateUserResponse = Response<void | Response400 | Response409>;
 
@@ -97,6 +111,51 @@ export type LogoutResponse = Response<
 
 export const logout = async (_req: Request, res: LogoutResponse): Promise<void> => {
   await logoutUser(res.locals.accessTokenPayload, res.locals.user.id);
+
+  res.sendStatus(HttpStatusCode.noContent);
+};
+
+export type RequestPasswordResetResponse = Response<void | Response400>;
+
+export const requestPasswordReset = async (
+  req: Request,
+  res: RequestPasswordResetResponse,
+): Promise<void> => {
+  const { data, error, success } = await requestPasswordResetUserObject.safeParseAsync(req.body);
+  if (!success) {
+    res.status(HttpStatusCode.badRequest).json(zodErrorToResponse400(error));
+    return;
+  }
+
+  const user = await findDBUserBy({ email: data.email });
+
+  // Only generate a token and send an email if the user exists. The response is
+  // always 204 to avoid leaking whether an account exists for the given email.
+  if (user !== null) {
+    const rawToken = generatePasswordResetToken();
+    const tokenHash = hashPasswordResetToken(rawToken);
+    const expiresAt = new Date(Date.now() + PASSWORD_RESET_TOKEN_TTL_MS);
+
+    await setPasswordResetToken(user.id, tokenHash, expiresAt);
+    await sendPasswordResetEmail(user.email, rawToken);
+  }
+
+  res.sendStatus(HttpStatusCode.noContent);
+};
+
+export type ResetPasswordResponse = Response<void | Response400 | Response401>;
+
+export const resetPassword = async (req: Request, res: ResetPasswordResponse): Promise<void> => {
+  const validationResult = await validateResetPasswordRequest(req.body);
+  if (isBodyCheckValidationError(validationResult)) {
+    res
+      .status(validationResult.status)
+      .json(response4XXObject.parse({ message: validationResult.message }));
+    return;
+  }
+
+  const newPasswordHash = await hashPassword(validationResult.password, getPepper());
+  await resetUserPassword(validationResult.userId, newPasswordHash);
 
   res.sendStatus(HttpStatusCode.noContent);
 };

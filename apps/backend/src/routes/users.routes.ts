@@ -5,6 +5,8 @@ import {
   login,
   logout,
   refreshTokens,
+  requestPasswordReset,
+  resetPassword,
 } from '../controllers/users.controllers.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
@@ -42,4 +44,16 @@ usersRouter.post(
   acceptHeaderCheck(MimeType.applicationJson),
   authenticateAccessToken,
   logout,
+);
+usersRouter.post(
+  '/requestPasswordReset',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  requestPasswordReset,
+);
+usersRouter.post(
+  '/resetPassword',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  resetPassword,
 );

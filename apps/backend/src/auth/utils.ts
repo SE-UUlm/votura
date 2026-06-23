@@ -67,6 +67,24 @@ export const hashRefreshToken = (refreshToken: string): string => {
   return crypto.createHash('sha256').update(refreshToken).digest('hex');
 };
 
+/**
+ * Generates a cryptographically random raw password reset token.
+ * 32 random bytes encoded as hex yields a 64-character token, matching the
+ * `passwordResetToken` validator (`^[a-fA-F0-9]{64}$`).
+ */
+export const generatePasswordResetToken = (): string => {
+  return crypto.randomBytes(32).toString('hex');
+};
+
+/**
+ * Hashes a raw password reset token for storage/lookup. The raw token is sent
+ * to the user via email while only this SHA-256 hash is persisted in the
+ * `passwordResetTokenHash` column.
+ */
+export const hashPasswordResetToken = (token: string): string => {
+  return crypto.createHash('sha256').update(token).digest('hex');
+};
+
 export const getTokenExpiration = (token: string): Date => {
   const decoded = jwt.decode(token) as UserJwtPayload;
   return new Date(decoded.exp * 1000);
