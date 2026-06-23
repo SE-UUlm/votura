@@ -587,6 +587,14 @@ async function dropTables(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable(TableName.user).ifExists().execute();
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+async function isPgCronAvailable(db: Kysely<any>): Promise<boolean> {
+  const result = await sql<{ name: string }>`
+    SELECT name FROM pg_available_extensions WHERE name = 'pg_cron'
+  `.execute(db);
+  return result.rows.length > 0;
+}
+
 // --- Main Migration Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function up(db: Kysely<any>): Promise<void> {
@@ -599,12 +607,18 @@ export async function up(db: Kysely<any>): Promise<void> {
   await addModifiedAtTriggers(db);
   await addMaxVotesTriggers(db);
 
-  await setupCronExtensionAndJobs(db);
+  if (await isPgCronAvailable(db)) {
+    await setupCronExtensionAndJobs(db);
+  } else {
+    console.warn('pg_cron is not available, skipping cron job setup (expected on Windows/macOS).');
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  await dropCronJobsAndExtension(db);
+  if (await isPgCronAvailable(db)) {
+    await dropCronJobsAndExtension(db);
+  }
   // Drop tables (this automatically drops all triggers, constraints, and indexes)
   await dropTables(db);
   await dropFunctions(db);
