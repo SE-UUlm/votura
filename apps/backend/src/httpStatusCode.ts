@@ -9,5 +9,6 @@ export enum HttpStatusCode {
   notAcceptable = 406,
   conflict = 409,
   unsupportedMediaType = 415,
+  tooManyRequests = 429,
   internalServerError = 500,
 }

@@ -24,6 +24,22 @@ export const getMutateSuccessElectionConfig = (
   };
 };
 
+export const getRPCErrorConfig = (message: string): NotificationData => {
+  return {
+    title: 'Error',
+    message,
+    color: 'red',
+  };
+};
+
+export const getElectionNotFreezableConfig = (name: string): NotificationData => {
+  return {
+    title: 'Error',
+    message: `The election "${name}" cannot be frozen. Have you made sure that everything is set up correctly? See the documentation for more information.`,
+    color: 'red',
+  };
+};
+
 export const getToggleFreezeSuccessElectionConfig = (
   name: SelectableElection['name'],
   gotFrozen: boolean,
