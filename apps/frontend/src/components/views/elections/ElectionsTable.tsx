@@ -5,11 +5,14 @@ import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
 import { useNavigate } from 'react-router';
+import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
+import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
-  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
@@ -43,10 +46,18 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       notifications.show(getDeleteSuccessElectionConfig(election.name));
     };
 
-    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-      notifications.show(
-        getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen),
-      );
+    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+      if (election.configFrozen) {
+        notifications.show(await callUnfreezeElection(election.id));
+      } else {
+        const freezable = await callGetElectionFreezable(election.id);
+        if (!freezable) {
+          notifications.show(getElectionNotFreezableConfig(election.name));
+          return;
+        }
+
+        notifications.show(await callFreezeElection(election.id));
+      }
     };
 
     return (
