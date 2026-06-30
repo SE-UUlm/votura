@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
 import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
+import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
@@ -34,15 +35,16 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
   const navigate = useNavigate();
 
   const rows = data.map((election) => {
-    const { trigger, isMutating } = useUpdateElection(election.id);
+    const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
+    const { trigger: deleteTrigger } = useDeleteElection({ electionId: election.id });
 
     const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
-      await trigger(mutatedElection);
+      await updateTrigger(mutatedElection);
       notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
     };
 
-    const onDelete: DeleteElectionModalProps['onDelete'] = () => {
-      // deleteElection(election.id); TODO: implement delete election
+    const onDelete: DeleteElectionModalProps['onDelete'] = async () => {
+      await deleteTrigger();
       notifications.show(getDeleteSuccessElectionConfig(election.name));
     };
 
