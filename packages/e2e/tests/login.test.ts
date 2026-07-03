@@ -20,7 +20,7 @@ test('should reject invalid email format', async ({ page }) => {
   await page.getByLabel('Email').fill('foo');
   await page.getByRole('button', { name: 'Login' }).click();
 
-  await expect(page.locator('.mantine-Notifications-notification')).toBeVisible();
+  await expect(page.getByRole('alert')).toBeVisible();
   await expect(page).toHaveURL('/login');
 });
 
