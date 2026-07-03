@@ -124,7 +124,7 @@ jobs:
   deploy:
     name: Deploy documentation
     needs: build
-    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    # TODO: if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     permissions:
       pages: write
       id-token: write
@@ -132,7 +132,7 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on:
-      labels: linux-sp
+      labels: ubuntu-latest
     container:
       image: ubuntu:24.04
     continue-on-error: false
