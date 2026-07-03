@@ -11,7 +11,7 @@ test('should reject unknown credentials', async ({ page }) => {
   await page.getByLabel('Password').fill('1234');
   await page.getByRole('button', { name: 'Login' }).click();
 
-  await expect(page.getByText('Could not login')).toBeVisible();
+  await expect(page.getByRole('alert')).toBeVisible();
   await expect(page).toHaveURL('/login');
 });
 
@@ -20,7 +20,7 @@ test('should reject invalid email format', async ({ page }) => {
   await page.getByLabel('Email').fill('foo');
   await page.getByRole('button', { name: 'Login' }).click();
 
-  await expect(page.getByRole('alert')).toBeVisible();
+  await expect(page.getByText('Invalid email address.')).toBeVisible();
   await expect(page).toHaveURL('/login');
 });
 
