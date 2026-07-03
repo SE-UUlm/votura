@@ -1,9 +1,9 @@
 import { ActionIcon, Group, Table, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
-import { IconArrowRight, IconDots } from '@tabler/icons-react';
+import { IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
-import type { JSX, PropsWithChildren } from 'react';
+import type { JSX, PropsWithChildren, MouseEvent as ReactMouseEvent } from 'react';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
@@ -62,8 +62,28 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       }
     };
 
+    const navigateToElectionSettings = (e: ReactMouseEvent<HTMLTableRowElement>) => {
+      const target = e.target as HTMLElement;
+
+      // Do not redirect if the click target is the context menu / three dots icon,
+      // or one of the dropdown menu options.
+      if (
+        target.closest('button') ||
+        target.closest('[role="menuitem"]') ||
+        target.closest('.mantine-Menu-dropdown')
+      ) {
+        return;
+      }
+
+      navigate(`/elections/${election.id}`);
+    };
+
     return (
-      <Table.Tr key={election.id}>
+      <Table.Tr
+        key={election.id}
+        onClick={navigateToElectionSettings}
+        style={{ cursor: 'pointer' }}
+      >
         <Table.Td>
           <TableText>{election.name}</TableText>
         </Table.Td>
@@ -90,15 +110,6 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
               onToggleFreeze={onToggleFreeze}
               isMutating={isMutating}
             />
-            <ActionIcon
-              variant="subtle"
-              aria-label="Settings"
-              onClick={() => {
-                navigate(`/elections/${election.id}`);
-              }}
-            >
-              <IconArrowRight size={14} />
-            </ActionIcon>
           </Group>
         </Table.Td>
       </Table.Tr>
