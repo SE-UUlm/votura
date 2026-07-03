@@ -124,7 +124,7 @@ jobs:
   deploy:
     name: Deploy documentation
     needs: build
-    # TODO: if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
+    if: github.event_name == 'push' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/develop')
     permissions:
       pages: write
       id-token: write
