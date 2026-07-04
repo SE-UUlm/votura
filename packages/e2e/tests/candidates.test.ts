@@ -14,7 +14,7 @@ test.describe('Candidates', () => {
   });
 
   test('should create/link, unlink and delete a candidate', async ({ page }) => {
-    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
+    await page.getByRole('row', { name: 'Election 1 This is election' }).click();
     await page.getByRole('button', { name: 'Section Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add candidate' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill('John Doe');

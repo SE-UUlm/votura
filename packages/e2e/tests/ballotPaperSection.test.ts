@@ -18,11 +18,7 @@ test.describe('BallotPaperSection', () => {
   });
 
   test('should create a ballot paper section', async ({ page }) => {
-    await page
-      .getByRole('row', { name: 'Election 1 This is election' })
-      .getByLabel('Settings')
-      .nth(1)
-      .click();
+    await page.getByRole('row', { name: 'Election 1 This is election' }).click();
     await page.getByRole('button', { name: 'Ballot Paper Settings' }).click();
     await page.getByRole('menuitem', { name: 'Add ballot paper section' }).click();
     await page.getByRole('textbox', { name: 'Name' }).fill(ballotPaperSection.name);
