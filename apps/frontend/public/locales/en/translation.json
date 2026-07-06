@@ -51,7 +51,7 @@
   "error": "Error",
   "freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade": "Freezing an election locks its configuration, no further changes can be made.",
   "frozen": "Frozen",
-  "important": "Important:",
+  "important": "Important",
   "invalidEmailAddress": "Invalid email address.",
   "invalidVotesAllowed": "Invalid votes allowed",
   "lastModified": "Last modified",

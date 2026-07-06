@@ -42,7 +42,7 @@ export const ToggleFreezeElectionModal = ({
       </Text>
       <Space h={'md'} />
       <Text fs="italic" c={redColor}>
-        {t('important', 'Important:')}
+        {t('important', 'Important') + ":"}
       </Text>
       <Text fs="italic" c={redColor}>
         {message}
