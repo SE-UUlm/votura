@@ -45,7 +45,14 @@
       "persistent": false,
       "interactive": false,
       "outputs": [],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P", "KEY_GEN_TIMEOUT_MINUTES"]
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES"
+      ]
     },
     "build": {
       "dependsOn": ["^build"],
