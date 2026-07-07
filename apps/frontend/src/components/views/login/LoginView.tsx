@@ -73,9 +73,9 @@ export const LoginView = (): JSX.Element => {
         notifications.show({
           title: t('couldNotLogin', 'Could not login'),
           message: t(
-          'weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain',
-          'We do not know this combination of email and password. Please try again.',
-        ),
+            'weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain',
+            'We do not know this combination of email and password. Please try again.',
+          ),
           color: 'yellow',
           autoClose: 15000,
         });
