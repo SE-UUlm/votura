@@ -18,6 +18,10 @@ For Windows users we recommend developing inside of WSL 2.
 A tutorial for setting it up can be found [here](https://learn.microsoft.com/en-us/windows/wsl/install).
 After the WSL has been installed, just install a Linux distribution you are comfortable with.
 
+If you deliberately want a native Windows setup without WSL, see the
+[Windows Setup (without WSL)](./windowsSetup.md) page for the additional steps and known
+problems.
+
 :::
 
 Before you can start developing with votura, you need to install the following:
@@ -102,7 +106,62 @@ PEPPER="12345"
 PEPPER="12345"
 ```
 
-Now you should be already ready to start developing with votura.
+### Build the internal packages
+
+Before you start an app for the first time, build the shared packages once. The apps import
+the compiled output (`dist/`) of the internal `@repo/*` packages, so they have to be built
+beforehand:
+
+```bash
+npx turbo build --filter=!@votura/docs
+```
+
+The `--filter=!@votura/docs` excludes the documentation build, which additionally requires a
+generated OpenAPI schema file that is not part of a fresh checkout (see the next step).
+
+### Generate the OpenAPI schema
+
+The documentation and the API pages are generated from
+`packages/votura-validators/generated/voturaApiSchema.json`, which is not committed to the
+repository. Generate it once (and again whenever the API definition changes):
+
+```bash
+npm run persist-schema -w @repo/votura-validators
+```
+
+For more details see the [This Project Documentation](./projectDocs.md) page.
+
+### Set up the database
+
+Start the PostgreSQL database (this uses Docker):
+
+```bash
+npm run postgres-up -w @repo/db
+```
+
+Then create the necessary tables by running the migrations:
+
+```bash
+npm run migrate -w @repo/db
+```
+
+:::info
+
+On native Windows (without WSL) the migration step can fail with
+`ERR_UNSUPPORTED_ESM_URL_SCHEME` or a `pg_cron` error. See the
+[Windows Setup (without WSL)](./windowsSetup.md) page for the explanation and the fix.
+
+:::
+
+### Start the development servers
+
+Now you are ready to start developing with votura. Start the backend (port `4000`) and the
+frontend (port `5173`) by running the following command in the `apps/backend` and
+`apps/frontend` directories respectively:
+
+```bash
+npm run start
+```
 
 For testing please see [the documentation page for testing](./testing.md)
 

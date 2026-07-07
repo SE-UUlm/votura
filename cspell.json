@@ -80,6 +80,9 @@
     "fblz",
     "Penpot",
     "unvotable",
-    "bytea"
+    "bytea",
+    "behaviour",
+    "EFTYPE",
+    "psql"
   ]
 }
