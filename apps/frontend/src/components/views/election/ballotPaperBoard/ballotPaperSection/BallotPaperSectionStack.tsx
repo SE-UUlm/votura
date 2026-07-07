@@ -1,10 +1,9 @@
 import { ScrollArea, Skeleton, Stack, Text } from '@mantine/core';
 import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGetBallotPaperSections } from '../../../../../swr/ballotPaperSections/useGetBallotPaperSections.ts';
 import { BallotPaperSection } from './BallotPaperSection.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface BallotPaperSectionStackProps {
   electionId?: SelectableElection['id'];

@@ -6,11 +6,10 @@ import {
   updateableCandidateOperationOptions,
 } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useGetCandidates } from '../../../../../../swr/candidates/useGetCandidates.ts';
 import { CandidateRow } from './CandidateRow.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface CandidatesDrawerProps {
   opened: ModalProps['opened'];

@@ -6,14 +6,13 @@ import '@mantine/notifications/styles.css';
 import { isAxiosError } from 'axios';
 import { extend } from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import i18next from 'i18next';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { SWRConfig } from 'swr';
 import { browserRouter } from './browserRouter.ts';
 import './i18n';
-import i18next from 'i18next';
-
 
 extend(localizedFormat);
 

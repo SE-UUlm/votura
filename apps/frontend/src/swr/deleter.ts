@@ -1,9 +1,8 @@
 import axios, { AxiosError } from 'axios';
+import i18next from 'i18next';
 import { api } from './api.ts';
 import { getAuthLocalStorage } from './authTokens.ts';
 import { hasMessage } from './hasMessage.ts';
-import i18next from 'i18next';
-
 
 export const deleter = async (url: string): Promise<null> => {
   try {
@@ -14,7 +13,13 @@ export const deleter = async (url: string): Promise<null> => {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
         // eslint-disable-next-line @typescript-eslint/naming-convention
-        ...(authTokens ? { Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', { accessToken: authTokens.accessToken }) } : {}),
+        ...(authTokens
+          ? {
+              Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
+                accessToken: authTokens.accessToken,
+              }),
+            }
+          : {}),
       },
     });
 
@@ -24,7 +29,10 @@ export const deleter = async (url: string): Promise<null> => {
       const errorMessage =
         error.response?.data !== undefined && hasMessage(error.response.data)
           ? error.response.data.message
-          : i18next.t('weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs', 'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.');
+          : i18next.t(
+              'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+              'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
+            );
       throw new AxiosError(errorMessage);
     } else {
       throw error;

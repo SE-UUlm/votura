@@ -12,10 +12,9 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { Trans, useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
-import { useTranslation, Trans } from 'react-i18next';
-
 
 export const RegisterView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -36,10 +35,14 @@ export const RegisterView = (): JSX.Element => {
       },
       password: (value) => {
         const parsed = insertableUserObject.shape.password.safeParse(value);
-        return parsed.success ? null : t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
+        return parsed.success
+          ? null
+          : t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
       },
       confirmPassword: (value, values) => {
-        return value === values.password ? null : t('passwordsDoNotMatch', 'Passwords do not match.');
+        return value === values.password
+          ? null
+          : t('passwordsDoNotMatch', 'Passwords do not match.');
       },
     },
   });
@@ -58,9 +61,13 @@ export const RegisterView = (): JSX.Element => {
       notifications.show({
         title: t('almostDone', 'Almost done!'),
         message: (
-          <><Trans i18nKey="strongweHaveSentYouAVerificationLinkstrongBrPleaseCheckYourEmailInbox"><strong>We have sent you a verification link.</strong>
-            <br />
-            Please check your email inbox.</Trans></>
+          <>
+            <Trans i18nKey="strongweHaveSentYouAVerificationLinkstrongBrPleaseCheckYourEmailInbox">
+              <strong>We have sent you a verification link.</strong>
+              <br />
+              Please check your email inbox.
+            </Trans>
+          </>
         ),
         color: 'green',
         autoClose: 15000,
@@ -70,7 +77,10 @@ export const RegisterView = (): JSX.Element => {
       const message =
         e instanceof Error
           ? e.message
-          : t('somethingWentWrongDuringRegistrationPleaseTryAgain', 'Something went wrong during registration. Please try again.');
+          : t(
+              'somethingWentWrongDuringRegistrationPleaseTryAgain',
+              'Something went wrong during registration. Please try again.',
+            );
       notifications.show({
         title: t('registrationFailed', 'Registration failed'),
         message: message,

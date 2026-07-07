@@ -16,9 +16,8 @@ import {
   updateableBallotPaperSectionObject,
 } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
-import { zodResolver } from '../../../../../utils/zodResolver.ts';
 import { useTranslation } from 'react-i18next';
-
+import { zodResolver } from '../../../../../utils/zodResolver.ts';
 
 export interface MutateBallotPaperSectionSectionDrawerProps {
   ballotPaperSection?: UpdateableBallotPaperSection;
@@ -98,9 +97,10 @@ export const MutateBallotPaperSectionDrawer = ({
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={
-                    t('egTheBallotPaperSectionForStudentsOfTheComputerScienceStudentCouncil', 'e.g. The ballot paper section for students of the computer science student council ...')
-                  }
+                  placeholder={t(
+                    'egTheBallotPaperSectionForStudentsOfTheComputerScienceStudentCouncil',
+                    'e.g. The ballot paper section for students of the computer science student council ...',
+                  )}
                   autosize={true}
                   minRows={4}
                   maxRows={4}

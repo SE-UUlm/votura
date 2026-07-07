@@ -2,10 +2,9 @@ import { Grid, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
 import dayjs from 'dayjs';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface ElectionStatsProps {
   election: SelectableElection;

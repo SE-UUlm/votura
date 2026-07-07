@@ -3,6 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
@@ -18,8 +19,6 @@ import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
-import { useTranslation } from 'react-i18next';
-
 
 export interface ElectionViewHeaderProps {
   election: SelectableElection;
@@ -40,7 +39,12 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
       navigate('/elections');
     } catch (e: unknown) {
       const message =
-        e instanceof Error ? e.message : t('couldNotDeleteElectionPleaseTryAgain', 'Could not delete election. Please try again.');
+        e instanceof Error
+          ? e.message
+          : t(
+              'couldNotDeleteElectionPleaseTryAgain',
+              'Could not delete election. Please try again.',
+            );
       notifications.show({
         title: t('deletionFailed', 'Deletion failed'),
         message: message,

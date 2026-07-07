@@ -1,12 +1,11 @@
 import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
 import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export const AppShellLayout = (): JSX.Element => {
   const { t } = useTranslation();

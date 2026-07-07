@@ -3,6 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableBallotPaper, SelectableElection } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteBallotPaper } from '../../../../swr/ballotPapers/useDeleteBallotPaper.ts';
 import { useUpdateBallotPaper } from '../../../../swr/ballotPapers/useUpdateBallotPaper.ts';
 import { useCreateBallotPaperSection } from '../../../../swr/ballotPaperSections/useCreateBallotPaperSection.ts';
@@ -15,8 +16,6 @@ import type { MutateBallotPaperDrawerProps } from '../MutateBallotPaperDrawer.ts
 import { BallotPaperSectionStack } from './ballotPaperSection/BallotPaperSectionStack.tsx';
 import type { MutateBallotPaperSectionSectionDrawerProps } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
 import { BallotPaperSettingsMenu } from './BallotPaperSettingsMenu.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface BallotPaperColumnProps {
   election: SelectableElection;
@@ -82,7 +81,11 @@ export const BallotPaperColumn = ({
             onSectionMutate={onSectionMutate}
             isSectionMutating={isSectionMutating}
           >
-            <ActionIcon size="lg" variant="light" aria-label={t('ballotPaperSettings', 'Ballot Paper Settings')}>
+            <ActionIcon
+              size="lg"
+              variant="light"
+              aria-label={t('ballotPaperSettings', 'Ballot Paper Settings')}
+            >
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSettingsMenu>

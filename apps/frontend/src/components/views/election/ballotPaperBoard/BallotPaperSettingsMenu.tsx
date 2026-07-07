@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableBallotPaper } from '@repo/votura-validators';
 import { IconEdit, IconSquarePlus, IconTrash } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   MutateBallotPaperDrawer,
   type MutateBallotPaperDrawerProps,
@@ -12,8 +13,6 @@ import {
   MutateBallotPaperSectionDrawer,
   type MutateBallotPaperSectionSectionDrawerProps,
 } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface BallotPaperSettingsMenuProps extends PropsWithChildren {
   ballotPaper: SelectableBallotPaper;

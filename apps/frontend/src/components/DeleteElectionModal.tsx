@@ -3,7 +3,6 @@ import type { SelectableElection } from '@repo/votura-validators';
 import type { JSX, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 export interface DeleteElectionModalProps {
   election: SelectableElection;
   opened: ModalProps['opened'];

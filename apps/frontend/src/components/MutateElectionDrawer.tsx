@@ -15,7 +15,6 @@ import type { SelectableElection, UpdateableElection } from '@repo/votura-valida
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 export interface MutateElectionModalProps {
   election?: UpdateableElection;
   opened: ModalProps['opened'];
@@ -117,13 +116,19 @@ export const MutateElectionDrawer = ({
                 <TextInput
                   withAsterisk
                   label={'Name'}
-                  placeholder={t('egStudentCouncilElection2025', 'e.g. Student Council Election 2025')}
+                  placeholder={t(
+                    'egStudentCouncilElection2025',
+                    'e.g. Student Council Election 2025',
+                  )}
                   key={form.key('name')}
                   {...form.getInputProps('name')}
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={t('egThisYearsElectionOnTheStudentCouncil', 'e.g. This years election on the student council ...')}
+                  placeholder={t(
+                    'egThisYearsElectionOnTheStudentCouncil',
+                    'e.g. This years election on the student council ...',
+                  )}
                   autosize={true}
                   minRows={4}
                   maxRows={4}

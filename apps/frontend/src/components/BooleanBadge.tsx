@@ -2,7 +2,6 @@ import { Badge } from '@mantine/core';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 export interface BooleanBadgeProps {
   isTrue: boolean;
 }

@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
@@ -13,8 +14,6 @@ import {
 } from '../../MutateElectionDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export const ElectionsView = (): JSX.Element => {
   const { t } = useTranslation();

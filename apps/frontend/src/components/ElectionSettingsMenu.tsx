@@ -3,14 +3,13 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import type { JSX, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
 import { MutateElectionDrawer, type MutateElectionModalProps } from './MutateElectionDrawer.tsx';
 import {
   ToggleFreezeElectionModal,
   type ToggleFreezeElectionModalProps,
 } from './ToggleFreezeElectionModal.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface ElectionsTableMenuProps {
   election: SelectableElection;

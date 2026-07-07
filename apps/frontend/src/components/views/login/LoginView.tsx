@@ -17,11 +17,10 @@ import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
-import { useTranslation } from 'react-i18next';
-
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -53,7 +52,10 @@ export const LoginView = (): JSX.Element => {
     } catch (e: unknown) {
       notifications.show({
         title: t('couldNotLogin', 'Could not login'),
-        message: t('weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain', 'We do not know this combination of email and password. Please try again.'),
+        message: t(
+          'weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain',
+          'We do not know this combination of email and password. Please try again.',
+        ),
         color: 'yellow',
         autoClose: 15000,
       });
@@ -93,7 +95,7 @@ export const LoginView = (): JSX.Element => {
           </Button>
           <Divider />
           <Group justify="space-between">
-            <Text size={'sm'}>{t('cantLoginAnymore', 'Can\'t login anymore?')}</Text>
+            <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>
             <Anchor component={'button'} variant="transparent" size={'sm'}>
               {t('resetPassword', 'Reset password')}
             </Anchor>

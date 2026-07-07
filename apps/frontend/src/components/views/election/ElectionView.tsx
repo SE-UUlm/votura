@@ -14,6 +14,7 @@ import { notifications } from '@mantine/notifications';
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Navigate, useParams } from 'react-router';
 import { useCreateBallotPaper } from '../../../swr/ballotPapers/useCreateBallotPaper.ts';
 import { useGetElection } from '../../../swr/elections/useGetElection.ts';
@@ -25,8 +26,6 @@ import {
   MutateBallotPaperDrawer,
   type MutateBallotPaperDrawerProps,
 } from './MutateBallotPaperDrawer.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface ElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;

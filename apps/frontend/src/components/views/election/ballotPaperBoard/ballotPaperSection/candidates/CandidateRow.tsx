@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableCandidate } from '@repo/votura-validators';
 import { IconSettings, IconTrash } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteCandidate } from '../../../../../../swr/candidates/useDeleteCandidate.ts';
 import { useUpdateCandidate } from '../../../../../../swr/candidates/useUpdateCandidate.ts';
 import { DeleteCandidateModal, type DeleteCandidateModalProps } from './DeleteCandidateModal.tsx';
@@ -10,8 +11,6 @@ import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
 } from './MutateCandidateDrawer.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface CandidateRowProps {
   candidate: SelectableCandidate;
@@ -80,7 +79,11 @@ export const CandidateRow = ({
               onClick={mutateCandidateActions.open}
             />
           </ActionIcon>
-          <ActionIcon variant={'transparent'} color="red" aria-label={t('deleteCandidate', 'Delete candidate')}>
+          <ActionIcon
+            variant={'transparent'}
+            color="red"
+            aria-label={t('deleteCandidate', 'Delete candidate')}
+          >
             <IconTrash
               style={{ width: '70%', height: '70%' }}
               stroke={1.5}

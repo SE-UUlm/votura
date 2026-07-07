@@ -4,6 +4,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
@@ -20,8 +21,6 @@ import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface ElectionsTableProps {
   data: SelectableElection[];

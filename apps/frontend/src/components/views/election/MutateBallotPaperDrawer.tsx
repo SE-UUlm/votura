@@ -12,9 +12,8 @@ import {
 import { useForm } from '@mantine/form';
 import { type UpdateableBallotPaper, updateableBallotPaperObject } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
-import { zodResolver } from '../../../utils/zodResolver.ts';
 import { useTranslation } from 'react-i18next';
-
+import { zodResolver } from '../../../utils/zodResolver.ts';
 
 export interface MutateBallotPaperDrawerProps {
   ballotPaper?: UpdateableBallotPaper;
@@ -94,9 +93,10 @@ export const MutateBallotPaperDrawer = ({
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={
-                    t('egThisYearsBallotPaperForStudentsOnTheStudentCouncil', 'e.g. This years ballot paper for students on the student council ...')
-                  }
+                  placeholder={t(
+                    'egThisYearsBallotPaperForStudentsOnTheStudentCouncil',
+                    'e.g. This years ballot paper for students on the student council ...',
+                  )}
                   autosize={true}
                   minRows={4}
                   maxRows={4}

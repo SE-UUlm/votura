@@ -3,13 +3,12 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
 import { IconUserCog, IconUserPlus } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CandidatesDrawer } from './candidates/CandidatesDrawer.tsx';
 import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
 } from './candidates/MutateCandidateDrawer.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface BallotPaperSectionSettingsMenuProps extends PropsWithChildren {
   onCandidateMutate: MutateCandidateDrawerProps['onMutate'];

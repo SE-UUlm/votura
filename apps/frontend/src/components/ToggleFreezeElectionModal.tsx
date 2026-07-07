@@ -4,7 +4,6 @@ import { IconAlertTriangle } from '@tabler/icons-react';
 import type { JSX, MouseEventHandler } from 'react';
 import { useTranslation } from 'react-i18next';
 
-
 export interface ToggleFreezeElectionModalProps {
   election: SelectableElection;
   opened: ModalProps['opened'];
@@ -31,18 +30,27 @@ export const ToggleFreezeElectionModal = ({
     </Group>
   );
   const message = election.configFrozen
-    ? t('unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted', 'Unfreezing an election allows configuration changes again, but all previously issued voter tokens become invalid, and any votes that have already been cast will be reset and no longer counted.')
-    : t('freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade', 'Freezing an election locks its configuration, no further changes can be made.');
+    ? t(
+        'unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted',
+        'Unfreezing an election allows configuration changes again, but all previously issued voter tokens become invalid, and any votes that have already been cast will be reset and no longer counted.',
+      )
+    : t(
+        'freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade',
+        'Freezing an election locks its configuration, no further changes can be made.',
+      );
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>
-      <Text c={redColor}>{t('youAreAboutTo', 'You are about to')} {action.toLowerCase()} {t('theElection', 'the election:')}</Text>
+      <Text c={redColor}>
+        {t('youAreAboutTo', 'You are about to')} {action.toLowerCase()}{' '}
+        {t('theElection', 'the election:')}
+      </Text>
       <Text fw={700} c={redColor}>
         {election.name}
       </Text>
       <Space h={'md'} />
       <Text fs="italic" c={redColor}>
-        {t('important', 'Important') + ":"}
+        {t('important', 'Important') + ':'}
       </Text>
       <Text fs="italic" c={redColor}>
         {message}

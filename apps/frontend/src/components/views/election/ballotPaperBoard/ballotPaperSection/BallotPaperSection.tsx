@@ -7,14 +7,13 @@ import {
 } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
 import { useGetCandidates } from '../../../../../swr/candidates/useGetCandidates.ts';
 import { getCreateSuccessCandidateConfig } from '../../../../../utils/notifications.ts';
 import { BallotPaperSectionSettingsMenu } from './BallotPaperSectionSettingsMenu.tsx';
 import type { MutateCandidateDrawerProps } from './candidates/MutateCandidateDrawer.tsx';
-import { useTranslation } from 'react-i18next';
-
 
 export interface BallotPaperSectionProps {
   electionId: SelectableElection['id'];
@@ -64,7 +63,11 @@ export const BallotPaperSection = ({
         <Group justify={'space-between'} align={'start'}>
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaperSection.name}</Text>
-            <Text c="dimmed" size="sm">{t('candidatesLength', 'Candidates: {{length}}', { length: ballotPaperSection.candidateIds.length })}</Text>
+            <Text c="dimmed" size="sm">
+              {t('candidatesLength', 'Candidates: {{length}}', {
+                length: ballotPaperSection.candidateIds.length,
+              })}
+            </Text>
             {ballotPaperSection.description !== undefined && (
               <Text lineClamp={2} c="dimmed" size="sm">
                 {ballotPaperSection.description}
@@ -77,7 +80,11 @@ export const BallotPaperSection = ({
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >
-            <ActionIcon size="md" variant="light" aria-label={t('sectionSettings', 'Section Settings')}>
+            <ActionIcon
+              size="md"
+              variant="light"
+              aria-label={t('sectionSettings', 'Section Settings')}
+            >
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSectionSettingsMenu>
