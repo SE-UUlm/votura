@@ -1,5 +1,5 @@
-import { AppShell, Box, Button, Divider, Stack } from '@mantine/core';
-import { IconNotes } from '@tabler/icons-react';
+import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
+import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
@@ -33,6 +33,12 @@ export const AppShellLayout = (): JSX.Element => {
               to={'/elections'}
               label={'Elections'}
               icon={<IconNotes size={16} />}
+            />
+            <Space h={'xs'} />
+            <RoutingNavbarLink
+              to={'/voterGroups'}
+              label={'Voter Groups & Tokens'}
+              icon={<IconUsersGroup size={16} />}
             />
           </Box>
           <Box>

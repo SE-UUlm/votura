@@ -4,12 +4,15 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
+import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
+import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
-  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
@@ -51,9 +54,18 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
-    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+    if (election.configFrozen) {
+      notifications.show(await callUnfreezeElection(election.id));
+    } else {
+      const freezable = await callGetElectionFreezable(election.id);
+      if (!freezable) {
+        notifications.show(getElectionNotFreezableConfig(election.name));
+        return;
+      }
+
+      notifications.show(await callFreezeElection(election.id));
+    }
   };
 
   return (

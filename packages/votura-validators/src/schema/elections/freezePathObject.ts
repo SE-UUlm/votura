@@ -27,7 +27,7 @@ export const freezePathObject: OpenAPIV3.PathItemObject = {
       '- The election must have at least one ballot paper.\n' +
       '- Each ballot paper must have at least one section.\n' +
       '- Each ballot paper section must have at least one candidate linked to it.\n' +
-      '- All candidates linked to the election must be linked to at least one ballot paper section.\n' +
+      '- All candidates linked to the election must be linked to at least one ballot paper section.\n\n' +
       'Note that freezing an election is an action that should be done with caution and after a careful review of the election configuration.\n' +
       'After an election is frozen, the configuration of the election can not be changed anymore.\n' +
       'You can not change the number of allowed voters.\n' +
