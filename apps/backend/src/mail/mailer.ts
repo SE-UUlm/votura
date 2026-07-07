@@ -67,7 +67,7 @@ export const sendPasswordResetEmail = async (email: string, rawToken: string): P
       text,
     });
     logger.info({ event: 'passwordResetEmailSent' }, 'Password reset email sent');
-  } catch (error) {
+  } catch (error: unknown) {
     logger.error({ err: error }, 'Failed to send password reset email');
   }
 };

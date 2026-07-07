@@ -44,6 +44,7 @@ const requestResetTokenFor = async (email: string): Promise<string> => {
 
 describe(`POST /users/resetPassword`, () => {
   const requestPath = '/users/resetPassword';
+  const loginPath = '/users/login';
   const newPassword = 'MyEvenStronger!Password456';
   let user: SelectableUser | null = null;
   const resetUser = insertableUserObject.parse({
@@ -76,14 +77,14 @@ describe(`POST /users/resetPassword`, () => {
 
     // Login with the new password succeeds.
     const loginRes = await request(app)
-      .post('/users/login')
+      .post(loginPath)
       .send({ email: resetUser.email, password: newPassword });
     expect(loginRes.status).toBe(HttpStatusCode.ok);
     expect(apiTokenUserObject.safeParse(loginRes.body).success).toBe(true);
 
     // Login with the old password fails.
     const oldLoginRes = await request(app)
-      .post('/users/login')
+      .post(loginPath)
       .send({ email: resetUser.email, password: resetUser.password });
     expect(oldLoginRes.status).toBe(HttpStatusCode.unauthorized);
   });
@@ -91,7 +92,7 @@ describe(`POST /users/resetPassword`, () => {
   it('401: should invalidate existing sessions after a password reset', async () => {
     // Establish a session before the reset.
     const loginRes = await request(app)
-      .post('/users/login')
+      .post(loginPath)
       .send({ email: resetUser.email, password: resetUser.password });
     expect(loginRes.status).toBe(HttpStatusCode.ok);
     const oldRefreshToken = apiTokenUserObject.parse(loginRes.body).refreshToken;
