@@ -3,9 +3,10 @@ import {
   insertableUserObject,
   response400Object,
   response401Object,
+  response429Object,
   type SelectableUser,
 } from '@repo/votura-validators';
-import request from 'supertest';
+import request, { type Response } from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
@@ -30,6 +31,10 @@ describe(`POST /users/login`, () => {
     requestPath = '/users/login';
   });
 
+  const testLogin = async (email: string, password: string): Promise<Response> => {
+    return request(app).post(requestPath).send({ email, password });
+  };
+
   // TODO: Uncomment when user verification is implemented (see issue #125)
   //it('403: should return error for unverified user', async () => {
   //  // user is already created but not verified
@@ -52,10 +57,7 @@ describe(`POST /users/login`, () => {
     // set user as verified in db
     await setUserVerified(user.id);
 
-    const res = await request(app).post(requestPath).send({
-      email: loginUser.email,
-      password: loginUser.password,
-    });
+    const res = await testLogin(loginUser.email, loginUser.password);
     expect(res.status).toBe(HttpStatusCode.ok);
     expect(res.type).toBe('application/json');
     const parseResult = apiTokenUserObject.safeParse(res.body);
@@ -73,15 +75,33 @@ describe(`POST /users/login`, () => {
   });
 
   it('401: should return error for invalid credentials', async () => {
-    const res = await request(app)
-      .post(requestPath)
-      .send({
-        email: loginUser.email,
-        password: loginUser.password + 'invalid',
-      });
+    const res = await testLogin(loginUser.email, loginUser.password + 'invalid');
     expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
+  });
+
+  it('429: should block logins after three failed login attempts', async () => {
+    // Use correct credentials at first to reset the failed login attempts counter
+    await testLogin(loginUser.email, loginUser.password);
+
+    const res1 = await testLogin(loginUser.email, loginUser.password + 'invalid');
+    expect(res1.status).toBe(HttpStatusCode.unauthorized);
+
+    const res2 = await testLogin(loginUser.email, loginUser.password + 'invalid');
+    expect(res2.status).toBe(HttpStatusCode.unauthorized);
+
+    const res3 = await testLogin(loginUser.email, loginUser.password + 'invalid');
+    expect(res3.status).toBe(HttpStatusCode.tooManyRequests);
+    expect(res3.type).toBe('application/json');
+    const parseResult = response429Object.safeParse(res3.body);
+    expect(parseResult.success).toBe(true);
+    expect(parseResult.data?.retryIn).toBeDefined();
+    expect(parseResult.data?.retryIn?.seconds).toBe(8);
+
+    // 4th attempt (even with valid password) should still be blocked
+    const res = await testLogin(loginUser.email, loginUser.password);
+    expect(res.status).toBe(HttpStatusCode.tooManyRequests);
   });
 });

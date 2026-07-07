@@ -140,6 +140,21 @@ export const response429Object = z.object({
     .register(voturaMetadataRegistry, {
       example: 'Too many requests, please try again later.',
     }),
+  retryIn: z
+    .object({
+      seconds: z.number().int().min(0).max(59),
+      minutes: z.number().int().min(0).max(59),
+      hours: z.number().int().min(0),
+    })
+    .optional()
+    .register(voturaMetadataRegistry, {
+      description: 'The duration after which the user can try to log in again.',
+      example: JSON.stringify({
+        seconds: 39,
+        minutes: 1,
+        hours: 0,
+      }),
+    }),
 });
 
 export type Response429 = z.infer<typeof response429Object>;

@@ -3,6 +3,7 @@ import {
   insertableUserObject,
   requestPasswordResetUserObject,
   response409Object,
+  response429Object,
   response4XXObject,
   zodErrorToResponse400,
   type ApiTokenUser,
@@ -10,6 +11,7 @@ import {
   type Response401,
   type Response403,
   type Response409,
+  type Response429,
   type SelectableUser,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
@@ -17,6 +19,7 @@ import type { AccessTokenPayload } from '../auth/types.js';
 import { generatePasswordResetToken, hashPasswordResetToken } from '../auth/utils.js';
 import { HttpStatusCode } from '../httpStatusCode.js';
 import { sendPasswordResetEmail } from '../mail/mailer.js';
+import { resetFailedLoginAttempts } from '../services/loginAttempt.service.js';
 import {
   createNewUserTokens,
   createUser as createPersistentUser,
@@ -74,17 +77,31 @@ export const deleteUser = async (
   res.sendStatus(HttpStatusCode.noContent);
 };
 
-export type LoginResponse = Response<ApiTokenUser | Response400 | Response401 | Response403>;
+export type LoginResponse = Response<
+  ApiTokenUser | Response400 | Response401 | Response403 | Response429
+>;
 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
-  const validationResult = await validateLoginRequest(req.body);
+  const ipAddress = req.ip ?? '0.0.0.0';
+  const validationResult = await validateLoginRequest(req.body, ipAddress);
   if (isBodyCheckValidationError(validationResult)) {
+    if (validationResult.status === HttpStatusCode.tooManyRequests) {
+      res.status(HttpStatusCode.tooManyRequests).json(
+        response429Object.parse({
+          message: validationResult.message,
+          retryIn: validationResult.retryIn ?? { hours: 0, minutes: 0, seconds: 0 },
+        }),
+      );
+      return;
+    }
+
     res
       .status(validationResult.status)
       .json(response4XXObject.parse({ message: validationResult.message }));
     return;
   }
 
+  await resetFailedLoginAttempts(ipAddress, validationResult);
   const loginResult = await createNewUserTokens(validationResult);
   res.status(HttpStatusCode.ok).json(loginResult);
 };

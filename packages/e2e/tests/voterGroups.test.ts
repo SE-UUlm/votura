@@ -1,0 +1,88 @@
+import { expect, test } from '@playwright/test';
+import type { InsertableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
+
+const voterGroup: InsertableVoterGroup = {
+  name: 'Test Voter Group',
+  description: 'My test voter group',
+  numberOfVoters: 42,
+  ballotPapers: [],
+};
+
+const updatedVoterGroup: UpdateableVoterGroup = {
+  name: 'Edited Test Voter Group',
+  description: 'My updated test voter group',
+  numberOfVoters: 123,
+  ballotPapers: [],
+};
+
+test('should create, update and delete a voter group', async ({ page }) => {
+  await page.goto('/login');
+  await page.getByLabel('Email').fill('user@votura.org');
+  await page.getByLabel('Password').fill('HelloVotura1!');
+  await page.getByRole('button', { name: 'Login' }).click();
+  await expect(page).toHaveURL('/elections');
+
+  await page.getByRole('link', { name: 'Voter Groups & Tokens' }).click();
+  await expect(page).toHaveURL('/voterGroups');
+
+  // create voter group
+  await page.getByRole('button', { name: 'New Voter Group' }).click();
+  await page.getByLabel('Voter group name').fill(voterGroup.name);
+  if (voterGroup.description !== undefined) {
+    await page.getByLabel('Voter group description').fill(voterGroup.description);
+  }
+  await page.getByLabel('Number of voters').fill(voterGroup.numberOfVoters.toString());
+  await page.getByRole('button', { name: 'Create new voter group' }).click();
+
+  // verify creation
+  await expect(
+    page.getByRole('cell', { name: voterGroup.name, exact: true }).getByRole('paragraph'),
+  ).toBeVisible();
+  if (voterGroup.description !== undefined) {
+    await expect(
+      page.getByRole('cell', { name: voterGroup.description, exact: true }).getByRole('paragraph'),
+    ).toBeVisible();
+  }
+  await expect(
+    page.getByRole('cell', { name: voterGroup.numberOfVoters.toString() }).getByRole('paragraph'),
+  ).toBeVisible();
+
+  // update voter group
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('menuitem', { name: 'Edit voter group' }).click();
+  await page.getByLabel('Voter group name').fill(updatedVoterGroup.name);
+  if (updatedVoterGroup.description !== undefined) {
+    await page.getByLabel('Voter group description').fill(updatedVoterGroup.description);
+  }
+  await page.getByLabel('Number of voters').fill(updatedVoterGroup.numberOfVoters.toString());
+  await page.getByRole('button', { name: 'Save changes' }).click();
+
+  // verify mutation
+  await expect(
+    page.getByRole('cell', { name: updatedVoterGroup.name, exact: true }).getByRole('paragraph'),
+  ).toBeVisible();
+  if (updatedVoterGroup.description !== undefined) {
+    await expect(
+      page
+        .getByRole('cell', { name: updatedVoterGroup.description, exact: true })
+        .getByRole('paragraph'),
+    ).toBeVisible();
+  }
+  await expect(
+    page
+      .getByRole('cell', { name: updatedVoterGroup.numberOfVoters.toString() })
+      .getByRole('paragraph'),
+  ).toBeVisible();
+
+  // delete voter group
+  await page.getByRole('button', { name: 'Settings' }).click();
+  await page.getByRole('menuitem', { name: 'Delete voter group' }).click();
+  await expect(page.getByRole('dialog', { name: 'Deleting voter group' })).toBeVisible();
+  await page.getByRole('button', { name: 'Delete' }).click();
+
+  // verify deletion
+  await expect(page).toHaveURL('/voterGroups');
+  await expect(
+    page.getByRole('cell', { name: updatedVoterGroup.name, exact: true }).getByRole('paragraph'),
+  ).not.toBeVisible();
+});
