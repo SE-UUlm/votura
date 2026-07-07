@@ -3,6 +3,7 @@ import type {
   SelectableBallotPaper,
   SelectableCandidate,
   SelectableElection,
+  SelectableVoterGroup,
 } from '@repo/votura-validators';
 
 export const getDeleteSuccessElectionConfig = (
@@ -20,6 +21,22 @@ export const getMutateSuccessElectionConfig = (
   return {
     title: 'Success',
     message: `The changes to the election "${name}" have been saved.`,
+  };
+};
+
+export const getRPCErrorConfig = (message: string): NotificationData => {
+  return {
+    title: 'Error',
+    message,
+    color: 'red',
+  };
+};
+
+export const getElectionNotFreezableConfig = (name: string): NotificationData => {
+  return {
+    title: 'Error',
+    message: `The election "${name}" cannot be frozen. Have you made sure that everything is set up correctly? See the documentation for more information.`,
+    color: 'red',
   };
 };
 
@@ -82,3 +99,30 @@ export const getCreateSuccessCandidateConfig = (
   title: 'Success',
   message: `The candidate "${title}" has been created.`,
 });
+
+export const getAddSuccessVoterGroupConfig = (
+  name: SelectableVoterGroup['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The voter group "${name}" has been created.`,
+  };
+};
+
+export const getMutateSuccessVoterGroupConfig = (
+  name: SelectableVoterGroup['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The changes to the voter group "${name}" have been saved.`,
+  };
+};
+
+export const getDeleteSuccessVoterGroupConfig = (
+  name: SelectableVoterGroup['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `You successfully deleted the voter group: ${name}`,
+  };
+};
