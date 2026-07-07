@@ -1,8 +1,6 @@
 {
   "language": "en,de",
-  "import": [
-    "@cspell/dict-de-de/cspell-ext.json"
-  ],
+  "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "ignorePaths": [
     "./**/node_modules/**",
     "./**/dist/**",
