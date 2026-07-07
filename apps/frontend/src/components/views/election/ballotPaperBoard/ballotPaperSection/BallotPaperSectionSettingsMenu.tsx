@@ -8,7 +8,7 @@ import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
 } from './candidates/MutateCandidateDrawer.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface BallotPaperSectionSettingsMenuProps extends PropsWithChildren {
@@ -25,7 +25,7 @@ export const BallotPaperSectionSettingsMenu = ({
   electionId,
   ballotPaperSection,
 }: BallotPaperSectionSettingsMenuProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [candidatesContextOpen, candidatesContextActions] = useDisclosure(false);
 

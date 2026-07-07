@@ -4,7 +4,7 @@ import dayjs from 'dayjs';
 import type { JSX } from 'react';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import { ElectionStatField } from './ElectionStatField.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface ElectionStatsProps {
@@ -12,7 +12,7 @@ export interface ElectionStatsProps {
 }
 
 export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Grid>
       <Grid.Col span={6}>

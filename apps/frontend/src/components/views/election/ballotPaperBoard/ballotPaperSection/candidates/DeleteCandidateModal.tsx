@@ -1,7 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableCandidate } from '@repo/votura-validators';
 import type { JSX, MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface DeleteCandidateModalProps {

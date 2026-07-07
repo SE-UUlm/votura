@@ -1,7 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableBallotPaper } from '@repo/votura-validators';
 import type { JSX, MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface DeleteBallotPaperModalProps {
@@ -17,7 +17,7 @@ export const DeleteBallotPaperModal = ({
   onClose,
   opened,
 }: DeleteBallotPaperModalProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Modal opened={opened} onClose={onClose} title={t('deletingBallotPaper', 'Deleting ballot paper')}>
       <Text>{t('youAreAboutToDeleteTheBallotPaper', 'You are about to delete the ballot paper:')}</Text>

@@ -10,7 +10,7 @@ import {
   MutateCandidateDrawer,
   type MutateCandidateDrawerProps,
 } from './MutateCandidateDrawer.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface CandidateRowProps {
@@ -26,7 +26,7 @@ export const CandidateRow = ({
   onToggleCandidate,
   isMutatingToggleCandidate,
 }: CandidateRowProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [deleteCandidateContextOpen, deleteCandidateActions] = useDisclosure(false);
   const { trigger: triggerUpdateCandidate, isMutating: isMutatingUpdateCandidate } =

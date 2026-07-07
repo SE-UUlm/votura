@@ -17,7 +17,7 @@ import {
 } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { zodResolver } from '../../../../../utils/zodResolver.ts';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface MutateBallotPaperSectionSectionDrawerProps {
@@ -47,7 +47,7 @@ export const MutateBallotPaperSectionDrawer = ({
   onMutate,
   isMutating,
 }: MutateBallotPaperSectionSectionDrawerProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const form = useForm<UpdateableBallotPaper>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableBallotPaperSectionObject),

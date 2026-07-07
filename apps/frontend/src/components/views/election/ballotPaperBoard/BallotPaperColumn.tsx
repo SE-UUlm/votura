@@ -15,7 +15,7 @@ import type { MutateBallotPaperDrawerProps } from '../MutateBallotPaperDrawer.ts
 import { BallotPaperSectionStack } from './ballotPaperSection/BallotPaperSectionStack.tsx';
 import type { MutateBallotPaperSectionSectionDrawerProps } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
 import { BallotPaperSettingsMenu } from './BallotPaperSettingsMenu.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface BallotPaperColumnProps {
@@ -27,7 +27,7 @@ export const BallotPaperColumn = ({
   election,
   ballotPaper,
 }: BallotPaperColumnProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const theme = useMantineTheme();
   const { trigger: triggerUpdate, isMutating: isUpdateMutating } = useUpdateBallotPaper({
     electionId: election.id,

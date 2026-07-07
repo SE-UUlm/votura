@@ -13,7 +13,7 @@ import { DateTimePicker } from '@mantine/dates';
 import { isNotEmpty, useForm } from '@mantine/form';
 import type { SelectableElection, UpdateableElection } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface MutateElectionModalProps {
@@ -41,7 +41,7 @@ export const MutateElectionDrawer = ({
   title,
   isMutating,
 }: MutateElectionModalProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const form = useForm<MutateElectionFormValues>({
     mode: 'controlled',
     validate: {

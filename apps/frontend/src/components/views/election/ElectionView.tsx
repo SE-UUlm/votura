@@ -25,7 +25,7 @@ import {
   MutateBallotPaperDrawer,
   type MutateBallotPaperDrawerProps,
 } from './MutateBallotPaperDrawer.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface ElectionViewRouteParams extends Record<string, string> {

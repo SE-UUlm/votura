@@ -12,7 +12,7 @@ import {
   MutateBallotPaperSectionDrawer,
   type MutateBallotPaperSectionSectionDrawerProps,
 } from './ballotPaperSection/MutateBallotPaperSectionSectionDrawer.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface BallotPaperSettingsMenuProps extends PropsWithChildren {

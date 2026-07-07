@@ -1,6 +1,6 @@
 import { Badge } from '@mantine/core';
 import type { JSX } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface BooleanBadgeProps {
@@ -8,7 +8,7 @@ export interface BooleanBadgeProps {
 }
 
 export const BooleanBadge = ({ isTrue }: BooleanBadgeProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return isTrue ? (
     <Badge variant="dot" color="red">
       {t('yes', 'Yes')}

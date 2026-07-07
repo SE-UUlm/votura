@@ -9,7 +9,7 @@ import type { JSX } from 'react';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useGetCandidates } from '../../../../../../swr/candidates/useGetCandidates.ts';
 import { CandidateRow } from './CandidateRow.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface CandidatesDrawerProps {
@@ -25,7 +25,7 @@ export const CandidatesDrawer = ({
   electionId,
   ballotPaperSection,
 }: CandidatesDrawerProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
 

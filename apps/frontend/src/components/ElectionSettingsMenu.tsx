@@ -9,7 +9,7 @@ import {
   ToggleFreezeElectionModal,
   type ToggleFreezeElectionModalProps,
 } from './ToggleFreezeElectionModal.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface ElectionsTableMenuProps {
@@ -29,7 +29,7 @@ export const ElectionsSettingsMenu = ({
   onToggleFreeze,
   isMutating,
 }: ElectionsTableMenuProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [toggleFreezeModalOpened, toggleFreezeModalActions] = useDisclosure(false);

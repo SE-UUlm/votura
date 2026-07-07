@@ -4,7 +4,7 @@ import type { JSX } from 'react';
 import { useGetBallotPapers } from '../../../../swr/ballotPapers/useGetBallotPapers.ts';
 import styles from './BallotPaperBoard.module.css';
 import { BallotPaperColumn } from './BallotPaperColumn.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface BallotPaperBoardProps {
@@ -12,7 +12,7 @@ export interface BallotPaperBoardProps {
 }
 
 export const BallotPaperBoard = ({ election }: BallotPaperBoardProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const {
     data: ballotPapersData,
     isLoading: isBallotPapersLoading,

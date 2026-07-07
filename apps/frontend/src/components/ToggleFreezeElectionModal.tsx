@@ -18,7 +18,7 @@ export const ToggleFreezeElectionModal = ({
   onClose,
   onToggleFreeze,
 }: ToggleFreezeElectionModalProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const action = election.configFrozen ? 'Unfreeze' : 'Freeze';
   const titleText = action + t('electionConfig', ' election config');
   const redColor = 'var(--mantine-color-red-7)';

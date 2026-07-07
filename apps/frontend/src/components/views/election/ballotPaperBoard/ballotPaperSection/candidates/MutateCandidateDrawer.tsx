@@ -12,7 +12,7 @@ import { useForm } from '@mantine/form';
 import { type UpdateableCandidate, updateableCandidateObject } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { zodResolver } from '../../../../../../utils/zodResolver.ts';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface MutateCandidateDrawerProps {
@@ -34,7 +34,7 @@ export const MutateCandidateDrawer = ({
   title,
   isMutating,
 }: MutateCandidateDrawerProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const form = useForm<UpdateableCandidate>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableCandidateObject),

@@ -13,7 +13,7 @@ import { useForm } from '@mantine/form';
 import { type UpdateableBallotPaper, updateableBallotPaperObject } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { zodResolver } from '../../../utils/zodResolver.ts';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface MutateBallotPaperDrawerProps {
@@ -43,7 +43,7 @@ export const MutateBallotPaperDrawer = ({
   title,
   isMutating,
 }: MutateBallotPaperDrawerProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const form = useForm<UpdateableBallotPaper>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableBallotPaperObject),
