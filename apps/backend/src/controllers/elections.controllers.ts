@@ -116,12 +116,12 @@ export const freezeElection = async (
       }
 
       logger.info(updatedElection, 'Key generation process completed');
-    } catch (error) {
+    } catch (error: unknown) {
       logger.error({ err: error, election }, 'Key generation process failed');
       try {
         // Clear the marker so the election can be unfrozen again immediately.
         await clearKeyGenStartedAt(election.id, keyGenStartedAt);
-      } catch (clearError) {
+      } catch (clearError: unknown) {
         // If this also fails, the unfreeze is unlocked by the key generation timeout instead.
         logger.error(
           { err: clearError, election },

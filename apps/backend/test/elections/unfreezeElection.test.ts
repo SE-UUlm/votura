@@ -58,6 +58,8 @@ const setKeyGenState = async (
     .execute();
 };
 
+const electionNullError = 'Election is null';
+
 describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
   let freezePath = '';
   let unfreezePath = '';
@@ -149,7 +151,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
   );
   it('403: should not unfreeze an election that is generating keys.', async () => {
     if (election === null) {
-      throw new Error('Election is null');
+      throw new Error(electionNullError);
     }
     // Deterministic state: key generation started just now and is still running.
     await setKeyGenState(election.id, new Date());
@@ -162,7 +164,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
   });
   it('200: should unfreeze an election whose key generation timed out (#242).', async () => {
     if (election === null) {
-      throw new Error('Election is null');
+      throw new Error(electionNullError);
     }
     // Key generation started 16 minutes ago (KEY_GEN_TIMEOUT_MINUTES defaults to 15)
     // and never finished, e.g. because the backend died mid key generation.
@@ -188,7 +190,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
   });
   it('200: should unfreeze an election without a key generation marker (#242).', async () => {
     if (election === null) {
-      throw new Error('Election is null');
+      throw new Error(electionNullError);
     }
     // Frozen without keys and without a marker: this is the state of elections that
     // got stuck before the marker column existed (no backfill in the migration).
@@ -208,7 +210,7 @@ describe(`PUT /elections/:${parameter.electionId}/unfreeze`, () => {
     { timeout: 120000 },
     async () => {
       if (election === null) {
-        throw new Error('Election is null');
+        throw new Error(electionNullError);
       }
       const keyPair = await getKeyPair(20);
 
