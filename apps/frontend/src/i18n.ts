@@ -19,6 +19,9 @@ i18n
     interpolation: {
       escapeValue: false,
     },
+  })
+  .catch((error) => {
+    console.error('i18next init failed', error);
   });
 
 export default i18n;
