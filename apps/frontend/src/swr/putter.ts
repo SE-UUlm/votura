@@ -14,9 +14,9 @@ export const putter = async <T>(url: string, args: { arg: T }): Promise<unknown>
         Accept: 'application/json',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(authTokens
           ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
                 accessToken: authTokens.accessToken,
               }),

@@ -12,9 +12,9 @@ export const getter = async (url: string): Promise<unknown> => {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(authTokens
           ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
                 accessToken: authTokens.accessToken,
               }),

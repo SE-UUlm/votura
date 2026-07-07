@@ -12,9 +12,9 @@ export const deleter = async (url: string): Promise<null> => {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
-        // eslint-disable-next-line @typescript-eslint/naming-convention
         ...(authTokens
           ? {
+              // eslint-disable-next-line @typescript-eslint/naming-convention
               Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
                 accessToken: authTokens.accessToken,
               }),
