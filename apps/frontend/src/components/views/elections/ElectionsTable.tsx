@@ -83,8 +83,8 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
         key={election.id}
         onClick={navigateToElectionSettings}
         style={{ cursor: 'pointer' }}
-        aria-label='Settings'
-        role='button'
+        aria-label="Settings"
+        role="button"
         tabIndex={0}
       >
         <Table.Td>
