@@ -19,7 +19,7 @@ export const DeleteCandidateModal = ({
   opened,
   isMutating,
 }: DeleteCandidateModalProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   return (
     <Modal opened={opened} onClose={onClose} title={'Deleting candidate'}>
       <Text>{t('youAreAboutToDeleteTheCandidate', 'You are about to delete the candidate:')}</Text>

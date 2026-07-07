@@ -33,7 +33,7 @@ export const BallotPaperSettingsMenu = ({
   onSectionMutate,
   isSectionMutating,
 }: BallotPaperSettingsMenuProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const [deleteContextOpened, deleteContextActions] = useDisclosure(false);
   const [mutateContextOpened, mutateContextActions] = useDisclosure(false);
   const [mutateSectionContextOpened, mutateSectionContextActions] = useDisclosure(false);

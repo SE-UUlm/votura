@@ -26,14 +26,14 @@ export interface ElectionViewHeaderProps {
 }
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { trigger: deleteTrigger } = useDeleteElection({
     electionId: election.id,
   });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
 
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     try {
       await deleteTrigger();
       notifications.show(getDeleteSuccessElectionConfig(election.name));
@@ -75,7 +75,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
           <Button
             leftSection={<IconArrowLeft size={16} />}
             variant="subtle"
-            onClick={() => {
+            onClick={(): void => {
               navigate('/elections');
             }}
           >

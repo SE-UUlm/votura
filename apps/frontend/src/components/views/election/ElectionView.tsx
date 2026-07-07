@@ -33,7 +33,7 @@ export interface ElectionViewRouteParams extends Record<string, string> {
 }
 
 export const ElectionView = (): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const params = useParams<ElectionViewRouteParams>();
   const {
     data: electionData,

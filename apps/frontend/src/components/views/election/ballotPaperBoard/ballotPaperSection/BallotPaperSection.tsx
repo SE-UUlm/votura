@@ -25,7 +25,7 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
   const bpsCandidateRows = electionCandidates
