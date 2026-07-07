@@ -2,7 +2,7 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     restart: always
     shm_size: 128mb
     ports:
