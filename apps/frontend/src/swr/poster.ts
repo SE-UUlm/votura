@@ -35,7 +35,7 @@ export const poster = async <T>(url: string, args: { arg: T }): Promise<unknown>
               'weEncounteredAnUnexpectedErrorWhileCreatingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
               'We encountered an unexpected error while creating a resource. Please try again later or get in contact with us.',
             );
-      throw new AxiosError(errorMessage);
+      throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;
     }
