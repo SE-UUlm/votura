@@ -14,11 +14,11 @@ import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
-import { useTranslation, Trans } from 'react-i18next'
+import { useTranslation, Trans } from 'react-i18next';
 
 
 export const RegisterView = (): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { trigger, isMutating } = useRegisterUser();
   const navigate = useNavigate();
 
@@ -113,7 +113,7 @@ export const RegisterView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
-          <Button variant="subtle" onClick={() => navigate('/login')}>
+          <Button variant="subtle" onClick={(): void | Promise<void> => navigate('/login')}>
             {t('backToLogin', 'Back To Login')}
           </Button>
         </Stack>

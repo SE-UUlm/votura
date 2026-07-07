@@ -7,4 +7,4 @@ export default {
     input: "src/**/*.{ts,tsx}",
     output: "public/locales/{{language}}/{{namespace}}.json"
   }
-}
+};

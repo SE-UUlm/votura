@@ -1,7 +1,8 @@
 import axios, { AxiosError } from 'axios';
 import { api } from './api.ts';
 import { getAuthLocalStorage } from './authTokens.ts';
-import { hasMessage } from './hasMessage.ts';import i18next from 'i18next'
+import { hasMessage } from './hasMessage.ts';
+import i18next from 'i18next';
 
 
 export const poster = async <T>(url: string, args: { arg: T }): Promise<unknown> => {

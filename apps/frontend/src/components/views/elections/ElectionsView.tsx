@@ -13,11 +13,11 @@ import {
 } from '../../MutateElectionDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export const ElectionsView = (): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 

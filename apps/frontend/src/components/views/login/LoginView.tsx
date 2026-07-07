@@ -20,11 +20,11 @@ import type { JSX } from 'react';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export const LoginView = (): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const { trigger, isMutating } = useLoginUser();
   const navigate = useNavigate();
 
@@ -88,7 +88,7 @@ export const LoginView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
-          <Button variant="light" onClick={() => navigate('/register')}>
+          <Button variant="light" onClick={(): void | Promise<void> => navigate('/register')}>
             {t('signUp', 'Sign Up')}
           </Button>
           <Divider />

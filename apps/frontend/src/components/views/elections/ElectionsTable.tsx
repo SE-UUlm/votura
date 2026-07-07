@@ -20,7 +20,7 @@ import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 
 export interface ElectionsTableProps {
@@ -34,7 +34,7 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
 );
 
 export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
-  const { t } = useTranslation()
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const rows = data.map((election) => {
@@ -96,7 +96,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
             <ActionIcon
               variant="subtle"
               aria-label="Settings"
-              onClick={() => {
+              onClick={(): void => {
                 navigate(`/elections/${election.id}`);
               }}
             >
