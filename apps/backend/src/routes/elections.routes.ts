@@ -13,13 +13,11 @@ import {
   updateBallotPaperSection,
   updateCandidateInBallotPaperSection,
 } from '../controllers/ballotPaperSections.controllers.js';
-import {
-  createCandidate,
-  deleteCandidate,
-  getCandidate,
-  getCandidates,
-  updateCandidate,
-} from '../controllers/candidates.controller.js';
+import { createCandidate } from '../controllers/candidates/createCandidate.uc.js';
+import { deleteCandidate } from '../controllers/candidates/deleteCandidate.uc.js';
+import { getCandidate } from '../controllers/candidates/getCandidate.uc.js';
+import { getCandidates } from '../controllers/candidates/getCandidates.uc.js';
+import { updateCandidate } from '../controllers/candidates/updateCandidate.uc.js';
 import {
   createElection,
   deleteElection,
