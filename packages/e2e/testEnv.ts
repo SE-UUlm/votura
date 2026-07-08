@@ -66,7 +66,10 @@ export const startTestEnv = async (): Promise<void> => {
    * Backend setup
    */
   logger.info('Starting the backend...');
-  backendProcess = spawn('npm', ['run', 'start'], {
+  const isWindows = process.platform === 'win32';
+  const npmCmd = isWindows ? 'npm.cmd' : 'npm';
+  const shellMode = isWindows ? true : undefined;
+  backendProcess = spawn(npmCmd, ['run', 'start'], {
     cwd: path.join(DIRNAME, '../../apps/backend'),
     env: {
       ...process.env,
@@ -76,6 +79,7 @@ export const startTestEnv = async (): Promise<void> => {
       DATABASE_URL: dbConnectionUri,
     },
     stdio: 'inherit',
+    shell: shellMode,
   });
   logger.info('Waiting for a heartbeat from the backend...');
   await waitOn({
