@@ -1,12 +1,10 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import {
-  createBallotPaper,
-  deleteBallotPaper,
-  getBallotPaper,
-  getBallotPapers,
-  updateBallotPaper,
-} from '../controllers/ballotPapers.controllers.js';
+import { createBallotPaper } from '../controllers/ballotPapers/createBallotPaper.uc.js';
+import { deleteBallotPaper } from '../controllers/ballotPapers/deleteBallotPaper.uc.js';
+import { getBallotPaper } from '../controllers/ballotPapers/getBallotPaper.uc.js';
+import { getBallotPapers } from '../controllers/ballotPapers/getBallotPapers.uc.js';
+import { updateBallotPaper } from '../controllers/ballotPapers/updateBallotPaper.uc.js';
 import {
   createBallotPaperSection,
   deleteBallotPaperSection,
