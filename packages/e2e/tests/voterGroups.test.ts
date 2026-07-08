@@ -1,5 +1,5 @@
-import { expect, test } from './playwrightWithCoverage.js';
 import type { InsertableVoterGroup, UpdateableVoterGroup } from '@repo/votura-validators';
+import { expect, test } from './playwrightWithCoverage.js';
 
 const voterGroup: InsertableVoterGroup = {
   name: 'Test Voter Group',

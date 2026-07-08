@@ -1,4 +1,4 @@
-import { expect, test as base } from '@playwright/test';
+import { test as base, expect } from '@playwright/test';
 import { mkdir, writeFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
 import path from 'path';
@@ -30,5 +30,5 @@ test.afterEach(async ({ page }, testInfo) => {
   await writeFile(path.join(nycOutputDir, fileName), JSON.stringify(coverage));
 });
 
-export { expect, test };
 export type { Page } from '@playwright/test';
+export { expect, test };

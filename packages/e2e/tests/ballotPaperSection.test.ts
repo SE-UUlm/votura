@@ -1,5 +1,5 @@
-import { expect, test } from './playwrightWithCoverage.js';
 import type { UpdateableBallotPaperSection } from '@repo/votura-validators';
+import { expect, test } from './playwrightWithCoverage.js';
 
 const ballotPaperSection: UpdateableBallotPaperSection = {
   name: 'My BPS',

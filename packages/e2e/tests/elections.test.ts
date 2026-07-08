@@ -1,5 +1,5 @@
-import { expect, test } from './playwrightWithCoverage.js';
 import type { InsertableElection } from '@repo/votura-validators';
+import { expect, test } from './playwrightWithCoverage.js';
 
 const election: InsertableElection = {
   name: 'Test Election',

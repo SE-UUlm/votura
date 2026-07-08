@@ -1,5 +1,5 @@
-import { expect, test } from './playwrightWithCoverage.js';
 import type { InsertableBallotPaper } from '@repo/votura-validators';
+import { expect, test } from './playwrightWithCoverage.js';
 
 const ballotPaper: InsertableBallotPaper = {
   name: 'Student Ballot Paper',
