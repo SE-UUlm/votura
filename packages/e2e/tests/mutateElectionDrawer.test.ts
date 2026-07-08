@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test';
+import { expect, test, type Page } from './playwrightWithCoverage.js';
 
 async function login(page: Page): Promise<void> {
   await page.goto('/login');

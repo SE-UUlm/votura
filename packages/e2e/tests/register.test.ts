@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './playwrightWithCoverage.js';
 
 test.describe('RegisterView logic', () => {
   test.beforeEach(async ({ page }) => {

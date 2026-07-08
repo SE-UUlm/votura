@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './playwrightWithCoverage.js';
 
 test('should redirect to login when not logged in', async ({ page }) => {
   await page.goto('/');

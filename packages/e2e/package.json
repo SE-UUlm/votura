@@ -8,7 +8,7 @@
     "check-types": "tsc --noEmit",
     "install-browsers": "npx playwright install --with-deps",
     "lint": "eslint",
-    "test": "playwright test"
+    "test": "playwright test && nyc report --temp-dir ../../apps/frontend/.nyc_output --report-dir ../../apps/frontend/coverage --reporter=clover --reporter=text-summary"
   },
   "dependencies": {
     "dotenv": "^17.2.0"
@@ -26,6 +26,7 @@
     "@votura/backend": "*",
     "@votura/frontend": "*",
     "eslint": "^9.25.1",
+    "nyc": "^18.0.0",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",

@@ -27,6 +27,8 @@ export default defineConfig({
         ...process.env,
         // eslint-disable-next-line @typescript-eslint/naming-convention
         VITE_API_BASE_URL: 'http://localhost:4000',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        VITE_COVERAGE: 'true',
       },
       name: 'frontend',
       timeout: 60000,

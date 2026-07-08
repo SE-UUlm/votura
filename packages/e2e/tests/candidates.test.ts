@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test';
+import { expect, test } from './playwrightWithCoverage.js';
 
 const overviewClass = '.bps-active-candidates';
 const allClass = '.bps-all-candidates';
