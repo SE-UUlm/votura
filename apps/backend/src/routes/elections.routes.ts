@@ -5,14 +5,12 @@ import { deleteBallotPaper } from '../controllers/ballotPapers/deleteBallotPaper
 import { getBallotPaper } from '../controllers/ballotPapers/getBallotPaper.uc.js';
 import { getBallotPapers } from '../controllers/ballotPapers/getBallotPapers.uc.js';
 import { updateBallotPaper } from '../controllers/ballotPapers/updateBallotPaper.uc.js';
-import {
-  createBallotPaperSection,
-  deleteBallotPaperSection,
-  getBallotPaperSection,
-  getBallotPaperSections,
-  updateBallotPaperSection,
-  updateCandidateInBallotPaperSection,
-} from '../controllers/ballotPaperSections.controllers.js';
+import { createBallotPaperSection } from '../controllers/ballotPaperSections/createBallotPaperSection.uc.js';
+import { deleteBallotPaperSection } from '../controllers/ballotPaperSections/deleteBallotPaperSection.uc.js';
+import { getBallotPaperSection } from '../controllers/ballotPaperSections/getBallotPaperSection.uc.js';
+import { getBallotPaperSections } from '../controllers/ballotPaperSections/getBallotPaperSections.uc.js';
+import { updateBallotPaperSection } from '../controllers/ballotPaperSections/updateBallotPaperSection.uc.js';
+import { updateCandidateInBallotPaperSection } from '../controllers/ballotPaperSections/updateCandidateInBallotPaperSection.uc.js';
 import { createCandidate } from '../controllers/candidates/createCandidate.uc.js';
 import { deleteCandidate } from '../controllers/candidates/deleteCandidate.uc.js';
 import { getCandidate } from '../controllers/candidates/getCandidate.uc.js';
