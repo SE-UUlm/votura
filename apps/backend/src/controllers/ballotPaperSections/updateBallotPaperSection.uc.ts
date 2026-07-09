@@ -9,7 +9,7 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { updateBallotPaperSection as updatePersistentBallotPaperSection } from '../../services/ballotPaperSections.service.js';
-import { validateUpdateableBallotPaperSection } from '../.bodyChecks/ballotPaperSectionChecks.js';
+import { validateUpdateableBallotPaperSection } from '../.bodyChecks/ballotPaperSectionChecks/updatableBallotPaperSection.check.js';
 import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 
 export const updateBallotPaperSection = async (
