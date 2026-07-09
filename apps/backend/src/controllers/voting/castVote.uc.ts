@@ -3,7 +3,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { persistVote } from '../../services/votes.service.js';
 import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
-import { validateEncryptedFilledBallotPaper } from '../.bodyChecks/voteChecks.js';
+import { validateEncryptedFilledBallotPaper } from '../.bodyChecks/voteChecks/encryptedFilledBallotPaper.check.js';
 
 export const castVote = async (
   req: Request,
