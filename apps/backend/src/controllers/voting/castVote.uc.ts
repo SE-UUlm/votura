@@ -2,8 +2,8 @@ import { response4XXObject, type Response400, type Response403 } from '@repo/vot
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { persistVote } from '../../services/votes.service.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
-import { validateEncryptedFilledBallotPaper } from '../bodyChecks/voteChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
+import { validateEncryptedFilledBallotPaper } from '../.bodyChecks/voteChecks.js';
 
 export const castVote = async (
   req: Request,

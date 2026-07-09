@@ -11,8 +11,8 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { resetFailedLoginAttempts } from '../../services/loginAttempt.service.js';
 import { createNewUserTokens } from '../../services/users.service.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
-import { validateLoginRequest } from '../bodyChecks/userChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
+import { validateLoginRequest } from '../.bodyChecks/userChecks/loginRequest.check.js';
 
 export type LoginResponse = Response<
   ApiTokenUser | Response400 | Response401 | Response403 | Response429

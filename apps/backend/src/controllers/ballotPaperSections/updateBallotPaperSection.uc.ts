@@ -9,8 +9,8 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { updateBallotPaperSection as updatePersistentBallotPaperSection } from '../../services/ballotPaperSections.service.js';
-import { validateUpdateableBallotPaperSection } from '../bodyChecks/ballotPaperSectionChecks.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
+import { validateUpdateableBallotPaperSection } from '../.bodyChecks/ballotPaperSectionChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 
 export const updateBallotPaperSection = async (
   req: Request<{

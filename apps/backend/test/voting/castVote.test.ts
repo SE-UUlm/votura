@@ -17,7 +17,7 @@ import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
-import { VoteValidationErrorMessage } from '../../src/controllers/bodyChecks/voteChecks.js';
+import { VoteValidationErrorMessage } from '../../src/controllers/.bodyChecks/voteChecks.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createBallotPaper } from '../../src/services/ballotPapers.service.js';
 import {

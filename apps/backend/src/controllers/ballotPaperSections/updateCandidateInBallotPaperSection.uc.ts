@@ -15,8 +15,8 @@ import {
   addCandidateToBallotPaperSection as addPersistentCandidateToBallotPaperSection,
   removeCandidateFromBallotPaperSection as removePersistentCandidateFromBallotPaperSection,
 } from '../../services/ballotPaperSections.service.js';
-import { validateUpdateableBallotPaperSectionCandidate } from '../bodyChecks/ballotPaperSectionChecks.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
+import { validateUpdateableBallotPaperSectionCandidate } from '../.bodyChecks/ballotPaperSectionChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 
 export const updateCandidateInBallotPaperSection = async (
   req: Request<{

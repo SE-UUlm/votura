@@ -8,8 +8,8 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { createBallotPaperSection as createPersistentBallotPaperSection } from '../../services/ballotPaperSections.service.js';
-import { validateInsertableBallotPaperSection } from '../bodyChecks/ballotPaperSectionChecks.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
+import { validateInsertableBallotPaperSection } from '../.bodyChecks/ballotPaperSectionChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 
 export const createBallotPaperSection = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,

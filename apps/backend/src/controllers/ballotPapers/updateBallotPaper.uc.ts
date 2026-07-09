@@ -8,8 +8,8 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { updateBallotPaper as updatePersistentBallotPaper } from '../../services/ballotPapers.service.js';
-import { validateUpdateableBallotPaper } from '../bodyChecks/ballotPaperChecks.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
+import { validateUpdateableBallotPaper } from '../.bodyChecks/ballotPaperChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 
 export const updateBallotPaper = async (
   req: Request<{ ballotPaperId: BallotPaper['id'] }>,

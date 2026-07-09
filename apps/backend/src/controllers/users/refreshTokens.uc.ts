@@ -7,8 +7,8 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { createNewUserTokens } from '../../services/users.service.js';
-import { isBodyCheckValidationError } from '../bodyChecks/bodyCheckValidationError.js';
-import { validateTokenRefreshRequest } from '../bodyChecks/userChecks.js';
+import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
+import { validateTokenRefreshRequest } from '../.bodyChecks/userChecks/tokenRefreshRequest.check.js';
 
 export type RefreshTokensResponse = Response<ApiTokenUser | Response400 | Response401>;
 
