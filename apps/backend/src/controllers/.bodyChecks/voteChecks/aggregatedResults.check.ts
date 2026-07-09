@@ -1,4 +1,4 @@
-import { type DecryptedSection } from '@repo/votura-ballot-box';
+import type { DecryptedSection } from '@repo/votura-ballot-box';
 import type { EncryptedFilledBallotPaper } from '@repo/votura-validators';
 import { HttpStatusCode } from '../../../httpStatusCode.js';
 import { getBallotPaperMaxVotes } from '../../../services/ballotPapers.service.js';

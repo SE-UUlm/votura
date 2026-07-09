@@ -1,4 +1,4 @@
-import { type EncryptedFilledBallotPaper } from '@repo/votura-validators';
+import type { EncryptedFilledBallotPaper } from '@repo/votura-validators';
 import { HttpStatusCode } from '../../../httpStatusCode.js';
 import { getBallotPaperSectionIds } from '../../../services/ballotPapers.service.js';
 import { setsEqual } from '../../../utils.js';
