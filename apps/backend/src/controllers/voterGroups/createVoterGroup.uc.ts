@@ -12,7 +12,7 @@ import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { createVoterGroup as createPersistentVoterGroup } from '../../services/voterGroups.service.js';
 import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
-import { validateInsertableVoterGroup } from '../.bodyChecks/voterGroupChecks.js';
+import { validateInsertableVoterGroup } from '../.bodyChecks/voterGroupChecks/insertableVoterGroup.check.js';
 
 export const createVoterGroup = async (
   req: Request,
