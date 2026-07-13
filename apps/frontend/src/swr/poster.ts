@@ -22,15 +22,15 @@ export const poster = async <T>(url: string, args: { arg: T }): Promise<unknown>
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      let errorMessage: string = "";
-        if (error.response?.data !== undefined && hasMessage(error.response.data)) {
-          errorMessage = error.response.data.message;
-        } else {
-          errorMessage = i18next.t(
-              'weEncounteredAnUnexpectedErrorWhileCreatingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
-              'We encountered an unexpected error while creating a resource. Please try again later or get in contact with us.',
-            );
-        }
+      let errorMessage: string = '';
+      if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+        errorMessage = error.response.data.message;
+      } else {
+        errorMessage = i18next.t(
+          'weEncounteredAnUnexpectedErrorWhileCreatingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+          'We encountered an unexpected error while creating a resource. Please try again later or get in contact with us.',
+        );
+      }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;

@@ -12,7 +12,7 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
-import { Trans, useTranslation } from 'react-i18next';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
 
@@ -39,7 +39,10 @@ export const RegisterView = (): JSX.Element => {
       },
       password: (value) => {
         const parsed = insertableUserObject.shape.password.safeParse(value);
-        const userErrorMessage: string = t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
+        const userErrorMessage: string = t(
+          'passwordDoesNotMeetRequirements',
+          'Password does not meet requirements.',
+        );
         if (!parsed.success) {
           return userErrorMessage;
         }
@@ -70,9 +73,11 @@ export const RegisterView = (): JSX.Element => {
         title: t('almostDone', 'Almost done!'),
         message: (
           <>
-              <strong>{t('weHaveSentYouAVerificationLink', 'We have sent you a verification link.')}</strong>
-              <br />
-              {t('pleaseCheckYourEmailInbox', 'Please check your email inbox.')}
+            <strong>
+              {t('weHaveSentYouAVerificationLink', 'We have sent you a verification link.')}
+            </strong>
+            <br />
+            {t('pleaseCheckYourEmailInbox', 'Please check your email inbox.')}
           </>
         ),
         color: 'green',

@@ -41,7 +41,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
       let message: string = t(
         'couldNotDeleteElectionPleaseTryAgain',
         'Could not delete election. Please try again.',
-      ); 
+      );
       if (e instanceof Error) {
         message = e.message;
       }

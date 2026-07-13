@@ -48,21 +48,15 @@ export const MutateElectionDrawer = ({
       startDateTime: isNotEmpty('Start date is required'),
       endDateTime: (value: string | null, values: { startDateTime: string }) => {
         if (!value) {
-          return t(
-            'endDateIsRequired',
-            'End date is required',
-          );
+          return t('endDateIsRequired', 'End date is required');
         }
 
         if (new Date(value) <= new Date(values.startDateTime)) {
-          return t(
-            'endHasToBeAfterStart',
-            'End has to be after start',
-          );
+          return t('endHasToBeAfterStart', 'End has to be after start');
         }
 
         return null;
-      }
+      },
     },
     validateInputOnBlur: true,
   });
