@@ -31,18 +31,26 @@ export const RegisterView = (): JSX.Element => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
+        const userErrorMessage: string = t('invalidEmailAddress', 'Invalid email address.');
+        if (!parsed.success) {
+          return userErrorMessage;
+        }
+        return null;
       },
       password: (value) => {
         const parsed = insertableUserObject.shape.password.safeParse(value);
-        return parsed.success
-          ? null
-          : t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
+        const userErrorMessage: string = t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
+        if (!parsed.success) {
+          return userErrorMessage;
+        }
+        return null;
       },
       confirmPassword: (value, values) => {
-        return value === values.password
-          ? null
-          : t('passwordsDoNotMatch', 'Passwords do not match.');
+        const userErrorMessage: string = t('passwordsDoNotMatch', 'Passwords do not match.');
+        if (value !== values.password) {
+          return userErrorMessage;
+        }
+        return null;
       },
     },
   });
@@ -62,11 +70,9 @@ export const RegisterView = (): JSX.Element => {
         title: t('almostDone', 'Almost done!'),
         message: (
           <>
-            <Trans i18nKey="strongweHaveSentYouAVerificationLinkstrongBrPleaseCheckYourEmailInbox">
-              <strong>We have sent you a verification link.</strong>
+              <strong>{t('weHaveSentYouAVerificationLink', 'We have sent you a verification link.')}</strong>
               <br />
-              Please check your email inbox.
-            </Trans>
+              {t('pleaseCheckYourEmailInbox', 'Please check your email inbox.')}
           </>
         ),
         color: 'green',
@@ -74,13 +80,13 @@ export const RegisterView = (): JSX.Element => {
       });
       navigate('/login');
     } catch (e: unknown) {
-      const message =
-        e instanceof Error
-          ? e.message
-          : t(
-              'somethingWentWrongDuringRegistrationPleaseTryAgain',
-              'Something went wrong during registration. Please try again.',
-            );
+      let message: string = t(
+        'somethingWentWrongDuringRegistrationPleaseTryAgain',
+        'Something went wrong during registration. Please try again.',
+      );
+      if (e instanceof Error) {
+        message = e.message;
+      }
       notifications.show({
         title: t('registrationFailed', 'Registration failed'),
         message: message,

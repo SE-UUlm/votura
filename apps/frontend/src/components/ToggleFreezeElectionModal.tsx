@@ -29,15 +29,19 @@ export const ToggleFreezeElectionModal = ({
       </Text>
     </Group>
   );
-  const message = election.configFrozen
-    ? t(
+
+  let message: string = "";
+  if (election.configFrozen) {
+    message = t(
         'unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted',
         'Unfreezing an election allows configuration changes again, but all previously issued voter tokens become invalid, and any votes that have already been cast will be reset and no longer counted.',
-      )
-    : t(
+      );
+  } else {
+    message = t(
         'freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade',
         'Freezing an election locks its configuration, no further changes can be made.',
       );
+  }
 
   return (
     <Modal opened={opened} onClose={onClose} title={title}>

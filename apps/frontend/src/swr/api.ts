@@ -53,9 +53,7 @@ createAuthRefreshInterceptor(api, async (failedRequest: FailedRequest) => {
   failedRequest.response.config.headers = {
     ...failedRequest.response.config.headers,
     // eslint-disable-next-line @typescript-eslint/naming-convention
-    Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
-      accessToken: parsed.data.accessToken,
-    }),
+    Authorization: `Bearer ${parsed.data.accessToken}`,
   };
 
   return Promise.resolve();

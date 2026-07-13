@@ -38,13 +38,14 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
       notifications.show(getDeleteSuccessElectionConfig(election.name));
       navigate('/elections');
     } catch (e: unknown) {
-      const message =
-        e instanceof Error
-          ? e.message
-          : t(
-              'couldNotDeleteElectionPleaseTryAgain',
-              'Could not delete election. Please try again.',
-            );
+      let message: string = t(
+        'couldNotDeleteElectionPleaseTryAgain',
+        'Could not delete election. Please try again.',
+      ); 
+      if (e instanceof Error) {
+        message = e.message;
+      }
+
       notifications.show({
         title: t('deletionFailed', 'Deletion failed'),
         message: message,

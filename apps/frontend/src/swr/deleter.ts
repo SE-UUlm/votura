@@ -12,27 +12,23 @@ export const deleter = async (url: string): Promise<null> => {
       headers: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         Accept: 'application/json',
-        ...(authTokens
-          ? {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
-                accessToken: authTokens.accessToken,
-              }),
-            }
-          : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(authTokens ? { Authorization: `Bearer ${authTokens.accessToken}` } : {}),
       },
     });
 
     return null;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data !== undefined && hasMessage(error.response.data)
-          ? error.response.data.message
-          : i18next.t(
+        let errorMessage: string = "";
+        if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+          errorMessage = error.response.data.message;
+        } else {
+          errorMessage = i18next.t(
               'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
               'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
             );
+        }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;

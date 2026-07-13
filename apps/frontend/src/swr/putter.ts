@@ -14,27 +14,23 @@ export const putter = async <T>(url: string, args: { arg: T }): Promise<unknown>
         Accept: 'application/json',
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'Content-Type': 'application/json',
-        ...(authTokens
-          ? {
-              // eslint-disable-next-line @typescript-eslint/naming-convention
-              Authorization: i18next.t('bearerAccesstoken', 'Bearer {{accessToken}}', {
-                accessToken: authTokens.accessToken,
-              }),
-            }
-          : {}),
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(authTokens ? { Authorization: `Bearer ${authTokens.accessToken}` } : {}),
       },
     });
 
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data !== undefined && hasMessage(error.response.data)
-          ? error.response.data.message
-          : i18next.t(
+      let errorMessage: string = "";
+        if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+          errorMessage = error.response.data.message;
+        } else {
+          errorMessage = i18next.t(
               'weEncounteredAnUnexpectedErrorWhileUpdatingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
               'We encountered an unexpected error while updating a resource. Please try again later or get in contact with us.',
             );
+        }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;

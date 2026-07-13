@@ -46,18 +46,31 @@ export const MutateElectionDrawer = ({
     validate: {
       name: isNotEmpty('Name cannot be empty'),
       startDateTime: isNotEmpty('Start date is required'),
-      endDateTime: (value: string | null, values: { startDateTime: string }) =>
-        value
-          ? new Date(value) > new Date(values.startDateTime)
-            ? null
-            : t('endHasToBeAfterStart', 'End has to be after start')
-          : t('endDateIsRequired', 'End date is required'),
+      endDateTime: (value: string | null, values: { startDateTime: string }) => {
+        if (!value) {
+          return t(
+            'endDateIsRequired',
+            'End date is required',
+          );
+        }
+
+        if (new Date(value) <= new Date(values.startDateTime)) {
+          return t(
+            'endHasToBeAfterStart',
+            'End has to be after start',
+          );
+        }
+
+        return null;
+      }
     },
     validateInputOnBlur: true,
   });
 
   useEffect(() => {
-    if (!opened) return;
+    if (!opened) {
+      return;
+    }
 
     if (election) {
       form.setValues({
