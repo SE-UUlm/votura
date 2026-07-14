@@ -25,23 +25,19 @@ export const useDeleteBallotPaperSection = ({
   let ballotPaperSection = null;
   if (shouldFetch) {
     ballotPaperSection = apiRoutes.elections.ballotPapers.ballotPaperSections.byId(
-        electionId,
-        ballotPaperId,
-        ballotPaperSectionId,
+      electionId,
+      ballotPaperId,
+      ballotPaperSectionId,
     );
   }
 
-  return useSWRMutation(
-    ballotPaperSection,
-    deleter,
-    {
-      onSuccess: () => {
-        mutate(
-          apiRoutes.elections.ballotPapers.ballotPaperSections.base(electionId, ballotPaperId),
-        ).catch((error) => {
-          console.error('Failed to mutate ballot paper sections', error);
-        });
-      },
+  return useSWRMutation(ballotPaperSection, deleter, {
+    onSuccess: () => {
+      mutate(
+        apiRoutes.elections.ballotPapers.ballotPaperSections.base(electionId, ballotPaperId),
+      ).catch((error) => {
+        console.error('Failed to mutate ballot paper sections', error);
+      });
     },
-  );
+  });
 };
