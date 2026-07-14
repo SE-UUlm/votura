@@ -43,9 +43,11 @@ export const useUpdateBallotPaperSection = ({
     putterFactory(selectableBallotPaperSectionObject),
     {
       onSuccess: () => {
-        void mutate(
+        mutate(
           apiRoutes.elections.ballotPapers.ballotPaperSections.base(electionId, ballotPaperId),
-        );
+        ).catch((error) => {
+          console.error('Failed to mutate ballot paper sections', error);
+        });
       },
     },
   );
