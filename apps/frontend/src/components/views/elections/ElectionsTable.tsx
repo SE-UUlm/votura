@@ -4,6 +4,7 @@ import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowRight, IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
@@ -32,6 +33,7 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
 );
 
 export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const rows = data.map((election) => {
@@ -93,7 +95,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
             <ActionIcon
               variant="subtle"
               aria-label="Settings"
-              onClick={() => {
+              onClick={(): void => {
                 navigate(`/elections/${election.id}`);
               }}
             >
@@ -110,9 +112,9 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
       <Table.Thead>
         <Table.Tr>
           <Table.Th>Name</Table.Th>
-          <Table.Th>Description</Table.Th>
-          <Table.Th>Last modified</Table.Th>
-          <Table.Th>Frozen</Table.Th>
+          <Table.Th>{t('description', 'Description')}</Table.Th>
+          <Table.Th>{t('lastModified', 'Last modified')}</Table.Th>
+          <Table.Th>{t('frozen', 'Frozen')}</Table.Th>
           <Table.Th />
         </Table.Tr>
       </Table.Thead>
