@@ -22,14 +22,17 @@ export const useDeleteBallotPaperSection = ({
   const shouldFetch =
     electionId !== undefined && ballotPaperId !== undefined && ballotPaperSectionId !== undefined;
 
+  let ballotPaperSection = null;
+  if (shouldFetch) {
+    ballotPaperSection = apiRoutes.elections.ballotPapers.ballotPaperSections.byId(
+        electionId,
+        ballotPaperId,
+        ballotPaperSectionId,
+    );
+  }
+
   return useSWRMutation(
-    shouldFetch
-      ? apiRoutes.elections.ballotPapers.ballotPaperSections.byId(
-          electionId,
-          ballotPaperId,
-          ballotPaperSectionId,
-        )
-      : null,
+    ballotPaperSection,
     deleter,
     {
       onSuccess: () => {
