@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconEdit, IconSnowflake, IconSnowflakeOff, IconTrash } from '@tabler/icons-react';
 import type { JSX, ReactNode } from 'react';
+import { useTranslation } from 'react-i18next';
 import { DeleteElectionModal, type DeleteElectionModalProps } from './DeleteElectionModal.tsx';
 import { MutateElectionDrawer, type MutateElectionModalProps } from './MutateElectionDrawer.tsx';
 import {
@@ -27,6 +28,7 @@ export const ElectionsSettingsMenu = ({
   onToggleFreeze,
   isMutating,
 }: ElectionsTableMenuProps): JSX.Element => {
+  const { t } = useTranslation();
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [toggleFreezeModalOpened, toggleFreezeModalActions] = useDisclosure(false);
@@ -50,10 +52,10 @@ export const ElectionsSettingsMenu = ({
       <MutateElectionDrawer
         election={election}
         opened={mutateModalOpened}
-        title={'Edit Election'}
+        title={t('editElection', 'Edit Election')}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
-        mutateButtonText={'Save changes'}
+        mutateButtonText={t('saveChanges', 'Save changes')}
         isMutating={isMutating}
       />
       <ToggleFreezeElectionModal
@@ -73,14 +75,14 @@ export const ElectionsSettingsMenu = ({
             leftSection={<IconEdit size={14} />}
             onClick={mutateModalActions.open}
           >
-            Edit election
+            {t('editElection', 'Edit election')}
           </Menu.Item>
           <Menu.Item
             color="red"
             leftSection={<IconTrash size={14} />}
             onClick={deleteModalActions.open}
           >
-            Delete election
+            {t('deleteElection', 'Delete election')}
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>

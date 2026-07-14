@@ -1,4 +1,4 @@
-import { ActionIcon, Center, Divider, Group, Paper, Stack, Text } from '@mantine/core';
+import { ActionIcon, Center, Divider, Group, Loader, Paper, Stack, Text } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import {
   updateableCandidateOperationOptions,
@@ -8,9 +8,11 @@ import {
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useDeleteBallotPaperSection } from '../../../../../swr/ballotPaperSections/useDeleteBallotPaperSection.ts';
+import { useTranslation } from 'react-i18next';
 import { useUpdateBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateBallotPaperSection.ts';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
+import { useGetCandidates } from '../../../../../swr/candidates/useGetCandidates.ts';
 import {
   getCreateSuccessCandidateConfig,
   getDeleteSuccessBallotPaperSectionConfig,
@@ -29,6 +31,19 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
+  const { t } = useTranslation();
+  const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
+      useGetCandidates(electionId);
+  const bpsCandidateRows = electionCandidates
+      ?.slice()
+      .sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+      .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
+      .map((candidate) => (
+          <Text key={candidate.id} size="sm" truncate="end">
+            {candidate.title}
+          </Text>
+      ));
+
   const { trigger: triggerUpdate, isMutating: isUpdateMutating } = useUpdateBallotPaperSection({
     electionId: electionId,
     ballotPaperId: ballotPaperSection.ballotPaperId,
@@ -77,6 +92,11 @@ export const BallotPaperSection = ({
         <Group justify={'space-between'} align={'start'}>
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaperSection.name}</Text>
+            <Text c="dimmed" size="sm">
+              {t('candidatesLength', 'Candidates: {{length}}', {
+                length: ballotPaperSection.candidateIds.length,
+              })}
+            </Text>
             {ballotPaperSection.description !== undefined && (
               <Text lineClamp={2} c="dimmed" size="sm">
                 {ballotPaperSection.description}
@@ -92,15 +112,27 @@ export const BallotPaperSection = ({
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >
-            <ActionIcon size="md" variant="light" aria-label="Section Settings">
+            <ActionIcon
+              size="md"
+              variant="light"
+              aria-label={t('sectionSettings', 'Section Settings')}
+            >
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSectionSettingsMenu>
         </Group>
         <Divider />
-        <Center>
-          <Text size="sm">Candidates: {ballotPaperSection.candidateIds.length}</Text>
-        </Center>
+        <Stack>
+          {isLoadingElectionCandidates ? (
+            <Center>
+              <Loader />
+            </Center>
+          ) : (
+            <div className="bps-active-candidates">
+              <Stack gap="xs">{bpsCandidateRows}</Stack>
+            </div>
+          )}
+        </Stack>
       </Stack>
     </Paper>
   );

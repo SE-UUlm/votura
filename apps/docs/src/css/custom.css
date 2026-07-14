@@ -91,3 +91,16 @@
   content: 'schema';
   background-color: var(--ifm-color-secondary-darkest);
 }
+
+/* Centered footer links */
+.footer__col,
+.footer__title,
+.footer__items,
+.footer__item {
+  width: fit-content;
+  flex: none;
+}
+
+.footer__links {
+  justify-content: space-around;
+}

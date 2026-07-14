@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableBallotPaperSection, SelectableElection } from '@repo/votura-validators';
 import { IconEdit, IconTrash, IconUserCog, IconUserPlus } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { CandidatesDrawer } from './candidates/CandidatesDrawer.tsx';
 import {
   MutateCandidateDrawer,
@@ -34,6 +35,8 @@ export const BallotPaperSectionSettingsMenu = ({
   electionId,
   ballotPaperSection,
 }: BallotPaperSectionSettingsMenuProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const [mutateSectionContextOpened, mutateSectionContextActions] = useDisclosure(false);
   const [deleteContextOpened, deleteContextActions] = useDisclosure(false);
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
@@ -44,9 +47,9 @@ export const BallotPaperSectionSettingsMenu = ({
       <MutateCandidateDrawer
         opened={mutateCandidateContextOpen}
         onClose={mutateCandidateActions.close}
-        mutateButtonText={'Create Candidate'}
+        mutateButtonText={t('createCandidate', 'Create Candidate')}
         onMutate={onCandidateMutate}
-        title={'Create Candidate'}
+        title={t('createCandidate', 'Create Candidate')}
         isMutating={isCandidateMutating}
       />
       <CandidatesDrawer
@@ -79,16 +82,16 @@ export const BallotPaperSectionSettingsMenu = ({
           <Menu.Item
             leftSection={<IconUserPlus size={14} />}
             onClick={mutateCandidateActions.open}
-            aria-label={'Add candidate'}
+            aria-label={t('addCandidate', 'Add candidate')}
           >
-            Add candidate
+            {t('addCandidate', 'Add candidate')}
           </Menu.Item>
           <Menu.Item
             leftSection={<IconUserCog size={14} />}
             onClick={candidatesContextActions.open}
-            aria-label={'Edit candidates'}
+            aria-label={t('editCandidates', 'Edit candidates')}
           >
-            Edit candidates
+            {t('editCandidates', 'Edit candidates')}
           </Menu.Item>
           <Menu.Item
             leftSection={<IconEdit size={14} />}

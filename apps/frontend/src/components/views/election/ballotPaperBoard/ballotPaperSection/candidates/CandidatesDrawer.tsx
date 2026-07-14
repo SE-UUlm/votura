@@ -6,6 +6,7 @@ import {
   updateableCandidateOperationOptions,
 } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useGetCandidates } from '../../../../../../swr/candidates/useGetCandidates.ts';
 import { CandidateRow } from './CandidateRow.tsx';
@@ -23,6 +24,7 @@ export const CandidatesDrawer = ({
   electionId,
   ballotPaperSection,
 }: CandidatesDrawerProps): JSX.Element => {
+  const { t } = useTranslation();
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
 
@@ -64,11 +66,13 @@ export const CandidatesDrawer = ({
       <Drawer.Content>
         <Box>
           <Drawer.Header>
-            <Drawer.Title>All Candidates</Drawer.Title>
+            <Drawer.Title>{t('allCandidates', 'All Candidates')}</Drawer.Title>
             <Drawer.CloseButton />
           </Drawer.Header>
           <Drawer.Body>
-            {isLoadingElectionCandidates ? <Loader /> : <Stack>{rows}</Stack>}
+            <div className="bps-all-candidates">
+              {isLoadingElectionCandidates ? <Loader /> : <Stack>{rows}</Stack>}
+            </div>
           </Drawer.Body>
         </Box>
       </Drawer.Content>
