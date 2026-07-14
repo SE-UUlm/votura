@@ -7,8 +7,8 @@ import {
 } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
-import { useDeleteBallotPaperSection } from '../../../../../swr/ballotPaperSections/useDeleteBallotPaperSection.ts';
 import { useTranslation } from 'react-i18next';
+import { useDeleteBallotPaperSection } from '../../../../../swr/ballotPaperSections/useDeleteBallotPaperSection.ts';
 import { useUpdateBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateBallotPaperSection.ts';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
@@ -33,16 +33,16 @@ export const BallotPaperSection = ({
 }: BallotPaperSectionProps): JSX.Element => {
   const { t } = useTranslation();
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
-      useGetCandidates(electionId);
+    useGetCandidates(electionId);
   const bpsCandidateRows = electionCandidates
-      ?.slice()
-      .sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
-      .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
-      .map((candidate) => (
-          <Text key={candidate.id} size="sm" truncate="end">
-            {candidate.title}
-          </Text>
-      ));
+    ?.slice()
+    .sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+    .filter((candidate) => ballotPaperSection.candidateIds.includes(candidate.id))
+    .map((candidate) => (
+      <Text key={candidate.id} size="sm" truncate="end">
+        {candidate.title}
+      </Text>
+    ));
 
   const { trigger: triggerUpdate, isMutating: isUpdateMutating } = useUpdateBallotPaperSection({
     electionId: electionId,
