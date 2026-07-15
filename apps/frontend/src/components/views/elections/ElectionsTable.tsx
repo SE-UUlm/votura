@@ -94,7 +94,7 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
             />
             <ActionIcon
               variant="subtle"
-              aria-label="Settings"
+              aria-label="Details"
               onClick={(): void => {
                 navigate(`/elections/${election.id}`);
               }}
