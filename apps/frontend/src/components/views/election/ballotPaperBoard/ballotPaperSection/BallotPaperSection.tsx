@@ -7,6 +7,7 @@ import {
 } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useUpdateCandidateInBallotPaperSection } from '../../../../../swr/ballotPaperSections/useUpdateCandidateInBallotPaperSection.ts';
 import { useCreateCandidate } from '../../../../../swr/candidates/useCreateCandidate.ts';
 import { useGetCandidates } from '../../../../../swr/candidates/useGetCandidates.ts';
@@ -23,6 +24,7 @@ export const BallotPaperSection = ({
   ballotPaperSection,
   electionId,
 }: BallotPaperSectionProps): JSX.Element => {
+  const { t } = useTranslation();
   const { data: electionCandidates, isLoading: isLoadingElectionCandidates } =
     useGetCandidates(electionId);
   const bpsCandidateRows = electionCandidates
@@ -62,7 +64,9 @@ export const BallotPaperSection = ({
           <Stack w={'80%'}>
             <Text truncate="end">{ballotPaperSection.name}</Text>
             <Text c="dimmed" size="sm">
-              Candidates: {ballotPaperSection.candidateIds.length}
+              {t('candidatesLength', 'Candidates: {{length}}', {
+                length: ballotPaperSection.candidateIds.length,
+              })}
             </Text>
             {ballotPaperSection.description !== undefined && (
               <Text lineClamp={2} c="dimmed" size="sm">
@@ -76,7 +80,11 @@ export const BallotPaperSection = ({
             onCandidateMutate={onCandidateMutate}
             isCandidateMutating={isCandidateMutating || isAddCandidateMutating}
           >
-            <ActionIcon size="md" variant="light" aria-label="Section Settings">
+            <ActionIcon
+              size="md"
+              variant="light"
+              aria-label={t('sectionSettings', 'Section Settings')}
+            >
               <IconDots size={16} />
             </ActionIcon>
           </BallotPaperSectionSettingsMenu>
