@@ -162,3 +162,21 @@ export const getDeleteSuccessVoterGroupConfig = (
     message: `You successfully deleted the voter group: ${name}`,
   };
 };
+
+export const getMutateSuccessBallotPaperSectionConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The changes to the ballot paper section "${name}" have been saved.`,
+  };
+};
+
+export const getDeleteSuccessBallotPaperSectionConfig = (
+  name: SelectableBallotPaper['name'],
+): NotificationData => {
+  return {
+    title: 'Success',
+    message: `The ballot paper section "${name}" has been deleted.`,
+  };
+};

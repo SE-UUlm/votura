@@ -29,17 +29,17 @@ export const BallotPaperSectionStack = ({
     );
   }
 
+  // The ballot paper sections need to be ordered
+  // Otherwise, when they are edited, it could happen that the drawer overlay remains visible
+  const stackItems = data
+    ?.sort((a, b) => (a.createdAt >= b.createdAt ? 1 : -1))
+    .map((section) => (
+      <BallotPaperSection key={section.id} ballotPaperSection={section} electionId={electionId} />
+    ));
+
   return (
     <ScrollArea flex={1} w={'100%'} style={{ overflowY: 'auto' }}>
-      <Stack>
-        {data.map((section) => (
-          <BallotPaperSection
-            key={section.id}
-            ballotPaperSection={section}
-            electionId={electionId}
-          />
-        ))}
-      </Stack>
+      <Stack>{stackItems}</Stack>
     </ScrollArea>
   );
 };
