@@ -178,11 +178,9 @@ export enum CheckElectionIsValidErrors {
   candidateMismatch = 'candidateMismatch',
 }
 type CheckElectionIsValidErrorsWithoutId =
-  | CheckElectionIsValidErrors.noBallotPapers
-  | CheckElectionIsValidErrors.candidateMismatch;
+  CheckElectionIsValidErrors.noBallotPapers | CheckElectionIsValidErrors.candidateMismatch;
 type CheckElectionIsValidErrorsWithId =
-  | CheckElectionIsValidErrors.noSections
-  | CheckElectionIsValidErrors.noCandidates;
+  CheckElectionIsValidErrors.noSections | CheckElectionIsValidErrors.noCandidates;
 
 export function getValidationErrorMessage(error: CheckElectionIsValidErrorsWithoutId): string;
 export function getValidationErrorMessage(
