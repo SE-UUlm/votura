@@ -18,11 +18,13 @@ import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
 import axios from 'axios';
 import { type JSX, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
 
 export const LoginView = (): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger, isMutating } = useLoginUser();
   const navigate = useNavigate();
 
@@ -35,7 +37,7 @@ export const LoginView = (): JSX.Element => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : 'Invalid email address.';
+        return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
     },
   });
@@ -69,8 +71,11 @@ export const LoginView = (): JSX.Element => {
     } catch (e: unknown) {
       if (!axios.isAxiosError(e)) {
         notifications.show({
-          title: 'Could not login',
-          message: 'We do not know this combination of email and password. Please try again.',
+          title: t('couldNotLogin', 'Could not login'),
+          message: t(
+            'weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain',
+            'We do not know this combination of email and password. Please try again.',
+          ),
           color: 'yellow',
           autoClose: 15000,
         });
@@ -110,7 +115,7 @@ export const LoginView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={'Password'}
-                placeholder={'My secure password...'}
+                placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
@@ -120,19 +125,19 @@ export const LoginView = (): JSX.Element => {
                 loading={isLoginIn || isMutating}
                 disabled={loginBlockedSeconds !== null}
               >
-                Login
+                {t('login', 'Login')}
                 {loginBlockedSeconds !== null ? ' (' + loginBlockedSeconds + ')' : ''}
               </Button>
             </Stack>
           </Box>
-          <Button variant="light" onClick={() => navigate('/register')}>
-            Sign Up
+          <Button variant="light" onClick={(): void | Promise<void> => navigate('/register')}>
+            {t('signUp', 'Sign Up')}
           </Button>
           <Divider />
           <Group justify="space-between">
-            <Text size={'sm'}>Can't login anymore?</Text>
+            <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>
             <Anchor component={'button'} variant="transparent" size={'sm'}>
-              Reset password
+              {t('resetPassword', 'Reset password')}
             </Anchor>
           </Group>
         </Stack>

@@ -1,12 +1,14 @@
 import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
 import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 
 export const AppShellLayout = (): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const onLogout = (): void => {
@@ -41,7 +43,7 @@ export const AppShellLayout = (): JSX.Element => {
           <Box>
             <Divider pb={'md'} />
             <Button variant="subtle" fullWidth onClick={onLogout}>
-              Logout
+              {t('logout', 'Logout')}
             </Button>
           </Box>
         </Stack>

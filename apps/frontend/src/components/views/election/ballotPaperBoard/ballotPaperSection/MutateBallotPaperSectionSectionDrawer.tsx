@@ -16,6 +16,7 @@ import {
   updateableBallotPaperSectionObject,
 } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { zodResolver } from '../../../../../utils/zodResolver.ts';
 
 export interface MutateBallotPaperSectionSectionDrawerProps {
@@ -45,6 +46,7 @@ export const MutateBallotPaperSectionDrawer = ({
   onMutate,
   isMutating,
 }: MutateBallotPaperSectionSectionDrawerProps): JSX.Element => {
+  const { t } = useTranslation();
   const form = useForm<UpdateableBallotPaper>({
     mode: 'uncontrolled',
     validate: zodResolver(updateableBallotPaperSectionObject),
@@ -89,15 +91,16 @@ export const MutateBallotPaperSectionDrawer = ({
                 <TextInput
                   withAsterisk
                   label={'Name'}
-                  placeholder={'e.g. Computer Science Department'}
+                  placeholder={t('egComputerScienceDepartment', 'e.g. Computer Science Department')}
                   key={form.key('name')}
                   {...form.getInputProps('name')}
                 />
                 <Textarea
                   label={'Description'}
-                  placeholder={
-                    'e.g. The ballot paper section for students of the computer science student council ...'
-                  }
+                  placeholder={t(
+                    'egTheBallotPaperSectionForStudentsOfTheComputerScienceStudentCouncil',
+                    'e.g. The ballot paper section for students of the computer science student council ...',
+                  )}
                   autosize={true}
                   minRows={4}
                   maxRows={4}
@@ -114,7 +117,7 @@ export const MutateBallotPaperSectionDrawer = ({
                 />
                 <NumberInput
                   withAsterisk
-                  label={'Maximum votes per candidate'}
+                  label={t('maximumVotesPerCandidate', 'Maximum votes per candidate')}
                   key={form.key('maxVotesPerCandidate')}
                   {...form.getInputProps('maxVotesPerCandidate')}
                   {...(maxVotesPerCandidateMinimum
@@ -129,7 +132,7 @@ export const MutateBallotPaperSectionDrawer = ({
           </Box>
           <Group justify="flex-end" m={'md'}>
             <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
+              {t('cancel', 'Cancel')}
             </Button>
             <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
               {mutateButtonText}
