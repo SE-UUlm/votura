@@ -54,7 +54,7 @@
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
-      "outputs": ["build/**", "dist/**, generated/**"],
+      "outputs": ["build/**", "dist/**"],
       "env": [
         "DATABASE_URL",
         "PEPPER",
