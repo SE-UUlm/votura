@@ -1,6 +1,7 @@
 import { Flex, Skeleton, Text } from '@mantine/core';
 import type { SelectableElection } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGetBallotPapers } from '../../../../swr/ballotPapers/useGetBallotPapers.ts';
 import styles from './BallotPaperBoard.module.css';
 import { BallotPaperColumn } from './BallotPaperColumn.tsx';
@@ -10,6 +11,7 @@ export interface BallotPaperBoardProps {
 }
 
 export const BallotPaperBoard = ({ election }: BallotPaperBoardProps): JSX.Element => {
+  const { t } = useTranslation();
   const {
     data: ballotPapersData,
     isLoading: isBallotPapersLoading,
@@ -33,7 +35,14 @@ export const BallotPaperBoard = ({ election }: BallotPaperBoardProps): JSX.Eleme
   }
 
   if (ballotPapersError !== undefined) {
-    return <Text c={'red.7'}>The ballot papers could not be loaded. Please try again.</Text>;
+    return (
+      <Text c={'red.7'}>
+        {t(
+          'theBallotPapersCouldNotBeLoadedPleaseTryAgain',
+          'The ballot papers could not be loaded. Please try again.',
+        )}
+      </Text>
+    );
   }
 
   return (

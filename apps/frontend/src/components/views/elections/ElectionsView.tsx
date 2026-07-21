@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useCreateElection } from '../../../swr/elections/useCreateElection.ts';
 import { useGetElections } from '../../../swr/elections/useGetElections.ts';
@@ -15,6 +16,7 @@ import { HEADER_HEIGHT } from '../../utils.ts';
 import { ElectionsTable } from './ElectionsTable.tsx';
 
 export const ElectionsView = (): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger, isMutating } = useCreateElection();
   const { data, isLoading, error } = useGetElections();
 
@@ -47,18 +49,18 @@ export const ElectionsView = (): JSX.Element => {
         title={'New Election'}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
-        mutateButtonText={'Create new election'}
+        mutateButtonText={t('createNewElection', 'Create new election')}
         isMutating={isMutating}
       />
       <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
-          <Title order={1}>Elections</Title>
+          <Title order={1}>{t('elections', 'Elections')}</Title>
           <Button
             leftSection={<IconPlus size={16} />}
             variant="light"
             onClick={mutateModalActions.open}
           >
-            New Election
+            {t('newElection', 'New Election')}
           </Button>
         </Group>
         <Divider />
