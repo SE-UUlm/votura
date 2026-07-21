@@ -39,7 +39,7 @@ These layers are also reflected in the directory structure of the backend's sour
 │   ├── 📁 middlewares
 │   │   ├── 📁 pathParamChecks
 │   │   │   └── 📄 (checkgroup).ts
-│   │   └── 📄 (middlware).ts
+│   │   └── 📄 (middleware).ts
 │   ├── 📁 routes
 │   │   └── 📄 (domain).routes.ts
 │   └── 📁 services

@@ -80,6 +80,8 @@
     "fblz",
     "Penpot",
     "unvotable",
-    "bytea"
+    "bytea",
+    "checkgroup",
+    "usecase"
   ]
 }
