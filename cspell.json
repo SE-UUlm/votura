@@ -85,6 +85,7 @@
     "mailpit",
     "axllent",
     "unhashed",
-    "behaviour"
+    "behaviour",
+    "CSPRNG"
   ]
 }
