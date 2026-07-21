@@ -1,5 +1,6 @@
 {
-  "language": "en",
+  "language": "en,de",
+  "import": ["@cspell/dict-de-de/cspell-ext.json"],
   "ignorePaths": [
     "./**/node_modules/**",
     "./**/dist/**",
@@ -17,6 +18,7 @@
     "*.drawio"
   ],
   "words": [
+    "accesstoken",
     "accesskey",
     "Avenir",
     "Chaum",
@@ -50,18 +52,18 @@
     "smallint",
     "startuml",
     "tabler",
-    "Teamscale",
+    "teamscale",
     "timestamptz",
     "turborepo",
     "varchar",
     "votura",
-    "Insertable",
+    "insertable",
     "APIV",
     "unrepresentable",
     "uuidv",
-    "Updateable",
-    "Metadate",
-    "Kysely",
+    "updateable",
+    "metadate",
+    "kysely",
     "fkey",
     "hashedpassword",
     "codegen",
@@ -78,7 +80,7 @@
     "deleter",
     "bpsc",
     "fblz",
-    "Penpot",
+    "penpot",
     "unvotable",
     "bytea",
     "Mailpit",
@@ -86,6 +88,16 @@
     "axllent",
     "unhashed",
     "behaviour",
-    "CSPRNG"
+    "CSPRNG",
+    "postgres",
+    "postgresql",
+    "testid",
+    "userid",
+    "strongwe",
+    "linkstrong",
+    "languagedetector",
+    "openapi",
+    "dracula",
+    "docusaurus"
   ]
 }
