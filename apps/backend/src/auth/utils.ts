@@ -82,9 +82,13 @@ export const generatePasswordResetToken = (): string => {
  * `passwordResetTokenHash` column.
  */
 export const hashPasswordResetToken = (token: string): string => {
-  // This hashes a random reset token for DB lookup, not a user password credential.
-  // SHA-256 is appropriate here, same pattern as hashRefreshToken above.
-  return crypto.createHash('sha256').update(token).digest('hex'); // codeql[js/insufficient-password-hash]
+  // The token is a 256-bit CSPRNG value (see generatePasswordResetToken), not a
+  // user-chosen password. SHA-256 is the correct hash for a high-entropy lookup
+  // token (same pattern as hashRefreshToken above); a slow password hash such as
+  // bcrypt/argon2 would add no security against a value that cannot be brute-forced.
+  // CodeQL js/insufficient-password-hash is a false positive here and is dismissed
+  // in code scanning (the default setup does not honor inline suppression comments).
+  return crypto.createHash('sha256').update(token).digest('hex');
 };
 
 export const getTokenExpiration = (token: string): Date => {
