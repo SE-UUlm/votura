@@ -49,7 +49,9 @@ export const migrateToLatest = async (db: Kysely<any>, migrationFolder: string):
   });
 
   if (error as boolean) {
-    logger.error({ error }, 'Migration failed.');
+    // Log under the `err` key so pino's standard error serializer emits the
+    // message and stack; a plain `{ error }` serializes an Error to `{}`.
+    logger.error({ err: error }, 'Migration failed.');
     process.exit(1);
   }
 

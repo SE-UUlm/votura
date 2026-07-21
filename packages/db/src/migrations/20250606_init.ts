@@ -24,6 +24,7 @@ import {
   VoterRegisterColumnName,
   VoterRegisterFKName,
 } from '../nameEnums.js';
+import { isPgCronAvailable } from './migrationUtils.js';
 
 // --- Helper Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -585,14 +586,6 @@ async function dropTables(db: Kysely<any>): Promise<void> {
   await db.schema.dropTable(TableName.election).ifExists().execute();
   await db.schema.dropTable(TableName.accessTokenBlacklist).ifExists().execute();
   await db.schema.dropTable(TableName.user).ifExists().execute();
-}
-
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-async function isPgCronAvailable(db: Kysely<any>): Promise<boolean> {
-  const result = await sql<{ name: string }>`
-    SELECT name FROM pg_available_extensions WHERE name = 'pg_cron'
-  `.execute(db);
-  return result.rows.length > 0;
 }
 
 // --- Main Migration Functions ---
