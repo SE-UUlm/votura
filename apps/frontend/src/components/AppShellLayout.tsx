@@ -1,12 +1,14 @@
-import { AppShell, Box, Button, Divider, Stack } from '@mantine/core';
-import { IconNotes } from '@tabler/icons-react';
+import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
+import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 
 export const AppShellLayout = (): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const onLogout = (): void => {
@@ -31,11 +33,17 @@ export const AppShellLayout = (): JSX.Element => {
               label={'Elections'}
               icon={<IconNotes size={16} />}
             />
+            <Space h={'xs'} />
+            <RoutingNavbarLink
+              to={'/voterGroups'}
+              label={'Voter Groups & Tokens'}
+              icon={<IconUsersGroup size={16} />}
+            />
           </Box>
           <Box>
             <Divider pb={'md'} />
             <Button variant="subtle" fullWidth onClick={onLogout}>
-              Logout
+              {t('logout', 'Logout')}
             </Button>
           </Box>
         </Stack>
