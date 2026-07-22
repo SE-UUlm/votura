@@ -1,4 +1,5 @@
 import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
+import { isPgCronAvailable } from '../migrationUtils.js';
 import {
   AccessTokenBlacklistColumnName,
   BallotPaperColumnName,
@@ -24,7 +25,6 @@ import {
   VoterRegisterColumnName,
   VoterRegisterFKName,
 } from '../nameEnums.js';
-import { isPgCronAvailable } from './migrationUtils.js';
 
 // --- Helper Functions ---
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
