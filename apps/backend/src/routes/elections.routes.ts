@@ -1,37 +1,29 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import {
-  createBallotPaper,
-  deleteBallotPaper,
-  getBallotPaper,
-  getBallotPapers,
-  updateBallotPaper,
-} from '../controllers/ballotPapers.controllers.js';
-import {
-  createBallotPaperSection,
-  deleteBallotPaperSection,
-  getBallotPaperSection,
-  getBallotPaperSections,
-  updateBallotPaperSection,
-  updateCandidateInBallotPaperSection,
-} from '../controllers/ballotPaperSections.controllers.js';
-import {
-  createCandidate,
-  deleteCandidate,
-  getCandidate,
-  getCandidates,
-  updateCandidate,
-} from '../controllers/candidates.controller.js';
-import {
-  createElection,
-  deleteElection,
-  freezeElection,
-  getElection,
-  getElections,
-  getFreezableElection,
-  unfreezeElection,
-  updateElection,
-} from '../controllers/elections.controllers.js';
+import { createBallotPaper } from '../controllers/ballotPapers/createBallotPaper.uc.js';
+import { deleteBallotPaper } from '../controllers/ballotPapers/deleteBallotPaper.uc.js';
+import { getBallotPaper } from '../controllers/ballotPapers/getBallotPaper.uc.js';
+import { getBallotPapers } from '../controllers/ballotPapers/getBallotPapers.uc.js';
+import { updateBallotPaper } from '../controllers/ballotPapers/updateBallotPaper.uc.js';
+import { createBallotPaperSection } from '../controllers/ballotPaperSections/createBallotPaperSection.uc.js';
+import { deleteBallotPaperSection } from '../controllers/ballotPaperSections/deleteBallotPaperSection.uc.js';
+import { getBallotPaperSection } from '../controllers/ballotPaperSections/getBallotPaperSection.uc.js';
+import { getBallotPaperSections } from '../controllers/ballotPaperSections/getBallotPaperSections.uc.js';
+import { updateBallotPaperSection } from '../controllers/ballotPaperSections/updateBallotPaperSection.uc.js';
+import { updateCandidateInBallotPaperSection } from '../controllers/ballotPaperSections/updateCandidateInBallotPaperSection.uc.js';
+import { createCandidate } from '../controllers/candidates/createCandidate.uc.js';
+import { deleteCandidate } from '../controllers/candidates/deleteCandidate.uc.js';
+import { getCandidate } from '../controllers/candidates/getCandidate.uc.js';
+import { getCandidates } from '../controllers/candidates/getCandidates.uc.js';
+import { updateCandidate } from '../controllers/candidates/updateCandidate.uc.js';
+import { createElection } from '../controllers/elections/createElection.uc.js';
+import { deleteElection } from '../controllers/elections/deleteElection.uc.js';
+import { freezeElection } from '../controllers/elections/freezeElection.uc.js';
+import { getElection } from '../controllers/elections/getElection.uc.js';
+import { getElections } from '../controllers/elections/getElections.uc.js';
+import { getFreezableElection } from '../controllers/elections/getFreezableElection.uc.js';
+import { unfreezeElection } from '../controllers/elections/unfreezeElection.uc.js';
+import { updateElection } from '../controllers/elections/updateElection.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotPaperChecks.js';
