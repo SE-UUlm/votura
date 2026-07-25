@@ -3,12 +3,11 @@
  * Please do not edit it manually.
  */
 
-import type { ColumnType } from 'kysely';
+import type { ColumnType } from "kysely";
 
-export type Generated<T> =
-  T extends ColumnType<infer S, infer I, infer U>
-    ? ColumnType<S, I | undefined, U>
-    : ColumnType<T, T | undefined, T>;
+export type Generated<T> = T extends ColumnType<infer S, infer I, infer U>
+  ? ColumnType<S, I | undefined, U>
+  : ColumnType<T, T | undefined, T>;
 
 export type Int8 = ColumnType<string, bigint | number | string, bigint | number | string>;
 
@@ -139,6 +138,7 @@ export interface User {
   passwordResetTokenHash: string | null;
   refreshTokenExpiresAt: Timestamp | null;
   refreshTokenHash: string | null;
+  role: Generated<number>;
   verified: Generated<boolean>;
 }
 
@@ -183,8 +183,8 @@ export interface DB {
   ballotPaperSection: BallotPaperSection;
   ballotPaperSectionCandidate: BallotPaperSectionCandidate;
   candidate: Candidate;
-  'cron.job': CronJob;
-  'cron.job_run_details': CronJobRunDetails;
+  "cron.job": CronJob;
+  "cron.job_run_details": CronJobRunDetails;
   election: Election;
   failedLoginAttempt: FailedLoginAttempt;
   user: User;
