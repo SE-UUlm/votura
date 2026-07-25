@@ -23,7 +23,7 @@
     "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
     "@votura/votura-crypto": "^0.0.3",
-    "axios": "^1.10.0",
+    "axios": "^1.18.1",
     "axios-auth-refresh": "^3.3.6",
     "dayjs": "^1.11.13",
     "i18next": "^26.3.1",
