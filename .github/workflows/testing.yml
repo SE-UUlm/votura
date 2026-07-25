@@ -94,7 +94,7 @@ jobs:
         with:
           server: 'https://exia.informatik.uni-ulm.de/teamscale'
           project: 'b3ef710d-5a48-4918-9383-7381b21e45e2'
-          user: 'thorbencarl'
+          user: 'jensostertag'
           accesskey: ${{ secrets.TEAMSCALE_ACCESS_KEY }}
           partition: 'Github Action > ${{ github.ref_name }} ${{ github.run_id }}'
           format: CLOVER
