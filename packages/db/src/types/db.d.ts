@@ -128,6 +128,7 @@ export interface FailedLoginAttempt {
 }
 
 export interface User {
+  active: Generated<boolean>;
   createdAt: Generated<Timestamp>;
   email: string;
   emailVerificationTokenExpiresAt: Timestamp | null;
