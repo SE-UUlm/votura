@@ -24,11 +24,11 @@ jobs:
           apt-get update
           apt-get install -y wget unzip
       - name: Checkout repository
-        uses: actions/checkout@v6
+        uses: actions/checkout@v7
         with:
           fetch-depth: 0
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v7
         with:
           node-version-file: package.json
           cache: npm
@@ -90,7 +90,7 @@ jobs:
         run: |
           npm run test
       - name: Teamscale Upload
-        uses: cqse/teamscale-upload-action@v2.9.6
+        uses: cqse/teamscale-upload-action@v2.10.0
         with:
           server: 'https://exia.informatik.uni-ulm.de/teamscale'
           project: 'b3ef710d-5a48-4918-9383-7381b21e45e2'
