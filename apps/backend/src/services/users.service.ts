@@ -48,6 +48,7 @@ export async function findUserBy(
     createdAt: user.createdAt.toISOString(),
     modifiedAt: user.modifiedAt.toISOString(),
     email: user.email,
+    role: user.role,
   };
 }
 

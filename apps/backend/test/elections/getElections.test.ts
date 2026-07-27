@@ -19,6 +19,7 @@ describe('GET /elections', () => {
     await createUser({
       email: 'user@votura.org',
       password: 'password',
+      role: 1,
     });
 
     const user = await findUserBy({
