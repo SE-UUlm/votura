@@ -82,8 +82,10 @@ export const authenticatableUserObject = userObject.pick({ email: true, password
 
 export type AuthenticatableUser = z.infer<typeof authenticatableUserObject>;
 
-export const authenticatableUserObjectSchema = z.toJSONSchema(authenticatableUserObject, toJsonSchemaParams);
-
+export const authenticatableUserObjectSchema = z.toJSONSchema(
+  authenticatableUserObject,
+  toJsonSchemaParams,
+);
 
 export const apiTokenUserObject = userObject.pick({
   refreshToken: true,
