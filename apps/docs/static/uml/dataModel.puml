@@ -16,6 +16,7 @@ entity "user" as user #006b75 {
     refreshTokenHash : VARCHAR(64) | NULL
     refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     * role : INTEGER
+    * active : BOOLEAN
     --
 }
 
