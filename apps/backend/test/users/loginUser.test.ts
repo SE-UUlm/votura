@@ -19,6 +19,7 @@ describe(`POST /users/login`, () => {
   const loginUser = insertableUserObject.parse({
     email: 'loginUser@votura.org',
     password: 'MyStrong!Password123',
+    role: 1,
   });
 
   beforeAll(async () => {

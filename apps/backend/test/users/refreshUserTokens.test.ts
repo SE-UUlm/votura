@@ -27,6 +27,7 @@ describe(`POST /users/refreshTokens`, () => {
   const refreshUser = insertableUserObject.parse({
     email: 'refreshUser@votura.org',
     password: 'MyStrong!Password123',
+    role: 1,
   });
 
   beforeAll(async () => {
