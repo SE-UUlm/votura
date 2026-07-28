@@ -1,6 +1,6 @@
 import {
   apiTokenUserObject,
-  insertableUserObject,
+  authenticatableUserObject,
   response400Object,
   response401Object,
   response429Object,
@@ -16,13 +16,13 @@ describe(`POST /users/login`, () => {
   let requestPath = '';
   let user: SelectableUser | null = null;
   // create a test user only for this test to not have race conditions with token refresh tests
-  const loginUser = insertableUserObject.parse({
+  const loginUser = authenticatableUserObject.parse({
     email: 'loginUser@votura.org',
     password: 'MyStrong!Password123',
   });
 
   beforeAll(async () => {
-    await createUser(loginUser);
+    await createUser({ ...loginUser, role: 1 });
     user = await findUserBy({ email: loginUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');

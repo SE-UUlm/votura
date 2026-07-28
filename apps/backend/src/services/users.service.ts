@@ -48,6 +48,7 @@ export async function findUserBy(
     createdAt: user.createdAt.toISOString(),
     modifiedAt: user.modifiedAt.toISOString(),
     email: user.email,
+    role: user.role,
   };
 }
 
@@ -59,6 +60,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
     .values({
       email: insertableUser.email,
       passwordHash: hashedPassword,
+      role: insertableUser.role,
     })
     .executeTakeFirstOrThrow();
 }
