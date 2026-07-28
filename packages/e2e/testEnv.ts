@@ -95,7 +95,9 @@ export const stopTestEnv = async (): Promise<void> => {
       await new Promise<void>((resolve) => {
         const killer = spawn('taskkill', ['/pid', String(backendProcess?.pid), '/T', '/F']);
 
-        killer.on('close', () => { resolve(); });
+        killer.on('close', () => {
+          resolve();
+        });
       });
     } else {
       backendProcess.kill();
