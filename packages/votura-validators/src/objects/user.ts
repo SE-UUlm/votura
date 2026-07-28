@@ -57,14 +57,20 @@ export const userObject = z.object({
     example: '0',
   }),
   active: z.boolean().register(voturaMetadataRegistry, {
-    description: 'Whether the user account is active or not. Inactive user accounts are not allowed to log in or to perform actions in the application.',
-    example: 'true'
+    description:
+      'Whether the user account is active or not. Inactive user accounts are not allowed to log in or to perform actions in the application.',
+    example: 'true',
   }),
 });
 
 export type User = z.infer<typeof userObject>;
 
-export const insertableUserObject = userObject.pick({ email: true, password: true, role: true, active: true });
+export const insertableUserObject = userObject.pick({
+  email: true,
+  password: true,
+  role: true,
+  active: true,
+});
 
 export type InsertableUser = z.infer<typeof insertableUserObject>;
 
