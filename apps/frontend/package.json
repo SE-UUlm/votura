@@ -19,15 +19,19 @@
     "@mantine/form": "^8.0.1",
     "@mantine/hooks": "^8.0.0",
     "@mantine/notifications": "^8.0.1",
-    "@repo/votura-validators": "*",
     "@repo/votura-ballot-box": "*",
+    "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
     "@votura/votura-crypto": "^0.0.3",
-    "axios": "^1.10.0",
+    "axios": "^1.18.1",
     "axios-auth-refresh": "^3.3.6",
     "dayjs": "^1.11.13",
+    "i18next": "^26.3.1",
+    "i18next-browser-languagedetector": "^8.2.1",
+    "i18next-http-backend": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-i18next": "^17.0.8",
     "react-router": "^7.6.0",
     "swr": "^2.3.3",
     "zod": "3.25.57"
@@ -40,11 +44,11 @@
     "eslint": "^9.25.1",
     "eslint-plugin-react-hooks": "^6.1.1",
     "eslint-plugin-react-refresh": "^0.4.19",
-    "postcss": "^8.5.3",
+    "postcss": "^8.5.23",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.5.3",
     "typescript": "^5.8.2",
-    "vite": "^7.0.4"
+    "vite": "^7.3.5"
   }
 }

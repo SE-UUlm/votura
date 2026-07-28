@@ -12,10 +12,12 @@ import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
 import { insertableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
 
 export const RegisterView = (): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger, isMutating } = useRegisterUser();
   const navigate = useNavigate();
 
@@ -29,14 +31,29 @@ export const RegisterView = (): JSX.Element => {
     validate: {
       email: (value) => {
         const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : 'Invalid email address.';
+        const userErrorMessage: string = t('invalidEmailAddress', 'Invalid email address.');
+        if (!parsed.success) {
+          return userErrorMessage;
+        }
+        return null;
       },
       password: (value) => {
         const parsed = insertableUserObject.shape.password.safeParse(value);
-        return parsed.success ? null : 'Password does not meet requirements.';
+        const userErrorMessage: string = t(
+          'passwordDoesNotMeetRequirements',
+          'Password does not meet requirements.',
+        );
+        if (!parsed.success) {
+          return userErrorMessage;
+        }
+        return null;
       },
       confirmPassword: (value, values) => {
-        return value === values.password ? null : 'Passwords do not match.';
+        const userErrorMessage: string = t('passwordsDoNotMatch', 'Passwords do not match.');
+        if (value !== values.password) {
+          return userErrorMessage;
+        }
+        return null;
       },
     },
   });
@@ -53,12 +70,14 @@ export const RegisterView = (): JSX.Element => {
       });
 
       notifications.show({
-        title: 'Almost done!',
+        title: t('almostDone', 'Almost done!'),
         message: (
           <>
-            <strong>We have sent you a verification link.</strong>
+            <strong>
+              {t('weHaveSentYouAVerificationLink', 'We have sent you a verification link.')}
+            </strong>
             <br />
-            Please check your email inbox.
+            {t('pleaseCheckYourEmailInbox', 'Please check your email inbox.')}
           </>
         ),
         color: 'green',
@@ -66,12 +85,15 @@ export const RegisterView = (): JSX.Element => {
       });
       navigate('/login');
     } catch (e: unknown) {
-      const message =
-        e instanceof Error
-          ? e.message
-          : 'Something went wrong during registration. Please try again.';
+      let message: string = t(
+        'somethingWentWrongDuringRegistrationPleaseTryAgain',
+        'Something went wrong during registration. Please try again.',
+      );
+      if (e instanceof Error) {
+        message = e.message;
+      }
       notifications.show({
-        title: 'Registration failed',
+        title: t('registrationFailed', 'Registration failed'),
         message: message,
         color: 'yellow',
         autoClose: 15000,
@@ -96,24 +118,24 @@ export const RegisterView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={'Password'}
-                placeholder={'My secure password...'}
+                placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
               <PasswordInput
                 withAsterisk
                 label={'Password confirmation'}
-                placeholder={'Repeat my secure password...'}
+                placeholder={t('repeatMySecurePassword', 'Repeat my secure password...')}
                 key={form.key('confirmPassword')}
                 {...form.getInputProps('confirmPassword')}
               />
               <Button fullWidth type={'submit'} loading={isMutating}>
-                Sign Up
+                {t('signUp', 'Sign Up')}
               </Button>
             </Stack>
           </Box>
-          <Button variant="subtle" onClick={() => navigate('/login')}>
-            Back To Login
+          <Button variant="subtle" onClick={(): void | Promise<void> => navigate('/login')}>
+            {t('backToLogin', 'Back To Login')}
           </Button>
         </Stack>
       </Center>
