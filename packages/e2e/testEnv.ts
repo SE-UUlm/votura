@@ -68,7 +68,6 @@ export const startTestEnv = async (): Promise<void> => {
   logger.info('Starting the backend...');
   const isWindows = process.platform === 'win32';
   const npmCmd = isWindows ? 'npm.cmd' : 'npm';
-  const shellMode = isWindows ? true : undefined;
   backendProcess = spawn(npmCmd, ['run', 'start'], {
     cwd: path.join(DIRNAME, '../../apps/backend'),
     env: {
@@ -79,7 +78,7 @@ export const startTestEnv = async (): Promise<void> => {
       DATABASE_URL: dbConnectionUri,
     },
     stdio: 'inherit',
-    shell: shellMode,
+    shell: isWindows,
   });
   logger.info('Waiting for a heartbeat from the backend...');
   await waitOn({
@@ -91,6 +90,20 @@ export const startTestEnv = async (): Promise<void> => {
 };
 
 export const stopTestEnv = async (): Promise<void> => {
+  if (backendProcess?.pid != null) {
+    if (process.platform === 'win32') {
+      await new Promise<void>((resolve) => {
+        const killer = spawn('taskkill', ['/pid', String(backendProcess?.pid), '/T', '/F']);
+
+        killer.on('close', () => resolve());
+      });
+    } else {
+      backendProcess.kill();
+    }
+  }
+
   await dbContainer?.stop();
-  backendProcess?.kill();
+
+  backendProcess = null;
+  dbContainer = null;
 };
