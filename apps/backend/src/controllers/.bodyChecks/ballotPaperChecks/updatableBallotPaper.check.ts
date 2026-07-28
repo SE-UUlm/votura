@@ -5,12 +5,11 @@ import {
   type UpdateableBallotPaper,
 } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
-import { HttpStatusCode } from '../../httpStatusCode.js';
-import { getBallotPaperMaxVotes } from '../../services/ballotPapers.service.js';
-import { getMaxBPSMaxVotesForBP } from '../../services/ballotPaperSections.service.js';
-import type { BodyCheckValidationError } from './bodyCheckValidationError.js';
+import { HttpStatusCode } from '../../../httpStatusCode.js';
+import { getBallotPaperMaxVotes } from '../../../services/ballotPapers.service.js';
+import { getMaxBPSMaxVotesForBP } from '../../../services/ballotPaperSections.service.js';
+import type { BodyCheckValidationError } from '../bodyCheckValidationError.js';
 
-//----------- Ballot Paper MaxVotes and MaxVotesPerCandidate Checks -----------
 export enum BallotPaperBodyCheckValidationErrorMessage {
   maxVotesExceeded = 'The max votes for the ballot paper cannot be lower than the max votes of any related ballot paper section.',
   maxVotesPerCandidateExceeded = 'The max votes per candidate for the ballot paper cannot be lower than the max votes per candidate of any related ballot paper section.',

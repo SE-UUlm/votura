@@ -92,6 +92,8 @@
     "languagedetector",
     "openapi",
     "dracula",
-    "docusaurus"
+    "docusaurus",
+    "checkgroup",
+    "usecase"
   ]
 }
