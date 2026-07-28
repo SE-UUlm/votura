@@ -60,6 +60,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
     .values({
       email: insertableUser.email,
       passwordHash: hashedPassword,
+      role: insertableUser.role,
     })
     .executeTakeFirstOrThrow();
 }

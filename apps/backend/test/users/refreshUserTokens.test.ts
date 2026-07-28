@@ -1,6 +1,6 @@
 import {
   apiTokenUserObject,
-  insertableUserObject,
+  authenticatableUserObject,
   response400Object,
   response401Object,
   type SelectableUser,
@@ -24,14 +24,13 @@ describe(`POST /users/refreshTokens`, () => {
   let user: SelectableUser | null = null;
   let accessToken: string | null = null;
   let refreshToken: string | null = null;
-  const refreshUser = insertableUserObject.parse({
+  const refreshUser = authenticatableUserObject.parse({
     email: 'refreshUser@votura.org',
     password: 'MyStrong!Password123',
-    role: 1,
   });
 
   beforeAll(async () => {
-    await createUser(refreshUser);
+    await createUser({ ...refreshUser, role: 1 });
     user = await findUserBy({ email: refreshUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
