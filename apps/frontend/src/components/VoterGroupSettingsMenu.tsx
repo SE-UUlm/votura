@@ -2,7 +2,7 @@ import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
-import type { JSX, ReactNode } from 'react';
+import { type JSX, type ReactNode, useState } from 'react';
 import {
   DeleteVoterGroupModal,
   type DeleteVoterGroupModalProps,
@@ -11,6 +11,7 @@ import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
 } from './MutateVoterGroupDrawer.tsx';
+import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
 
 export interface VoterGroupsTableMenuProps {
   voterGroup: SelectableVoterGroup;
@@ -29,6 +30,20 @@ export const VoterGroupsSettingsMenu = ({
 }: VoterGroupsTableMenuProps): JSX.Element => {
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
+  const [confirmDownloadOpened, setConfirmDownloadOpened] = useState(false);
+
+  const handleOpenConfirm = (): void => {
+    setConfirmDownloadOpened(true);
+  };
+
+  const handleConfirmClose = (): void => {
+
+    setConfirmDownloadOpened(false);
+  };
+
+  const handleDownload = (): void => {
+  };
+
 
   return (
     <>
@@ -50,7 +65,7 @@ export const VoterGroupsSettingsMenu = ({
       <Menu position="bottom-end" offset={0}>
         <Menu.Target>{targetElement}</Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item color="red" leftSection={<IconKey size={14} />}>
+          <Menu.Item color="red" leftSection={<IconKey size={14} />} onClick={handleOpenConfirm}>
             Generate/Delete voter tokens
           </Menu.Item>
           <Menu.Item
@@ -69,6 +84,11 @@ export const VoterGroupsSettingsMenu = ({
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
+      <DownloadVoterTokensWarningModal
+        opened={confirmDownloadOpened}
+        onClose={handleConfirmClose}
+        onConfirm={handleDownload}
+      ></DownloadVoterTokensWarningModal>
     </>
   );
 };

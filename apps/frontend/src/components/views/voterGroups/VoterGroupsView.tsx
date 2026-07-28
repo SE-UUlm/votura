@@ -1,11 +1,14 @@
 import { Button, Divider, Flex, Group, Loader, Space, ThemeIcon, Title } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { IconBug, IconPlus } from '@tabler/icons-react';
+import { IconBug, IconDownload, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useCreateVoterGroup } from '../../../swr/voterGroups/useCreateVoterGroup.ts';
 import { useGetVoterGroups } from '../../../swr/voterGroups/useGetVoterGroups.ts';
 import { getAddSuccessVoterGroupConfig } from '../../../utils/notifications.ts';
+import {
+  DownloadVoterGroupsDrawer,
+} from '../../DownloadVoterGroupsDrawer.tsx';
 import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
@@ -18,6 +21,7 @@ export const VoterGroupsView = (): JSX.Element => {
   const { data, isLoading, error } = useGetVoterGroups();
 
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
+  const [downloadModalOpened, downloadModalActions] = useDisclosure(false);
 
   const onMutate: MutateVoterGroupDrawerProps['onMutate'] = async (partial) => {
     await trigger(partial);
@@ -39,6 +43,12 @@ export const VoterGroupsView = (): JSX.Element => {
 
   return (
     <>
+      <DownloadVoterGroupsDrawer
+        opened={downloadModalOpened}
+        title={'Download Voter Groups'}
+        onClose={downloadModalActions.close}
+        voterGroups={data}
+      />
       <MutateVoterGroupDrawer
         opened={mutateModalOpened}
         title={'New Voter Group'}
@@ -50,14 +60,24 @@ export const VoterGroupsView = (): JSX.Element => {
       <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
           <Title order={1}>Voter Groups</Title>
-          <Button
-            leftSection={<IconPlus size={16} />}
-            data-testid="new-voter-group-btn"
-            variant="light"
-            onClick={mutateModalActions.open}
-          >
-            New Voter Group
-          </Button>
+          <Group gap={'sm'}>
+            <Button
+              leftSection={<IconDownload size={16} />}
+              data-testid="download-voter-groups-btn"
+              variant="light"
+              onClick={downloadModalActions.open}
+            >
+              Download Token Groups
+            </Button>
+            <Button
+              leftSection={<IconPlus size={16} />}
+              data-testid="new-voter-group-btn"
+              variant="light"
+              onClick={mutateModalActions.open}
+            >
+              New Voter Group
+            </Button>
+          </Group>
         </Group>
         <Divider />
         <Space h={'md'} />
