@@ -56,11 +56,15 @@ export const userObject = z.object({
     description: 'The role of the user. 0 stands for normal users, 1 for administrators.',
     example: '0',
   }),
+  active: z.boolean().register(voturaMetadataRegistry, {
+    description: 'Whether the user account is active or not. Inactive user accounts are not allowed to log in or to perform actions in the application.',
+    example: 'true'
+  }),
 });
 
 export type User = z.infer<typeof userObject>;
 
-export const insertableUserObject = userObject.pick({ email: true, password: true, role: true });
+export const insertableUserObject = userObject.pick({ email: true, password: true, role: true, active: true });
 
 export type InsertableUser = z.infer<typeof insertableUserObject>;
 
@@ -72,6 +76,7 @@ export const selectableUserObject = userObject.pick({
   modifiedAt: true,
   email: true,
   role: true,
+  active: true,
 });
 
 export type SelectableUser = z.infer<typeof selectableUserObject>;

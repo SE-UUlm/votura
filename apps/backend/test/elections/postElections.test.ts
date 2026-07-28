@@ -30,6 +30,7 @@ describe('POST /elections', () => {
       email: 'user@votura.org',
       password: 'password',
       role: 1,
+      active: true,
     });
 
     const user = await findUserBy({
