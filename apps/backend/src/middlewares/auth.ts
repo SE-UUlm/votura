@@ -55,10 +55,17 @@ export const authenticateAccessToken = async (
     // Check if the user exists in the database and is active
     const user = await findUserBy({ id: decodedAccessToken.sub });
 
-    if (user?.active === false) {
+    if (user === null) {
       res
         .status(HttpStatusCode.unauthorized)
         .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
+      return;
+    }
+
+    if (!user.active) {
+      res
+          .status(HttpStatusCode.unauthorized)
+          .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
       return;
     }
 
