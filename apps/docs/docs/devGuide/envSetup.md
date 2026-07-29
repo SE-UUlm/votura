@@ -75,6 +75,7 @@ You may change their values but `PEPPER` and `DATABASE_URL` should be the same f
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 BITS_PRIME_P=20
+KEY_GEN_TIMEOUT_MINUTES=15
 ```
 
 **Frontend**:
