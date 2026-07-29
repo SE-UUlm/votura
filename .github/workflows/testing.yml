@@ -50,6 +50,7 @@ jobs:
           echo "PEPPER=\"3107ee33f20c08c08e902974f845e1347d01ebf14aae9369c8700bf51688d107\"" > .env
           echo "TERMINAL_LOG_LEVEL=\"warn\"" >> .env
           echo "BITS_PRIME_P=20" >> .env
+          echo "KEY_GEN_TIMEOUT_MINUTES=15" >> .env
       - name: Generate .env file in e2e
         run: |
           cd packages/e2e

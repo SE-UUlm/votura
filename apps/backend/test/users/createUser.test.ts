@@ -18,7 +18,7 @@ describe(`POST /users`, () => {
     const res = await request(app).post(requestPath).send({
       email: 'invalid-email',
       password: 'short',
-      role: 1,
+      role: 'admin',
       active: true,
     });
     expect(res.status).toBe(HttpStatusCode.badRequest);

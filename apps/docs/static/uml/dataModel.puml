@@ -15,10 +15,14 @@ entity "user" as user #006b75 {
     passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     refreshTokenHash : VARCHAR(64) | NULL
     refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
-    * role : INTEGER
+    * role : VARCHAR
     * active : BOOLEAN
     --
 }
+
+note as N5
+The roles are "converted" to enums in JS
+end note
 
 entity "accessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
@@ -194,5 +198,6 @@ voterGroups "1"--"1..*" voters : contains >
 voters -- N3
 votes -- N4
 failedLoginAttempt "*"--"0..1" user : belongs to >
+user -- N5
 
 @enduml

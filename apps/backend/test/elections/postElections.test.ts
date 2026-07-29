@@ -29,7 +29,7 @@ describe('POST /elections', () => {
     await createUser({
       email: 'user@votura.org',
       password: 'password',
-      role: 1,
+      role: 'admin',
       active: true,
     });
 

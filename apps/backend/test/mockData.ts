@@ -14,13 +14,13 @@ const STRONG_PWD = 'MyStrong!Password123';
 export const demoUser = insertableUserObject.parse({
   email: 'user@votura.org',
   password: STRONG_PWD,
-  role: 1,
+  role: 'admin',
   active: true,
 });
 export const demoUser2 = insertableUserObject.parse({
   email: 'user2@votura.org',
   password: STRONG_PWD,
-  role: 0,
+  role: 'user',
   active: true,
 });
 

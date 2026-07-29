@@ -5,7 +5,7 @@ import { TableName, UserColumnName } from '../nameEnums.js';
 async function createRoleColumn(db: Kysely<any>): Promise<void> {
   await db.schema
     .alterTable(TableName.user)
-    .addColumn(UserColumnName.role, 'integer', (col) => col.notNull().defaultTo(0))
+    .addColumn(UserColumnName.role, 'varchar', (col) => col.notNull().defaultTo('user'))
     .execute();
 }
 
