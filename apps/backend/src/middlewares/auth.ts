@@ -64,8 +64,8 @@ export const authenticateAccessToken = async (
 
     if (!user.active) {
       res
-          .status(HttpStatusCode.unauthorized)
-          .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
+        .status(HttpStatusCode.unauthorized)
+        .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
       return;
     }
 
