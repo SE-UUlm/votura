@@ -49,7 +49,7 @@ describe(`POST /users/login`, () => {
   //  expect(parseResult.success).toBe(true);
   //});
 
-  it('200: should log in a verified user with valid credentials', async () => {
+  it('200: should log in a verified active user with valid credentials', async () => {
     if (user === null) {
       throw new Error('Test user not found');
     }
@@ -76,6 +76,26 @@ describe(`POST /users/login`, () => {
 
   it('401: should return error for invalid credentials', async () => {
     const res = await testLogin(loginUser.email, loginUser.password + 'invalid');
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+
+  it('401: should return error for inactive users', async () => {
+    await createUser({
+      email: 'inactiveLoginUser@votura.org',
+      password: 'MyStrong!Password123',
+      role: 'admin',
+      active: false,
+    });
+
+    const inactiveUser = await findUserBy({ email: 'inactiveLoginUser@votura.org' });
+    if (inactiveUser === null) {
+      throw new Error('Failed to create inactive user');
+    }
+
+    const res = await testLogin(inactiveUser.email, loginUser.password);
     expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);
