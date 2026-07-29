@@ -22,7 +22,7 @@ describe(`POST /users/login`, () => {
   });
 
   beforeAll(async () => {
-    await createUser({ ...loginUser, role: 1 });
+    await createUser({ ...loginUser, role: 'admin' });
     user = await findUserBy({ email: loginUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');

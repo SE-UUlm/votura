@@ -139,7 +139,7 @@ export interface User {
   passwordResetTokenHash: string | null;
   refreshTokenExpiresAt: Timestamp | null;
   refreshTokenHash: string | null;
-  role: Generated<number>;
+  role: Generated<string>;
   verified: Generated<boolean>;
 }
 
