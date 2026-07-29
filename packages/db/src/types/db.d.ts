@@ -108,6 +108,7 @@ export interface Election {
   electionCreatorId: string;
   generator: Numeric | null;
   id: Generated<string>;
+  keyGenStartedAt: Timestamp | null;
   modifiedAt: Generated<Timestamp>;
   name: string;
   primeP: Numeric | null;
