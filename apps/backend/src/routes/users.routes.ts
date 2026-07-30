@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { changePassword } from '../controllers/users/changePassword.uc.js';
 import { createUser } from '../controllers/users/createUser.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
 import { login } from '../controllers/users/login.uc.js';
@@ -34,6 +35,13 @@ usersRouter.post(
   acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   refreshTokens,
+);
+usersRouter.post(
+  '/changePassword',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  changePassword,
 );
 usersRouter.post(
   '/logout',
