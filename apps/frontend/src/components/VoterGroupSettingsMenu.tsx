@@ -1,20 +1,20 @@
 import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
 import { type JSX, type ReactNode, useState } from 'react';
+import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
+import { getRPCErrorConfig } from '../utils/notifications.ts';
 import {
   DeleteVoterGroupModal,
   type DeleteVoterGroupModalProps,
 } from './DeleteVoterGroupModal.tsx';
+import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
 import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
 } from './MutateVoterGroupDrawer.tsx';
-import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
-import {useCreateVoterTokens} from "../swr/voterGroups/useCreateVoterTokens.ts";
-import {notifications} from "@mantine/notifications";
-import {getRPCErrorConfig} from "../utils/notifications.ts";
 
 export interface VoterGroupsTableMenuProps {
   voterGroup: SelectableVoterGroup;
@@ -46,47 +46,63 @@ export const VoterGroupsSettingsMenu = ({
   };
 
   const handleDownload = async (): Promise<void> => {
-      try {
-          setIsDownloading(true)
-          const generatedKeys = await trigger(undefined);
+    try {
+      setIsDownloading(true);
 
-          const downloadData = {
-              exportDate: new Date().toISOString(),
-              voterGroups: [
-                  {
-                      name: voterGroup.name,
-                      generatedKeys,
-                  },
-              ],
-          };
+      const generatedKeys = await trigger(undefined);
+      downloadVoterTokens(generatedKeys);
 
-          const jsonString = JSON.stringify(downloadData, null, 2);
-          const blob = new Blob([jsonString], {
-              type: 'application/json',
-          });
-          const url = URL.createObjectURL(blob);
-          const link = document.createElement('a');
-          link.href = url;
-          link.download = `voter-tokens-export-${Date.now()}.json`;
-          document.body.appendChild(link);
-          link.click();
-          document.body.removeChild(link);
-          URL.revokeObjectURL(url);
-
-          setConfirmDownloadOpened(false);
-
-      } catch (error) {
-          notifications.show(
-              getRPCErrorConfig(
-                  error instanceof Error ? error.message : 'Unknown download error',
-              ),
-          );
-      } finally {
-          setIsDownloading(false);
-      }
+      setConfirmDownloadOpened(false);
+    } catch (error) {
+      handleDownloadError(error);
+    } finally {
+      setIsDownloading(false);
+    }
   };
 
-    return (
+  const downloadVoterTokens = (generatedKeys: string[]): void => {
+    const downloadData = createDownloadData(generatedKeys);
+
+    const jsonString = JSON.stringify(downloadData, null, 2);
+
+    const blob = new Blob([jsonString], {
+      type: 'application/json',
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `voter-tokens-export-${Date.now()}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
+  const createDownloadData = (generatedKeys: string[]) => {
+    return {
+      exportDate: new Date().toISOString(),
+      voterGroups: [
+        {
+          name: voterGroup.name,
+          generatedKeys,
+        },
+      ],
+    };
+  };
+
+  const handleDownloadError = (error: unknown): void => {
+    if (error instanceof Error) {
+      notifications.show(getRPCErrorConfig(error.message));
+    } else {
+      notifications.show(getRPCErrorConfig('Unknown download error'));
+    }
+  };
+
+  return (
     <>
       <DeleteVoterGroupModal
         voterGroup={voterGroup}

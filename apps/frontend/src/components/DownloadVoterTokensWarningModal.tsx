@@ -29,8 +29,8 @@ export const DownloadVoterTokensWarningModal = ({
         <Text fw={700}>This will generate new voter tokens.</Text>
         <Stack gap={4}>
           <Text size={'sm'} c={'dimmed'}>
-            Generating new voter tokens will invalidate all existing tokens.
-            Proceed only if you want to download the new JSON file now.
+            Generating new voter tokens will invalidate all existing tokens. Proceed only if you
+            want to download the new JSON file now.
           </Text>
         </Stack>
       </Group>
@@ -45,4 +45,3 @@ export const DownloadVoterTokensWarningModal = ({
     </Modal>
   );
 };
-

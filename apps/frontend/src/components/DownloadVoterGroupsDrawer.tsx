@@ -1,18 +1,9 @@
-import {
-  Box,
-  Button,
-  Checkbox,
-  Drawer,
-  Group,
-  type ModalProps,
-  Stack,
-  Text,
-} from '@mantine/core';
+import { Box, Button, Checkbox, Drawer, Group, type ModalProps, Stack, Text } from '@mantine/core';
+import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { type JSX, useEffect, useMemo, useRef, useState } from 'react';
 import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
 import { getRPCErrorConfig } from '../utils/notifications.ts';
-import { notifications } from '@mantine/notifications';
 import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
 
 interface DownloadedVoterGroupTokens {
@@ -27,7 +18,10 @@ interface DownloadableVoterGroupCheckboxProps {
   isDownloading: boolean;
   downloadRequestId: number;
   onToggle: (groupId: SelectableVoterGroup['id']) => void;
-  onTokensGenerated: (groupId: SelectableVoterGroup['id'], tokens: DownloadedVoterGroupTokens) => void;
+  onTokensGenerated: (
+    groupId: SelectableVoterGroup['id'],
+    tokens: DownloadedVoterGroupTokens,
+  ) => void;
   onDownloadError: (groupName: SelectableVoterGroup['name'], error: Error) => void;
 }
 
@@ -42,6 +36,26 @@ const DownloadableVoterGroupCheckbox = ({
 }: DownloadableVoterGroupCheckboxProps): JSX.Element => {
   const { trigger } = useCreateVoterTokens({ voterGroupId: voterGroup.id });
   const lastHandledRequestId = useRef<number>(0);
+  const normalizeDownloadError = (error: unknown): Error => {
+    if (error instanceof Error) {
+      return error;
+    }
+
+    return new Error('Unknown download error');
+  };
+  const generateTokens = async (): Promise<void> => {
+    try {
+      const generatedKeys = await trigger(undefined);
+
+      onTokensGenerated(voterGroup.id, {
+        name: voterGroup.name,
+        numberOfVoters: voterGroup.numberOfVoters,
+        generatedKeys,
+      });
+    } catch (error: unknown) {
+      onDownloadError(voterGroup.name, normalizeDownloadError(error));
+    }
+  };
 
   useEffect(() => {
     if (!isSelected || !isDownloading || downloadRequestId === 0) {
@@ -54,29 +68,8 @@ const DownloadableVoterGroupCheckbox = ({
 
     lastHandledRequestId.current = downloadRequestId;
 
-    void trigger(undefined)
-      .then((generatedKeys) => {
-        onTokensGenerated(voterGroup.id, {
-          name: voterGroup.name,
-          numberOfVoters: voterGroup.numberOfVoters,
-          generatedKeys,
-        });
-      })
-      .catch((error: unknown) => {
-        const normalizedError = error instanceof Error ? error : new Error('Unknown download error');
-        onDownloadError(voterGroup.name, normalizedError);
-      });
-  }, [
-    downloadRequestId,
-    isDownloading,
-    isSelected,
-    onDownloadError,
-    onTokensGenerated,
-    trigger,
-    voterGroup.id,
-    voterGroup.name,
-    voterGroup.numberOfVoters,
-  ]);
+    void generateTokens();
+  }, [downloadRequestId, isDownloading, isSelected]);
 
   return (
     <Checkbox
@@ -84,7 +77,9 @@ const DownloadableVoterGroupCheckbox = ({
       label={voterGroup.name}
       checked={isSelected}
       disabled={isDownloading}
-      onChange={(): void => onToggle(voterGroup.id)}
+      onChange={(): void => {
+        onToggle(voterGroup.id);
+      }}
     />
   );
 };
@@ -104,9 +99,9 @@ export const DownloadVoterGroupsDrawer = ({
 }: DownloadVoterGroupsDrawerProps): JSX.Element => {
   const [selectedGroupIds, setSelectedGroupIds] = useState<Set<string>>(new Set());
   const [downloadRequestId, setDownloadRequestId] = useState(0);
-  const [downloadResults, setDownloadResults] = useState<Record<string, DownloadedVoterGroupTokens>>(
-    {},
-  );
+  const [downloadResults, setDownloadResults] = useState<
+    Record<string, DownloadedVoterGroupTokens>
+  >({});
   const [downloadError, setDownloadError] = useState<string | null>(null);
   const [isDownloading, setIsDownloading] = useState(false);
   const [confirmDownloadOpened, setConfirmDownloadOpened] = useState(false);
@@ -153,14 +148,62 @@ export const DownloadVoterGroupsDrawer = ({
     setConfirmDownloadOpened(false);
   };
 
+  const downloadVoterTokensJson = (): void => {
+    const downloadData = {
+      exportDate: new Date().toISOString(),
+      numberOfVoterGroups: selectedGroups.length,
+      voterGroups: selectedGroups.map((group) => downloadResults[group.id]),
+    };
+
+    const jsonString = JSON.stringify(downloadData, null, 2);
+
+    const blob = new Blob([jsonString], {
+      type: 'application/json',
+    });
+
+    const url = URL.createObjectURL(blob);
+
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `voter-tokens-export-${Date.now()}.json`;
+
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+
+    URL.revokeObjectURL(url);
+  };
+
+  const resetDownloadState = (): void => {
+    setConfirmDownloadOpened(false);
+    setSelectedGroupIds(new Set());
+    setDownloadResults({});
+    setDownloadRequestId(0);
+    setIsDownloading(false);
+  };
+
+  const handleDownloadCompleted = (): void => {
+    downloadVoterTokensJson();
+    resetDownloadState();
+    onClose();
+  };
+
+  const handleDownloadFailed = (): void => {
+    if (downloadError === null) {
+      return;
+    }
+
+    notifications.show(getRPCErrorConfig(downloadError));
+    setIsDownloading(false);
+  };
+
   useEffect(() => {
     if (!isDownloading) {
       return;
     }
 
     if (downloadError !== null) {
-      notifications.show(getRPCErrorConfig(downloadError));
-      setIsDownloading(false);
+      handleDownloadFailed();
       return;
     }
 
@@ -172,31 +215,8 @@ export const DownloadVoterGroupsDrawer = ({
       return;
     }
 
-    const downloadData = {
-      exportDate: new Date().toISOString(),
-      numberOfVoterGroups: selectedGroups.length,
-      voterGroups: selectedGroups.map((group) => downloadResults[group.id]),
-    };
-
-    const jsonString = JSON.stringify(downloadData, null, 2);
-    const blob = new Blob([jsonString], { type: 'application/json' });
-    const url = URL.createObjectURL(blob);
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `voter-tokens-export-${Date.now()}.json`;
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-    URL.revokeObjectURL(url);
-
-    setConfirmDownloadOpened(false);
-    setSelectedGroupIds(new Set());
-    setDownloadResults({});
-    setDownloadRequestId(0);
-    setIsDownloading(false);
-    onClose();
-  }, [downloadError, downloadResults, isDownloading, onClose, selectedGroups]);
-
+    handleDownloadCompleted();
+  }, [downloadError, downloadResults, isDownloading, selectedGroups]);
   const handleClose = (): void => {
     if (isDownloading) {
       return;
@@ -220,16 +240,19 @@ export const DownloadVoterGroupsDrawer = ({
     }));
   };
 
-  const handleDownloadError = (
-    groupName: SelectableVoterGroup['name'],
-    error: Error,
-  ): void => {
+  const handleDownloadError = (groupName: SelectableVoterGroup['name'], error: Error): void => {
     setDownloadError(`Failed to generate voter tokens for "${groupName}": ${error.message}`);
   };
 
   return (
     <>
-      <Drawer.Root opened={opened} onClose={handleClose} position={'right'} offset={16} radius={'md'}>
+      <Drawer.Root
+        opened={opened}
+        onClose={handleClose}
+        position={'right'}
+        offset={16}
+        radius={'md'}
+      >
         <Drawer.Overlay />
         <Drawer.Content data-testid="download-voter-groups-drawer">
           <Stack justify={'space-between'} h={'100%'}>
@@ -240,7 +263,7 @@ export const DownloadVoterGroupsDrawer = ({
               </Drawer.Header>
               <Drawer.Body>
                 <Stack>
-                  {voterGroups && voterGroups.length > 0 ? (
+                  {voterGroups.length > 0 ? (
                     voterGroups.map((group) => (
                       <DownloadableVoterGroupCheckbox
                         key={group.id}
@@ -285,5 +308,3 @@ export const DownloadVoterGroupsDrawer = ({
     </>
   );
 };
-
-

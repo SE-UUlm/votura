@@ -6,9 +6,7 @@ import type { JSX } from 'react';
 import { useCreateVoterGroup } from '../../../swr/voterGroups/useCreateVoterGroup.ts';
 import { useGetVoterGroups } from '../../../swr/voterGroups/useGetVoterGroups.ts';
 import { getAddSuccessVoterGroupConfig } from '../../../utils/notifications.ts';
-import {
-  DownloadVoterGroupsDrawer,
-} from '../../DownloadVoterGroupsDrawer.tsx';
+import { DownloadVoterGroupsDrawer } from '../../DownloadVoterGroupsDrawer.tsx';
 import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
