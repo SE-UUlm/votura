@@ -174,7 +174,7 @@ export const DownloadVoterGroupsDrawer = ({
 
     const downloadData = {
       exportDate: new Date().toISOString(),
-      count: selectedGroups.length,
+      numberOfVoterGroups: selectedGroups.length,
       voterGroups: selectedGroups.map((group) => downloadResults[group.id]),
     };
 

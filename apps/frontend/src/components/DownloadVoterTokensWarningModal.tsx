@@ -26,11 +26,11 @@ export const DownloadVoterTokensWarningModal = ({
     <Modal opened={opened} onClose={handleClose} title={'Warning'} centered>
       <Group align="flex-start" gap={'md'}>
         <IconAlertTriangle size={24} color="red" />
+        <Text fw={700}>This will generate new voter tokens.</Text>
         <Stack gap={4}>
-          <Text fw={700}>This will generate new voter tokens.</Text>
           <Text size={'sm'} c={'dimmed'}>
-            Generating voter tokens will update the voter group public key. Continue only if you
-            want to download the newly generated JSON file now.
+            Generating new voter tokens will invalidate all existing tokens.
+            Proceed only if you want to download the new JSON file now.
           </Text>
         </Stack>
       </Group>

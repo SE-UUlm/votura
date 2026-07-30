@@ -12,6 +12,9 @@ import {
   type MutateVoterGroupDrawerProps,
 } from './MutateVoterGroupDrawer.tsx';
 import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
+import {useCreateVoterTokens} from "../swr/voterGroups/useCreateVoterTokens.ts";
+import {notifications} from "@mantine/notifications";
+import {getRPCErrorConfig} from "../utils/notifications.ts";
 
 export interface VoterGroupsTableMenuProps {
   voterGroup: SelectableVoterGroup;
@@ -28,24 +31,62 @@ export const VoterGroupsSettingsMenu = ({
   onMutate,
   isMutating,
 }: VoterGroupsTableMenuProps): JSX.Element => {
+  const { trigger } = useCreateVoterTokens({ voterGroupId: voterGroup.id });
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [confirmDownloadOpened, setConfirmDownloadOpened] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
 
   const handleOpenConfirm = (): void => {
     setConfirmDownloadOpened(true);
   };
 
   const handleConfirmClose = (): void => {
-
     setConfirmDownloadOpened(false);
   };
 
-  const handleDownload = (): void => {
+  const handleDownload = async (): Promise<void> => {
+      try {
+          setIsDownloading(true)
+          const generatedKeys = await trigger(undefined);
+
+          const downloadData = {
+              exportDate: new Date().toISOString(),
+              voterGroups: [
+                  {
+                      name: voterGroup.name,
+                      generatedKeys,
+                  },
+              ],
+          };
+
+          const jsonString = JSON.stringify(downloadData, null, 2);
+          const blob = new Blob([jsonString], {
+              type: 'application/json',
+          });
+          const url = URL.createObjectURL(blob);
+          const link = document.createElement('a');
+          link.href = url;
+          link.download = `voter-tokens-export-${Date.now()}.json`;
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          URL.revokeObjectURL(url);
+
+          setConfirmDownloadOpened(false);
+
+      } catch (error) {
+          notifications.show(
+              getRPCErrorConfig(
+                  error instanceof Error ? error.message : 'Unknown download error',
+              ),
+          );
+      } finally {
+          setIsDownloading(false);
+      }
   };
 
-
-  return (
+    return (
     <>
       <DeleteVoterGroupModal
         voterGroup={voterGroup}
@@ -88,6 +129,7 @@ export const VoterGroupsSettingsMenu = ({
         opened={confirmDownloadOpened}
         onClose={handleConfirmClose}
         onConfirm={handleDownload}
+        isLoading={isDownloading}
       ></DownloadVoterTokensWarningModal>
     </>
   );
