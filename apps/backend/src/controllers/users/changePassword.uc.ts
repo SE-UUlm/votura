@@ -27,8 +27,6 @@ export const changePassword = async (req: Request, res: ChangePasswordResponse):
 
   const validationResult = await validateChangePasswordRequest(req.body, dbUser);
   if (isBodyCheckValidationError(validationResult)) {
-    console.log(validationResult.message);
-
     res
       .status(validationResult.status)
       .json(response4XXObject.parse({ message: validationResult.message }));
