@@ -16,10 +16,7 @@ export type ChangePasswordResponse = Response<
   { user: SelectableUser; accessTokenPayload: AccessTokenPayload }
 >;
 
-export const changePassword = async (
-  req: Request,
-  res: ChangePasswordResponse,
-): Promise<void> => {
+export const changePassword = async (req: Request, res: ChangePasswordResponse): Promise<void> => {
   const dbUser = await findDBUserBy({ id: res.locals.user.id });
   if (dbUser === null) {
     res

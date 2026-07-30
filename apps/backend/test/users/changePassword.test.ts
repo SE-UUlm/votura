@@ -8,14 +8,10 @@ import {
 import request from 'supertest';
 import { beforeAll, beforeEach, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
+import { ChangePasswordRequestValidationErrorMessage } from '../../src/controllers/.bodyChecks/userChecks/changePasswordRequest.check.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { UserAuthErrorMessages } from '../../src/middlewares/auth.js';
-import { ChangePasswordRequestValidationErrorMessage } from '../../src/controllers/.bodyChecks/userChecks/changePasswordRequest.check.js';
-import {
-  createUser,
-  findUserBy,
-  setUserVerified,
-} from '../../src/services/users.service.js';
+import { createUser, findUserBy, setUserVerified } from '../../src/services/users.service.js';
 
 describe(`POST /users/changePassword`, () => {
   let requestPath = '';

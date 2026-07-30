@@ -117,14 +117,10 @@ export const passwordResetUserObjectSchema = z.toJSONSchema(
 
 export const changePasswordUserObject = z
   .object({
-    currentPassword: z
-      .string()
-      .min(1)
-      .max(127)
-      .register(voturaMetadataRegistry, {
-        description: 'The current password of the user.',
-        example: 'MyP@ssw0rd!1!',
-      }),
+    currentPassword: z.string().min(1).max(127).register(voturaMetadataRegistry, {
+      description: 'The current password of the user.',
+      example: 'MyP@ssw0rd!1!',
+    }),
     newPassword: userObject.shape.password,
     newPasswordVerification: userObject.shape.password,
   })
@@ -139,4 +135,3 @@ export const changePasswordUserObjectSchema = z.toJSONSchema(
   changePasswordUserObject,
   toJsonSchemaParams,
 );
-
