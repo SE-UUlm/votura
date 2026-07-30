@@ -5,6 +5,7 @@ import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
 import { type JSX, type ReactNode, useState } from 'react';
 import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
+import { downloadJson } from '../utils/downloadJson.ts';
 import { getRPCErrorConfig } from '../utils/notifications.ts';
 import {
   DeleteVoterGroupModal,
@@ -45,45 +46,8 @@ export const VoterGroupsSettingsMenu = ({
     setConfirmDownloadOpened(false);
   };
 
-  const handleDownload = async (): Promise<void> => {
-    try {
-      setIsDownloading(true);
-
-      const generatedKeys = await trigger(undefined);
-      downloadVoterTokens(generatedKeys);
-
-      setConfirmDownloadOpened(false);
-    } catch (error) {
-      handleDownloadError(error);
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
   const downloadVoterTokens = (generatedKeys: string[]): void => {
-    const downloadData = createDownloadData(generatedKeys);
-
-    const jsonString = JSON.stringify(downloadData, null, 2);
-
-    const blob = new Blob([jsonString], {
-      type: 'application/json',
-    });
-
-    const url = URL.createObjectURL(blob);
-
-    const link = document.createElement('a');
-    link.href = url;
-    link.download = `voter-tokens-export-${Date.now()}.json`;
-
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
-
-    URL.revokeObjectURL(url);
-  };
-
-  const createDownloadData = (generatedKeys: string[]) => {
-    return {
+    const downloadData = {
       exportDate: new Date().toISOString(),
       voterGroups: [
         {
@@ -92,6 +56,8 @@ export const VoterGroupsSettingsMenu = ({
         },
       ],
     };
+
+    downloadJson(downloadData, `voter-tokens-export-${Date.now()}.json`);
   };
 
   const handleDownloadError = (error: unknown): void => {
@@ -99,6 +65,21 @@ export const VoterGroupsSettingsMenu = ({
       notifications.show(getRPCErrorConfig(error.message));
     } else {
       notifications.show(getRPCErrorConfig('Unknown download error'));
+    }
+  };
+
+  const handleDownload = async (): Promise<void> => {
+    try {
+      setIsDownloading(true);
+
+      const generatedKeys = await trigger(undefined);
+      downloadVoterTokens(generatedKeys);
+
+      setConfirmDownloadOpened(false);
+    } catch (error: unknown) {
+      handleDownloadError(error);
+    } finally {
+      setIsDownloading(false);
     }
   };
 
