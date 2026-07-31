@@ -99,5 +99,11 @@
   "youAreAboutToDeleteTheBallotPaper": "You are about to delete the ballot paper:",
   "youAreAboutToDeleteTheCandidate": "You are about to delete the candidate:",
   "youAreAboutToDeleteTheElection": "You are about to delete the election:",
-  "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}"
+  "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}",
+  "manageAccount": "Manage account",
+  "user": "User",
+  "administrator": "Administrator",
+  "memberSince": "Member since",
+  "changePassword": "Change password",
+  "errorWhilstLoadingInformation": "Error whilst loading information"
 }

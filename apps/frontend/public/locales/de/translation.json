@@ -99,5 +99,11 @@
   "youAreAboutToDeleteTheBallotPaper": "Sie sind dabei, den Stimmzettel zu löschen:",
   "youAreAboutToDeleteTheCandidate": "Sie sind dabei, den Kandidaten zu löschen:",
   "youAreAboutToDeleteTheElection": "Sie sind dabei, die Wahl zu löschen:",
-  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}"
+  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
+  "manageAccount": "Account verwalten",
+  "user": "Benutzer",
+  "administrator": "Administrator",
+  "memberSince": "Benutzer seit",
+  "changePassword": "Passwort ändern",
+  "errorWhilstLoadingInformation": "Fehler beim Laden der Informationen"
 }
