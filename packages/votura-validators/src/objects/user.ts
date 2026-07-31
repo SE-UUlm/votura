@@ -114,3 +114,24 @@ export const passwordResetUserObjectSchema = z.toJSONSchema(
   passwordResetUserObject,
   toJsonSchemaParams,
 );
+
+export const changePasswordUserObject = z
+  .object({
+    currentPassword: z.string().min(1).max(127).register(voturaMetadataRegistry, {
+      description: 'The current password of the user.',
+      example: 'MyP@ssw0rd!1!',
+    }),
+    newPassword: userObject.shape.password,
+    newPasswordVerification: userObject.shape.password,
+  })
+  .refine((data) => data.newPassword === data.newPasswordVerification, {
+    message: 'The new passwords do not match.',
+    path: ['newPasswordVerification'],
+  });
+
+export type ChangePasswordUser = z.infer<typeof changePasswordUserObject>;
+
+export const changePasswordUserObjectSchema = z.toJSONSchema(
+  changePasswordUserObject,
+  toJsonSchemaParams,
+);
