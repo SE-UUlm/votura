@@ -1,5 +1,5 @@
-import { ActionIcon, AppShell, Box, Divider, Flex, Space, Stack } from '@mantine/core';
-import { IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
+import {ActionIcon, AppShell, Box, Divider, Flex, Skeleton, Space, Stack} from '@mantine/core';
+import {IconCross, IconLogout, IconNotes, IconUsersGroup} from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
@@ -7,10 +7,28 @@ import { clearAuthLocalStorage } from '../swr/authTokens.ts';
 import { Avatar } from './Avatar.tsx';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
+import {useGetUser} from "../swr/useGetUser.ts";
 
 export const AppShellLayout = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const { data: accountDetails, isLoading, error } = useGetUser();
+
+  let accountSection = null;
+  if (isLoading) {
+    accountSection = <Skeleton animate={true} />;
+  } else if (error) {
+    accountSection = <RoutingNavbarLink
+        to={'/account'}
+        label={t('errorLoadingAccount', 'Error loading account')}
+        icon={<IconCross size={16}/>} />;
+  } else {
+    accountSection = <RoutingNavbarLink
+        to={'/account'}
+        label={accountDetails?.email}
+        icon={<Avatar userId={accountDetails?.id ?? ''} email={accountDetails?.email ?? ''} />}
+    />;
+  }
 
   const onLogout = (): void => {
     clearAuthLocalStorage();
@@ -44,11 +62,7 @@ export const AppShellLayout = (): JSX.Element => {
           <Box>
             <Divider pb={'md'} />
             <Flex justify={'space-between'} align={'center'} gap={'sm'}>
-              <RoutingNavbarLink
-                to={'/account'}
-                label={'your.name@uni-ulm.de'}
-                icon={<Avatar userId={''} email={'your.name@uni-ulm.de'} />}
-              />
+              {accountSection}
 
               <ActionIcon variant="subtle" aria-label={t('logout', 'Logout')} onClick={onLogout}>
                 <IconLogout size={24} />
