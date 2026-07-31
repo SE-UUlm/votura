@@ -1,4 +1,6 @@
+import { Avatar as MantineAvatar } from '@mantine/core';
 import { type JSX, useId } from 'react';
+import { renderToString } from 'react-dom/server';
 
 export interface AvatarProps {
   userId: string;
@@ -44,7 +46,7 @@ const determineInitials = (email: string): string => {
   return initials;
 };
 
-export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
+const PrivateAvatar = ({ userId, email }: AvatarProps): JSX.Element => {
   const componentId = useId(); // Unique component ID
 
   // Select random color pair based on userId hash
@@ -55,11 +57,7 @@ export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
     ];
 
   return (
-    <svg
-      xmlns={'http://www.w3.org/2000/svg'}
-      viewBox={'0 0 128 128'}
-      style={{ borderRadius: '50%', maxWidth: '256px' }}
-    >
+    <svg xmlns={'http://www.w3.org/2000/svg'} viewBox={'0 0 128 128'}>
       <defs>
         <linearGradient id={'avatar-gradient-' + componentId} x1={0} y1={1} x2={1} y2={0}>
           <stop offset={'0%'} style={{ stopColor: colorPair[0] }} />
@@ -72,6 +70,7 @@ export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
         x={'50%'}
         y={'50%'}
         fontSize={64}
+        fontFamily={'sans-serif'}
         fill={'white'}
         textAnchor={'middle'}
         dominantBaseline={'central'}
@@ -80,4 +79,11 @@ export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
       </text>
     </svg>
   );
+};
+
+export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
+  const privateAvatarSvg = renderToString(<PrivateAvatar userId={userId} email={email} />);
+  const avatarSrc = 'data:image/svg+xml;base64,' + btoa(privateAvatarSvg);
+
+  return <MantineAvatar src={avatarSrc} />;
 };
