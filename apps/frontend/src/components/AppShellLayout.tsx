@@ -1,5 +1,5 @@
 import { ActionIcon, AppShell, Box, Divider, Flex, Skeleton, Space, Stack } from '@mantine/core';
-import { IconCross, IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
+import { IconBug, IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
@@ -21,8 +21,8 @@ export const AppShellLayout = (): JSX.Element => {
     accountSection = (
       <RoutingNavbarLink
         to={'/account'}
-        label={t('errorLoadingAccount', 'Error loading account')}
-        icon={<IconCross size={16} />}
+        label={t('errorWhilstLoadingInformation', 'Error whilst loading information')}
+        icon={<IconBug size={16} />}
       />
     );
   } else {
