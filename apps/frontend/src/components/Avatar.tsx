@@ -85,5 +85,5 @@ export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
   const privateAvatarSvg = renderToString(<PrivateAvatar userId={userId} email={email} />);
   const avatarSrc = 'data:image/svg+xml;base64,' + btoa(privateAvatarSvg);
 
-  return <MantineAvatar src={avatarSrc} />;
+  return <MantineAvatar src={avatarSrc} w={'100%'} h={'100%'} />;
 };
