@@ -1,9 +1,10 @@
-import { ActionIcon, AppShell, Avatar, Box, Divider, Flex, Space, Stack } from '@mantine/core';
+import { ActionIcon, AppShell, Box, Divider, Flex, Space, Stack } from '@mantine/core';
 import { IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
+import { Avatar } from './Avatar.tsx';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 
@@ -46,7 +47,7 @@ export const AppShellLayout = (): JSX.Element => {
               <RoutingNavbarLink
                 to={'/account'}
                 label={'your.name@uni-ulm.de'}
-                icon={<Avatar />}
+                icon={<Avatar userId={''} email={'your.name@uni-ulm.de'} />}
               />
 
               <ActionIcon variant="subtle" aria-label={t('logout', 'Logout')} onClick={onLogout}>
