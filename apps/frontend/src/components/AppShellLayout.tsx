@@ -1,9 +1,10 @@
-import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
-import { IconNotes, IconUsersGroup } from '@tabler/icons-react';
+import { ActionIcon, AppShell, Box, Divider, Flex, Space, Stack } from '@mantine/core';
+import { IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearAuthLocalStorage } from '../swr/authTokens.ts';
+import { Avatar } from './Avatar.tsx';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 
@@ -19,7 +20,7 @@ export const AppShellLayout = (): JSX.Element => {
   return (
     <AppShell
       navbar={{
-        width: 300,
+        width: 350,
         breakpoint: 'sm',
       }}
     >
@@ -42,9 +43,17 @@ export const AppShellLayout = (): JSX.Element => {
           </Box>
           <Box>
             <Divider pb={'md'} />
-            <Button variant="subtle" fullWidth onClick={onLogout}>
-              {t('logout', 'Logout')}
-            </Button>
+            <Flex justify={'space-between'} align={'center'} gap={'sm'}>
+              <RoutingNavbarLink
+                to={'/account'}
+                label={'your.name@uni-ulm.de'}
+                icon={<Avatar userId={''} email={'your.name@uni-ulm.de'} />}
+              />
+
+              <ActionIcon variant="subtle" aria-label={t('logout', 'Logout')} onClick={onLogout}>
+                <IconLogout size={24} />
+              </ActionIcon>
+            </Flex>
           </Box>
         </Stack>
       </AppShell.Navbar>
