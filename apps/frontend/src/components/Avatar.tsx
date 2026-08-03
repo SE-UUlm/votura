@@ -1,5 +1,5 @@
 import { Avatar as MantineAvatar } from '@mantine/core';
-import { type JSX } from 'react';
+import type { JSX } from 'react';
 import { renderToString } from 'react-dom/server';
 
 export interface AvatarProps {
@@ -27,11 +27,13 @@ const determineInitials = (email: string): string => {
     for (let i = 0; i < username.length; i++) {
       const char = username.charAt(i);
 
+      // Skip if the char is a separator
       if (separators.includes(char)) {
         separated = true;
         continue;
       }
 
+      // If the char is separated from the previous one, add it to the avatar preview
       if (separated) {
         initials += char.toUpperCase();
       }
@@ -81,7 +83,7 @@ const PrivateAvatar = ({ userId, email }: AvatarProps): JSX.Element => {
 
 export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
   const privateAvatarSvg = renderToString(<PrivateAvatar userId={userId} email={email} />);
-  const avatarSrc = 'data:image/svg+xml;base64,' + btoa(privateAvatarSvg);
+  const avatarSrc = 'data:image/svg+xml,' + encodeURIComponent(privateAvatarSvg);
 
   return <MantineAvatar src={avatarSrc} />;
 };
