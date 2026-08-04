@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { insertableUserObjectSchema } from '../../objects/user.js';
+import { authenticatableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -26,7 +26,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: authenticatableUserObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
