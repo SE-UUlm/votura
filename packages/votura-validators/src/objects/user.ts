@@ -114,3 +114,14 @@ export const passwordResetUserObjectSchema = z.toJSONSchema(
   passwordResetUserObject,
   toJsonSchemaParams,
 );
+
+export const userCountObject = z.object({
+  count: z.number().int().nonnegative().register(voturaMetadataRegistry, {
+    description: 'The current amount of users in the database.',
+    example: 0,
+  }),
+});
+
+export type UserCount = z.infer<typeof userCountObject>;
+
+export const userCountObjectSchema = z.toJSONSchema(userCountObject, toJsonSchemaParams);

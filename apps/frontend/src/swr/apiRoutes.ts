@@ -52,6 +52,7 @@ export const apiRoutes = {
   },
   users: {
     base: '/users',
+    count: '/users/count',
     login: '/users/login',
     logout: '/users/logout',
     refreshTokens: '/users/refreshTokens',
