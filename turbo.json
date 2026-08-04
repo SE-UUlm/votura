@@ -72,7 +72,7 @@
       ]
     },
     "test": {
-      "dependsOn": ["^test","^build"],
+      "dependsOn": ["^test", "^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
