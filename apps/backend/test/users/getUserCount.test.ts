@@ -19,12 +19,16 @@ describe(`GET /users/count`, () => {
       insertableUserObject.parse({
         email: `count-user-a-${uniqueSuffix}@votura.org`,
         password: 'MyStrong!Password123',
+        role: 'user',
+        active: true
       }),
     );
     await createUser(
       insertableUserObject.parse({
         email: `count-user-b-${uniqueSuffix}@votura.org`,
         password: 'MyStrong!Password123',
+        role: 'user',
+        active: true
       }),
     );
 
