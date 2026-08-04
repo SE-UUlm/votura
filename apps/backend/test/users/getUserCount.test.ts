@@ -20,7 +20,7 @@ describe(`GET /users/count`, () => {
         email: `count-user-a-${uniqueSuffix}@votura.org`,
         password: 'MyStrong!Password123',
         role: 'user',
-        active: true
+        active: true,
       }),
     );
     await createUser(
@@ -28,7 +28,7 @@ describe(`GET /users/count`, () => {
         email: `count-user-b-${uniqueSuffix}@votura.org`,
         password: 'MyStrong!Password123',
         role: 'user',
-        active: true
+        active: true,
       }),
     );
 
