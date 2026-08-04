@@ -45,7 +45,14 @@
       "persistent": false,
       "interactive": false,
       "outputs": [],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES"
+      ]
     },
     "build": {
       "dependsOn": ["^build"],
@@ -79,6 +86,7 @@
         "CI",
         "HOME",
         "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES",
         "USERS_JWT_PRIV_KEY",
         "USERS_JWT_PUB_KEY",
         "PLAYWRIGHT_BROWSERS_PATH"
@@ -98,6 +106,7 @@
         "TERMINAL_LOG_LEVEL",
         "PORT",
         "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES",
         "USERS_JWT_PRIV_KEY",
         "USERS_JWT_PUB_KEY"
       ]
