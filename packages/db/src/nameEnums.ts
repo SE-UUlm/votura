@@ -36,6 +36,8 @@ export enum UserColumnName {
   passwordResetTokenExpiresAt = 'passwordResetTokenExpiresAt',
   refreshTokenHash = 'refreshTokenHash',
   refreshTokenExpiresAt = 'refreshTokenExpiresAt',
+  role = 'role',
+  active = 'active',
 }
 
 export enum AccessTokenBlacklistColumnName {
