@@ -1,5 +1,5 @@
 import { Avatar as MantineAvatar } from '@mantine/core';
-import { type JSX, useId } from 'react';
+import type { JSX } from 'react';
 import { renderToString } from 'react-dom/server';
 
 export interface AvatarProps {
@@ -27,11 +27,13 @@ const determineInitials = (email: string): string => {
     for (let i = 0; i < username.length; i++) {
       const char = username.charAt(i);
 
+      // Skip if the char is a separator
       if (separators.includes(char)) {
         separated = true;
         continue;
       }
 
+      // If the char is separated from the previous one, add it to the avatar preview
       if (separated) {
         initials += char.toUpperCase();
       }
@@ -47,8 +49,6 @@ const determineInitials = (email: string): string => {
 };
 
 const PrivateAvatar = ({ userId, email }: AvatarProps): JSX.Element => {
-  const componentId = useId(); // Unique component ID
-
   // Select random color pair based on userId hash
   const colorPair =
     colorPairs[
@@ -59,13 +59,13 @@ const PrivateAvatar = ({ userId, email }: AvatarProps): JSX.Element => {
   return (
     <svg xmlns={'http://www.w3.org/2000/svg'} viewBox={'0 0 128 128'}>
       <defs>
-        <linearGradient id={'avatar-gradient-' + componentId} x1={0} y1={1} x2={1} y2={0}>
+        <linearGradient id={'avatar-gradient'} x1={0} y1={1} x2={1} y2={0}>
           <stop offset={'0%'} style={{ stopColor: colorPair[0] }} />
           <stop offset={'100%'} style={{ stopColor: colorPair[1] }} />
         </linearGradient>
       </defs>
 
-      <rect width={'100%'} height={'100%'} fill={'url(#avatar-gradient-' + componentId + ')'} />
+      <rect width={'100%'} height={'100%'} fill={'url(#avatar-gradient)'} />
       <text
         x={'50%'}
         y={'50%'}
@@ -83,7 +83,7 @@ const PrivateAvatar = ({ userId, email }: AvatarProps): JSX.Element => {
 
 export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
   const privateAvatarSvg = renderToString(<PrivateAvatar userId={userId} email={email} />);
-  const avatarSrc = 'data:image/svg+xml;base64,' + btoa(privateAvatarSvg);
+  const avatarSrc = 'data:image/svg+xml,' + encodeURIComponent(privateAvatarSvg);
 
-  return <MantineAvatar src={avatarSrc} w={'100%'} h={'100%'} />;
+  return <MantineAvatar src={avatarSrc} alt={email} w={'100%'} h={'100%'} />;
 };
