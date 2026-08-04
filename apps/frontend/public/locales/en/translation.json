@@ -105,5 +105,10 @@
   "administrator": "Administrator",
   "memberSince": "Member since",
   "changePassword": "Change password",
-  "errorWhilstLoadingInformation": "Error whilst loading information"
+  "errorWhilstLoadingInformation": "Error whilst loading information",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "repeatNewPassword": "Repeat new password",
+  "currentPasswordIsRequired": "Current password is required.",
+  "passwordChangedSuccessfully": "Password changed successfully."
 }
