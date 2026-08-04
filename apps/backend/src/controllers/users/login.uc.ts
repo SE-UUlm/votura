@@ -1,16 +1,18 @@
 import {
+  authenticatableUserObject,
   response429Object,
   response4XXObject,
+  zodErrorToResponse400,
   type ApiTokenUser,
   type Response400,
   type Response401,
   type Response403,
-  type Response429, authenticatableUserObject, zodErrorToResponse400,
+  type Response429,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { resetFailedLoginAttempts } from '../../services/loginAttempt.service.js';
-import {createNewUserTokens, createUser, userCount} from '../../services/users.service.js';
+import { createNewUserTokens, createUser, userCount } from '../../services/users.service.js';
 import { isBodyCheckValidationError } from '../.bodyChecks/bodyCheckValidationError.js';
 import { validateLoginRequest } from '../.bodyChecks/userChecks/loginRequest.check.js';
 
@@ -33,8 +35,8 @@ const createInitialUser = async (req: Request, res: Response): Promise<boolean> 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
   const ipAddress = req.ip ?? '0.0.0.0';
   // If there are no users in the DB, create a new one
-  if (await userCount() === 0) {
-    if (!await createInitialUser(req, res)) {
+  if ((await userCount()) === 0) {
+    if (!(await createInitialUser(req, res))) {
       return; // Abort if initial account creation had failed
     }
   }
