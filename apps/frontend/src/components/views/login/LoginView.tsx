@@ -127,7 +127,10 @@ export const LoginView = (): JSX.Element => {
                     {t('noAccountExistsYet', 'No account exists yet.')}
                   </Text>
                   <Text size={'sm'}>
-                    {t('whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials', 'When logging in, a new administrator account will be created with the specified login credentials.')}
+                    {t(
+                      'whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials',
+                      'When logging in, a new administrator account will be created with the specified login credentials.',
+                    )}
                   </Text>
                 </Stack>
               </Group>
