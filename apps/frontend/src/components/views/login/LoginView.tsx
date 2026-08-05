@@ -163,9 +163,6 @@ export const LoginView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
-          <Button variant="light" onClick={(): void | Promise<void> => navigate('/register')}>
-            {t('signUp', 'Sign Up')}
-          </Button>
           <Divider />
           <Group justify="space-between">
             <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>

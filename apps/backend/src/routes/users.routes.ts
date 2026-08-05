@@ -1,5 +1,4 @@
 import { Router } from 'express';
-import { createUser } from '../controllers/users/createUser.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
 import { getUserCount } from '../controllers/users/getUserCount.uc.js';
 import { login } from '../controllers/users/login.uc.js';
@@ -12,12 +11,6 @@ import { MimeType } from '../middlewares/utils.js';
 
 export const usersRouter: Router = Router();
 
-usersRouter.post(
-  '/',
-  acceptHeaderCheck(MimeType.applicationJson),
-  acceptBodyCheck(MimeType.applicationJson),
-  createUser,
-);
 usersRouter.delete(
   '/',
   acceptHeaderCheck(MimeType.applicationJson),
