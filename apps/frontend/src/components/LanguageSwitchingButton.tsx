@@ -7,7 +7,7 @@ import { useTranslation } from 'react-i18next';
 export const LanguageSwitchingButton = (): JSX.Element => {
   const supportedLanguages = (i18next.options.supportedLngs || []).filter(
     (language) => language !== 'cimode',
-  ); //strip debugging locale mode from the offical languages
+  ); //strip debugging locale mode from the official languages
   const { i18n, t } = useTranslation();
   const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? 'en';
 
