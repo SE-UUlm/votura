@@ -18,6 +18,7 @@ describe(`POST /users`, () => {
     const res = await request(app).post(requestPath).send({
       email: 'invalid-email',
       password: 'short',
+      role: 'admin',
     });
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');

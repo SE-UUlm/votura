@@ -28,6 +28,8 @@ export type Numeric = ColumnType<string, number | string, number | string>;
 
 export type Timestamp = ColumnType<Date, Date | string, Date | string>;
 
+export type Userrole = 'admin' | 'user';
+
 export interface AccessTokenBlacklist {
   accessTokenId: string;
   createdAt: Generated<Timestamp>;
@@ -140,6 +142,7 @@ export interface User {
   passwordResetTokenHash: string | null;
   refreshTokenExpiresAt: Timestamp | null;
   refreshTokenHash: string | null;
+  role: Generated<Userrole>;
   verified: Generated<boolean>;
 }
 
