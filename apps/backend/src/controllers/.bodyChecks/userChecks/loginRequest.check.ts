@@ -1,6 +1,6 @@
 import { getPepper, verifyPassword } from '@repo/hash';
 import {
-  insertableUserObject,
+  authenticatableUserObject,
   zodErrorToResponse400,
   type Response429,
   type User,
@@ -68,7 +68,7 @@ export const validateLoginRequest = async (
   reqBody: unknown,
   ipAddress: string,
 ): Promise<User['id'] | LoginRequestValidationError> => {
-  const { data, error, success } = await insertableUserObject.safeParseAsync(reqBody);
+  const { data, error, success } = await authenticatableUserObject.safeParseAsync(reqBody);
   if (!success) {
     return {
       status: HttpStatusCode.badRequest,
@@ -92,6 +92,11 @@ export const validateLoginRequest = async (
 
   // Handle invalid email
   if (user === null) {
+    return handleFailedLogin(ipAddress, userId);
+  }
+
+  // Check whether user is active
+  if (!user.active) {
     return handleFailedLogin(ipAddress, userId);
   }
 

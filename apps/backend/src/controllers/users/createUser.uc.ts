@@ -1,5 +1,5 @@
 import {
-  insertableUserObject,
+  authenticatableUserObject,
   response409Object,
   zodErrorToResponse400,
   type Response400,
@@ -14,7 +14,7 @@ export type CreateUserResponse = Response<void | Response400 | Response409>;
 export const createUser = async (req: Request, res: CreateUserResponse): Promise<void> => {
   const body: unknown = req.body;
 
-  const { data, error, success } = await insertableUserObject.safeParseAsync(body);
+  const { data, error, success } = await authenticatableUserObject.safeParseAsync(body);
 
   if (success) {
     // Check if a user with the provided email already exists
@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       return;
     }
 
-    await createPersistentUser(data);
+    await createPersistentUser({ ...data, role: 'user', active: true });
 
     res.sendStatus(HttpStatusCode.noContent);
   } else {
