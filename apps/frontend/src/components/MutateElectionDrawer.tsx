@@ -25,8 +25,10 @@ export interface MutateElectionModalProps {
   isMutating: boolean;
 }
 
-export interface MutateElectionFormValues
-  extends Pick<SelectableElection, 'name' | 'description' | 'allowInvalidVotes'> {
+export interface MutateElectionFormValues extends Pick<
+  SelectableElection,
+  'name' | 'description' | 'allowInvalidVotes'
+> {
   startDateTime: string;
   endDateTime: string | null;
 }

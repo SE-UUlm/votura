@@ -31,8 +31,10 @@ export interface MutateVoterGroupDrawerProps {
   isMutating: boolean;
 }
 
-export interface MutateVoterGroupFormValues
-  extends Pick<SelectableVoterGroup, 'name' | 'description' | 'numberOfVoters' | 'ballotPapers'> {}
+export interface MutateVoterGroupFormValues extends Pick<
+  SelectableVoterGroup,
+  'name' | 'description' | 'numberOfVoters' | 'ballotPapers'
+> {}
 
 interface VoterGroupElectionSectionProps {
   election: SelectableElection;
