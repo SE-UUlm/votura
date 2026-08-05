@@ -30,7 +30,7 @@ describe(`POST /users/refreshTokens`, () => {
   });
 
   beforeAll(async () => {
-    await createUser({ ...refreshUser, role: 'admin' });
+    await createUser({ ...refreshUser, role: 'admin', active: true });
     user = await findUserBy({ email: refreshUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');

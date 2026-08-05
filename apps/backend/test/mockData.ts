@@ -15,11 +15,13 @@ export const demoUser = insertableUserObject.parse({
   email: 'user@votura.org',
   password: STRONG_PWD,
   role: 'admin',
+  active: true,
 });
 export const demoUser2 = insertableUserObject.parse({
   email: 'user2@votura.org',
   password: STRONG_PWD,
   role: 'user',
+  active: true,
 });
 
 /*

@@ -95,6 +95,11 @@ export const validateLoginRequest = async (
     return handleFailedLogin(ipAddress, userId);
   }
 
+  // Check whether user is active
+  if (!user.active) {
+    return handleFailedLogin(ipAddress, userId);
+  }
+
   // Verify password
   const isValidPassword = await verifyPassword(user.passwordHash, data.password, getPepper());
 

@@ -49,6 +49,7 @@ export async function findUserBy(
     modifiedAt: user.modifiedAt.toISOString(),
     email: user.email,
     role: user.role,
+    active: user.active,
   };
 }
 
@@ -61,6 +62,7 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
       email: insertableUser.email,
       passwordHash: hashedPassword,
       role: insertableUser.role,
+      active: insertableUser.active,
     })
     .executeTakeFirstOrThrow();
 }
