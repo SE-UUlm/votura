@@ -99,5 +99,10 @@
   "youAreAboutToDeleteTheBallotPaper": "You are about to delete the ballot paper:",
   "youAreAboutToDeleteTheCandidate": "You are about to delete the candidate:",
   "youAreAboutToDeleteTheElection": "You are about to delete the election:",
-  "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}"
+  "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}",
+
+  "languages": {
+    "en": "English",
+    "de": "German"
+  }
 }

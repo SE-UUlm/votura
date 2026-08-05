@@ -99,5 +99,10 @@
   "youAreAboutToDeleteTheBallotPaper": "Sie sind dabei, den Stimmzettel zu löschen:",
   "youAreAboutToDeleteTheCandidate": "Sie sind dabei, den Kandidaten zu löschen:",
   "youAreAboutToDeleteTheElection": "Sie sind dabei, die Wahl zu löschen:",
-  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}"
+  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
+
+  "languages": {
+    "en": "Englisch",
+    "de": "Deutsch"
+  }
 }
