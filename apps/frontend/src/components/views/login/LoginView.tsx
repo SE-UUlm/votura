@@ -22,6 +22,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -100,6 +101,7 @@ export const LoginView = (): JSX.Element => {
 
   return (
     <Container fluid h={'100vh'}>
+      <LoginHeader />
       <Center h={'100vh'}>
         <Stack w={400}>
           <Title>Votura</Title>
