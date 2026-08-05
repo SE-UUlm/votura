@@ -15,7 +15,7 @@ import {
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { insertableUserObject } from '@repo/votura-validators';
+import { authenticatableUserObject } from '@repo/votura-validators';
 import axios from 'axios';
 import { type JSX, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
@@ -37,7 +37,7 @@ export const LoginView = (): JSX.Element => {
     },
     validate: {
       email: (value) => {
-        const parsed = insertableUserObject.shape.email.safeParse(value);
+        const parsed = authenticatableUserObject.shape.email.safeParse(value);
         return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
     },

@@ -10,7 +10,7 @@ import {
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { insertableUserObject } from '@repo/votura-validators';
+import { authenticatableUserObject } from '@repo/votura-validators';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -31,7 +31,7 @@ export const RegisterView = (): JSX.Element => {
     },
     validate: {
       email: (value) => {
-        const parsed = insertableUserObject.shape.email.safeParse(value);
+        const parsed = authenticatableUserObject.shape.email.safeParse(value);
         const userErrorMessage: string = t('invalidEmailAddress', 'Invalid email address.');
         if (!parsed.success) {
           return userErrorMessage;
@@ -39,7 +39,7 @@ export const RegisterView = (): JSX.Element => {
         return null;
       },
       password: (value) => {
-        const parsed = insertableUserObject.shape.password.safeParse(value);
+        const parsed = authenticatableUserObject.shape.password.safeParse(value);
         const userErrorMessage: string = t(
           'passwordDoesNotMeetRequirements',
           'Password does not meet requirements.',

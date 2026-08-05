@@ -95,6 +95,7 @@
     "docusaurus",
     "checkgroup",
     "usecase",
-    "taskkill"
+    "taskkill",
+    "userrole"
   ]
 }
