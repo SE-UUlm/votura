@@ -19,6 +19,7 @@ describe(`POST /users`, () => {
       email: 'invalid-email',
       password: 'short',
       role: 'admin',
+      active: true,
     });
     expect(res.status).toBe(HttpStatusCode.badRequest);
     expect(res.type).toBe('application/json');

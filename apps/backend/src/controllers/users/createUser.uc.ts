@@ -30,7 +30,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
       return;
     }
 
-    await createPersistentUser({ ...data, role: 'user' });
+    await createPersistentUser({ ...data, role: 'user', active: true });
 
     res.sendStatus(HttpStatusCode.noContent);
   } else {
