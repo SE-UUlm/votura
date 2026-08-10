@@ -1,6 +1,7 @@
 import { Router } from 'express';
 import { createUser } from '../controllers/users/createUser.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
+import { getUserCount } from '../controllers/users/getUserCount.uc.js';
 import { login } from '../controllers/users/login.uc.js';
 import { logout } from '../controllers/users/logout.uc.js';
 import { refreshTokens } from '../controllers/users/refreshTokens.uc.js';
@@ -23,6 +24,7 @@ usersRouter.delete(
   authenticateAccessToken,
   deleteUser,
 );
+usersRouter.get('/count', acceptHeaderCheck(MimeType.applicationJson), getUserCount);
 usersRouter.post(
   '/login',
   acceptHeaderCheck(MimeType.applicationJson),

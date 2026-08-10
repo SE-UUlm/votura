@@ -20,6 +20,7 @@ import { logoutPathObject } from './users/logoutPathObject.js';
 import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
 import { requestPasswordResetPathObject } from './users/requestPasswordResetPathObject.js';
 import { resetPasswordPathObject } from './users/resetPasswordPathObject.js';
+import { userCountPathObject } from './users/userCountPathObject.js';
 import { usersPathObject } from './users/usersPathObject.js';
 import { verifyEmailPathObject } from './users/verifyEmailPathObject.js';
 import { createVoterTokensPathObject } from './voterGroups/createVoterTokensPathObject.js';
@@ -137,6 +138,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/elections/{${parameter.electionId}}/candidates/{${parameter.candidateId}}`]:
       candidateIdPathObject,
     [`/users`]: usersPathObject,
+    [`/users/count`]: userCountPathObject,
     [`/users/verifyEmail`]: verifyEmailPathObject,
     [`/users/login`]: loginPathObject,
     [`/users/refreshTokens`]: refreshTokensPathObject,
