@@ -27,7 +27,7 @@ import { HEADER_HEIGHT } from '../../utils.ts';
 
 export const AccountView = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data, isLoading, error } = useGetUser();
+  const { data, isLoading, error } = useGetUser('todo'); // TODO: Get own user ID
   const { trigger: triggerChangePassword, isMutating } = useChangePassword();
   const form = useForm({
     mode: 'uncontrolled',
