@@ -1,5 +1,7 @@
 import { Router } from 'express';
+import { changePassword } from '../controllers/users/changePassword.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
+import { getUser } from '../controllers/users/getUser.uc.js';
 import { getUserCount } from '../controllers/users/getUserCount.uc.js';
 import { login } from '../controllers/users/login.uc.js';
 import { logout } from '../controllers/users/logout.uc.js';
@@ -11,6 +13,7 @@ import { MimeType } from '../middlewares/utils.js';
 
 export const usersRouter: Router = Router();
 
+usersRouter.get('/', acceptHeaderCheck(MimeType.applicationJson), authenticateAccessToken, getUser);
 usersRouter.delete(
   '/',
   acceptHeaderCheck(MimeType.applicationJson),
@@ -29,6 +32,13 @@ usersRouter.post(
   acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   refreshTokens,
+);
+usersRouter.post(
+  '/changePassword',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  changePassword,
 );
 usersRouter.post(
   '/logout',

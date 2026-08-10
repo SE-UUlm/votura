@@ -2,7 +2,7 @@ import { z, type ZodError } from 'zod/v4';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
 
 export const response4XXObject = z.object({
-  message: z.string().min(1).max(256).register(voturaMetadataRegistry, {
+  message: z.string().min(1).max(1024).register(voturaMetadataRegistry, {
     example: 'A detailed message about the response.',
     description: 'A message that provides additional information about the response.',
   }),
@@ -13,7 +13,7 @@ export const response400Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('Bad Request. The request was invalid, the server cannot process it.')
     .register(voturaMetadataRegistry, {
       example: 'Bad Request. The request was invalid, the server cannot process it.',
@@ -58,7 +58,7 @@ export const response403Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('The user is not authorized to do this action, please check your permissions.')
     .register(voturaMetadataRegistry, {
       example: 'The user is not authorized to do this action, please check your permissions.',
@@ -72,7 +72,7 @@ export const response404Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('Not Found. The requested resource was not found.')
     .register(voturaMetadataRegistry, {
       example: 'The requested resource was not found.',
@@ -86,7 +86,7 @@ export const response406Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default(
       'Not Acceptable. The server is not able to generate a response that is acceptable by the client.',
     )
@@ -102,7 +102,7 @@ export const response409Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default(
       'Conflict. Conflict in the current state of the resource, request could not be processed.',
     )
@@ -121,7 +121,7 @@ export const response415Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('Content-Type is not supported. Please provide only supported content types.')
     .register(voturaMetadataRegistry, {
       example: 'Content-Type is not supported. Please provide only supported content types.',
@@ -135,7 +135,7 @@ export const response429Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('Too many requests, please try again later.')
     .register(voturaMetadataRegistry, {
       example: 'Too many requests, please try again later.',
@@ -164,7 +164,7 @@ export const response500Object = z.object({
   message: z
     .string()
     .min(1)
-    .max(256)
+    .max(1024)
     .default('Internal Server Error. This should not happen, please report the issue.')
     .register(voturaMetadataRegistry, {
       example: 'Internal Server Error. This should not happen, please report the issue.',

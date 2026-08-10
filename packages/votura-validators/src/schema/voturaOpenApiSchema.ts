@@ -15,6 +15,7 @@ import { parameter } from './globals/parameter.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
 import { Tag } from './globals/tag.js';
 import { heartbeatPathObject } from './heartbeatPathObject.js';
+import { changePasswordPathObject } from './users/changePasswordPathObject.js';
 import { loginPathObject } from './users/loginPathObject.js';
 import { logoutPathObject } from './users/logoutPathObject.js';
 import { refreshTokensPathObject } from './users/refreshTokensPathObject.js';
@@ -141,6 +142,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users/count`]: userCountPathObject,
     [`/users/verifyEmail`]: verifyEmailPathObject,
     [`/users/login`]: loginPathObject,
+    [`/users/changePassword`]: changePasswordPathObject,
     [`/users/refreshTokens`]: refreshTokensPathObject,
     [`/users/requestPasswordReset`]: requestPasswordResetPathObject,
     [`/users/resetPassword`]: resetPasswordPathObject,

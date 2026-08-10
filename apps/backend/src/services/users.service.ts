@@ -75,6 +75,21 @@ export async function setUserVerified(userId: Selectable<DBUser>['id']): Promise
     .executeTakeFirstOrThrow();
 }
 
+export async function updateUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
 export async function deleteUser(userId: Selectable<DBUser>['id']): Promise<void> {
   await db.deleteFrom('user').where('id', '=', userId).executeTakeFirstOrThrow();
 }
