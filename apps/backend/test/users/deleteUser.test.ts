@@ -7,6 +7,8 @@ import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoUser } from '../mockData.js';
 
+// TODO: Modify BAPI endpoints
+
 describe(`DELETE /users`, () => {
   const requestPath = '/users';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
