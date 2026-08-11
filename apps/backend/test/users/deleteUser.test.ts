@@ -7,7 +7,7 @@ import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
 import { demoUser } from '../mockData.js';
 
-// TODO: Modify BAPI endpoints
+// TODO: Modify backend API endpoints
 
 describe(`DELETE /users`, () => {
   const requestPath = '/users';
