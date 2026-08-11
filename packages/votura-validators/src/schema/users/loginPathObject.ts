@@ -5,6 +5,7 @@ import {
   response401,
   response403,
   response406,
+  response409,
   response415,
   response429,
   responseDefault,
@@ -13,11 +14,13 @@ import { Tag } from '../globals/tag.js';
 
 export const loginPathObject: OpenAPIV3.PathItemObject = {
   summary: 'Login a user',
-  description: 'Login a user with the given credentials.',
+  description:
+    'Login a user with the given credentials or create an initial account if the database is empty.',
   post: {
     tags: [Tag.users],
     summary: 'Login a user',
-    description: 'Login a user with the given credentials.',
+    description:
+      'Login a user with the given credentials or create an initial account if the database is empty.',
     security: [],
     operationId: 'loginUser',
     requestBody: {
@@ -31,7 +34,7 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
     responses: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
-        description: 'OK. The request was successfully executed. User was verified.',
+        description: 'OK. The request was successfully executed. User is logged in.',
         content: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
@@ -43,6 +46,7 @@ export const loginPathObject: OpenAPIV3.PathItemObject = {
       ...response401,
       ...response403,
       ...response406,
+      ...response409,
       ...response415,
       ...response429,
       ...responseDefault,

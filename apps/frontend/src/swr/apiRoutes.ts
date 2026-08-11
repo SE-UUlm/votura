@@ -49,9 +49,12 @@ export const apiRoutes = {
   voterGroups: {
     base: '/voterGroups',
     byId: (id: SelectableVoterGroup['id']): string => `/voterGroups/${id}`,
+    createVoterTokens: (id: SelectableVoterGroup['id']): string =>
+      `/voterGroups/${id}/createVoterTokens`,
   },
   users: {
     base: '/users',
+    count: '/users/count',
     current: '/users',
     login: '/users/login',
     logout: '/users/logout',
