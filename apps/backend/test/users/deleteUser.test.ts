@@ -5,7 +5,7 @@ import { app } from '../../src/app.js';
 import { generateUserTokens } from '../../src/auth/utils.js';
 import { HttpStatusCode } from '../../src/httpStatusCode.js';
 import { createUser, findUserBy } from '../../src/services/users.service.js';
-import {demoUser, demoUser2} from '../mockData.js';
+import { demoUser, demoUser2 } from '../mockData.js';
 
 describe(`DELETE /users/{userId}`, () => {
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
