@@ -24,6 +24,8 @@ describe(`POST /users/changePassword`, () => {
   const userCredentials = insertableUserObject.parse({
     email: 'changePasswordUser@votura.org',
     password: initialPassword,
+    role: 'user',
+    active: true,
   });
 
   beforeAll(async () => {
