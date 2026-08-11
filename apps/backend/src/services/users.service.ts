@@ -153,3 +153,12 @@ export const isAccessTokenBlacklisted = async (
 
   return blacklistedToken !== undefined; // Return true if token is blacklisted, false otherwise
 };
+
+export const userCount = async (): Promise<number> => {
+  const userCountResponse = await db
+    .selectFrom('user')
+    .select((b) => b.fn.count('user.id').as('count'))
+    .executeTakeFirst();
+
+  return Number(userCountResponse?.count ?? 0);
+};
