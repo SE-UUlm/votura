@@ -1,9 +1,19 @@
-import { ActionIcon, AppShell, Box, Divider, Flex, Skeleton, Space, Stack } from '@mantine/core';
+import {
+  ActionIcon,
+  AppShell,
+  Box,
+  Divider,
+  Flex,
+  Skeleton,
+  Space,
+  Stack,
+  ThemeIcon,
+} from '@mantine/core';
 import { IconBug, IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
-import { clearAuthLocalStorage } from '../swr/authTokens.ts';
+import { clearAuthLocalStorage, getUserIdFromAuthLocalStorage } from '../swr/authTokens.ts';
 import { useGetUser } from '../swr/useGetUser.ts';
 import { Avatar } from './Avatar.tsx';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
@@ -12,7 +22,17 @@ import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 export const AppShellLayout = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-  const { data: accountDetails, isLoading, error } = useGetUser();
+
+  const userId = getUserIdFromAuthLocalStorage();
+  if (!userId) {
+    return (
+      <ThemeIcon size="xl" color="red">
+        <IconBug style={{ width: '70%', height: '70%' }} />
+      </ThemeIcon>
+    );
+  }
+
+  const { data: accountDetails, isLoading, error } = useGetUser(userId);
 
   let accountSection = null;
   if (isLoading) {
