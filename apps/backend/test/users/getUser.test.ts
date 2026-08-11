@@ -1,5 +1,5 @@
-import { describe } from 'vitest';
+// import { describe } from 'vitest';
 
-describe(`GET /users`, () => {
+// describe(`GET /users`, () => {
   // TODO #504
-});
+// });
