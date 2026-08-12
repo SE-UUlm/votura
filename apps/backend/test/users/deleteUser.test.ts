@@ -1,4 +1,4 @@
-import type {ApiTokenUser, SelectableUser} from '@repo/votura-validators';
+import type { ApiTokenUser, SelectableUser } from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
