@@ -1,4 +1,4 @@
-import type { ApiTokenUser } from '@repo/votura-validators';
+import type {ApiTokenUser, SelectableUser} from '@repo/votura-validators';
 import request from 'supertest';
 import { beforeAll, describe, expect, it } from 'vitest';
 import { app } from '../../src/app.js';
@@ -10,22 +10,21 @@ import { demoUser, demoUser2 } from '../mockData.js';
 describe(`DELETE /users/{userId}`, () => {
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
+  let user2: SelectableUser;
+
   beforeAll(async () => {
     await createUser(demoUser);
-    const user1 = await findUserBy({ email: demoUser.email });
-    if (user1 === null) {
-      throw new Error('Failed to find test user 1');
+    const u1 = await findUserBy({ email: demoUser.email });
+    const u2 = await findUserBy({ email: demoUser2.email });
+    if (u1 === null || u2 === null) {
+      throw new Error('Failed to find test users');
     }
 
-    tokens = generateUserTokens(user1.id);
+    tokens = generateUserTokens(user2.id);
+    user2 = u2;
   });
 
   it('204: should delete a user', async () => {
-    const user2 = await findUserBy({ email: demoUser2.email });
-    if (user2 === null) {
-      throw new Error('Failed to find test user 2');
-    }
-
     const requestPath = `/users/${user2.id}`;
 
     const res = await request(app)
@@ -38,7 +37,7 @@ describe(`DELETE /users/{userId}`, () => {
   });
 
   it('404: should return 404 if user not found', async () => {
-    const nonexistentUserId = '00000000-0000-0000-0000-000000000000';
+    const nonexistentUserId = '01234567-89ab-cdef-0123-456789abcdef';
     const requestPath = `/users/${nonexistentUserId}`;
 
     const res = await request(app)
