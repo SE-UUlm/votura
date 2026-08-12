@@ -72,12 +72,12 @@ usersRouter.post(
   acceptBodyCheck(MimeType.applicationJson),
   authenticateAccessToken,
   onlyAdmin,
-  deleteUser,
+  editUser,
 );
 usersRouter.delete(
   `/:${parameter.userId}`,
   acceptHeaderCheck(MimeType.applicationJson),
   authenticateAccessToken,
   onlyAdmin,
-  editUser,
+  deleteUser,
 );
