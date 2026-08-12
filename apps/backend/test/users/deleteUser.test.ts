@@ -33,7 +33,7 @@ describe(`DELETE /users/{userId}`, () => {
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
     expect(res.status).toBe(HttpStatusCode.noContent);
-    const result = await findUserBy({ email: demoUser.email });
+    const result = await findUserBy({ email: demoUser2.email });
     expect(result).toBeNull();
   });
 
