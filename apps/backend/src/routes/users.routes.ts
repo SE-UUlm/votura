@@ -1,6 +1,7 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import { changePassword } from '../controllers/users/changePassword.uc.js';
+import { createUser } from '../controllers/users/createUser.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
 import { editUser } from '../controllers/users/editUser.uc.js';
 import { getUser } from '../controllers/users/getUser.uc.js';
@@ -13,7 +14,6 @@ import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { authenticateAccessToken, onlyAdmin } from '../middlewares/auth.js';
 import { MimeType } from '../middlewares/utils.js';
-import { createUser } from '../services/users.service.js';
 
 export const usersRouter: Router = Router();
 
