@@ -35,27 +35,6 @@ usersRouter.post(
   createUser,
 );
 
-usersRouter.get(
-  `/:${parameter.userId}`,
-  acceptBodyCheck(MimeType.applicationJson),
-  authenticateAccessToken,
-  getUser,
-);
-usersRouter.post(
-  `/:${parameter.userId}`,
-  acceptBodyCheck(MimeType.applicationJson),
-  authenticateAccessToken,
-  onlyAdmin,
-  deleteUser,
-);
-usersRouter.delete(
-  `/:${parameter.userId}`,
-  acceptBodyCheck(MimeType.applicationJson),
-  authenticateAccessToken,
-  onlyAdmin,
-  editUser,
-);
-
 usersRouter.post(
   '/login',
   acceptHeaderCheck(MimeType.applicationJson),
@@ -80,4 +59,25 @@ usersRouter.post(
   acceptHeaderCheck(MimeType.applicationJson),
   authenticateAccessToken,
   logout,
+);
+
+usersRouter.get(
+  `/:${parameter.userId}`,
+  acceptBodyCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  getUser,
+);
+usersRouter.post(
+  `/:${parameter.userId}`,
+  acceptBodyCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  onlyAdmin,
+  deleteUser,
+);
+usersRouter.delete(
+  `/:${parameter.userId}`,
+  acceptBodyCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  onlyAdmin,
+  editUser,
 );
