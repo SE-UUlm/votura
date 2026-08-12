@@ -21,7 +21,7 @@ describe(`DELETE /users/{userId}`, () => {
       throw new Error('Failed to find test users');
     }
 
-    tokens = generateUserTokens(user2.id);
+    tokens = generateUserTokens(u1.id);
     user2 = u2;
   });
 
