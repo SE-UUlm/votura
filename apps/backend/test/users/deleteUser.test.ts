@@ -14,6 +14,7 @@ describe(`DELETE /users/{userId}`, () => {
 
   beforeAll(async () => {
     await createUser(demoUser);
+    await createUser(demoUser2);
     const u1 = await findUserBy({ email: demoUser.email });
     const u2 = await findUserBy({ email: demoUser2.email });
     if (u1 === null || u2 === null) {
