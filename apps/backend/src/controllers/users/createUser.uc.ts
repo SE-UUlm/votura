@@ -1,3 +1,4 @@
+import type { Userrole } from '@repo/db/types';
 import {
   createUserDataObject,
   response409Object,
@@ -8,7 +9,6 @@ import {
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { createUser as createPersistentUser, findUserBy } from '../../services/users.service.js';
-import type {Userrole} from "@repo/db/types";
 
 export type CreateUserResponse = Response<void | Response400 | Response409>;
 
