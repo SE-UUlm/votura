@@ -98,7 +98,7 @@ export const authenticatableUserObjectSchema = z.toJSONSchema(
   toJsonSchemaParams,
 );
 
-export const createUserDataObject = userObject.pick({ email: true, password: true });
+export const createUserDataObject = userObject.pick({ email: true, role: true });
 export type CreateUserData = z.infer<typeof createUserDataObject>;
 export const createUserDataObjectSchema = z.toJSONSchema(createUserDataObject, toJsonSchemaParams);
 
