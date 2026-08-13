@@ -7,7 +7,8 @@ import {
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { findUserBy } from '../../services/users.service.js';
+import { createUser as createPersistentUser, findUserBy } from '../../services/users.service.js';
+import type {Userrole} from "@repo/db/types";
 
 export type CreateUserResponse = Response<void | Response400 | Response409>;
 
@@ -32,7 +33,12 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
     return;
   }
 
-  // TODO: Create user
+  await createPersistentUser({
+    email: data.email,
+    password: '',
+    role: data.role as Userrole,
+    active: true,
+  });
   // TODO: Send "welcome & set password" mail to new user
 
   res.sendStatus(HttpStatusCode.noContent);
