@@ -1,4 +1,4 @@
-import { type JSX } from 'react';
+import type { JSX } from 'react';
 import { useForm } from '@mantine/form';
 import {
   Box,
@@ -46,8 +46,6 @@ export const VoterView = (): JSX.Element => {
   const onLogin: Parameters<typeof form.onSubmit>[0] = async (values) => {
     toggleIsLoginIn();
     try {
-      console.log('Form token:', values.votingToken);
-      console.log('Form values:', values);
       const instance = axios.create({ baseURL: apiRoutes.base });
       const response = await instance.get('/voting/getElections', {
         headers: {
@@ -106,7 +104,7 @@ export const VoterView = (): JSX.Element => {
               <Button fullWidth type={'submit'} loading={isLoginIn}>
                 {t('startVoting', 'Start Voting')}
               </Button>
-              <Button variant="subtle" fullWidth type={'button'} onClick={() => navigate('/login')}>
+              <Button variant="subtle" fullWidth type={'button'} onClick={(): void | Promise<void> => navigate('/login')}>
                 {t('goToLogin', 'Go To Login')}
               </Button>
             </Stack>

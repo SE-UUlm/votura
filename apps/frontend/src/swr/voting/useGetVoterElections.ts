@@ -16,24 +16,25 @@ export const useGetVoterElections: ParametrizedApiHook<UseGetVoterElectionsParam
 ) => {
   const skipFetchByOption = options?.skipFetch ?? false;
   let tokenFromStorage: string | null = token ?? getVoterLocalStorage();
+  let key;
 
-  if (tokenFromStorage === undefined || tokenFromStorage === 'undefined' || (typeof tokenFromStorage === 'string' && tokenFromStorage.trim() === '')) {
+  if (tokenFromStorage === null || tokenFromStorage.trim() === '') {
     tokenFromStorage = null;
   }
 
   const shouldFetch = !skipFetchByOption && tokenFromStorage !== null;
 
-  const key = shouldFetch
-    ? {
+  if (shouldFetch){
+    key = {
       url: '/voting/getElections',
       token: tokenFromStorage,
-    }
-    : null;
+    };
+  } else {
+    key = null;
+  }
   return useSWR(
     key,
-    async ({ token }: { token: string }) => {
-      console.log('FETCH TOKEN:', token);
-
+    async () => {
       const instance = axios.create({
         baseURL: apiRoutes.base,
       });

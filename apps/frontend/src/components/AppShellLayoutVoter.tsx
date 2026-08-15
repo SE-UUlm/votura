@@ -1,9 +1,7 @@
 import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
-import { IconNotes } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
-import { RoutingNavbarLink } from './navbar/RoutingNavbarLink.tsx';
 import { clearVoterLocalStorage } from '../swr/voterToken.ts';
 
 export const AppShellLayoutVoter = (): JSX.Element => {
@@ -26,11 +24,6 @@ export const AppShellLayoutVoter = (): JSX.Element => {
           <Box>
             <NavbarHeader />
             <Divider pb={'md'} />
-            <RoutingNavbarLink
-              to={'/overview'}
-              label={'Overview'}
-              icon={<IconNotes size={16} />}
-            />
             <Space h={'xs'} />
           </Box>
           <Box>

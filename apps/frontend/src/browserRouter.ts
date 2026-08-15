@@ -19,7 +19,7 @@ export const browserRouter = createBrowserRouter([
   },
   {
     path: '/vote',
-    // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unsafe-assignment
+    // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: VoterView,
   },
   {
@@ -44,7 +44,7 @@ export const browserRouter = createBrowserRouter([
             children: [
               {
                 index: true,
-                // eslint-disable-next-line @typescript-eslint/naming-convention,@typescript-eslint/no-unsafe-assignment
+                // eslint-disable-next-line @typescript-eslint/naming-convention
                 Component: VotingHomeView,
               },
             ],
