@@ -1,8 +1,8 @@
 import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
 import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
-import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 import { clearVoterLocalStorage } from '../swr/voterToken.ts';
+import { NavbarHeader } from './navbar/NavbarHeader.tsx';
 
 export const AppShellLayoutVoter = (): JSX.Element => {
   const navigate = useNavigate();

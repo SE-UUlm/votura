@@ -1,4 +1,3 @@
-
 const VOTER_LOCAL_STORAGE_KEY = 'voterToken';
 
 export const clearVoterLocalStorage = (): void => {
@@ -11,11 +10,11 @@ export const clearVoterLocalStorage = (): void => {
 
 export const setVoterLocalStorage = (token: string): void => {
   try {
-      const t = token.trim();
-      if (t !== '' && t !== 'undefined') {
-        localStorage.setItem(VOTER_LOCAL_STORAGE_KEY, t);
-        return;
-      }
+    const t = token.trim();
+    if (t !== '' && t !== 'undefined') {
+      localStorage.setItem(VOTER_LOCAL_STORAGE_KEY, t);
+      return;
+    }
     clearVoterLocalStorage();
   } catch (e: unknown) {
     console.error('[voterToken] failed to set token', e);
@@ -32,10 +31,9 @@ export const getVoterLocalStorage = (): string | null => {
     if (t === '' || t === 'undefined') {
       return null;
     }
-      return t;
+    return t;
   } catch (e: unknown) {
     console.error('[voterToken] failed to get token', e);
-      return null;
+    return null;
   }
 };
-

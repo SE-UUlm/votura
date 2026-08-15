@@ -1,34 +1,23 @@
-import type { JSX } from 'react';
+import { Box, Button, Center, Container, Stack, TextInput, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
-import {
-  Box,
-  Button,
-  Center,
-  Container,
-  Stack,
-  TextInput,
-  Title,
-} from '@mantine/core';
-import { useNavigate } from 'react-router';
 import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import axios from 'axios';
-import { mutate } from 'swr';
-import { apiRoutes } from '../../../swr/apiRoutes.ts';
-import {
-  setVoterLocalStorage,
-} from '../../../swr/voterToken.ts';
 import {
   selectableVotingElectionObject,
   type SelectableVotingElection,
 } from '@repo/votura-validators';
-import { toArraySchema } from '../../../swr/toArraySchema.ts';
+import axios from 'axios';
+import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
+import { mutate } from 'swr';
+import { apiRoutes } from '../../../swr/apiRoutes.ts';
+import { toArraySchema } from '../../../swr/toArraySchema.ts';
+import { setVoterLocalStorage } from '../../../swr/voterToken.ts';
 
 export const VoterView = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
-
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -104,7 +93,12 @@ export const VoterView = (): JSX.Element => {
               <Button fullWidth type={'submit'} loading={isLoginIn}>
                 {t('startVoting', 'Start Voting')}
               </Button>
-              <Button variant="subtle" fullWidth type={'button'} onClick={(): void | Promise<void> => navigate('/login')}>
+              <Button
+                variant="subtle"
+                fullWidth
+                type={'button'}
+                onClick={(): void | Promise<void> => navigate('/login')}
+              >
                 {t('goToLogin', 'Go To Login')}
               </Button>
             </Stack>
