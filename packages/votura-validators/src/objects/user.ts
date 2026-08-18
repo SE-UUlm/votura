@@ -102,6 +102,10 @@ export const createUserDataObject = userObject.pick({ email: true, role: true })
 export type CreateUserData = z.infer<typeof createUserDataObject>;
 export const createUserDataObjectSchema = z.toJSONSchema(createUserDataObject, toJsonSchemaParams);
 
+export const editUserDataObject = userObject.pick({ role: true, active: true });
+export type EditUserData = z.infer<typeof editUserDataObject>;
+export const editUserDataObjectSchema = z.toJSONSchema(editUserDataObject, toJsonSchemaParams);
+
 export const apiTokenUserObject = userObject.pick({
   refreshToken: true,
   accessToken: true,

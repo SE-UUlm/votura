@@ -4,7 +4,13 @@ import type {
   User as DBUser,
 } from '@repo/db/types';
 import { getPepper, hashPassword } from '@repo/hash';
-import type { ApiTokenUser, InsertableUser, SelectableUser, User } from '@repo/votura-validators';
+import type {
+  ApiTokenUser,
+  EditUserData,
+  InsertableUser,
+  SelectableUser,
+  User,
+} from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { generateUserTokens, getTokenExpiration, hashRefreshToken } from '../auth/utils.js';
@@ -161,4 +167,13 @@ export const userCount = async (): Promise<number> => {
     .executeTakeFirst();
 
   return Number(userCountResponse?.count ?? 0);
+};
+
+export const editUser = async (user: SelectableUser, editUserData: EditUserData): Promise<void> => {
+  await db
+    .updateTable('user')
+    .set('role', editUserData.role)
+    .set('active', editUserData.active)
+    .where('id', '=', user.id)
+    .executeTakeFirstOrThrow();
 };
