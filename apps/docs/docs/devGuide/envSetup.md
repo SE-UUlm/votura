@@ -76,7 +76,16 @@ DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 BITS_PRIME_P=20
 KEY_GEN_TIMEOUT_MINUTES=15
+SMTP_HOST="localhost"
+SMTP_PORT=1025
+SMTP_SECURE="false"
+MAIL_SENDER_NAME="Votura"
+MAIL_SENDER_EMAIL="no-reply@votura.org"
 ```
+
+The `SMTP_*` and `MAIL_*` variables configure outgoing emails.
+For local development, they point at the [Mailpit](https://mailpit.axllent.org/) service that is started together with the database via `docker compose` (see the `db` package).
+You can view all emails sent during development in the Mailpit web UI at `http://localhost:8025`.
 
 **Frontend**:
 
