@@ -30,6 +30,7 @@ export const deleteUser = async (
         message: 'You are not allowed to delete your own account.',
       }),
     );
+    return;
   }
 
   await deletePersistentUser(userToDelete.id);

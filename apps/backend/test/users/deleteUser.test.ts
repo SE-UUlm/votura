@@ -60,6 +60,8 @@ describe(`DELETE /users/{userId}`, () => {
       .delete(nonexistentRequestPath)
       .set('Authorization', `Bearer ${tokens.accessToken}`);
 
+    console.log(res.body);
+
     expect(res.status).toBe(HttpStatusCode.notFound);
   });
 });
