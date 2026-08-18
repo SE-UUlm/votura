@@ -24,7 +24,7 @@ describe(`POST /users/{userId}`, () => {
     }
 
     tokens = generateUserTokens(user1.id);
-    requestPath2 = `/users/${user1.id}`;
+    requestPath1 = `/users/${user1.id}`;
     requestPath2 = `/users/${user2.id}`;
   });
 
