@@ -96,6 +96,8 @@
     "checkgroup",
     "usecase",
     "taskkill",
-    "userrole"
+    "userrole",
+    "mailpit",
+    "axllent"
   ]
 }

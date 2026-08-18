@@ -14,5 +14,12 @@ services:
       POSTGRES_PASSWORD: votura
       POSTGRES_DB: votura
 
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - '1025:1025' # SMTP server
+      - '8025:8025' # Web UI
+
 volumes:
   votura_postgres_data:

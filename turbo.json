@@ -1,7 +1,15 @@
 {
   "$schema": "https://turborepo.com/schema.json",
   "globalDependencies": [".env", "vitest.config.ts", "tsconfig.json"],
-  "globalEnv": [],
+  "globalEnv": [
+    "SMTP_HOST",
+    "SMTP_PORT",
+    "SMTP_SECURE",
+    "SMTP_USER",
+    "SMTP_PASS",
+    "MAIL_SENDER_NAME",
+    "MAIL_SENDER_EMAIL"
+  ],
   "ui": "stream",
   "concurrency": "100%",
   "cacheDir": ".turbo/cache",
