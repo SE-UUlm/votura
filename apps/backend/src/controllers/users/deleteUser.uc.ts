@@ -22,6 +22,16 @@ export const deleteUser = async (
     return;
   }
 
+  // Do not allow to delete own account (that could permanently brick the system when no one is able to log in)
+  const currentUser = res.locals.user;
+  if (userToDelete.id === currentUser.id) {
+    res.status(HttpStatusCode.forbidden).json(
+      response404Object.parse({
+        message: 'You are not allowed to delete your own account.',
+      }),
+    );
+  }
+
   await deletePersistentUser(userToDelete.id);
   res.sendStatus(HttpStatusCode.noContent);
 };
