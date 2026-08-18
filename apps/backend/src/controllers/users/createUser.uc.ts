@@ -63,13 +63,15 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
     return;
   }
 
+  const password = generateRandomPassword();
+
   await createPersistentUser({
     email: data.email,
-    password: generateRandomPassword(),
+    password: password,
     role: data.role as Userrole,
     active: true,
   });
-  await sendAccountCreationEmail(data.email);
+  await sendAccountCreationEmail(data.email, password);
 
   res.sendStatus(HttpStatusCode.noContent);
 };
