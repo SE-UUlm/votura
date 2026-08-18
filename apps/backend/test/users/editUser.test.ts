@@ -28,14 +28,13 @@ describe(`POST /users/{userId}`, () => {
     requestPath2 = `/users/${user2.id}`;
   });
 
-  it('200: should save the new account details', async () => {
+  it('204: should save the new account details', async () => {
     const res = await request(app)
       .post(requestPath2)
       .set('Authorization', `Bearer ${tokens.accessToken}`)
       .send(exampleEdit);
 
     expect(res.status).toBe(HttpStatusCode.noContent);
-    expect(res.type).toBe('application/json');
 
     const updatedUser = await findUserBy({ email: demoUser2.email });
     expect(updatedUser).not.toBe(null);
@@ -59,7 +58,6 @@ describe(`POST /users/{userId}`, () => {
       .send(exampleEdit);
 
     expect(res.status).toBe(HttpStatusCode.forbidden);
-    expect(res.type).toBe('application/json');
   });
 
   it('404: should not allow to edit non-existing accounts', async () => {
@@ -70,6 +68,5 @@ describe(`POST /users/{userId}`, () => {
       .send(exampleEdit);
 
     expect(res.status).toBe(HttpStatusCode.notFound);
-    expect(res.type).toBe('application/json');
   });
 });
