@@ -100,6 +100,8 @@
   "youAreAboutToDeleteTheCandidate": "Sie sind dabei, den Kandidaten zu löschen:",
   "youAreAboutToDeleteTheElection": "Sie sind dabei, die Wahl zu löschen:",
   "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
+  "noAccountExistsYet": "Es existiert noch kein Account.",
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt.",
   "manageAccount": "Account verwalten",
   "user": "Benutzer",
   "administrator": "Administrator",
