@@ -25,6 +25,7 @@ import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
 import { LoginHeader } from './LoginHeader.tsx';
 import { useUserCount } from '../../../swr/useUserCount.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -105,7 +106,7 @@ export const LoginView = (): JSX.Element => {
   return (
     <Container fluid h={'100vh'}>
       <LoginHeader />
-      <Center h={'100vh'}>
+      <Center h={`calc(100vh - ${HEADER_HEIGHT}px)`}>
         <Stack w={400}>
           <Title>Votura</Title>
           {userCount?.count === 0 && (
