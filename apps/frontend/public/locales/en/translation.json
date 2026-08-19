@@ -72,6 +72,9 @@
   "saveChanges": "Save changes",
   "sectionSettings": "Section Settings",
   "signUp": "Sign Up",
+  "goToVote": "Go to vote",
+  "startVoting": "Start voting",
+  "goToLogin": "Go to login",
   "somethingWentWrongDuringRegistrationPleaseTryAgain": "Something went wrong during registration. Please try again.",
   "startOfVoting": "Start of voting",
   "startOfVotingPeriod": "Start of voting period",
@@ -100,9 +103,10 @@
   "youAreAboutToDeleteTheCandidate": "You are about to delete the candidate:",
   "youAreAboutToDeleteTheElection": "You are about to delete the election:",
   "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}",
-
   "languages": {
     "en": "English",
     "de": "German"
-  }
+  },
+  "noAccountExistsYet": "No account exists yet.",
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials."
 }

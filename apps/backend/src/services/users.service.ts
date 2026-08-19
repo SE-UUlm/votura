@@ -75,6 +75,21 @@ export async function setUserVerified(userId: Selectable<DBUser>['id']): Promise
     .executeTakeFirstOrThrow();
 }
 
+export async function updateUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
 export async function deleteUser(userId: Selectable<DBUser>['id']): Promise<void> {
   await db.deleteFrom('user').where('id', '=', userId).executeTakeFirstOrThrow();
 }
@@ -137,4 +152,13 @@ export const isAccessTokenBlacklisted = async (
     .executeTakeFirst();
 
   return blacklistedToken !== undefined; // Return true if token is blacklisted, false otherwise
+};
+
+export const userCount = async (): Promise<number> => {
+  const userCountResponse = await db
+    .selectFrom('user')
+    .select((b) => b.fn.count('user.id').as('count'))
+    .executeTakeFirst();
+
+  return Number(userCountResponse?.count ?? 0);
 };

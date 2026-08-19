@@ -72,6 +72,9 @@
   "saveChanges": "Änderungen speichern",
   "sectionSettings": "Abschnittseinstellungen",
   "signUp": "Registrieren",
+  "goToVote": "Zur Abstimmung",
+  "startVoting": "Abstimmung Starten",
+  "goToLogin": "Zum Login",
   "somethingWentWrongDuringRegistrationPleaseTryAgain": "Bei der Registrierung ist ein Fehler aufgetreten. Bitte versuchen Sie es erneut.",
   "startOfVoting": "Beginn der Abstimmung",
   "startOfVotingPeriod": "Beginn des Abstimmungszeitraums",
@@ -100,9 +103,10 @@
   "youAreAboutToDeleteTheCandidate": "Sie sind dabei, den Kandidaten zu löschen:",
   "youAreAboutToDeleteTheElection": "Sie sind dabei, die Wahl zu löschen:",
   "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
-
   "languages": {
     "en": "Englisch",
     "de": "Deutsch"
-  }
+  },
+  "noAccountExistsYet": "Es existiert noch kein Account.",
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt."
 }
