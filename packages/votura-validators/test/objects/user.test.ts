@@ -54,11 +54,11 @@ describe('User tests', () => {
       newPasswordVerification: 'MyP@ssw0rd!2!',
     });
     expect(setInitialPasswordResult.success).toBe(false);
-  })
-  
+  });
+
   it('Should not allow negative numbers for user count', () => {
     const result = userCountObject.safeParse({
-      count: -1
+      count: -1,
     });
     expect(result.success).toBe(false);
   });
