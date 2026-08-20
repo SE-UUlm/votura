@@ -105,5 +105,12 @@
   "newPassword": "Neues Passwort",
   "repeatNewPassword": "Neues Passwort wiederholen",
   "currentPasswordIsRequired": "Aktuelles Passwort ist erforderlich.",
-  "passwordChangedSuccessfully": "Passwort wurde erfolgreich geändert."
+  "passwordChangedSuccessfully": "Passwort wurde erfolgreich geändert.",
+  "accounts": "Accounts",
+  "email": "E-Mail",
+  "role": "Rolle",
+  "status": "Status",
+  "active": "Aktiv",
+  "inactive": "Inaktiv",
+  "createdAt": "Erstellt am"
 }
