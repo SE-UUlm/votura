@@ -120,8 +120,11 @@ export async function checkElectionNotFrozen(
 
 /**
  * Checks if a election is currently generating it's keys.
- * If the config of the election is frozen but the public key is still null the generation process is not finished.
- * If this is the case it sends a 403 else calls the next middleware function.
+ * The election counts as generating keys while it is frozen, the public key is still null and
+ * the key generation run started less than the configured timeout ago
+ * (`KEY_GEN_TIMEOUT_MINUTES`, default 15 minutes). After the timeout the run is considered
+ * failed, so the check passes and the election can be unfrozen again (see #242).
+ * If the keys are still generating it sends a 403 else calls the next middleware function.
  *
  * @param req The request containing the validated election id.
  * @param res The response object to send any error.
@@ -137,7 +140,8 @@ export async function checkElectionNotGenerateKeys(
       res,
       'Currently the generation of the election keys are running. ' +
         'For consistency you are not allowed to do this action. ' +
-        'Please retry in some minutes.',
+        'Please retry in some minutes. ' +
+        'If the key generation does not finish, this action is unlocked again after a timeout.',
     );
   } else {
     next();
@@ -178,11 +182,9 @@ export enum CheckElectionIsValidErrors {
   candidateMismatch = 'candidateMismatch',
 }
 type CheckElectionIsValidErrorsWithoutId =
-  | CheckElectionIsValidErrors.noBallotPapers
-  | CheckElectionIsValidErrors.candidateMismatch;
+  CheckElectionIsValidErrors.noBallotPapers | CheckElectionIsValidErrors.candidateMismatch;
 type CheckElectionIsValidErrorsWithId =
-  | CheckElectionIsValidErrors.noSections
-  | CheckElectionIsValidErrors.noCandidates;
+  CheckElectionIsValidErrors.noSections | CheckElectionIsValidErrors.noCandidates;
 
 export function getValidationErrorMessage(error: CheckElectionIsValidErrorsWithoutId): string;
 export function getValidationErrorMessage(

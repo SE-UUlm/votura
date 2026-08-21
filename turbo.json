@@ -47,14 +47,21 @@
       "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT"]
     },
     "check-types": {
-      "dependsOn": [],
+      "dependsOn": ["^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
       "persistent": false,
       "interactive": false,
       "outputs": [],
-      "env": ["DATABASE_URL", "PEPPER", "TERMINAL_LOG_LEVEL", "PORT", "BITS_PRIME_P"]
+      "env": [
+        "DATABASE_URL",
+        "PEPPER",
+        "TERMINAL_LOG_LEVEL",
+        "PORT",
+        "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES"
+      ]
     },
     "build": {
       "dependsOn": ["^build"],
@@ -74,7 +81,7 @@
       ]
     },
     "test": {
-      "dependsOn": ["^test"],
+      "dependsOn": ["^test", "^build"],
       "cache": true,
       "inputs": ["$TURBO_DEFAULT$"],
       "outputLogs": "full",
@@ -88,6 +95,7 @@
         "CI",
         "HOME",
         "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES",
         "USERS_JWT_PRIV_KEY",
         "USERS_JWT_PUB_KEY",
         "PLAYWRIGHT_BROWSERS_PATH"
@@ -107,6 +115,7 @@
         "TERMINAL_LOG_LEVEL",
         "PORT",
         "BITS_PRIME_P",
+        "KEY_GEN_TIMEOUT_MINUTES",
         "USERS_JWT_PRIV_KEY",
         "USERS_JWT_PUB_KEY"
       ]

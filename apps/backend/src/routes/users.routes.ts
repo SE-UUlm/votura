@@ -1,13 +1,13 @@
 import { Router } from 'express';
-import {
-  createUser,
-  deleteUser,
-  login,
-  logout,
-  refreshTokens,
-  requestPasswordReset,
-  resetPassword,
-} from '../controllers/users.controllers.js';
+import { changePassword } from '../controllers/users/changePassword.uc.js';
+import { createUser } from '../controllers/users/createUser.uc.js';
+import { deleteUser } from '../controllers/users/deleteUser.uc.js';
+import { getUserCount } from '../controllers/users/getUserCount.uc.js';
+import { login } from '../controllers/users/login.uc.js';
+import { logout } from '../controllers/users/logout.uc.js';
+import { refreshTokens } from '../controllers/users/refreshTokens.uc.js';
+import { requestPasswordReset } from '../controllers/users/requestPasswordReset.uc.js';
+import { resetPassword } from '../controllers/users/resetPassword.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { authenticateAccessToken } from '../middlewares/auth.js';
@@ -27,6 +27,7 @@ usersRouter.delete(
   authenticateAccessToken,
   deleteUser,
 );
+usersRouter.get('/count', acceptHeaderCheck(MimeType.applicationJson), getUserCount);
 usersRouter.post(
   '/login',
   acceptHeaderCheck(MimeType.applicationJson),
@@ -40,10 +41,11 @@ usersRouter.post(
   refreshTokens,
 );
 usersRouter.post(
-  '/logout',
+  '/changePassword',
   acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
   authenticateAccessToken,
-  logout,
+  changePassword,
 );
 usersRouter.post(
   '/requestPasswordReset',
@@ -56,4 +58,10 @@ usersRouter.post(
   acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   resetPassword,
+);
+usersRouter.post(
+  '/logout',
+  acceptHeaderCheck(MimeType.applicationJson),
+  authenticateAccessToken,
+  logout,
 );

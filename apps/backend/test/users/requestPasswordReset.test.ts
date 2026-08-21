@@ -18,6 +18,8 @@ describe(`POST /users/requestPasswordReset`, () => {
   const resetUser = insertableUserObject.parse({
     email: 'requestResetUser@votura.org',
     password: 'MyStrong!Password123',
+    role: 'user',
+    active: true,
   });
 
   beforeAll(async () => {

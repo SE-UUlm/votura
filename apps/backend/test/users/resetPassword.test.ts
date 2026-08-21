@@ -50,6 +50,8 @@ describe(`POST /users/resetPassword`, () => {
   const resetUser = insertableUserObject.parse({
     email: 'resetPasswordUser@votura.org',
     password: 'MyStrong!Password123',
+    role: 'user',
+    active: true,
   });
 
   beforeEach(async () => {

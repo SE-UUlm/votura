@@ -51,11 +51,25 @@ export const userObject = z.object({
         'The raw password reset token that was sent to the user via email. The user submits this token to authenticate and authorize the password reset.',
       example: 'a3f1c2b4d5e6f7081929384756abcdef0123456789abcdef0123456789abcdef',
     }),
+  role: z.enum(['user', 'admin']).register(voturaMetadataRegistry, {
+    description: 'The role and access level of the user.',
+    example: 'user',
+  }),
+  active: z.boolean().register(voturaMetadataRegistry, {
+    description:
+      'Whether the user account is active or not. Inactive user accounts are not allowed to log in or to perform actions in the application.',
+    example: 'true',
+  }),
 });
 
 export type User = z.infer<typeof userObject>;
 
-export const insertableUserObject = userObject.pick({ email: true, password: true });
+export const insertableUserObject = userObject.pick({
+  email: true,
+  password: true,
+  role: true,
+  active: true,
+});
 
 export type InsertableUser = z.infer<typeof insertableUserObject>;
 
@@ -66,11 +80,22 @@ export const selectableUserObject = userObject.pick({
   createdAt: true,
   modifiedAt: true,
   email: true,
+  role: true,
+  active: true,
 });
 
 export type SelectableUser = z.infer<typeof selectableUserObject>;
 
 export const selectableUserObjectSchema = z.toJSONSchema(selectableUserObject, toJsonSchemaParams);
+
+export const authenticatableUserObject = userObject.pick({ email: true, password: true });
+
+export type AuthenticatableUser = z.infer<typeof authenticatableUserObject>;
+
+export const authenticatableUserObjectSchema = z.toJSONSchema(
+  authenticatableUserObject,
+  toJsonSchemaParams,
+);
 
 export const apiTokenUserObject = userObject.pick({
   refreshToken: true,
@@ -112,5 +137,37 @@ export type PasswordResetUser = z.infer<typeof passwordResetUserObject>;
 
 export const passwordResetUserObjectSchema = z.toJSONSchema(
   passwordResetUserObject,
+  toJsonSchemaParams,
+);
+
+export const userCountObject = z.object({
+  count: z.number().int().nonnegative().register(voturaMetadataRegistry, {
+    description: 'The current amount of users in the database.',
+    example: 0,
+  }),
+});
+
+export type UserCount = z.infer<typeof userCountObject>;
+
+export const userCountObjectSchema = z.toJSONSchema(userCountObject, toJsonSchemaParams);
+
+export const changePasswordUserObject = z
+  .object({
+    currentPassword: z.string().min(1).max(127).register(voturaMetadataRegistry, {
+      description: 'The current password of the user.',
+      example: 'MyP@ssw0rd!1!',
+    }),
+    newPassword: userObject.shape.password,
+    newPasswordVerification: userObject.shape.password,
+  })
+  .refine((data) => data.newPassword === data.newPasswordVerification, {
+    message: 'The new passwords do not match.',
+    path: ['newPasswordVerification'],
+  });
+
+export type ChangePasswordUser = z.infer<typeof changePasswordUserObject>;
+
+export const changePasswordUserObjectSchema = z.toJSONSchema(
+  changePasswordUserObject,
   toJsonSchemaParams,
 );

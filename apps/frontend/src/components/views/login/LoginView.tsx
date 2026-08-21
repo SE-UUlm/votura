@@ -15,17 +15,20 @@ import {
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { insertableUserObject } from '@repo/votura-validators';
+import { authenticatableUserObject } from '@repo/votura-validators';
+import { IconInfoCircle } from '@tabler/icons-react';
 import axios from 'axios';
 import { type JSX, useEffect, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
+import { useUserCount } from '../../../swr/useUserCount.ts';
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();
   const { trigger, isMutating } = useLoginUser();
+  const { data: userCount } = useUserCount();
   const navigate = useNavigate();
 
   const form = useForm({
@@ -36,7 +39,7 @@ export const LoginView = (): JSX.Element => {
     },
     validate: {
       email: (value) => {
-        const parsed = insertableUserObject.shape.email.safeParse(value);
+        const parsed = authenticatableUserObject.shape.email.safeParse(value);
         return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
     },
@@ -103,6 +106,36 @@ export const LoginView = (): JSX.Element => {
       <Center h={'100vh'}>
         <Stack w={400}>
           <Title>Votura</Title>
+          {userCount?.count === 0 && (
+            <Box
+              px={'sm'}
+              py={'xs'}
+              bg={'yellow.0'}
+              style={{
+                borderLeft: '4px solid var(--mantine-color-yellow-6)',
+                borderRadius: '4px',
+              }}
+            >
+              <Group align="flex-start" gap="xs" wrap="nowrap">
+                <IconInfoCircle
+                  size={36}
+                  stroke={2}
+                  style={{ color: 'var(--mantine-color-yellow-8)' }}
+                />
+                <Stack gap={2}>
+                  <Text size={'sm'} fw={700}>
+                    {t('noAccountExistsYet', 'No account exists yet.')}
+                  </Text>
+                  <Text size={'sm'}>
+                    {t(
+                      'whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials',
+                      'When logging in, a new administrator account will be created with the specified login credentials.',
+                    )}
+                  </Text>
+                </Stack>
+              </Group>
+            </Box>
+          )}
           <Box component={'form'} onSubmit={form.onSubmit(onLogin)}>
             <Stack>
               <TextInput

@@ -1,7 +1,7 @@
 import {
   type ApiTokenUser,
   apiTokenUserObject,
-  type InsertableUser,
+  type AuthenticatableUser,
 } from '@repo/votura-validators';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiRoutes } from './apiRoutes.ts';
@@ -11,7 +11,7 @@ export const useLoginUser = (): SWRMutationResponse<
   ApiTokenUser,
   Error,
   string,
-  InsertableUser
+  AuthenticatableUser
 > => {
   return useSWRMutation(apiRoutes.users.login, posterFactory(apiTokenUserObject));
 };

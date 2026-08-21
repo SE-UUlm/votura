@@ -1,4 +1,5 @@
 import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
+import { isPgCronAvailable } from '../migrationUtils.js';
 import {
   DefaultColumnName,
   FailedLoginAttemptColumnName,
@@ -98,11 +99,18 @@ export async function dropCronjobs(db: Kysely<any>): Promise<void> {
 export async function up(db: Kysely<any>): Promise<void> {
   await createTables(db);
   await addModifiedAtTriggers(db);
-  await createCronjobs(db);
+
+  if (await isPgCronAvailable(db)) {
+    await createCronjobs(db);
+  } else {
+    console.warn('pg_cron is not available, skipping cron job setup (expected on Windows/macOS).');
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  await dropCronjobs(db);
+  if (await isPgCronAvailable(db)) {
+    await dropCronjobs(db);
+  }
   await dropTables(db);
 }
