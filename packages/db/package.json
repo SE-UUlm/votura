@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "postgres-up": "docker compose up -d",
@@ -33,10 +34,22 @@
     "typescript-eslint": "^8.31.0"
   },
   "exports": {
-    ".": "./src/main.ts",
-    "./types": "./src/types/db.d.ts",
-    "./migrateToLatest": "./src/migrateToLatest.ts",
-    "./genericContainer": "./src/genericContainer.ts",
-    "./seed": "./src/seed.ts"
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
+    },
+    "./types": "./dist/types/db.d.ts",
+    "./migrateToLatest": {
+      "types": "./dist/migrateToLatest.d.ts",
+      "default": "./dist/migrateToLatest.js"
+    },
+    "./genericContainer": {
+      "types": "./dist/genericContainer.d.ts",
+      "default": "./dist/genericContainer.js"
+    },
+    "./seed": {
+      "types": "./dist/seed.d.ts",
+      "default": "./dist/seed.js"
+    }
   }
 }
