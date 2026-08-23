@@ -23,9 +23,9 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
-import { LoginHeader } from './LoginHeader.tsx';
 import { useUserCount } from '../../../swr/useUserCount.ts';
 import { HEADER_HEIGHT } from '../../utils.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();

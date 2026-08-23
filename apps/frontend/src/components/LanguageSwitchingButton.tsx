@@ -11,8 +11,7 @@ export const LanguageSwitchingButton = (): JSX.Element => {
   // map the language codes readable languages in the corresponing language
   const languages = supportedLanguages.map((language) => ({
     code: language,
-    name:
-      new Intl.DisplayNames([language], { type: 'language' }).of(language) ?? language,
+    name: new Intl.DisplayNames([language], { type: 'language' }).of(language) ?? language,
   }));
   const { i18n } = useTranslation();
   const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? 'en';
