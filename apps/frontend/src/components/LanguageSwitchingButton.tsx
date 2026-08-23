@@ -8,7 +8,7 @@ export const LanguageSwitchingButton = (): JSX.Element => {
   const supportedLanguages = (i18next.options.supportedLngs || []).filter(
     (language) => language !== 'cimode',
   ); //strip debugging locale mode from the official languages
-  // map the language codes to readable languages in their corresponing language
+  // map the language codes to readable languages in their corresponding language
   const languages = supportedLanguages.map((language) => ({
     code: language,
     name: new Intl.DisplayNames([language], { type: 'language' }).of(language) ?? language,
