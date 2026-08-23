@@ -103,10 +103,6 @@
   "youAreAboutToDeleteTheCandidate": "You are about to delete the candidate:",
   "youAreAboutToDeleteTheElection": "You are about to delete the election:",
   "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}",
-  "languages": {
-    "en": "English",
-    "de": "German"
-  },
   "noAccountExistsYet": "No account exists yet.",
   "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials."
 }

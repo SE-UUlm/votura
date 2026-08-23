@@ -8,7 +8,13 @@ export const LanguageSwitchingButton = (): JSX.Element => {
   const supportedLanguages = (i18next.options.supportedLngs || []).filter(
     (language) => language !== 'cimode',
   ); //strip debugging locale mode from the official languages
-  const { i18n, t } = useTranslation();
+  // map the language codes readable languages in the corresponing language
+  const languages = supportedLanguages.map((language) => ({
+    code: language,
+    name:
+      new Intl.DisplayNames([language], { type: 'language' }).of(language) ?? language,
+  }));
+  const { i18n } = useTranslation();
   const currentLanguage = i18n.resolvedLanguage ?? i18n.language ?? 'en';
 
   return (
@@ -25,18 +31,18 @@ export const LanguageSwitchingButton = (): JSX.Element => {
       </Menu.Target>
 
       <Menu.Dropdown>
-        {supportedLanguages.map((language) => {
-          const isActive = currentLanguage.startsWith(language);
+        {languages.map(({ code, name }) => {
+          const isActive = currentLanguage.startsWith(code);
 
           return (
             <Menu.Item
-              key={language}
+              key={code}
               onClick={async (): Promise<void> => {
-                await i18n.changeLanguage(language);
+                await i18n.changeLanguage(code);
               }}
               style={{ fontWeight: isActive ? 700 : undefined }}
             >
-              {t(`languages.${language}`)}
+              {name}
             </Menu.Item>
           );
         })}
