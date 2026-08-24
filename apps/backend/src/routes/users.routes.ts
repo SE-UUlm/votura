@@ -6,6 +6,8 @@ import { getUserCount } from '../controllers/users/getUserCount.uc.js';
 import { login } from '../controllers/users/login.uc.js';
 import { logout } from '../controllers/users/logout.uc.js';
 import { refreshTokens } from '../controllers/users/refreshTokens.uc.js';
+import { requestPasswordReset } from '../controllers/users/requestPasswordReset.uc.js';
+import { resetPassword } from '../controllers/users/resetPassword.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { authenticateAccessToken } from '../middlewares/auth.js';
@@ -44,6 +46,18 @@ usersRouter.post(
   acceptBodyCheck(MimeType.applicationJson),
   authenticateAccessToken,
   changePassword,
+);
+usersRouter.post(
+  '/requestPasswordReset',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  requestPasswordReset,
+);
+usersRouter.post(
+  '/resetPassword',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  resetPassword,
 );
 usersRouter.post(
   '/logout',
