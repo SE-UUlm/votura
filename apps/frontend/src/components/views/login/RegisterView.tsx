@@ -15,6 +15,8 @@ import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useRegisterUser } from '../../../swr/useRegisterUser.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const RegisterView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -103,7 +105,8 @@ export const RegisterView = (): JSX.Element => {
 
   return (
     <Container fluid h={'100vh'}>
-      <Center h={'100vh'}>
+      <LoginHeader />
+      <Center h={`calc(100vh - ${HEADER_HEIGHT}px)`}>
         <Stack w={400}>
           <Title>Votura</Title>
           <Box component={'form'} onSubmit={form.onSubmit(onRegister)}>

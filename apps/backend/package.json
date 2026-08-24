@@ -75,6 +75,7 @@
     "vitest": "^3.2.3"
   },
   "dependencies": {
+    "@repo/db": "*",
     "@repo/hash": "*",
     "@repo/logger": "*",
     "@repo/votura-ballot-box": "*",
