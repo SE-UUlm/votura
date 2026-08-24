@@ -3,7 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc -p tsconfig.build.json",
+    "build": "tsc -p tsconfig.build.json && mkdir -p dist/types && cp src/types/db.d.ts dist/types/db.d.ts",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "postgres-up": "docker compose up -d",
