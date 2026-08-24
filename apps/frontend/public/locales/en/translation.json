@@ -157,4 +157,6 @@
   "youAreAboutToFreezeTheElection": "You are about to freeze the election:",
   "youAreAboutToUnfreezeTheElection": "You are about to unfreeze the election:",
   "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}"
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials.",
+  "welcomeToVotura": "Welcome to Votura"
 }

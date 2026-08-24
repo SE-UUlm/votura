@@ -157,4 +157,6 @@
   "youAreAboutToFreezeTheElection": "Sie sind dabei, die folgende Wahl zu sperren:",
   "youAreAboutToUnfreezeTheElection": "Sie sind dabei, die folgende Wahl freizugeben:",
   "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}"
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt.",
+  "welcomeToVotura": "Willkommen bei Votura"
 }
