@@ -38,7 +38,7 @@
       "types": "./dist/main.d.ts",
       "default": "./dist/main.js"
     },
-    "./types": "./dist/types/db.d.ts",
+    "./types": "./src/types/db.d.ts",
     "./migrateToLatest": {
       "types": "./dist/migrateToLatest.d.ts",
       "default": "./dist/migrateToLatest.js"
