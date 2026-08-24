@@ -14,6 +14,8 @@ import { mutate } from 'swr';
 import { apiRoutes } from '../../../swr/apiRoutes.ts';
 import { toArraySchema } from '../../../swr/toArraySchema.ts';
 import { setVoterLocalStorage } from '../../../swr/voterToken.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const VoterView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -78,7 +80,8 @@ export const VoterView = (): JSX.Element => {
 
   return (
     <Container fluid h={'100vh'}>
-      <Center h={'100vh'}>
+      <LoginHeader />
+      <Center h={`calc(100vh - ${HEADER_HEIGHT}px)`}>
         <Stack w={400}>
           <Title>Votura</Title>
           <Box component={'form'} onSubmit={form.onSubmit(onLogin)}>
