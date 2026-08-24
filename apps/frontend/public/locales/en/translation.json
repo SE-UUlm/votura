@@ -116,4 +116,6 @@
   "repeatNewPassword": "Repeat new password",
   "currentPasswordIsRequired": "Current password is required.",
   "passwordChangedSuccessfully": "Password changed successfully."
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials.",
+  "welcomeToVotura": "Welcome to Votura"
 }
