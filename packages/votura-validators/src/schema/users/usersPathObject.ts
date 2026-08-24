@@ -1,8 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import {
-  createUserDataObjectSchema,
-  selectableUsersObjectSchema,
-} from '../../objects/user.js';
+import { createUserDataObjectSchema, selectableUsersObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,

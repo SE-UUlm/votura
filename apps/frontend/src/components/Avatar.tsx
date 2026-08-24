@@ -1,4 +1,4 @@
-import {Avatar as MantineAvatar} from '@mantine/core';
+import { Avatar as MantineAvatar } from '@mantine/core';
 import type { JSX } from 'react';
 import { renderToString } from 'react-dom/server';
 
@@ -85,12 +85,5 @@ export const Avatar = ({ userId, email }: AvatarProps): JSX.Element => {
   const privateAvatarSvg = renderToString(<PrivateAvatar userId={userId} email={email} />);
   const avatarSrc = 'data:image/svg+xml,' + encodeURIComponent(privateAvatarSvg);
 
-  return (
-    <MantineAvatar
-      src={avatarSrc}
-      alt={email}
-      w={'100%'}
-      h={'100%'}
-    />
-  );
+  return <MantineAvatar src={avatarSrc} alt={email} w={'100%'} h={'100%'} />;
 };
