@@ -7,16 +7,18 @@ WORKDIR /app
 COPY . .
 RUN turbo prune @votura/frontend --docker
 
-# --- Stage 2: Installer (nur benötigte Dependencies) ---
+# --- Stage 2: Installer ---
 FROM base AS installer
 WORKDIR /app
 
-# Erst nur package.json-Dateien kopieren -> optimales Caching
 COPY --from=pruner /app/out/json/ .
 RUN npm ci
 
-# Jetzt den echten Source-Code kopieren
 COPY --from=pruner /app/out/full/ .
+
+ARG VITE_API_BASE_URL
+ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
+
 RUN npx turbo run build --filter=@votura/frontend...
 
 # --- Stage 3: Runtime ---

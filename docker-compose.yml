@@ -1,8 +1,30 @@
 services:
+  postgres:
+    build:
+      context: ./packages/db
+      dockerfile: dockerfile
+    restart: always
+    shm_size: 128mb
+    ports:
+      - '5432:5432'
+    volumes:
+      - votura_postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: votura
+      POSTGRES_PASSWORD: votura
+      POSTGRES_DB: votura
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U votura"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   frontend:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:4000
     ports:
       - "8080:80"
 
@@ -13,4 +35,12 @@ services:
     ports:
       - "4000:4000"
     environment:
-      - NODE_ENV=production
+      NODE_ENV: production
+      DATABASE_URL: postgresql://votura:votura@postgres:5432/votura?schema=public
+      PEPPER: ${PEPPER:?PEPPER must be set}
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  votura_postgres_data:

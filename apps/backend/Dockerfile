@@ -17,6 +17,7 @@ COPY --from=pruner /app/out/json/ .
 RUN npm install
 
 COPY --from=pruner /app/out/full/ .
+
 RUN npx turbo run build --filter=@votura/backend...
 
 # --- Stage 3: Runtime ---
