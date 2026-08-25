@@ -44,13 +44,17 @@ export const CreateAccountDrawer = ({
       admin: false,
     },
     validate: {
-      email: isNotEmpty('Email has to be a valid email address') && isEmail('Email has to be a valid email address'),
+      email:
+        isNotEmpty('Email has to be a valid email address') &&
+        isEmail('Email has to be a valid email address'),
     },
     validateInputOnBlur: true,
   });
 
   useEffect(() => {
-    if (!opened) return;
+    if (!opened) {
+      return;
+    }
 
     form.reset();
   }, [opened]);
@@ -85,7 +89,7 @@ export const CreateAccountDrawer = ({
                 <TextInput
                   withAsterisk
                   label={'Email'}
-                  // placeholder={''}
+                  placeholder={'user@votura.org'}
                   key={form.key('email')}
                   {...form.getInputProps('email')}
                 />
