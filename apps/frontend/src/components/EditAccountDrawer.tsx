@@ -1,7 +1,20 @@
-import { Box, Button, Checkbox, Drawer, Group, type ModalProps, Stack } from '@mantine/core';
+import {
+  Badge,
+  Box,
+  Button,
+  Checkbox,
+  Container,
+  Drawer,
+  Group,
+  type ModalProps,
+  Stack,
+  Text,
+} from '@mantine/core';
 import { useForm } from '@mantine/form';
 import type { EditUserData, SelectableUser } from '@repo/votura-validators';
+import { t } from 'i18next';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { Avatar } from './Avatar.tsx';
 
 export interface EditAccountDrawerProps {
   user: SelectableUser;
@@ -65,6 +78,16 @@ export const EditAccountDrawer = ({
     onClose();
   };
 
+  const memberSinceDate = new Date(user.createdAt);
+  const memberSince =
+    t('memberSince', 'Member since') +
+    ' ' +
+    memberSinceDate.toLocaleDateString([], {
+      day: 'numeric',
+      month: 'long',
+      year: 'numeric',
+    });
+
   return (
     <Drawer.Root opened={opened} onClose={onClose} position={'right'} offset={16} radius={'md'}>
       <Drawer.Overlay />
@@ -76,6 +99,26 @@ export const EditAccountDrawer = ({
               <Drawer.CloseButton disabled={isMutating} />
             </Drawer.Header>
             <Drawer.Body>
+              <Stack align={'center'} mb={'md'}>
+                <Container w={'50%'}>
+                  <Avatar userId={user.id} email={user.email} />
+                </Container>
+                {user.role === 'admin' ? (
+                  <Badge variant={'light'} color={'red'}>
+                    {t('administrator', 'Administrator')}
+                  </Badge>
+                ) : (
+                  <Badge variant={'light'} color={'blue'}>
+                    {t('user', 'User')}
+                  </Badge>
+                )}
+                <Text>{user.email}</Text>
+                {memberSince !== '' ? (
+                  <Text size={'sm'} c={'dimmed'}>
+                    {memberSince}
+                  </Text>
+                ) : null}
+              </Stack>
               <Stack>
                 <Checkbox
                   label={'Administrator'}
