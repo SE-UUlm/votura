@@ -1,8 +1,8 @@
 import type { EditUserData, SelectableUser } from '@repo/votura-validators';
+import { mutate } from 'swr';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiRoutes } from './apiRoutes.ts';
 import { posterFactory } from './posterFactory.ts';
-import {mutate} from "swr";
 
 export const useEditUser = (
   userId: SelectableUser['id'],
@@ -12,6 +12,6 @@ export const useEditUser = (
       mutate(apiRoutes.users.all).catch((error) => {
         console.error('Failed to mutate users', error);
       });
-    }
+    },
   });
 };
