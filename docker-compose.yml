@@ -1,3 +1,6 @@
+# To Run this docker compose file, you need to set the PEPPER environment variable in your shell before running the command:
+# export PEPPER='your_pepper_value' (or for a one-liner: PEPPER='your_pepper_value' docker-compose up)
+
 services:
   postgres:
     build:
