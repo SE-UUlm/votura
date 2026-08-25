@@ -14,6 +14,7 @@ import { useForm } from '@mantine/form';
 import type { EditUserData, SelectableUser } from '@repo/votura-validators';
 import { t } from 'i18next';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { getUserIdFromAuthLocalStorage } from '../swr/authTokens.ts';
 import { Avatar } from './Avatar.tsx';
 
 export interface EditAccountDrawerProps {
@@ -119,27 +120,35 @@ export const EditAccountDrawer = ({
                   </Text>
                 ) : null}
               </Stack>
-              <Stack>
-                <Checkbox
-                  label={'Administrator'}
-                  key={form.key('admin')}
-                  {...form.getInputProps('admin', { type: 'checkbox' })}
-                />
-                <Checkbox
-                  label={'Active'}
-                  key={form.key('active')}
-                  {...form.getInputProps('active', { type: 'checkbox' })}
-                />
-              </Stack>
+              {getUserIdFromAuthLocalStorage() !== user.id ? (
+                <Stack>
+                  <Checkbox
+                    label={'Administrator'}
+                    key={form.key('admin')}
+                    {...form.getInputProps('admin', { type: 'checkbox' })}
+                  />
+                  <Checkbox
+                    label={'Active'}
+                    key={form.key('active')}
+                    {...form.getInputProps('active', { type: 'checkbox' })}
+                  />
+                </Stack>
+              ) : (
+                <></>
+              )}
             </Drawer.Body>
           </Box>
           <Group justify="flex-end" m={'md'}>
             <Button variant="outline" onClick={onClose} disabled={isMutating}>
               Cancel
             </Button>
-            <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
-              {mutateButtonText}
-            </Button>
+            {getUserIdFromAuthLocalStorage() !== user.id ? (
+              <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
+                {mutateButtonText}
+              </Button>
+            ) : (
+              <></>
+            )}
           </Group>
         </Stack>
       </Drawer.Content>
