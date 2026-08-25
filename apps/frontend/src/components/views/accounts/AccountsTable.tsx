@@ -1,9 +1,13 @@
 import { Badge, Table, Text } from '@mantine/core';
+import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import type { SelectableUser } from '@repo/votura-validators';
 import dayjs from 'dayjs';
-import type { JSX, PropsWithChildren } from 'react';
+import { type JSX, type PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useEditUser } from '../../../swr/useEditUser.ts';
 import { Avatar } from '../../Avatar.tsx';
+import { EditAccountDrawer, type EditAccountDrawerProps } from '../../EditAccountDrawer.tsx';
 
 export interface AccountsTableProps {
   data: SelectableUser[];
@@ -22,43 +26,75 @@ interface AccountsTableRowProps {
 const AccountsTableRow = ({ user }: AccountsTableRowProps): JSX.Element => {
   const { t } = useTranslation();
 
+  const { trigger: triggerEdit, isMutating: isMutatingEdit } = useEditUser(user.id);
+
+  const [editModalOpened, editModalActions] = useDisclosure(false);
+
+  const onEdit: EditAccountDrawerProps['onMutate'] = async (partial) => {
+    await triggerEdit(partial);
+    notifications.show({
+      title: t('success', 'Success'),
+      message: t('theUserAccountWasEdited', 'The user account was edited.'),
+      color: 'green',
+    });
+    return;
+  };
+
   return (
-    <Table.Tr key={user.id}>
-      <Table.Td w={48}>
-        <Avatar userId={user.id} email={user.email} />
-      </Table.Td>
-      <Table.Td>
-        <TableText>{user.email}</TableText>
-      </Table.Td>
-      <Table.Td>
-        {user.role === 'admin' ? (
-          <Badge variant={'light'} color={'red'}>
-            {t('administrator', 'Administrator')}
-          </Badge>
-        ) : (
-          <Badge variant={'light'} color={'blue'}>
-            {t('user', 'User')}
-          </Badge>
-        )}
-      </Table.Td>
-      <Table.Td>
-        {user.active ? (
-          <Badge variant={'light'} color={'green'}>
-            {t('active', 'Active')}
-          </Badge>
-        ) : (
-          <Badge variant={'light'} color={'gray'}>
-            {t('inactive', 'Inactive')}
-          </Badge>
-        )}
-      </Table.Td>
-      <Table.Td>
-        <TableText>{dayjs(user.createdAt).format('lll')}</TableText>
-      </Table.Td>
-      <Table.Td>
-        <TableText>{dayjs(user.modifiedAt).format('lll')}</TableText>
-      </Table.Td>
-    </Table.Tr>
+    <>
+      <EditAccountDrawer
+        user={user}
+        opened={editModalOpened}
+        title={t('editAccount', 'Edit account')}
+        onMutate={onEdit}
+        onClose={editModalActions.close}
+        mutateButtonText={t('saveChanges', 'Save changes')}
+        isMutating={isMutatingEdit}
+      />
+      <Table.Tr
+        key={user.id}
+        onClick={editModalActions.open}
+        style={{ cursor: 'pointer' }}
+        aria-label={t('editAccount', 'Edit account')}
+        role="button"
+        tabIndex={0}
+      >
+        <Table.Td w={48}>
+          <Avatar userId={user.id} email={user.email} />
+        </Table.Td>
+        <Table.Td>
+          <TableText>{user.email}</TableText>
+        </Table.Td>
+        <Table.Td>
+          {user.role === 'admin' ? (
+            <Badge variant={'light'} color={'red'}>
+              {t('administrator', 'Administrator')}
+            </Badge>
+          ) : (
+            <Badge variant={'light'} color={'blue'}>
+              {t('user', 'User')}
+            </Badge>
+          )}
+        </Table.Td>
+        <Table.Td>
+          {user.active ? (
+            <Badge variant={'light'} color={'green'}>
+              {t('active', 'Active')}
+            </Badge>
+          ) : (
+            <Badge variant={'light'} color={'gray'}>
+              {t('inactive', 'Inactive')}
+            </Badge>
+          )}
+        </Table.Td>
+        <Table.Td>
+          <TableText>{dayjs(user.createdAt).format('lll')}</TableText>
+        </Table.Td>
+        <Table.Td>
+          <TableText>{dayjs(user.modifiedAt).format('lll')}</TableText>
+        </Table.Td>
+      </Table.Tr>
+    </>
   );
 };
 
