@@ -110,6 +110,8 @@
     "libc",
     "addgroup",
     "adduser",
-    "expressjs"
+    "expressjs",
+    "healthcheck",
+    "isready"
   ]
 }
