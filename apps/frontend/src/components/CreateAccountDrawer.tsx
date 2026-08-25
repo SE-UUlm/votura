@@ -9,7 +9,7 @@ import {
   TextInput,
 } from '@mantine/core';
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
-import type { CreateUserData, EditUserData } from '@repo/votura-validators';
+import type { CreateUserData } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
 
 export interface CreateAccountDrawerProps {
@@ -22,10 +22,6 @@ export interface CreateAccountDrawerProps {
 }
 
 export interface CreateAccountFormValues extends Pick<CreateUserData, 'email'> {
-  admin: boolean;
-}
-
-export interface EditAccountFormValues extends Pick<EditUserData, 'active'> {
   admin: boolean;
 }
 
@@ -66,7 +62,7 @@ export const CreateAccountDrawer = ({
       return;
     }
 
-    const formValues = form.getValues() as CreateAccountFormValues;
+    const formValues = form.getValues();
     await onMutate({
       email: formValues.email,
       role: formValues.admin ? 'admin' : 'user',
