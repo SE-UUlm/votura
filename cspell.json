@@ -83,6 +83,12 @@
     "penpot",
     "unvotable",
     "bytea",
+    "Mailpit",
+    "mailpit",
+    "axllent",
+    "unhashed",
+    "behaviour",
+    "CSPRNG",
     "postgres",
     "postgresql",
     "testid",
@@ -96,6 +102,8 @@
     "checkgroup",
     "usecase",
     "taskkill",
-    "userrole"
+    "userrole",
+    "cimode",
+    "Lngs"
   ]
 }
