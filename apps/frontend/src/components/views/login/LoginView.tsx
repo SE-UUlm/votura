@@ -24,6 +24,8 @@ import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
 import { useUserCount } from '../../../swr/useUserCount.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const LoginView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -103,7 +105,8 @@ export const LoginView = (): JSX.Element => {
 
   return (
     <Container fluid h={'100vh'}>
-      <Center h={'100vh'}>
+      <LoginHeader />
+      <Center h={`calc(100vh - ${HEADER_HEIGHT}px)`}>
         <Stack w={400}>
           <Title>Votura</Title>
           {userCount?.count === 0 && (
@@ -163,6 +166,9 @@ export const LoginView = (): JSX.Element => {
               </Button>
             </Stack>
           </Box>
+          <Button variant="light" onClick={(): void | Promise<void> => navigate('/vote')}>
+            {t('goToVote', 'Go to Vote')}
+          </Button>
           <Divider />
           <Group justify="space-between">
             <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>
