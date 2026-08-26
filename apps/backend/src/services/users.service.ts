@@ -104,6 +104,54 @@ export async function blacklistAccessToken(accessTokenId: string, expiresAt: Dat
     .executeTakeFirstOrThrow();
 }
 
+export async function setPasswordResetToken(
+  userId: Selectable<DBUser>['id'],
+  tokenHash: string,
+  expiresAt: Date,
+): Promise<void> {
+  await db
+    .updateTable('user')
+    .set({
+      passwordResetTokenHash: tokenHash,
+      passwordResetTokenExpiresAt: expiresAt,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function findDBUserByPasswordResetTokenHash(
+  tokenHash: string,
+): Promise<Selectable<DBUser> | null> {
+  const user = await db
+    .selectFrom('user')
+    .where('passwordResetTokenHash', '=', tokenHash)
+    .selectAll()
+    .executeTakeFirst();
+
+  return user ?? null;
+}
+
+export async function resetUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  // Set the new password, consume the reset token and invalidate existing
+  // sessions by clearing the stored refresh token.
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+      passwordResetTokenHash: null,
+      passwordResetTokenExpiresAt: null,
+      refreshTokenHash: null,
+      refreshTokenExpiresAt: null,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
 export const createNewUserTokens = async (
   userId: Selectable<DBUser>['id'],
 ): Promise<ApiTokenUser> => {
