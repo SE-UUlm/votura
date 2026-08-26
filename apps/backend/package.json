@@ -76,6 +76,7 @@
     "vitest": "^3.2.3"
   },
   "dependencies": {
+    "@repo/db": "*",
     "@repo/hash": "*",
     "@repo/logger": "*",
     "@repo/votura-ballot-box": "*",
@@ -87,7 +88,7 @@
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.2",
-    "nodemailer": "^9.0.5",
+    "nodemailer": "^9.0.1",
     "pg": "^8.16.0"
   }
 }

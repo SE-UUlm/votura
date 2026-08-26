@@ -13,6 +13,7 @@ i18n
   .use(initReactI18next)
   // init i18next
   .init({
+    supportedLngs: ['en', 'de'],
     fallbackLng: 'en',
     debug: false,
 
