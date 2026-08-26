@@ -19,7 +19,7 @@ export const SetPasswordView = (): JSX.Element => {
     navigate('/login');
   }
 
-  const { trigger, isMutating } = useSetPassword(userId as string);
+  const { trigger, isMutating } = useSetPassword();
 
   const form = useForm({
     mode: 'uncontrolled',
@@ -30,7 +30,11 @@ export const SetPasswordView = (): JSX.Element => {
   });
 
   const onSetPassword: Parameters<typeof form.onSubmit>[0] = async (data) => {
-    await trigger({ ...data, currentPassword: otp as string });
+    await trigger({
+      ...data,
+      currentPassword: otp as string,
+      userId: userId as string,
+    });
     notifications.show({
       title: t('success', 'Success'),
       message: t(
