@@ -21,13 +21,14 @@ import { Navigate, useParams } from 'react-router';
 import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.ts';
 import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
 import { HEADER_HEIGHT } from '../../utils.ts';
+import { useTranslation } from 'react-i18next';
 
 interface VotingElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
 }
 
 export const VotingElectionView = (): JSX.Element => {
-  //const { t } = useTranslation();
+  const { t } = useTranslation();
   const voterToken = getVoterLocalStorage();
   const params = useParams<VotingElectionViewRouteParams>();
   const [votes, setVotes] = useState<Record<string, Record<string, number>>>({});
@@ -72,6 +73,15 @@ export const VotingElectionView = (): JSX.Element => {
         0,
     );
 
+  const formatDateTime = (date: string): string =>
+    new Date(date).toLocaleString('de-DE', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+    });
+
   return (
     <Flex direction="column" maw="100%" px="md" flex={1}>
       <Group justify="space-between" h={HEADER_HEIGHT}>
@@ -79,7 +89,7 @@ export const VotingElectionView = (): JSX.Element => {
 
         <Button variant="outline" >
           <IconSend size={16}/>
-          Submit Vote
+          {t('submitVote', 'Submit Vote')}
         </Button>
       </Group>
 
@@ -91,32 +101,32 @@ export const VotingElectionView = (): JSX.Element => {
       <Grid>
         <Grid.Col span={{ base: 12, md: 8 }}>
           <Stack gap="xs">
-            <Title order={3}>Description</Title>
+            <Title order={3}>{t('description', 'Description')}</Title>
 
             <Text>
-              {selectedElection.description ??
-                'No description is available for this election.'}
+              {selectedElection.description ||
+                t('noDescriptionIsAvailableForThisElection', 'No description is available for this election.')}
             </Text>
 
             <Title order={3} mt="xs">
-              Voting Period
+              {t('votingPeriod', 'Voting Period')}
             </Title>
 
             <Text>
-              {selectedElection.votingStartAt} - {' '}
-              {selectedElection.votingEndAt}
+              {formatDateTime(selectedElection.votingStartAt)} - {' '}
+              {formatDateTime(selectedElection.votingEndAt)}
             </Text>
           </Stack>
         </Grid.Col>
 
         <Grid.Col span={{ base: 12, md: 4 }}>
           <Stack gap="xs">
-            <Title order={3}>Private Votes</Title>
+            <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
 
             <Text>{selectedElection.private ? 'Yes' : 'No'}</Text>
 
             <Title order={3} mt="xs">
-              Invalid Votes Allowed
+              {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
             </Title>
 
             <Text>
@@ -149,12 +159,12 @@ export const VotingElectionView = (): JSX.Element => {
           </Grid.Col>
 
           <Grid.Col span={{ base: 6, md: 2 }}>
-            <Text fw={700}>Max. Votes</Text>
+            <Text fw={700}> {t('maxVotes', 'Max. Votes')}</Text>
             <Text>{totalVotes}/{selectedElection.ballotPaper.maxVotes}</Text>
           </Grid.Col>
 
           <Grid.Col span={{ base: 6, md: 3 }}>
-            <Text fw={700}>Max. Votes per Candidate</Text>
+            <Text fw={700}> {t('maxVotesPerCandidate', 'Max. Votes per Candidate')}</Text>
             <Text>
               {selectedElection.ballotPaper.maxVotesPerCandidate}
             </Text>
@@ -182,13 +192,13 @@ export const VotingElectionView = (): JSX.Element => {
                   </Grid.Col>
 
                     <Grid.Col span={{ base: 6, md: 2 }}>
-                     <Text fw={700}>Max. Votes</Text>
+                     <Text fw={700}> {t('maxVotes', 'Max. Votes')}</Text>
                      <Text>{sectionVotes}/{section.maxVotes}</Text>
                     </Grid.Col>
 
                     <Grid.Col span={{ base: 6, md: 3 }}>
                       <Text fw={700}>
-                       Max. Votes per Candidate
+                       {t('maxVotesPerCandidate', 'Max. Votes per Candidate')}
                       </Text>
                       <Text>{section.maxVotesPerCandidate}</Text>
                    </Grid.Col>
