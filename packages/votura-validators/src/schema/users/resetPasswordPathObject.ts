@@ -17,8 +17,10 @@ export const resetPasswordPathObject: OpenAPIV3.PathItemObject = {
     tags: [Tag.users],
     summary: 'Reset user password with token',
     description:
-      'Reset user password with the raw token provided to the user via email. ' +
-      'The request must contain the reset token and the new password.',
+      'Reset user password with token provided to the user via email.\n' +
+      '\n' +
+      'This endpoint is currently only a draft and not implemented!\n' +
+      'When this endpoint is implemented this note will be removed.',
     security: [],
     operationId: 'userPasswordReset',
     requestBody: {

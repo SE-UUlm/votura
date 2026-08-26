@@ -8,8 +8,7 @@
     "SMTP_USER",
     "SMTP_PASS",
     "MAIL_SENDER_NAME",
-    "MAIL_SENDER_EMAIL",
-    "FRONTEND_BASE_URL"
+    "MAIL_SENDER_EMAIL"
   ],
   "ui": "stream",
   "concurrency": "100%",

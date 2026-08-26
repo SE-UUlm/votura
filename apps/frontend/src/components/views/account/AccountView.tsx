@@ -125,7 +125,7 @@ export const AccountView = (): JSX.Element => {
           >
             <Stack align={'center'}>
               <Avatar userId={data.id} email={data.email} />
-              {data.role === 'admin' ? (
+              {(data as { role?: string }).role === 'admin' ? (
                 <Badge variant={'light'} color={'red'}>
                   {t('administrator', 'Administrator')}
                 </Badge>

@@ -18,8 +18,8 @@ services:
     image: axllent/mailpit:latest
     restart: always
     ports:
-      - '1025:1025' # SMTP server (used by the backend)
-      - '8025:8025' # Web UI (open http://localhost:8025 to view sent emails)
+      - '1025:1025' # SMTP server
+      - '8025:8025' # Web UI
 
 volumes:
   votura_postgres_data:

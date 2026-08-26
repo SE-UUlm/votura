@@ -12,8 +12,8 @@ export const requestPasswordResetPathObject: OpenAPIV3.PathItemObject = {
     description:
       'Request a password reset email sent to the email associated with the user account.\n' +
       '\n' +
-      'For security reasons this endpoint always responds with 204, regardless of whether a user ' +
-      'with the provided email address exists.',
+      'This endpoint is currently only a draft and not implemented!\n' +
+      'When this endpoint is implemented this note will be removed.',
     security: [],
     operationId: 'requestUserPasswordReset',
     requestBody: {

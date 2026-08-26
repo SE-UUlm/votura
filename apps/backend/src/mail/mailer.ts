@@ -4,12 +4,8 @@ import nodemailer, { type Transporter } from 'nodemailer';
 let transporter: Transporter | null = null;
 
 /**
- * Lazily creates and caches the nodemailer transporter from the environment.
- * Creating it lazily ensures that importing this module never throws when the
- * mail environment variables are not set (e.g. in unrelated tests).
- *
- * Defaults are tuned for a local Mailpit instance (host localhost, port 1025,
- * no TLS, no auth).
+ * Creates and caches the nodemailer transporter from the environment variables.
+ * Defaults are tuned for the local docker-compose Mailpit instance
  */
 const getTransporter = (): Transporter => {
   if (transporter !== null) {
@@ -64,38 +60,5 @@ export const sendAccountCreationEmail = async (email: string, userId: string, pa
     logger.info({ event: 'sendAccountCreationEmail' }, 'Account creation mail sent');
   } catch (e) {
     logger.error({ e }, 'Failed to send account creation mail');
-  }
-};
-
-/**
- * Sends a password reset email containing the raw reset token and a link to the
- * frontend reset page. Errors are logged but not rethrown, so that the caller
- * can keep its response behaviour (e.g. always returning 204) regardless of
- * mail delivery success.
- *
- * @param email The recipient email address.
- * @param rawToken The raw (unhashed) password reset token sent to the user.
- */
-export const sendPasswordResetEmail = async (email: string, rawToken: string): Promise<void> => {
-  const baseUrl = process.env.FRONTEND_BASE_URL ?? 'http://localhost:5173';
-  const resetLink = `${baseUrl}/resetPassword?token=${rawToken}`;
-
-  const subject = 'Reset your votura password';
-  const text =
-    'You (or someone else) requested a password reset for your votura account.\n\n' +
-    `Use the following link to reset your password:\n${resetLink}\n\n` +
-    `If the link does not work, use this token in the password reset form:\n${rawToken}\n\n` +
-    'This token is valid for one hour. If you did not request a password reset, you can ignore this email.';
-
-  try {
-    await getTransporter().sendMail({
-      from: getSender(),
-      to: email,
-      subject,
-      text,
-    });
-    logger.info({ event: 'passwordResetEmailSent' }, 'Password reset email sent');
-  } catch (error: unknown) {
-    logger.error({ err: error }, 'Failed to send password reset email');
   }
 };
