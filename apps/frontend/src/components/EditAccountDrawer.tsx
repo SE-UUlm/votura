@@ -11,6 +11,7 @@ import {
   Text,
 } from '@mantine/core';
 import { useForm } from '@mantine/form';
+import type { UseDisclosureHandlers } from '@mantine/hooks';
 import type { EditUserData, SelectableUser } from '@repo/votura-validators';
 import { t } from 'i18next';
 import { type JSX, type ReactNode, useEffect } from 'react';
@@ -19,12 +20,14 @@ import { Avatar } from './Avatar.tsx';
 
 export interface EditAccountDrawerProps {
   user: SelectableUser;
+  deleteModalActions: UseDisclosureHandlers;
   opened: ModalProps['opened'];
   onClose: ModalProps['onClose'];
   mutateButtonText: ReactNode;
   onMutate: (mutationData: EditUserData) => void | Promise<void>;
   title: ModalProps['title'];
-  isMutating: boolean;
+  isMutatingEdit: boolean;
+  isMutatingDelete: boolean;
 }
 
 export interface EditAccountFormValues extends Pick<EditUserData, 'active'> {
@@ -33,12 +36,14 @@ export interface EditAccountFormValues extends Pick<EditUserData, 'active'> {
 
 export const EditAccountDrawer = ({
   user,
+  deleteModalActions,
   opened,
   onMutate,
   onClose,
   mutateButtonText,
   title,
-  isMutating,
+  isMutatingEdit,
+  isMutatingDelete,
 }: EditAccountDrawerProps): JSX.Element => {
   const form = useForm<EditAccountFormValues>({
     mode: 'controlled',
@@ -97,7 +102,7 @@ export const EditAccountDrawer = ({
           <Box>
             <Drawer.Header>
               <Drawer.Title>{title}</Drawer.Title>
-              <Drawer.CloseButton disabled={isMutating} />
+              <Drawer.CloseButton disabled={isMutatingEdit || isMutatingDelete} />
             </Drawer.Header>
             <Drawer.Body>
               <Stack align={'center'} mb={'md'}>
@@ -139,13 +144,27 @@ export const EditAccountDrawer = ({
             </Drawer.Body>
           </Box>
           <Group justify="flex-end" m={'md'}>
-            <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
-            </Button>
             {getUserIdFromAuthLocalStorage() !== user.id ? (
-              <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
-                {mutateButtonText}
-              </Button>
+              <>
+                <Button
+                  variant="filled"
+                  onClick={onMutateTransform}
+                  disabled={isMutatingEdit || isMutatingDelete}
+                  loading={isMutatingEdit}
+                  flex={1}
+                >
+                  {mutateButtonText}
+                </Button>
+                <Button
+                  variant="filled"
+                  color="red"
+                  onClick={deleteModalActions.open}
+                  disabled={isMutatingEdit || isMutatingDelete}
+                  loading={isMutatingDelete}
+                >
+                  {t('deleteAccount', 'Delete account')}
+                </Button>
+              </>
             ) : (
               <></>
             )}

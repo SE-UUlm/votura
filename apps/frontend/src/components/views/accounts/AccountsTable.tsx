@@ -5,8 +5,10 @@ import type { SelectableUser } from '@repo/votura-validators';
 import dayjs from 'dayjs';
 import { type JSX, type PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useDeleteUser } from '../../../swr/useDeleteUser.ts';
 import { useEditUser } from '../../../swr/useEditUser.ts';
 import { Avatar } from '../../Avatar.tsx';
+import { DeleteAccountModal } from '../../DeleteAccountModal.tsx';
 import { EditAccountDrawer, type EditAccountDrawerProps } from '../../EditAccountDrawer.tsx';
 
 export interface AccountsTableProps {
@@ -27,8 +29,10 @@ const AccountsTableRow = ({ user }: AccountsTableRowProps): JSX.Element => {
   const { t } = useTranslation();
 
   const { trigger: triggerEdit, isMutating: isMutatingEdit } = useEditUser(user.id);
+  const { trigger: triggerDelete, isMutating: isMutatingDelete } = useDeleteUser(user.id);
 
   const [editModalOpened, editModalActions] = useDisclosure(false);
+  const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
 
   const onEdit: EditAccountDrawerProps['onMutate'] = async (partial) => {
     await triggerEdit(partial);
@@ -40,16 +44,34 @@ const AccountsTableRow = ({ user }: AccountsTableRowProps): JSX.Element => {
     return;
   };
 
+  const onDelete = async () => {
+    await triggerDelete();
+    notifications.show({
+      title: t('success', 'Success'),
+      message: t('theUserAccountWasDeleted', 'The user account was deleted.'),
+      color: 'green',
+    });
+    return;
+  };
+
   return (
     <>
       <EditAccountDrawer
         user={user}
+        deleteModalActions={deleteModalActions}
         opened={editModalOpened}
         title={t('editAccount', 'Edit account')}
         onMutate={onEdit}
         onClose={editModalActions.close}
         mutateButtonText={t('saveChanges', 'Save changes')}
-        isMutating={isMutatingEdit}
+        isMutatingEdit={isMutatingEdit}
+        isMutatingDelete={isMutatingDelete}
+      />
+      <DeleteAccountModal
+        user={user}
+        opened={deleteModalOpened}
+        onDelete={onDelete}
+        onClose={deleteModalActions.close}
       />
       <Table.Tr
         key={user.id}
