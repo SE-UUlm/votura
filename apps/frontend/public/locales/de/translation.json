@@ -104,5 +104,16 @@
   "youAreAboutToDeleteTheElection": "Sie sind dabei, die Wahl zu löschen:",
   "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
   "noAccountExistsYet": "Es existiert noch kein Account.",
-  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt."
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt.",
+  "manageAccount": "Account verwalten",
+  "user": "Benutzer",
+  "administrator": "Administrator",
+  "memberSince": "Benutzer seit",
+  "changePassword": "Passwort ändern",
+  "errorWhilstLoadingInformation": "Fehler beim Laden der Informationen",
+  "currentPassword": "Aktuelles Passwort",
+  "newPassword": "Neues Passwort",
+  "repeatNewPassword": "Neues Passwort wiederholen",
+  "currentPasswordIsRequired": "Aktuelles Passwort ist erforderlich.",
+  "passwordChangedSuccessfully": "Passwort wurde erfolgreich geändert."
 }

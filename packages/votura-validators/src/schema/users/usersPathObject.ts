@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { authenticatableUserObjectSchema } from '../../objects/user.js';
+import { authenticatableUserObjectSchema, selectableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -13,8 +13,8 @@ import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { Tag } from '../globals/tag.js';
 
 export const usersPathObject: OpenAPIV3.PathItemObject = {
-  summary: 'Creating and deleting a user',
-  description: 'Creating and deleting a user in the votura backend.',
+  summary: 'Creating, reading and deleting a user',
+  description: 'Creating, reading and deleting a user in the votura backend.',
   post: {
     tags: [Tag.users],
     summary: 'Create a new user',
@@ -40,6 +40,31 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
       ...response406,
       ...response409,
       ...response415,
+      ...response429,
+      ...responseDefault,
+    },
+  },
+  get: {
+    tags: [Tag.users],
+    summary: 'Get user details',
+    description: 'Returns account details of the requesting user.',
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
+    operationId: 'getUser',
+    responses: {
+      // eslint-disable-next-line @typescript-eslint/naming-convention
+      200: {
+        description:
+          'OK. The request was successfully executed. Returns account details for the requested user.',
+        content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'application/json': {
+            schema: selectableUserObjectSchema as OpenAPIV3.SchemaObject,
+          },
+        },
+      },
+      ...response400,
+      ...response401,
+      ...response406,
       ...response429,
       ...responseDefault,
     },

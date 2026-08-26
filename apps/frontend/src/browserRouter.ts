@@ -4,6 +4,7 @@ import { AppShellLayout } from './components/AppShellLayout.tsx';
 import { AppShellLayoutVoter } from './components/AppShellLayoutVoter.tsx';
 import { AuthedRouterOutlet } from './components/AuthedRouterOutlet.tsx';
 import { VoterAuthedRouterOutlet } from './components/VoterAuthedRouterOutlet.tsx';
+import { AccountView } from './components/views/account/AccountView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
@@ -84,6 +85,16 @@ export const browserRouter = createBrowserRouter([
                 index: true,
                 // eslint-disable-next-line @typescript-eslint/naming-convention
                 Component: VoterGroupsView,
+              },
+            ],
+          },
+          {
+            path: '/account',
+            children: [
+              {
+                index: true,
+                // eslint-disable-next-line @typescript-eslint/naming-convention
+                Component: AccountView,
               },
             ],
           },
