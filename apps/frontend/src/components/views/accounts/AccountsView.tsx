@@ -22,6 +22,18 @@ export const AccountsView = (): JSX.Element => {
     );
   }
 
+  const sortedUsers = data.sort((a, b) => {
+    const aCreated = a.createdAt;
+    const bCreated = b.createdAt;
+    if (aCreated < bCreated) {
+      return -1;
+    } else if (aCreated > bCreated) {
+      return 1;
+    } else {
+      return 0;
+    }
+  });
+
   return (
     <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
       <Group justify="space-between" h={HEADER_HEIGHT}>
@@ -29,7 +41,7 @@ export const AccountsView = (): JSX.Element => {
       </Group>
       <Divider />
       <Space h={'md'} />
-      <AccountsTable data={data} />
+      <AccountsTable data={sortedUsers} />
     </Flex>
   );
 };
