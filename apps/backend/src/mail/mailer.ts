@@ -45,7 +45,11 @@ const getSender = (): string => {
  * @param userId The user's UUID
  * @param password The user's current password which has to be present in the link
  */
-export const sendAccountCreationEmail = async (email: string, userId: string, password: string): Promise<void> => {
+export const sendAccountCreationEmail = async (
+  email: string,
+  userId: string,
+  password: string,
+): Promise<void> => {
   const setInitialPasswordLink = `${process.env.FRONTEND_BASE_URL ?? 'http://localhost:5173'}/set-password?userId=${encodeURIComponent(userId)}&otp=${encodeURIComponent(password)}`;
   const subject = 'Your votura account';
   const text =
