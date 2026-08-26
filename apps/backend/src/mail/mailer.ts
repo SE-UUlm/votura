@@ -42,10 +42,11 @@ const getSender = (): string => {
 /**
  * Sends an account creation email containing a link to set the initial password to a newly created user.
  * @param email The recipient's email address
+ * @param userId The user's UUID
  * @param password The user's current password which has to be present in the link
  */
-export const sendAccountCreationEmail = async (email: string, password: string): Promise<void> => {
-  const setInitialPasswordLink = `TODO ${password} TODO`;
+export const sendAccountCreationEmail = async (email: string, userId: string, password: string): Promise<void> => {
+  const setInitialPasswordLink = `${process.env.FRONTEND_BASE_URL ?? 'http://localhost:5173'}/set-password?userId=${encodeURIComponent(userId)}&otp=${encodeURIComponent(password)}`;
   const subject = 'Your votura account';
   const text =
     'A new votura account was created with this email address.\n\n' +

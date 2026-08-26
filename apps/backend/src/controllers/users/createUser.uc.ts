@@ -71,7 +71,16 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
     role: data.role as Userrole,
     active: true,
   });
-  await sendAccountCreationEmail(data.email, password);
+  const createdUser = await findUserBy({ email: data.email });
+  if (createdUser === null) {
+    res.status(HttpStatusCode.conflict).json(
+        response409Object.parse({
+          message: 'Could not create user with this email address.',
+        }),
+    );
+    return;
+  }
+  await sendAccountCreationEmail(data.email, createdUser.id, password);
 
   res.sendStatus(HttpStatusCode.noContent);
 };
