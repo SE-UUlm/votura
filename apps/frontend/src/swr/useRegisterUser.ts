@@ -9,5 +9,5 @@ export const useRegisterUser = (): SWRMutationResponse<
   string,
   AuthenticatableUser
 > => {
-  return useSWRMutation(apiRoutes.users.base, posterFactory());
+  return useSWRMutation(apiRoutes.users.create, posterFactory());
 };

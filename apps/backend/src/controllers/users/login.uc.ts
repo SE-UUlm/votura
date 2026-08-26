@@ -72,6 +72,7 @@ const createInitialUser = async (req: Request, res: Response): Promise<boolean> 
 
 export const login = async (req: Request, res: LoginResponse): Promise<void> => {
   const ipAddress = req.ip ?? '0.0.0.0';
+
   // If there are no users in the DB, create a new one
   if ((await userCount()) === 0) {
     if (!(await createInitialUser(req, res))) {
