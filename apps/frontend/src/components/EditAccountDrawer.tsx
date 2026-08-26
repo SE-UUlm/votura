@@ -143,7 +143,7 @@ export const EditAccountDrawer = ({
               )}
             </Drawer.Body>
           </Box>
-          <Group justify="flex-end" m={'md'}>
+          <Group m={'md'}>
             {getUserIdFromAuthLocalStorage() !== user.id ? (
               <>
                 <Button
