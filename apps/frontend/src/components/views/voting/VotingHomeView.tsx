@@ -19,66 +19,81 @@ export const VotingHomeView = (): JSX.Element => {
     <>
       <Flex direction="column" maw="100%" px="md" flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
-          <Title order={1}>
-            {t('welcomeToVotura', 'Welcome to Votura')}
-          </Title>
+          <Title order={1}>{t('welcomeToVotura', 'Welcome to Votura')}</Title>
           <Group />
         </Group>
         <Divider />
         <Text mt="sm">
-          Votura ist eine sichere Online-Wahlplattform, mit der du einfach und transparent an Wahlen teilnehmen kannst.
+          {t(
+            'voturaDescription',
+            'Votura is a secure online voting platform that allows you to participate in elections easily and transparently.',
+          )}
         </Text>
         <Space h="md" />
-        <Title order={2}>An einer Wahl teilnehmen</Title>
+        <Title order={2}>{t('participateInAnElection', 'Participate in an Election')}</Title>
         <Text mt="sm">
-          Auf der linken Seite findest du eine Übersicht aller verfügbaren Wahlen. Alternativ kannst du auch direkt auf einen der Links in der Auflistung klicken.
+          {t(
+            'participateInAnElectionDescription',
+            'On the left side, you will find an overview of all available elections. Alternatively, you can also click directly on one of the links in the following list.',
+          )}
         </Text>
         <Text mt="sm">
-          Du kannst an folgenden Wahlen teilnehmen:
+          {t('availableElections', 'You can participate in the following elections:')}
         </Text>
         <List mt="sm">
           {voterData?.map((election) => (
             <List.Item key={election.id}>
-              <Anchor
-                component={Link}
-                to={getVotingElectionPath(election.id)}
-              >
+              <Anchor component={Link} to={getVotingElectionPath(election.id)}>
                 {election.name}
               </Anchor>
             </List.Item>
           ))}
         </List>
         <Text mt="sm">
-          Klicke auf den Namen einer Wahl, um die dazugehörigen Wahlinformationen und den Wahlzettel zu öffnen.
+          {t(
+            'clickOnElectionName',
+            'Click on the name of an election to open the corresponding election information and ballot.',
+          )}
         </Text>
         <Space h="lg" />
-        <Title order={2}>Deinen Wahlzettel ausfüllen</Title>
+        <Title order={2}>{t('fillOutYourBallot', 'Fill Out Your Ballot')}</Title>
         <Text mt="sm">
-          Auf dem Wahlzettel kannst du deine Stimme für die verfügbaren
-          Optionen abgeben. Über dem Wahlzettel findest du außerdem wichtige
-          Informationen zur jeweiligen Wahl.
-          </Text>
+          {t(
+            'fillOutYourBallotDescription',
+            'On the ballot, you can cast your vote for the available options. Above the ballot, you will also find important information about the respective election.',
+          )}
+        </Text>
         <Text mt="sm">
-          Wenn du deine Auswahl getroffen hast, kannst du deinen Wahlzettel absenden.
+          {t('submitYourBallot', 'Once you have made your selection, you can submit your ballot.')}
         </Text>
         <Space h="lg" />
-        <Title order={2}>Deine Stimme ändern</Title>
+        <Title order={2}>{t('changeYourVote', 'Change Your Vote')}</Title>
         <Text mt="sm">
-          Solange die Wahl noch läuft, kannst du deine Stimme jederzeit ändern
-          und erneut abstimmen. Wähle dazu die Wahl für die du deine Stimme ändern möchtest. Über <strong>Erneut Abstimmen</strong> gelangst du wieder
-          zu deinem Wahlzettel und kannst deine Auswahl anpassen.
+          {t(
+            'changeYourVoteDescription',
+            'As long as the election is still running, you can change your vote at any time and vote again. To vote again, select the election for which you want to change your vote. By clicking on ',
+          )}
+          <strong>{t('voteAgain', 'Vote Again')}</strong>
+          {t(
+            'changeYourVoteDescription2',
+            ', you will return to your ballot and can adjust your selection.',
+          )}
         </Text>
         <Space h="lg" />
-        <Title order={2}>Deine Stimme verifizieren</Title>
+        <Title order={2}>{t('verifyYourVote', 'Verify Your Vote')}</Title>
         <Text mt="sm">
-          Nach dem Absenden deiner Stimme erhältst du einen
-          <strong> Ciphertext</strong> - eine verschlüsselte Darstellung deiner
-          abgegebenen Stimme.
+          {t('verifyYourVoteDescription', 'After submitting your vote, you will receive a')}
+          <strong> {t('ciphertext', 'Ciphertext')}</strong>
+          {t(
+            'verifyYourVoteDescription2',
+            ' - an encrypted representation of your submitted vote.',
+          )}
         </Text>
         <Text mt="sm">
-          Speichere oder lade deinen Ciphertext herunter. Du kannst ihn später
-          verwenden, um deine Stimme zu verifizieren und zu überprüfen, dass
-          deine abgegebene Stimme korrekt berücksichtigt wurde.
+          {t('verifyYourVoteDescription3', 'Save or download your ciphertext. You can use it later to verify your vote and confirm that your vote was correctly recorded.',)}
+          Speichere oder lade deinen Ciphertext herunter. Du kannst ihn später verwenden, um deine
+          Stimme zu verifizieren und zu überprüfen, dass deine abgegebene Stimme korrekt
+          berücksichtigt wurde.
         </Text>
       </Flex>
     </>
