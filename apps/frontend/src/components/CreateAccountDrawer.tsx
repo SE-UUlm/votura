@@ -98,12 +98,7 @@ export const CreateAccountDrawer = ({
             </Drawer.Body>
           </Box>
           <Group m={'md'}>
-            <Button
-              variant="filled"
-              onClick={onMutateTransform}
-              loading={isMutating}
-              flex={1}
-            >
+            <Button variant="filled" onClick={onMutateTransform} loading={isMutating} flex={1}>
               {mutateButtonText}
             </Button>
           </Group>

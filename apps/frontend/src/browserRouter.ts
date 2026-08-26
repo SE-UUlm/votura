@@ -8,6 +8,7 @@ import { AccountsView } from './components/views/accounts/AccountsView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
+import { SetPasswordView } from './components/views/login/SetPasswordView.tsx';
 import { VoterGroupsView } from './components/views/voterGroups/VoterGroupsView.tsx';
 
 export const browserRouter = createBrowserRouter([
@@ -19,6 +20,11 @@ export const browserRouter = createBrowserRouter([
     path: '/login',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: LoginView,
+  },
+  {
+    path: '/set-password',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: SetPasswordView,
   },
   {
     // eslint-disable-next-line @typescript-eslint/naming-convention

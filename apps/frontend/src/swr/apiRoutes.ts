@@ -60,6 +60,7 @@ export const apiRoutes = {
     byId: (id: SelectableUser['id']): string => `/users/${id}`,
     editById: (id: SelectableUser['id']): string => `/users/${id}`,
     deleteById: (id: SelectableUser['id']): string => `/users/${id}`,
+    setPasswordById: (id: SelectableUser['id']): string => `/users/setPassword/${id}`,
     login: '/users/login',
     logout: '/users/logout',
     refreshTokens: '/users/refreshTokens',
