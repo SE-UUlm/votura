@@ -74,9 +74,9 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
   const createdUser = await findUserBy({ email: data.email });
   if (createdUser === null) {
     res.status(HttpStatusCode.conflict).json(
-        response409Object.parse({
-          message: 'Could not create user with this email address.',
-        }),
+      response409Object.parse({
+        message: 'Could not create user with this email address.',
+      }),
     );
     return;
   }
