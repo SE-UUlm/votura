@@ -4,7 +4,13 @@ import type {
   User as DBUser,
 } from '@repo/db/types';
 import { getPepper, hashPassword } from '@repo/hash';
-import type { ApiTokenUser, InsertableUser, SelectableUser, User } from '@repo/votura-validators';
+import type {
+  ApiTokenUser,
+  EditUserData,
+  InsertableUser,
+  SelectableUser,
+  User,
+} from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { generateUserTokens, getTokenExpiration, hashRefreshToken } from '../auth/utils.js';
@@ -104,6 +110,54 @@ export async function blacklistAccessToken(accessTokenId: string, expiresAt: Dat
     .executeTakeFirstOrThrow();
 }
 
+export async function setPasswordResetToken(
+  userId: Selectable<DBUser>['id'],
+  tokenHash: string,
+  expiresAt: Date,
+): Promise<void> {
+  await db
+    .updateTable('user')
+    .set({
+      passwordResetTokenHash: tokenHash,
+      passwordResetTokenExpiresAt: expiresAt,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function findDBUserByPasswordResetTokenHash(
+  tokenHash: string,
+): Promise<Selectable<DBUser> | null> {
+  const user = await db
+    .selectFrom('user')
+    .where('passwordResetTokenHash', '=', tokenHash)
+    .selectAll()
+    .executeTakeFirst();
+
+  return user ?? null;
+}
+
+export async function resetUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  // Set the new password, consume the reset token and invalidate existing
+  // sessions by clearing the stored refresh token.
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+      passwordResetTokenHash: null,
+      passwordResetTokenExpiresAt: null,
+      refreshTokenHash: null,
+      refreshTokenExpiresAt: null,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
 export const createNewUserTokens = async (
   userId: Selectable<DBUser>['id'],
 ): Promise<ApiTokenUser> => {
@@ -161,4 +215,13 @@ export const userCount = async (): Promise<number> => {
     .executeTakeFirst();
 
   return Number(userCountResponse?.count ?? 0);
+};
+
+export const editUser = async (user: SelectableUser, editUserData: EditUserData): Promise<void> => {
+  await db
+    .updateTable('user')
+    .set('role', editUserData.role)
+    .set('active', editUserData.active)
+    .where('id', '=', user.id)
+    .executeTakeFirstOrThrow();
 };
