@@ -97,11 +97,13 @@ export const CreateAccountDrawer = ({
               </Stack>
             </Drawer.Body>
           </Box>
-          <Group justify="flex-end" m={'md'}>
-            <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
-            </Button>
-            <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
+          <Group m={'md'}>
+            <Button
+              variant="filled"
+              onClick={onMutateTransform}
+              loading={isMutating}
+              flex={1}
+            >
               {mutateButtonText}
             </Button>
           </Group>
