@@ -1,7 +1,7 @@
 import { Box, Button, Center, Container, PasswordInput, Stack, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
-import { type JSX } from 'react';
+import { type JSX, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useSetPassword } from '../../../swr/useSetPassword.ts';
@@ -15,9 +15,11 @@ export const SetPasswordView = (): JSX.Element => {
   const userId = parameters.get('userId');
   const otp = parameters.get('otp');
 
-  if (!userId || !otp) {
-    navigate('/login');
-  }
+  useEffect(() => {
+    if (userId === null || otp === null) {
+      navigate('/login');
+    }
+  });
 
   const { trigger, isMutating } = useSetPassword();
 
