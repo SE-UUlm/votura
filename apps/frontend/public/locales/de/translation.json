@@ -49,6 +49,7 @@
   "freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade": "Das Sperren einer Wahl sperrt deren Konfiguration; es können keine weiteren Änderungen vorgenommen werden.",
   "frozen": "Gesperrt",
   "important": "Wichtig",
+  "invalidEmailAddress": "Ungültige E-Mail-Adresse.",
   "invalidVotesAllowed": "Ungültige Stimmen sind zulässig",
   "lastModified": "Zuletzt geändert",
   "login": "Anmelden",
