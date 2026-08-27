@@ -1,11 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { authenticatableUserObjectSchema, selectableUserObjectSchema } from '../../objects/user.js';
+import { selectableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
   response406,
-  response409,
-  response415,
   response429,
   responseDefault,
 } from '../globals/responses.js';
