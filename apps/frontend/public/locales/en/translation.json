@@ -108,5 +108,12 @@
   "newPassword": "New password",
   "repeatNewPassword": "Repeat new password",
   "currentPasswordIsRequired": "Current password is required.",
-  "passwordChangedSuccessfully": "Password changed successfully."
+  "passwordChangedSuccessfully": "Password changed successfully.",
+  "accounts": "Accounts",
+  "email": "Email",
+  "role": "Role",
+  "status": "Status",
+  "active": "Active",
+  "inactive": "Inactive",
+  "createdAt": "Created at"
 }
