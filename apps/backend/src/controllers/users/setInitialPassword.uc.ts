@@ -32,5 +32,5 @@ export const setInitialPassword = async (
   await updateUserPassword(validationResult.userId, validationResult.newPassword);
   await setUserVerified(validationResult.userId);
 
-  res.status(HttpStatusCode.noContent);
+  res.status(HttpStatusCode.noContent).send();
 };
