@@ -128,5 +128,7 @@
   "votingPeriod": "Voting Period",
   "privateVotes": "Private Votes",
   "maxVotes": "Max. Votes",
-  "maxVotesPerCandidate": "Max. Votes per Candidate"
+  "maxVotesPerCandidate": "Max. Votes per Candidate",
+  "Yes": "Yes",
+  "No": "No"
 }

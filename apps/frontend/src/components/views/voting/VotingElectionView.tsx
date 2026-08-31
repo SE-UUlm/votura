@@ -17,11 +17,14 @@ import {
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconMinus, IconPlus, IconSend } from '@tabler/icons-react';
 import { type JSX, useState } from 'react';
-import { Navigate, useParams } from 'react-router';
+import { Navigate, useNavigate, useParams } from 'react-router';
 import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.ts';
 import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { useTranslation } from 'react-i18next';
+import { createPlainFilledBallotPaper } from './createPlainFilledBallotPaper.ts';
+import { BallotPaperEncryption } from '@repo/votura-ballot-box';
+import { PublicKey } from '@votura/votura-crypto/index';
 
 interface VotingElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
@@ -29,6 +32,7 @@ interface VotingElectionViewRouteParams extends Record<string, string> {
 
 export const VotingElectionView = (): JSX.Element => {
   const { t } = useTranslation();
+  const navigate = useNavigate();
   const voterToken = getVoterLocalStorage();
   const params = useParams<VotingElectionViewRouteParams>();
   const [votes, setVotes] = useState<Record<string, Record<string, number>>>({});
@@ -82,13 +86,56 @@ export const VotingElectionView = (): JSX.Element => {
       minute: '2-digit',
     });
 
+  const handleSubmitVote = (): void => {
+    const {
+      primeP,
+      primeQ,
+      generator,
+      pubKey,
+    } = selectedElection;
+
+    if (
+      primeP === undefined ||
+      primeQ === undefined ||
+      generator === undefined ||
+      pubKey === undefined
+    ) {
+      throw new Error('Election encryption key is missing.');
+    }
+
+    const plainFilledBallotPaper = createPlainFilledBallotPaper(
+      selectedElection.ballotPaper,
+      votes,
+    );
+
+    const publicKey = new PublicKey(
+      BigInt(primeP),
+      BigInt(primeQ),
+      BigInt(generator),
+      BigInt(pubKey),
+    );
+
+    const ballotPaperEncryption = new BallotPaperEncryption(publicKey);
+
+    const [encryptedFilledBallotPaper] =
+      ballotPaperEncryption.encryptBallotPaper(
+        plainFilledBallotPaper,
+      );
+
+    navigate('/voting/submitVote', {
+      state: {
+        encryptedFilledBallotPaper,
+        electionName: selectedElection.name,
+      },
+    });
+  };
+
   return (
     <Flex direction="column" maw="100%" px="md" flex={1}>
       <Group justify="space-between" h={HEADER_HEIGHT}>
         <Title order={1}>{selectedElection.name}</Title>
-
-        <Button variant="outline" >
-          <IconSend size={16}/>
+        <Button variant="outline" onClick={handleSubmitVote}>
+          <IconSend size={16} />
           {t('submitVote', 'Submit Vote')}
         </Button>
       </Group>
@@ -123,14 +170,14 @@ export const VotingElectionView = (): JSX.Element => {
           <Stack gap="xs">
             <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
 
-            <Text>{selectedElection.private ? 'Yes' : 'No'}</Text>
+            <Text>{selectedElection.private ? t('Yes', 'Yes') : t('No', 'No')}</Text>
 
             <Title order={3} mt="xs">
               {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
             </Title>
 
             <Text>
-              {selectedElection.allowInvalidVotes ? 'Yes' : 'No'}
+              {selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}
             </Text>
           </Stack>
         </Grid.Col>
