@@ -104,5 +104,16 @@
   "youAreAboutToDeleteTheElection": "You are about to delete the election:",
   "youSuccessfullyDeletedTheElectionName": "You successfully deleted the election: {{name}}",
   "noAccountExistsYet": "No account exists yet.",
-  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials."
+  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials.",
+  "manageAccount": "Manage account",
+  "user": "User",
+  "administrator": "Administrator",
+  "memberSince": "Member since",
+  "changePassword": "Change password",
+  "errorWhilstLoadingInformation": "Error whilst loading information",
+  "currentPassword": "Current password",
+  "newPassword": "New password",
+  "repeatNewPassword": "Repeat new password",
+  "currentPasswordIsRequired": "Current password is required.",
+  "passwordChangedSuccessfully": "Password changed successfully."
 }
