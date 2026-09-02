@@ -129,6 +129,19 @@
   "privateVotes": "Private Wahl",
   "maxVotes": "Max. Stimmen",
   "maxVotesPerCandidate": "Max. Stimmen pro Kandidat",
+  "votingStartsAt": "Abstimmung beginnt am {{date}}.",
   "Yes": "Ja",
-  "No": "Nein"
+  "No": "Nein",
+  "saveCiphertextDescription": "Bitte speichere deinen Ciphertext für spätere Überprüfungen ab:",
+  "downloadCiphertext": "Download Ciphertext",
+  "castVote": "Abstimmung absenden",
+  "votingNotPossible": "Abstimmung nicht möglich",
+  "votingNotPossibleDescription": "Die Abstimmung für {{electionName}} hat möglicherweise noch nicht begonnen.",
+  "invalidVotingToken": "Ungültiger Abstimmungstoken",
+  "invalidVotingTokenDescription": "Der eingegebene Abstimmungstoken ist ungültig. Bitte versuche es erneut.",
+  "enterVotingToken": "Bitte geben Sie Ihren Abstimmungstoken ein",
+  "votingTokenSpace": "Abstimmungstoken",
+  "voteSuccessfullyCast": "Wir haben deine Stimme für {{electionName}} erhalten.",
+  "standardElection": "die Wahl",
+  "backToHomePage": "Zurück zur Startseite"
 }

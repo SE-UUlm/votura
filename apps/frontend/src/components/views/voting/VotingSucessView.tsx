@@ -3,29 +3,26 @@ import {
   Button,
   Center,
   Container,
-  Image,
   Stack,
 } from '@mantine/core';
 import { IconCheck } from '@tabler/icons-react';
 import { type JSX } from 'react';
-import { useNavigate } from 'react-router';
+import { useLocation, useNavigate } from 'react-router';
 import { useTranslation } from 'react-i18next';
 
+interface VotingSuccessLocationState {
+  electionName: string;
+}
 export const VotingSuccessView = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const location = useLocation();
+  const state = location.state as VotingSuccessLocationState ;
 
   return (
     <Center mih="100vh">
-      <Container w={350}>
+      <Container w={600}>
         <Stack gap="lg">
-          <Image
-            src="/votura-logo.svg"
-            alt="Votura"
-            fit="contain"
-            h={120}
-          />
-
           <Alert
             icon={<IconCheck size={18} />}
             color="green"
@@ -33,7 +30,8 @@ export const VotingSuccessView = (): JSX.Element => {
           >
             {t(
               'voteSuccessfullyCast',
-              'We have received your vote.',
+              'We have received your vote for {{electionName}}.',
+              { electionName: state?.electionName ? state.electionName : t('standardElection', 'the Election') }
             )}
           </Alert>
 
@@ -41,7 +39,7 @@ export const VotingSuccessView = (): JSX.Element => {
             fullWidth
             onClick={() => navigate('/votingHome')}
           >
-            {t('back', 'Back')}
+            {t('backToHomePage', 'Back to home page')}
           </Button>
         </Stack>
       </Container>

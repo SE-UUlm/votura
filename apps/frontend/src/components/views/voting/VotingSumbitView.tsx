@@ -5,14 +5,9 @@ import { useTranslation } from 'react-i18next';
 import axios from 'axios';
 import { apiRoutes } from '../../../swr/apiRoutes.ts';
 import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
-import {
-  Button,
-  Center,
-  Container,
-  Stack,
-  Text,
-  Textarea,
-} from '@mantine/core';
+import { Button, Center, Container, Stack, Text, Textarea } from '@mantine/core';
+import { IconDownload, IconSend } from '@tabler/icons-react';
+import { notifications } from '@mantine/notifications';
 
 interface VotingSubmitLocationState {
   encryptedFilledBallotPaper: EncryptedFilledBallotPaper;
@@ -31,6 +26,8 @@ export const VotingSubmitView = (): JSX.Element => {
 
   const { encryptedFilledBallotPaper, electionName } = state;
 
+  /** Je nachdem wie der zu Downloadene Cyphertext aussehen soll, kann man hier die Formatierung anpassen.
+   * Fürs Erste wird hier der komplette encrypted Vote als JSON heruntergeladen (inkludiert Ciphertexts plus ZK-Proofs */
   const ciphertext = JSON.stringify(
     encryptedFilledBallotPaper,
     null,
@@ -66,24 +63,22 @@ export const VotingSubmitView = (): JSX.Element => {
       );
       navigate('/voting/success', {
         replace: true,
+        state: { electionName },
       });
 
-      console.log('Vote successfully cast');
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        console.error('Status:', error.response?.status);
-        console.error('Response:', error.response?.data);
-        console.error('URL:', error.config?.url);
-        return;
-      }
-
-      console.error(error);
+    } catch (error: unknown) {
+        notifications.show({
+          title: t('votingNotPossible', 'Voting is not possible'),
+          message: t('votingNotPossibleDescription', 'Voting for {{electionName}} may not have started yet.', { electionName }),
+          color: 'red',
+          autoClose: 15000,
+        });
     }
   };
 
   return (
-    <Center mih="100vh">
-      <Container w={350}>
+    <Center mih="90vh">
+      <Container w={600}>
         <Stack gap="sm">
           <Text size="sm">
             {t('voteForElection', 'You are about to submit your vote for:')}
@@ -103,11 +98,12 @@ export const VotingSubmitView = (): JSX.Element => {
           <Textarea
             value={ciphertext}
             readOnly
-            minRows={5}
-            maxRows={5}
+            autosize
+            minRows={10}
+            maxRows={10}
           />
 
-          <Button fullWidth onClick={handleDownloadCiphertext}>
+          <Button fullWidth onClick={handleDownloadCiphertext} leftSection={<IconDownload size={18} />}>
             {t('downloadCiphertext', 'Download ciphertext')}
           </Button>
 
@@ -115,6 +111,7 @@ export const VotingSubmitView = (): JSX.Element => {
             fullWidth
             variant="outline"
             onClick={handleCastVote}
+            rightSection={<IconSend size={18} />}
           >
             {t('castVote', 'Send Vote')}
           </Button>

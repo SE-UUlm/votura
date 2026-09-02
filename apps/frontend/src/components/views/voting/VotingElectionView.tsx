@@ -25,6 +25,7 @@ import { useTranslation } from 'react-i18next';
 import { createPlainFilledBallotPaper } from './createPlainFilledBallotPaper.ts';
 import { BallotPaperEncryption } from '@repo/votura-ballot-box';
 import { PublicKey } from '@votura/votura-crypto/index';
+import { useVotingHasNotStarted } from '../../../swr/voting/useVotingHasNotStarted.ts';
 
 interface VotingElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
@@ -63,6 +64,10 @@ export const VotingElectionView = (): JSX.Element => {
   }
 
   const selectedElection = voterElections.find((election) => election.id === params.electionId);
+  const votingHasNotStarted = useVotingHasNotStarted(
+    selectedElection?.votingStartAt,
+  );
+
   if (!selectedElection) {
     return <Navigate to={'/votingHome'} replace />;
   }
@@ -134,10 +139,25 @@ export const VotingElectionView = (): JSX.Element => {
     <Flex direction="column" maw="100%" px="md" flex={1}>
       <Group justify="space-between" h={HEADER_HEIGHT}>
         <Title order={1}>{selectedElection.name}</Title>
-        <Button variant="outline" onClick={handleSubmitVote}>
-          <IconSend size={16} />
+        <Stack gap={4} align="flex-end">
+        <Button variant="outline"
+                onClick={handleSubmitVote}
+                rightSection={<IconSend size={16} />}
+                disabled={votingHasNotStarted}>
           {t('submitVote', 'Submit Vote')}
         </Button>
+          {votingHasNotStarted && (
+            <Text size="xs" c="dimmed">
+              {t(
+                'votingStartsAt',
+                'Voting starts on {{date}}.',
+                {
+                  date: formatDateTime(selectedElection.votingStartAt),
+                },
+              )}
+            </Text>
+            )}
+        </Stack>
       </Group>
 
       <Divider />
@@ -265,6 +285,7 @@ export const VotingElectionView = (): JSX.Element => {
                             );
 
                         const canIncrease =
+                            !votingHasNotStarted &&
                             candidateVotes < section.maxVotesPerCandidate &&
                             candidateTotalVotes <
                             selectedElection.ballotPaper.maxVotesPerCandidate &&

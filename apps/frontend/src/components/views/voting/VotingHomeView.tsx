@@ -13,8 +13,6 @@ export const VotingHomeView = (): JSX.Element => {
   const voterElectionsHook = useGetVoterElections({ token: voterToken });
   const voterData = voterElectionsHook.data;
 
-  console.log('Voter Data:', voterData);
-
   return (
     <>
       <Flex direction="column" maw="100%" px="md" flex={1}>
