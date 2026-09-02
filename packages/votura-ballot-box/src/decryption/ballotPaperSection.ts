@@ -19,11 +19,15 @@ export interface DecryptedSection {
   invalidCount: number;
 }
 
-export enum SectionDecryptionError {
-  candidateExtractionFailed = 'Failed to extract candidates from ballot paper section.',
-  verificationFailed = 'Failed to verify ciphertexts in ballot paper section.',
-  voteDecryptionFailed = 'Failed to decrypt votes in ballot paper section.',
-}
+// eslint-disable-next-line @typescript-eslint/naming-convention
+export const SectionDecryptionError = {
+  candidateExtractionFailed: 'Failed to extract candidates from ballot paper section.',
+  verificationFailed: 'Failed to verify ciphertexts in ballot paper section.',
+  voteDecryptionFailed: 'Failed to decrypt votes in ballot paper section.',
+};
+
+export type SectionDecryptionErrorMessage =
+  (typeof SectionDecryptionError)[keyof typeof SectionDecryptionError];
 
 type SectionVotes = EncryptedFilledBallotPaper['sections'][string];
 type VoteRecord = SectionVotes['votes'][number];
@@ -80,7 +84,7 @@ export class BallotPaperSectionDecryption {
   public decryptSection(
     section: SectionVotes,
     sectionId: string,
-  ): DecryptedSection | SectionDecryptionError {
+  ): DecryptedSection | SectionDecryptionErrorMessage {
     if (!this.discreteLogLookup) {
       throw new Error('Lookup table not initialized. Call calculateLookupTable() first.');
     }

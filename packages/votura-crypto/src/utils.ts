@@ -1,6 +1,6 @@
-import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
+import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
 
 export const getBitsOfBigInt = (x: bigint): number => {
   // https://stackoverflow.com/questions/54758130/how-to-obtain-the-amount-of-bits-of-a-bigint
@@ -8,21 +8,15 @@ export const getBitsOfBigInt = (x: bigint): number => {
   return i + 32 - Math.clz32(Number(x >> BigInt(i)));
 };
 
-export const getFiatShamirChallenge = (
-  partsToHash: string[],
-  primeQ: bigint,
-): bigint => {
+export const getFiatShamirChallenge = (partsToHash: string[], primeQ: bigint): bigint => {
   const stringToHash = partsToHash.join(',');
 
-  const hashBytes = sha256(
-    utf8ToBytes(stringToHash),
-  );
+  const hashBytes = sha256(utf8ToBytes(stringToHash));
 
   const hashHex = bytesToHex(hashBytes);
 
   return BigInt(`0x${hashHex}`) % primeQ;
 };
-
 
 export const getCofactor = (p: bigint, q: bigint): bigint => {
   // https://www.di-mgt.com.au/multiplicative-group-mod-p.html

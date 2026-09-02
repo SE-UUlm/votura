@@ -115,9 +115,7 @@
   "newPassword": "New password",
   "repeatNewPassword": "Repeat new password",
   "currentPasswordIsRequired": "Current password is required.",
-  "passwordChangedSuccessfully": "Password changed successfully."
-  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "When logging in, a new administrator account will be created with the specified login credentials.",
-  "welcomeToVotura": "Welcome to Votura"
+  "passwordChangedSuccessfully": "Password changed successfully.",
   "welcomeToVotura": "Welcome to Votura",
   "voturaDescription": "Votura is a secure online voting platform that allows you to participate in elections easily and transparently.",
   "participateInAnElection": "Participate in an Election",
@@ -142,6 +140,19 @@
   "privateVotes": "Private Votes",
   "maxVotes": "Max. Votes",
   "maxVotesPerCandidate": "Max. Votes per Candidate",
+  "votingStartsAt": "Voting starts on {{date}}.",
   "Yes": "Yes",
-  "No": "No"
+  "No": "No",
+  "saveCiphertextDescription": "Please save your ciphertext for later checking:",
+  "downloadCiphertext": "Download ciphertext",
+  "castVote": "Send Vote",
+  "votingNotPossible": "Voting is not possible",
+  "votingNotPossibleDescription": "Voting for {{electionName}} may not have started yet.",
+  "invalidVotingToken": "Invalid Voting Token",
+  "invalidVotingTokenDescription": "The inserted voting token is invalid. Please try again.",
+  "enterVotingToken": "Please enter your voting token",
+  "votingTokenSpace": "Voting Token",
+  "voteSuccessfullyCast": "We have received your vote for {{electionName}}.",
+  "standardElection": "the Election",
+  "backToHomePage": "Back to home page"
 }

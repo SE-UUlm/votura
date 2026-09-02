@@ -14,17 +14,18 @@ import {
   ThemeIcon,
   Title,
 } from '@mantine/core';
+import { BallotPaperEncryption } from '@repo/votura-ballot-box';
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconMinus, IconPlus, IconSend } from '@tabler/icons-react';
-import { type JSX, useState } from 'react';
-import { Navigate, useNavigate, useParams } from 'react-router';
-import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.ts';
-import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
-import { HEADER_HEIGHT } from '../../utils.ts';
-import { useTranslation } from 'react-i18next';
-import { createPlainFilledBallotPaper } from './createPlainFilledBallotPaper.ts';
-import { BallotPaperEncryption } from '@repo/votura-ballot-box';
 import { PublicKey } from '@votura/votura-crypto/index';
+import { type JSX, useState } from 'react';
+import { useTranslation } from 'react-i18next';
+import { Navigate, useNavigate, useParams } from 'react-router';
+import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
+import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.ts';
+import { useVotingHasNotStarted } from '../../../swr/voting/useVotingHasNotStarted.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { createPlainFilledBallotPaper, type Votes } from './createPlainFilledBallotPaper.ts';
 
 interface VotingElectionViewRouteParams extends Record<string, string> {
   [parameter.electionId]: string;
@@ -35,7 +36,7 @@ export const VotingElectionView = (): JSX.Element => {
   const navigate = useNavigate();
   const voterToken = getVoterLocalStorage();
   const params = useParams<VotingElectionViewRouteParams>();
-  const [votes, setVotes] = useState<Record<string, Record<string, number>>>({});
+  const [votes, setVotes] = useState<Votes>({});
   const {
     data: voterElections,
     isLoading: isVoterElectionsLoading,
@@ -63,19 +64,17 @@ export const VotingElectionView = (): JSX.Element => {
   }
 
   const selectedElection = voterElections.find((election) => election.id === params.electionId);
+  const votingHasNotStarted = useVotingHasNotStarted(selectedElection?.votingStartAt);
+
   if (!selectedElection) {
     return <Navigate to={'/votingHome'} replace />;
   }
 
-    const totalVotes = Object.values(votes).reduce(
-        (total, sectionVotes) =>
-            total +
-            Object.values(sectionVotes).reduce(
-                (sum, value) => sum + value,
-                0,
-            ),
-        0,
-    );
+  const totalVotes = Object.values(votes).reduce(
+    (total, sectionVotes) =>
+      total + Object.values(sectionVotes ?? {}).reduce((sum, value) => sum + (value ?? 0), 0),
+    0,
+  );
 
   const formatDateTime = (date: string): string =>
     new Date(date).toLocaleString('de-DE', {
@@ -87,12 +86,7 @@ export const VotingElectionView = (): JSX.Element => {
     });
 
   const handleSubmitVote = (): void => {
-    const {
-      primeP,
-      primeQ,
-      generator,
-      pubKey,
-    } = selectedElection;
+    const { primeP, primeQ, generator, pubKey } = selectedElection;
 
     if (
       primeP === undefined ||
@@ -118,9 +112,7 @@ export const VotingElectionView = (): JSX.Element => {
     const ballotPaperEncryption = new BallotPaperEncryption(publicKey);
 
     const [encryptedFilledBallotPaper] =
-      ballotPaperEncryption.encryptBallotPaper(
-        plainFilledBallotPaper,
-      );
+      ballotPaperEncryption.encryptBallotPaper(plainFilledBallotPaper);
 
     navigate('/voting/submitVote', {
       state: {
@@ -134,10 +126,23 @@ export const VotingElectionView = (): JSX.Element => {
     <Flex direction="column" maw="100%" px="md" flex={1}>
       <Group justify="space-between" h={HEADER_HEIGHT}>
         <Title order={1}>{selectedElection.name}</Title>
-        <Button variant="outline" onClick={handleSubmitVote}>
-          <IconSend size={16} />
-          {t('submitVote', 'Submit Vote')}
-        </Button>
+        <Stack gap={4} align="flex-end">
+          <Button
+            variant="outline"
+            onClick={handleSubmitVote}
+            rightSection={<IconSend size={16} />}
+            disabled={votingHasNotStarted}
+          >
+            {t('submitVote', 'Submit Vote')}
+          </Button>
+          {Boolean(votingHasNotStarted) && (
+            <Text size="xs" c="dimmed">
+              {t('votingStartsAt', 'Voting starts on {{date}}.', {
+                date: formatDateTime(selectedElection.votingStartAt),
+              })}
+            </Text>
+          )}
+        </Stack>
       </Group>
 
       <Divider />
@@ -152,7 +157,10 @@ export const VotingElectionView = (): JSX.Element => {
 
             <Text>
               {selectedElection.description ||
-                t('noDescriptionIsAvailableForThisElection', 'No description is available for this election.')}
+                t(
+                  'noDescriptionIsAvailableForThisElection',
+                  'No description is available for this election.',
+                )}
             </Text>
 
             <Title order={3} mt="xs">
@@ -160,7 +168,7 @@ export const VotingElectionView = (): JSX.Element => {
             </Title>
 
             <Text>
-              {formatDateTime(selectedElection.votingStartAt)} - {' '}
+              {formatDateTime(selectedElection.votingStartAt)} -{' '}
               {formatDateTime(selectedElection.votingEndAt)}
             </Text>
           </Stack>
@@ -176,9 +184,7 @@ export const VotingElectionView = (): JSX.Element => {
               {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
             </Title>
 
-            <Text>
-              {selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}
-            </Text>
+            <Text>{selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}</Text>
           </Stack>
         </Grid.Col>
       </Grid>
@@ -195,138 +201,128 @@ export const VotingElectionView = (): JSX.Element => {
         <Grid>
           <Grid.Col span={{ base: 12, md: 7 }}>
             <Stack gap={0}>
-              <Title order={3}>
-                {selectedElection.ballotPaper.name}
-              </Title>
+              <Title order={3}>{selectedElection.ballotPaper.name}</Title>
 
-              <Text>
-                {selectedElection.ballotPaper.description}
-              </Text>
+              <Text>{selectedElection.ballotPaper.description}</Text>
             </Stack>
           </Grid.Col>
 
           <Grid.Col span={{ base: 6, md: 2 }}>
             <Text fw={700}> {t('maxVotes', 'Max. Votes')}</Text>
-            <Text>{totalVotes}/{selectedElection.ballotPaper.maxVotes}</Text>
+            <Text>
+              {totalVotes}/{selectedElection.ballotPaper.maxVotes}
+            </Text>
           </Grid.Col>
 
           <Grid.Col span={{ base: 6, md: 3 }}>
             <Text fw={700}> {t('maxVotesPerCandidate', 'Max. Votes per Candidate')}</Text>
-            <Text>
-              {selectedElection.ballotPaper.maxVotesPerCandidate}
-            </Text>
+            <Text>{selectedElection.ballotPaper.maxVotesPerCandidate}</Text>
           </Grid.Col>
         </Grid>
         <Space h="md" />
         {/* Ballot Paper Sections */}
         <Stack gap="md">
-          {selectedElection.ballotPaper.ballotPaperSections.map(
-            (section) => {
-                const sectionVotes = section.candidates.reduce(
-                    (sum, candidate) =>
-                        sum + (votes[section.id]?.[candidate.id] ?? 0),
-                    0,
-                );
+          {selectedElection.ballotPaper.ballotPaperSections.map((section) => {
+            const sectionVotes = section.candidates.reduce(
+              (sum, candidate) => sum + (votes[section.id]?.[candidate.id] ?? 0),
+              0,
+            );
 
-              return (
-                <Paper key={section.id} p="md" radius="md">
-                  <Grid>
-                   <Grid.Col span={{ base: 12, md: 7 }}>
-                     <Stack gap={0}>
-                       <Title order={3}>{section.name}</Title>
-                       <Text>{section.description}</Text>
-                     </Stack>
+            return (
+              <Paper key={section.id} p="md" radius="md">
+                <Grid>
+                  <Grid.Col span={{ base: 12, md: 7 }}>
+                    <Stack gap={0}>
+                      <Title order={3}>{section.name}</Title>
+                      <Text>{section.description}</Text>
+                    </Stack>
                   </Grid.Col>
 
-                    <Grid.Col span={{ base: 6, md: 2 }}>
-                     <Text fw={700}> {t('maxVotes', 'Max. Votes')}</Text>
-                     <Text>{sectionVotes}/{section.maxVotes}</Text>
-                    </Grid.Col>
+                  <Grid.Col span={{ base: 6, md: 2 }}>
+                    <Text fw={700}> {t('maxVotes', 'Max. Votes')}</Text>
+                    <Text>
+                      {sectionVotes}/{section.maxVotes}
+                    </Text>
+                  </Grid.Col>
 
-                    <Grid.Col span={{ base: 6, md: 3 }}>
-                      <Text fw={700}>
-                       {t('maxVotesPerCandidate', 'Max. Votes per Candidate')}
-                      </Text>
-                      <Text>{section.maxVotesPerCandidate}</Text>
-                   </Grid.Col>
-                  </Grid>
+                  <Grid.Col span={{ base: 6, md: 3 }}>
+                    <Text fw={700}>{t('maxVotesPerCandidate', 'Max. Votes per Candidate')}</Text>
+                    <Text>{section.maxVotesPerCandidate}</Text>
+                  </Grid.Col>
+                </Grid>
 
-                 <Space h="sm" />
+                <Space h="sm" />
 
-                 <Stack gap="xs">
-                    {section.candidates.map((candidate) => {
-                        const candidateVotes = votes[section.id]?.[candidate.id] ?? 0;
-                        const candidateTotalVotes =
-                            selectedElection.ballotPaper.ballotPaperSections.reduce(
-                                (total, currentSection) =>
-                                    total +
-                                    (votes[currentSection.id]?.[candidate.id] ?? 0),
-                                0,
-                            );
+                <Stack gap="xs">
+                  {section.candidates.map((candidate) => {
+                    const candidateVotes = votes[section.id]?.[candidate.id] ?? 0;
+                    const candidateTotalVotes =
+                      selectedElection.ballotPaper.ballotPaperSections.reduce(
+                        (total, currentSection) =>
+                          total + (votes[currentSection.id]?.[candidate.id] ?? 0),
+                        0,
+                      );
 
-                        const canIncrease =
-                            candidateVotes < section.maxVotesPerCandidate &&
-                            candidateTotalVotes <
-                            selectedElection.ballotPaper.maxVotesPerCandidate &&
-                            sectionVotes < section.maxVotes &&
-                            totalVotes < selectedElection.ballotPaper.maxVotes;
+                    const canIncrease =
+                      !votingHasNotStarted &&
+                      candidateVotes < section.maxVotesPerCandidate &&
+                      candidateTotalVotes < selectedElection.ballotPaper.maxVotesPerCandidate &&
+                      sectionVotes < section.maxVotes &&
+                      totalVotes < selectedElection.ballotPaper.maxVotes;
 
-                        const canDecrease = candidateVotes > 0;
+                    const canDecrease = candidateVotes > 0;
 
-                        return (
-                       <Group key={candidate.id} gap="md">
-                          <Group gap={4}>
-                           <ActionIcon
-                              variant="outline"
-                              size="sm"
-                             onClick={() => {
-                                 setVotes((currentVotes) => ({
-                                     ...currentVotes,
-                                     [section.id]: {
-                                         ...currentVotes[section.id],
-                                         [candidate.id]: candidateVotes - 1,
-                                     },
-                                 }));
-                              }}
-                              disabled={!canDecrease}
-                            >
-                              <IconMinus size={16} />
-                           </ActionIcon>
+                    return (
+                      <Group key={candidate.id} gap="md">
+                        <Group gap={4}>
+                          <ActionIcon
+                            variant="outline"
+                            size="sm"
+                            onClick={(): void => {
+                              setVotes((currentVotes) => ({
+                                ...currentVotes,
+                                [section.id]: {
+                                  ...currentVotes[section.id],
+                                  [candidate.id]: candidateVotes - 1,
+                                },
+                              }));
+                            }}
+                            disabled={!canDecrease}
+                          >
+                            <IconMinus size={16} />
+                          </ActionIcon>
 
-                            <Text w={24} ta="center" fw={600}>
-                              {candidateVotes}
-                           </Text>
+                          <Text w={24} ta="center" fw={600}>
+                            {candidateVotes}
+                          </Text>
 
-                            <ActionIcon
-                             variant="outline"
-                              size="sm"
-                               onClick={() => {
-                                   setVotes((currentVotes) => ({
-                                   ...currentVotes,
-                                   [section.id]: {
-                                       ...currentVotes[section.id],
-                                       [candidate.id]: candidateVotes + 1,
-                                   },
-                               }));
-                              }}
-                              disabled={!canIncrease}
-                           >
-                              <IconPlus size={16} />
-                            </ActionIcon>
-                         </Group>
-
-                         <Text fw={700}>
-                           {candidate.title}
-                         </Text>
-                         <Text>{candidate.description}</Text>
+                          <ActionIcon
+                            variant="outline"
+                            size="sm"
+                            onClick={(): void => {
+                              setVotes((currentVotes): Votes => ({
+                                ...currentVotes,
+                                [section.id]: {
+                                  ...currentVotes[section.id],
+                                  [candidate.id]: candidateVotes + 1,
+                                },
+                              }));
+                            }}
+                            disabled={!canIncrease}
+                          >
+                            <IconPlus size={16} />
+                          </ActionIcon>
                         </Group>
-                     );
-                   })}
-                 </Stack>
-                </Paper>
-              );
-           },
-          )}
+
+                        <Text fw={700}>{candidate.title}</Text>
+                        <Text>{candidate.description}</Text>
+                      </Group>
+                    );
+                  })}
+                </Stack>
+              </Paper>
+            );
+          })}
         </Stack>
       </Paper>
     </Flex>

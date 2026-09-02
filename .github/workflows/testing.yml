@@ -11,7 +11,7 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.56.0-noble
+      image: mcr.microsoft.com/playwright:v1.62.1-noble
       env:
         DEBIAN_FRONTEND: noninteractive
         PLAYWRIGHT_BROWSERS_PATH: /ms-playwright

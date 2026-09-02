@@ -1,19 +1,17 @@
-import { Divider, Flex, Group, Space, Title, Text, List, Anchor } from '@mantine/core';
+import { Anchor, Divider, Flex, Group, List, Space, Text, Title } from '@mantine/core';
 import type { JSX } from 'react';
-import { HEADER_HEIGHT } from '../../utils.ts';
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router';
 import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
 import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.ts';
-import { Link } from 'react-router';
 import { getVotingElectionPath } from '../../AppShellLayoutVoter.tsx';
-import { useTranslation } from 'react-i18next';
+import { HEADER_HEIGHT } from '../../utils.ts';
 
 export const VotingHomeView = (): JSX.Element => {
   const { t } = useTranslation();
   const voterToken = getVoterLocalStorage();
   const voterElectionsHook = useGetVoterElections({ token: voterToken });
   const voterData = voterElectionsHook.data;
-
-  console.log('Voter Data:', voterData);
 
   return (
     <>
@@ -90,7 +88,10 @@ export const VotingHomeView = (): JSX.Element => {
           )}
         </Text>
         <Text mt="sm">
-          {t('verifyYourVoteDescription3', 'Save or download your ciphertext. You can use it later to verify your vote and confirm that your vote was correctly recorded.',)}
+          {t(
+            'verifyYourVoteDescription3',
+            'Save or download your ciphertext. You can use it later to verify your vote and confirm that your vote was correctly recorded.',
+          )}
           Speichere oder lade deinen Ciphertext herunter. Du kannst ihn später verwenden, um deine
           Stimme zu verifizieren und zu überprüfen, dass deine abgegebene Stimme korrekt
           berücksichtigt wurde.

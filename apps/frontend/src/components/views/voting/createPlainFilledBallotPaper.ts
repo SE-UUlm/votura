@@ -4,7 +4,22 @@ import {
   type SelectableVotingElection,
 } from '@repo/votura-validators';
 
-type Votes = Record<string, Record<string, number>>;
+export type Votes = Record<string, Record<string, number>>;
+
+const createVote = (
+  candidateIds: string[],
+  selectedCandidateId?: string,
+): Record<string, 0 | 1> => {
+  const candidateVotes = Object.fromEntries(
+    candidateIds.map((candidateId) => [candidateId, candidateId === selectedCandidateId ? 1 : 0]),
+  ) as Record<string, 0 | 1>;
+
+  return {
+    ...candidateVotes,
+    [filledBallotPaperDefaultVoteOption.noVote]: selectedCandidateId === undefined ? 1 : 0,
+    [filledBallotPaperDefaultVoteOption.invalid]: 0,
+  };
+};
 
 export const createPlainFilledBallotPaper = (
   ballotPaper: SelectableVotingElection['ballotPaper'],
@@ -21,32 +36,14 @@ export const createPlainFilledBallotPaper = (
       const candidateVotes = votes[section.id]?.[candidateId] ?? 0;
 
       for (let i = 0; i < candidateVotes; i++) {
-        const vote: Record<string, 0 | 1> = {};
-
-        for (const id of candidateIds) {
-          vote[id] = id === candidateId ? 1 : 0;
-        }
-
-        vote[filledBallotPaperDefaultVoteOption.noVote] = 0;
-        vote[filledBallotPaperDefaultVoteOption.invalid] = 0;
-
-        sectionVotes.push(vote);
+        sectionVotes.push(createVote(candidateIds, candidateId));
       }
     }
 
     const remainingVotes = section.maxVotes - sectionVotes.length;
 
     for (let i = 0; i < remainingVotes; i++) {
-      const vote: Record<string, 0 | 1> = {};
-
-      for (const candidateId of candidateIds) {
-        vote[candidateId] = 0;
-      }
-
-      vote[filledBallotPaperDefaultVoteOption.noVote] = 1;
-      vote[filledBallotPaperDefaultVoteOption.invalid] = 0;
-
-      sectionVotes.push(vote);
+      sectionVotes.push(createVote(candidateIds));
     }
 
     sections[section.id] = {
