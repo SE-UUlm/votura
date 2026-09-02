@@ -156,9 +156,7 @@
   "youAreAboutToDeleteTheVoterGroup": "Sie sind dabei, die folgende Wählergruppe zu löschen:",
   "youAreAboutToFreezeTheElection": "Sie sind dabei, die folgende Wahl zu sperren:",
   "youAreAboutToUnfreezeTheElection": "Sie sind dabei, die folgende Wahl freizugeben:",
-  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}"
-  "whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials": "Wenn Sie sich anmelden, wird ein neuer Administrations-Account mit den angegebenen Anmeldeinformationen erstellt.",
-  "welcomeToVotura": "Willkommen bei Votura"
+  "youSuccessfullyDeletedTheElectionName": "Sie haben die Wahl erfolgreich gelöscht: {{name}}",
   "welcomeToVotura": "Willkommen bei Votura",
   "voturaDescription": "Votura ist eine sichere Online-Wahlplattform, mit der du einfach und transparent an Wahlen teilnehmen kannst.",
   "participateInAnElection": "An einer Wahl teilnehmen",
@@ -183,6 +181,19 @@
   "privateVotes": "Private Wahl",
   "maxVotes": "Max. Stimmen",
   "maxVotesPerCandidate": "Max. Stimmen pro Kandidat",
+  "votingStartsAt": "Abstimmung beginnt am {{date}}.",
   "Yes": "Ja",
-  "No": "Nein"
+  "No": "Nein",
+  "saveCiphertextDescription": "Bitte speichere deinen Ciphertext für spätere Überprüfungen ab:",
+  "downloadCiphertext": "Download Ciphertext",
+  "castVote": "Abstimmung absenden",
+  "votingNotPossible": "Abstimmung nicht möglich",
+  "votingNotPossibleDescription": "Die Abstimmung für {{electionName}} hat möglicherweise noch nicht begonnen.",
+  "invalidVotingTokenDescription": "Der eingegebene Abstimmungstoken ist ungültig. Bitte versuche es erneut.",
+  "enterVotingToken": "Bitte geben Sie Ihren Abstimmungstoken ein",
+  "votingTokenSpace": "Abstimmungstoken",
+  "voteSuccessfullyCast": "Wir haben deine Stimme für {{electionName}} erhalten.",
+  "standardElection": "die Wahl",
+  "backToHomePage": "Zurück zur Startseite",
+  "votingFailedDescription": "Deine Stimme konnte nicht abgegeben werden. Bitte versuche es erneut."
 }
