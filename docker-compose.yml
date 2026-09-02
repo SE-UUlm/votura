@@ -1,5 +1,9 @@
 # To Run this docker compose file, you need to set the PEPPER environment variable in your shell before running the command:
-# export PEPPER='your_pepper_value' (or for a one-liner: PEPPER='your_pepper_value' docker-compose up)
+#
+# export PEPPER='your_pepper_value' 
+# docker-compose up
+#
+# or for a one-liner: PEPPER='your_pepper_value' docker-compose up
 
 services:
   postgres:
@@ -28,6 +32,7 @@ services:
       dockerfile: apps/frontend/Dockerfile
       args:
         VITE_API_BASE_URL: http://localhost:4000
+    restart: always
     ports:
       - '8080:80'
 
@@ -35,6 +40,7 @@ services:
     build:
       context: .
       dockerfile: apps/backend/Dockerfile
+    restart: always
     ports:
       - '4000:4000'
     environment:
