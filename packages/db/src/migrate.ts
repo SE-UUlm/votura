@@ -10,7 +10,7 @@ try {
 
   const migrationPath = path.join(DIRNAME, './migrations');
   await migrateToLatest(db, migrationPath);
-} catch (error) {
+} catch (error: unknown) {
   logger.error({ err: error }, 'Migration failed.');
   process.exit(1);
 }
