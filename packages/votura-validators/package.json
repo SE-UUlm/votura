@@ -31,7 +31,7 @@
     "vitest": "^3.2.4"
   },
   "dependencies": {
-    "zod": "3.25.57"
+    "zod": "^4.5.4"
   },
   "packageManager": "npm@11.3.0",
   "engines": {
