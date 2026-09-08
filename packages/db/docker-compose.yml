@@ -2,7 +2,7 @@ services:
   postgres:
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: dockerfile
     restart: always
     shm_size: 128mb
     ports:
@@ -13,6 +13,13 @@ services:
       POSTGRES_USER: votura
       POSTGRES_PASSWORD: votura
       POSTGRES_DB: votura
+
+  mailpit:
+    image: axllent/mailpit:latest
+    restart: always
+    ports:
+      - '1025:1025' # SMTP server (used by the backend)
+      - '8025:8025' # Web UI (open http://localhost:8025 to view sent emails)
 
 volumes:
   votura_postgres_data:

@@ -10,7 +10,7 @@ export interface RoutingNavLinkProps {
 
 export const RoutingNavbarLink = ({ to, icon, label }: RoutingNavLinkProps): JSX.Element => {
   return (
-    <RouterNavLink to={to} style={{ textDecoration: 'none' }}>
+    <RouterNavLink to={to} style={{ textDecoration: 'none', color: 'var(--mantine-color-text)' }}>
       {({ isActive }) => (
         <NavLink
           component="button"

@@ -16,6 +16,7 @@ export enum TableName {
   voter = 'voter',
   voterRegister = 'voterRegister',
   vote = 'vote',
+  failedLoginAttempt = 'failedLoginAttempt',
 }
 
 // --- Column names ---
@@ -35,6 +36,8 @@ export enum UserColumnName {
   passwordResetTokenExpiresAt = 'passwordResetTokenExpiresAt',
   refreshTokenHash = 'refreshTokenHash',
   refreshTokenExpiresAt = 'refreshTokenExpiresAt',
+  role = 'role',
+  active = 'active',
 }
 
 export enum AccessTokenBlacklistColumnName {
@@ -55,6 +58,7 @@ export enum ElectionColumnName {
   primeP = 'primeP',
   primeQ = 'primeQ',
   generator = 'generator',
+  keyGenStartedAt = 'keyGenStartedAt',
   electionCreatorId = 'electionCreatorId',
 }
 
@@ -146,4 +150,13 @@ export enum VoteFKName {
 export enum VoterRegisterFKName {
   ballotPaperId = 'voterRegisterBallotPaperIdFK',
   voterId = 'voterRegisterVoterIdFK',
+}
+
+export enum FailedLoginAttemptColumnName {
+  ipAddress = 'ipAddress',
+  userId = 'userId',
+}
+
+export enum FailedLoginAttemptFKName {
+  userId = 'userIdFk',
 }

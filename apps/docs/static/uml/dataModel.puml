@@ -9,16 +9,20 @@ entity "user" as user #006b75 {
     * passwordHash : VARCHAR(256)
     * verified : BOOLEAN
     lastLoginAt : TIMESTAMPTZ(6) | NULL
-    ' failed login attempts get reset on successful login
-    * failedLoginAttempts : INTEGER
     emailVerificationTokenHash : VARCHAR(64) | NULL
     emailVerificationTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     passwordResetTokenHash : VARCHAR(64) | NULL
     passwordResetTokenExpiresAt : TIMESTAMPTZ(6) | NULL
     refreshTokenHash : VARCHAR(64) | NULL
     refreshTokenExpiresAt : TIMESTAMPTZ(6) | NULL
+    * role : ENUM("user", "admin")
+    * active : BOOLEAN
     --
 }
+
+note as N5
+The roles are "converted" to enums in JS
+end note
 
 entity "accessTokenBlacklist" as jwtBlacklist #006b75 {
     ' this table is used to store blacklisted access tokens
@@ -169,6 +173,15 @@ note as N1
 Timestamps are stored in UTC.
 end note
 
+entity "failedLoginAttempt" #006b75 {
+    * id : UUID <<PK>>
+    --
+    * createdAt : TIMESTAMPTZ(6)
+    * modifiedAt : TIMESTAMPTZ(6)
+    * ipAddress : BYTEA
+    * userId : User.id <<FK>>
+}
+
 user "1"--"*" elections : belongs to <
 elections "1"--"*" ballotPapers : belongs to <
 elections -- N2
@@ -184,5 +197,7 @@ user "1"--"*" voterGroups : belongs to <
 voterGroups "1"--"1..*" voters : contains >
 voters -- N3
 votes -- N4
+failedLoginAttempt "*"--"0..1" user : belongs to >
+user -- N5
 
 @enduml

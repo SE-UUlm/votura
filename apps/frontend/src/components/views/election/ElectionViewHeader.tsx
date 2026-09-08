@@ -3,13 +3,17 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconArrowLeft, IconDots } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
+import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
+import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
+  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
-  getToggleFreezeSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
@@ -21,22 +25,29 @@ export interface ElectionViewHeaderProps {
 }
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const { trigger: deleteTrigger } = useDeleteElection({
     electionId: election.id,
   });
   const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
 
-  const onDelete = async () => {
+  const onDelete = async (): Promise<void> => {
     try {
       await deleteTrigger();
       notifications.show(getDeleteSuccessElectionConfig(election.name));
       navigate('/elections');
     } catch (e: unknown) {
-      const message =
-        e instanceof Error ? e.message : 'Could not delete election. Please try again.';
+      let message: string = t(
+        'couldNotDeleteElectionPleaseTryAgain',
+        'Could not delete election. Please try again.',
+      );
+      if (e instanceof Error) {
+        message = e.message;
+      }
+
       notifications.show({
-        title: 'Deletion failed',
+        title: t('deletionFailed', 'Deletion failed'),
         message: message,
         color: 'red',
       });
@@ -48,9 +59,18 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     notifications.show(getMutateSuccessElectionConfig(mutatedElection.name));
   };
 
-  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = () => {
-    // updateElection(election.id, { immutableConfig: !election.configFrozen }); TODO: Implement election update (see #147)
-    notifications.show(getToggleFreezeSuccessElectionConfig(election.name, !election.configFrozen));
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+    if (election.configFrozen) {
+      notifications.show(await callUnfreezeElection(election.id));
+    } else {
+      const freezable = await callGetElectionFreezable(election.id);
+      if (!freezable) {
+        notifications.show(getElectionNotFreezableConfig(election.name));
+        return;
+      }
+
+      notifications.show(await callFreezeElection(election.id));
+    }
   };
 
   return (
@@ -60,11 +80,11 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
           <Button
             leftSection={<IconArrowLeft size={16} />}
             variant="subtle"
-            onClick={() => {
+            onClick={(): void => {
               navigate('/elections');
             }}
           >
-            Back to all elections
+            {t('backToAllElections', 'Back to all elections')}
           </Button>
           <Title order={3}>{election.name}</Title>
         </Group>

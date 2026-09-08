@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import type { SelectableCandidate } from '@repo/votura-validators';
 import { IconSettings, IconTrash } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteCandidate } from '../../../../../../swr/candidates/useDeleteCandidate.ts';
 import { useUpdateCandidate } from '../../../../../../swr/candidates/useUpdateCandidate.ts';
 import { DeleteCandidateModal, type DeleteCandidateModalProps } from './DeleteCandidateModal.tsx';
@@ -24,6 +25,7 @@ export const CandidateRow = ({
   onToggleCandidate,
   isMutatingToggleCandidate,
 }: CandidateRowProps): JSX.Element => {
+  const { t } = useTranslation();
   const [mutateCandidateContextOpen, mutateCandidateActions] = useDisclosure(false);
   const [deleteCandidateContextOpen, deleteCandidateActions] = useDisclosure(false);
   const { trigger: triggerUpdateCandidate, isMutating: isMutatingUpdateCandidate } =
@@ -53,9 +55,9 @@ export const CandidateRow = ({
       <MutateCandidateDrawer
         opened={mutateCandidateContextOpen}
         onClose={mutateCandidateActions.close}
-        mutateButtonText={'Save changed'}
+        mutateButtonText={t('saveChanged', 'Save changed')}
         onMutate={onCandidateMutate}
-        title={'Edit candidate'}
+        title={t('editCandidate', 'Edit candidate')}
         isMutating={isMutatingUpdateCandidate}
         candidate={candidate}
       />
@@ -70,14 +72,18 @@ export const CandidateRow = ({
           {candidate.title}
         </Text>
         <Group>
-          <ActionIcon variant={'transparent'} aria-label={'Edit candidate'}>
+          <ActionIcon variant={'transparent'} aria-label={t('editCandidate', 'Edit candidate')}>
             <IconSettings
               style={{ width: '70%', height: '70%' }}
               stroke={1.5}
               onClick={mutateCandidateActions.open}
             />
           </ActionIcon>
-          <ActionIcon variant={'transparent'} color="red" aria-label={'Delete candidate'}>
+          <ActionIcon
+            variant={'transparent'}
+            color="red"
+            aria-label={t('deleteCandidate', 'Delete candidate')}
+          >
             <IconTrash
               style={{ width: '70%', height: '70%' }}
               stroke={1.5}

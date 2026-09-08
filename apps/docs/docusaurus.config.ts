@@ -23,6 +23,7 @@ const CONFIG: Config = {
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },
+    mermaid: true,
   },
   i18n: {
     defaultLocale: 'en',
@@ -68,10 +69,6 @@ const CONFIG: Config = {
       },
     ],
   ],
-
-  markdown: {
-    mermaid: true,
-  },
 
   themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
 
@@ -165,7 +162,7 @@ const CONFIG: Config = {
             },
             {
               label: 'Imprint',
-              href: 'https://www.uni-ulm.de/misc/datenschutz/datenschutz/impressum/',
+              href: 'https://www.uni-ulm.de/rechtliche-hinweise/impressum/',
             },
             {
               label: 'GitHub',

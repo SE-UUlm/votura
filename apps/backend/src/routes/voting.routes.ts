@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { castVote, getElectionsForVoting } from '../controllers/voting.controllers.js';
+import { castVote } from '../controllers/voting/castVote.uc.js';
+import { getElectionsForVoting } from '../controllers/voting/getElectionsForVoting.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { MimeType } from '../middlewares/utils.js';
