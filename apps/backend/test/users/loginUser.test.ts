@@ -1,6 +1,6 @@
 import {
   apiTokenUserObject,
-  insertableUserObject,
+  authenticatableUserObject,
   response400Object,
   response401Object,
   response429Object,
@@ -16,13 +16,13 @@ describe(`POST /users/login`, () => {
   let requestPath = '';
   let user: SelectableUser | null = null;
   // create a test user only for this test to not have race conditions with token refresh tests
-  const loginUser = insertableUserObject.parse({
+  const loginUser = authenticatableUserObject.parse({
     email: 'loginUser@votura.org',
     password: 'MyStrong!Password123',
   });
 
   beforeAll(async () => {
-    await createUser(loginUser);
+    await createUser({ ...loginUser, role: 'admin', active: true });
     user = await findUserBy({ email: loginUser.email });
     if (user === null) {
       throw new Error('Failed to find test user');
@@ -49,7 +49,7 @@ describe(`POST /users/login`, () => {
   //  expect(parseResult.success).toBe(true);
   //});
 
-  it('200: should log in a verified user with valid credentials', async () => {
+  it('200: should log in a verified active user with valid credentials', async () => {
     if (user === null) {
       throw new Error('Test user not found');
     }
@@ -76,6 +76,26 @@ describe(`POST /users/login`, () => {
 
   it('401: should return error for invalid credentials', async () => {
     const res = await testLogin(loginUser.email, loginUser.password + 'invalid');
+    expect(res.status).toBe(HttpStatusCode.unauthorized);
+    expect(res.type).toBe('application/json');
+    const parseResult = response401Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+
+  it('401: should return error for inactive users', async () => {
+    await createUser({
+      email: 'inactiveLoginUser@votura.org',
+      password: 'MyStrong!Password123',
+      role: 'admin',
+      active: false,
+    });
+
+    const inactiveUser = await findUserBy({ email: 'inactiveLoginUser@votura.org' });
+    if (inactiveUser === null) {
+      throw new Error('Failed to create inactive user');
+    }
+
+    const res = await testLogin(inactiveUser.email, loginUser.password);
     expect(res.status).toBe(HttpStatusCode.unauthorized);
     expect(res.type).toBe('application/json');
     const parseResult = response401Object.safeParse(res.body);

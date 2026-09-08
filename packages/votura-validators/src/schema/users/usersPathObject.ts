@@ -1,11 +1,9 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { insertableUserObjectSchema } from '../../objects/user.js';
+import { selectableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
   response406,
-  response409,
-  response415,
   response429,
   responseDefault,
 } from '../globals/responses.js';
@@ -13,33 +11,29 @@ import { SecuritySchemaName } from '../globals/securitySchemaName.js';
 import { Tag } from '../globals/tag.js';
 
 export const usersPathObject: OpenAPIV3.PathItemObject = {
-  summary: 'Creating and deleting a user',
-  description: 'Creating and deleting a user in the votura backend.',
-  post: {
+  summary: 'Creating, reading and deleting a user',
+  description: 'Creating, reading and deleting a user in the votura backend.',
+  get: {
     tags: [Tag.users],
-    summary: 'Create a new user',
-    description: 'Creates a new user in the votura backend.',
-    security: [],
-    operationId: 'createUser',
-    requestBody: {
-      required: true,
-      content: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        'application/json': {
-          schema: insertableUserObjectSchema as OpenAPIV3.SchemaObject,
-        },
-      },
-    },
+    summary: 'Get user details',
+    description: 'Returns account details of the requesting user.',
+    security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
+    operationId: 'getUser',
     responses: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
-      204: {
+      200: {
         description:
-          'Created. The request was successfully executed. Successfully created a new user. Waiting for verification.',
+          'OK. The request was successfully executed. Returns account details for the requested user.',
+        content: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          'application/json': {
+            schema: selectableUserObjectSchema as OpenAPIV3.SchemaObject,
+          },
+        },
       },
       ...response400,
+      ...response401,
       ...response406,
-      ...response409,
-      ...response415,
       ...response429,
       ...responseDefault,
     },

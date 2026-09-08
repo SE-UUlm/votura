@@ -1,13 +1,11 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
-import {
-  createVoterGroup,
-  createVoterTokens,
-  deleteVoterGroup,
-  getSpecificVoterGroup,
-  getVoterGroups,
-  updateVoterGroup,
-} from '../controllers/voterGroups.controllers.js';
+import { createVoterGroup } from '../controllers/voterGroups/createVoterGroup.uc.js';
+import { createVoterTokens } from '../controllers/voterGroups/createVoterTokens.uc.js';
+import { deleteVoterGroup } from '../controllers/voterGroups/deleteVoterGroup.uc.js';
+import { getSpecificVoterGroup } from '../controllers/voterGroups/getSpecificVoterGroup.uc.js';
+import { getVoterGroups } from '../controllers/voterGroups/getVoterGroups.uc.js';
+import { updateVoterGroup } from '../controllers/voterGroups/updateVoterGroup.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import {

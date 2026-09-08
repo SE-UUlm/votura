@@ -15,15 +15,22 @@ import {
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
-import { insertableUserObject } from '@repo/votura-validators';
+import { authenticatableUserObject } from '@repo/votura-validators';
+import { IconInfoCircle } from '@tabler/icons-react';
 import axios from 'axios';
 import { type JSX, useEffect, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { setAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useLoginUser } from '../../../swr/useLoginUser.ts';
+import { useUserCount } from '../../../swr/useUserCount.ts';
+import { HEADER_HEIGHT } from '../../utils.ts';
+import { LoginHeader } from './LoginHeader.tsx';
 
 export const LoginView = (): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger, isMutating } = useLoginUser();
+  const { data: userCount } = useUserCount();
   const navigate = useNavigate();
 
   const form = useForm({
@@ -34,8 +41,8 @@ export const LoginView = (): JSX.Element => {
     },
     validate: {
       email: (value) => {
-        const parsed = insertableUserObject.shape.email.safeParse(value);
-        return parsed.success ? null : 'Invalid email address.';
+        const parsed = authenticatableUserObject.shape.email.safeParse(value);
+        return parsed.success ? null : t('invalidEmailAddress', 'Invalid email address.');
       },
     },
   });
@@ -69,8 +76,11 @@ export const LoginView = (): JSX.Element => {
     } catch (e: unknown) {
       if (!axios.isAxiosError(e)) {
         notifications.show({
-          title: 'Could not login',
-          message: 'We do not know this combination of email and password. Please try again.',
+          title: t('couldNotLogin', 'Could not login'),
+          message: t(
+            'weDoNotKnowThisCombinationOfEmailAndPasswordPleaseTryAgain',
+            'We do not know this combination of email and password. Please try again.',
+          ),
           color: 'yellow',
           autoClose: 15000,
         });
@@ -95,9 +105,40 @@ export const LoginView = (): JSX.Element => {
 
   return (
     <Container fluid h={'100vh'}>
-      <Center h={'100vh'}>
+      <LoginHeader />
+      <Center h={`calc(100vh - ${HEADER_HEIGHT}px)`}>
         <Stack w={400}>
           <Title>Votura</Title>
+          {userCount?.count === 0 && (
+            <Box
+              px={'sm'}
+              py={'xs'}
+              bg={'yellow.0'}
+              style={{
+                borderLeft: '4px solid var(--mantine-color-yellow-6)',
+                borderRadius: '4px',
+              }}
+            >
+              <Group align="flex-start" gap="xs" wrap="nowrap">
+                <IconInfoCircle
+                  size={36}
+                  stroke={2}
+                  style={{ color: 'var(--mantine-color-yellow-8)' }}
+                />
+                <Stack gap={2}>
+                  <Text size={'sm'} fw={700}>
+                    {t('noAccountExistsYet', 'No account exists yet.')}
+                  </Text>
+                  <Text size={'sm'}>
+                    {t(
+                      'whenLoggingInANewAdministratorAccountWillBeCreatedWithTheSpecifiedLoginCredentials',
+                      'When logging in, a new administrator account will be created with the specified login credentials.',
+                    )}
+                  </Text>
+                </Stack>
+              </Group>
+            </Box>
+          )}
           <Box component={'form'} onSubmit={form.onSubmit(onLogin)}>
             <Stack>
               <TextInput
@@ -110,7 +151,7 @@ export const LoginView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={'Password'}
-                placeholder={'My secure password...'}
+                placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}
               />
@@ -120,19 +161,19 @@ export const LoginView = (): JSX.Element => {
                 loading={isLoginIn || isMutating}
                 disabled={loginBlockedSeconds !== null}
               >
-                Login
+                {t('login', 'Login')}
                 {loginBlockedSeconds !== null ? ' (' + loginBlockedSeconds + ')' : ''}
               </Button>
             </Stack>
           </Box>
-          <Button variant="light" onClick={() => navigate('/register')}>
-            Sign Up
+          <Button variant="light" onClick={(): void | Promise<void> => navigate('/vote')}>
+            {t('goToVote', 'Go to Vote')}
           </Button>
           <Divider />
           <Group justify="space-between">
-            <Text size={'sm'}>Can't login anymore?</Text>
+            <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>
             <Anchor component={'button'} variant="transparent" size={'sm'}>
-              Reset password
+              {t('resetPassword', 'Reset password')}
             </Anchor>
           </Group>
         </Stack>

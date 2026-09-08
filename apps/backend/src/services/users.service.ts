@@ -48,6 +48,8 @@ export async function findUserBy(
     createdAt: user.createdAt.toISOString(),
     modifiedAt: user.modifiedAt.toISOString(),
     email: user.email,
+    role: user.role,
+    active: user.active,
   };
 }
 
@@ -59,6 +61,8 @@ export async function createUser(insertableUser: InsertableUser): Promise<void> 
     .values({
       email: insertableUser.email,
       passwordHash: hashedPassword,
+      role: insertableUser.role,
+      active: insertableUser.active,
     })
     .executeTakeFirstOrThrow();
 }
@@ -67,6 +71,21 @@ export async function setUserVerified(userId: Selectable<DBUser>['id']): Promise
   await db
     .updateTable('user')
     .set({ verified: true })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function updateUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+    })
     .where('id', '=', userId)
     .executeTakeFirstOrThrow();
 }
@@ -82,6 +101,54 @@ export async function blacklistAccessToken(accessTokenId: string, expiresAt: Dat
       accessTokenId: accessTokenId,
       expiresAt: expiresAt,
     })
+    .executeTakeFirstOrThrow();
+}
+
+export async function setPasswordResetToken(
+  userId: Selectable<DBUser>['id'],
+  tokenHash: string,
+  expiresAt: Date,
+): Promise<void> {
+  await db
+    .updateTable('user')
+    .set({
+      passwordResetTokenHash: tokenHash,
+      passwordResetTokenExpiresAt: expiresAt,
+    })
+    .where('id', '=', userId)
+    .executeTakeFirstOrThrow();
+}
+
+export async function findDBUserByPasswordResetTokenHash(
+  tokenHash: string,
+): Promise<Selectable<DBUser> | null> {
+  const user = await db
+    .selectFrom('user')
+    .where('passwordResetTokenHash', '=', tokenHash)
+    .selectAll()
+    .executeTakeFirst();
+
+  return user ?? null;
+}
+
+export async function resetUserPassword(
+  userId: Selectable<DBUser>['id'],
+  newPassword: string,
+): Promise<void> {
+  const hashedPassword = await hashPassword(newPassword, getPepper());
+
+  // Set the new password, consume the reset token and invalidate existing
+  // sessions by clearing the stored refresh token.
+  await db
+    .updateTable('user')
+    .set({
+      passwordHash: hashedPassword,
+      passwordResetTokenHash: null,
+      passwordResetTokenExpiresAt: null,
+      refreshTokenHash: null,
+      refreshTokenExpiresAt: null,
+    })
+    .where('id', '=', userId)
     .executeTakeFirstOrThrow();
 }
 
@@ -133,4 +200,13 @@ export const isAccessTokenBlacklisted = async (
     .executeTakeFirst();
 
   return blacklistedToken !== undefined; // Return true if token is blacklisted, false otherwise
+};
+
+export const userCount = async (): Promise<number> => {
+  const userCountResponse = await db
+    .selectFrom('user')
+    .select((b) => b.fn.count('user.id').as('count'))
+    .executeTakeFirst();
+
+  return Number(userCountResponse?.count ?? 0);
 };

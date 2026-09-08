@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import i18next from 'i18next';
 import { api } from './api.ts';
 import { getAuthLocalStorage } from './authTokens.ts';
 import { hasMessage } from './hasMessage.ts';
@@ -21,10 +22,15 @@ export const putter = async <T>(url: string, args: { arg: T }): Promise<unknown>
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data !== undefined && hasMessage(error.response.data)
-          ? error.response.data.message
-          : 'We encountered an unexpected error while updating a resource. Please try again later or get in contact with us.';
+      let errorMessage = '';
+      if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+        errorMessage = error.response.data.message;
+      } else {
+        errorMessage = i18next.t(
+          'weEncounteredAnUnexpectedErrorWhileUpdatingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+          'We encountered an unexpected error while updating a resource. Please try again later or get in contact with us.',
+        );
+      }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
     } else {
       throw error;

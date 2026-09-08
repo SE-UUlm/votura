@@ -1,12 +1,17 @@
 import { Menu } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
+import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
-import type { JSX, ReactNode } from 'react';
+import { type JSX, type ReactNode, useState } from 'react';
+import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
+import { downloadJson } from '../utils/downloadJson.ts';
+import { getRPCErrorConfig } from '../utils/notifications.ts';
 import {
   DeleteVoterGroupModal,
   type DeleteVoterGroupModalProps,
 } from './DeleteVoterGroupModal.tsx';
+import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
 import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
@@ -27,8 +32,56 @@ export const VoterGroupsSettingsMenu = ({
   onMutate,
   isMutating,
 }: VoterGroupsTableMenuProps): JSX.Element => {
+  const { trigger } = useCreateVoterTokens({ voterGroupId: voterGroup.id });
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
+  const [confirmDownloadOpened, setConfirmDownloadOpened] = useState(false);
+  const [isDownloading, setIsDownloading] = useState(false);
+
+  const handleOpenConfirm = (): void => {
+    setConfirmDownloadOpened(true);
+  };
+
+  const handleConfirmClose = (): void => {
+    setConfirmDownloadOpened(false);
+  };
+
+  const downloadVoterTokens = (generatedKeys: string[]): void => {
+    const downloadData = {
+      exportDate: new Date().toISOString(),
+      voterGroups: [
+        {
+          name: voterGroup.name,
+          generatedKeys,
+        },
+      ],
+    };
+
+    downloadJson(downloadData, `voter-tokens-export-${Date.now()}.json`);
+  };
+
+  const handleDownloadError = (error: unknown): void => {
+    if (error instanceof Error) {
+      notifications.show(getRPCErrorConfig(error.message));
+    } else {
+      notifications.show(getRPCErrorConfig('Unknown download error'));
+    }
+  };
+
+  const handleDownload = async (): Promise<void> => {
+    try {
+      setIsDownloading(true);
+
+      const generatedKeys = await trigger(undefined);
+      downloadVoterTokens(generatedKeys);
+
+      setConfirmDownloadOpened(false);
+    } catch (error: unknown) {
+      handleDownloadError(error);
+    } finally {
+      setIsDownloading(false);
+    }
+  };
 
   return (
     <>
@@ -50,7 +103,7 @@ export const VoterGroupsSettingsMenu = ({
       <Menu position="bottom-end" offset={0}>
         <Menu.Target>{targetElement}</Menu.Target>
         <Menu.Dropdown>
-          <Menu.Item color="red" leftSection={<IconKey size={14} />}>
+          <Menu.Item color="red" leftSection={<IconKey size={14} />} onClick={handleOpenConfirm}>
             Generate/Delete voter tokens
           </Menu.Item>
           <Menu.Item
@@ -69,6 +122,12 @@ export const VoterGroupsSettingsMenu = ({
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
+      <DownloadVoterTokensWarningModal
+        opened={confirmDownloadOpened}
+        onClose={handleConfirmClose}
+        onConfirm={handleDownload}
+        isLoading={isDownloading}
+      ></DownloadVoterTokensWarningModal>
     </>
   );
 };

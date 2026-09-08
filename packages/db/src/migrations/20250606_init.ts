@@ -1,4 +1,5 @@
 import { type CreateTableBuilder, type Kysely, sql } from 'kysely';
+import { isPgCronAvailable } from '../migrationUtils.js';
 import {
   AccessTokenBlacklistColumnName,
   BallotPaperColumnName,
@@ -599,12 +600,18 @@ export async function up(db: Kysely<any>): Promise<void> {
   await addModifiedAtTriggers(db);
   await addMaxVotesTriggers(db);
 
-  await setupCronExtensionAndJobs(db);
+  if (await isPgCronAvailable(db)) {
+    await setupCronExtensionAndJobs(db);
+  } else {
+    console.warn('pg_cron is not available, skipping cron job setup (expected on Windows/macOS).');
+  }
 }
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function down(db: Kysely<any>): Promise<void> {
-  await dropCronJobsAndExtension(db);
+  if (await isPgCronAvailable(db)) {
+    await dropCronJobsAndExtension(db);
+  }
   // Drop tables (this automatically drops all triggers, constraints, and indexes)
   await dropTables(db);
   await dropFunctions(db);

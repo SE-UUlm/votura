@@ -23,6 +23,7 @@ const CONFIG: Config = {
     hooks: {
       onBrokenMarkdownLinks: 'warn',
     },
+    mermaid: true,
   },
   i18n: {
     defaultLocale: 'en',
@@ -68,10 +69,6 @@ const CONFIG: Config = {
       },
     ],
   ],
-
-  markdown: {
-    mermaid: true,
-  },
 
   themes: ['docusaurus-theme-openapi-docs', '@docusaurus/theme-mermaid'],
 

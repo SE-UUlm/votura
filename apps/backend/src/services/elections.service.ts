@@ -85,10 +85,24 @@ export const updateElection = async (
   return electionTransformer(election);
 };
 
+/**
+ * Persists the generated key pair for an election.
+ *
+ * The update is guarded (compare-and-swap on `keyGenStartedAt`): it only applies if the election
+ * is still frozen, has no keys yet and still belongs to the key generation run identified by
+ * `keyGenStartedAt`. This prevents a slow key generation from writing keys onto an election
+ * that was unfrozen (or re-frozen, starting a new run) in the meantime.
+ *
+ * @param keyPair The generated key pair to persist.
+ * @param electionId The ID of the election to update.
+ * @param keyGenStartedAt The token of the key generation run that produced the key pair.
+ * @returns The updated election, or null if the result was stale and has been discarded.
+ */
 export const setElectionKeys = async (
   keyPair: KeyPair,
   electionId: Selectable<DBElection>['id'],
-): Promise<SelectableElection> => {
+  keyGenStartedAt: Date,
+): Promise<SelectableElection | null> => {
   const election = await db
     .updateTable('election')
     .set({
@@ -97,12 +111,38 @@ export const setElectionKeys = async (
       primeP: keyPair.publicKey.getPrimeP().toString(),
       primeQ: keyPair.publicKey.getPrimeQ().toString(),
       generator: keyPair.publicKey.getGenerator().toString(),
+      keyGenStartedAt: null,
     })
     .where('id', '=', electionId)
+    .where('configFrozen', '=', true)
+    .where('pubKey', 'is', null)
+    .where('keyGenStartedAt', '=', keyGenStartedAt)
     .returningAll()
-    .executeTakeFirstOrThrow();
+    .executeTakeFirst();
 
-  return electionTransformer(election);
+  return election === undefined ? null : electionTransformer(election);
+};
+
+/**
+ * Clears the key generation marker of an election after a failed key generation run.
+ *
+ * The update is guarded (compare-and-swap on `keyGenStartedAt`) so that only the marker of the
+ * failed run identified by `keyGenStartedAt` is cleared and a newer run is left untouched.
+ * Clearing the marker allows the election to be unfrozen again immediately.
+ *
+ * @param electionId The ID of the election to update.
+ * @param keyGenStartedAt The token of the failed key generation run.
+ */
+export const clearKeyGenStartedAt = async (
+  electionId: Selectable<DBElection>['id'],
+  keyGenStartedAt: Date,
+): Promise<void> => {
+  await db
+    .updateTable('election')
+    .set({ keyGenStartedAt: null })
+    .where('id', '=', electionId)
+    .where('keyGenStartedAt', '=', keyGenStartedAt)
+    .execute();
 };
 
 export const unfreezeElection = async (
@@ -132,6 +172,7 @@ export const unfreezeElection = async (
         primeP: null,
         primeQ: null,
         generator: null,
+        keyGenStartedAt: null,
       })
       .where('id', '=', electionId)
       .returningAll()
@@ -145,22 +186,29 @@ export const unfreezeElection = async (
 };
 
 /**
- * Sets the election to frozen and returns the updated election.
+ * Sets the election to frozen, marks the start of the key generation run and
+ * returns the updated election together with the key generation token.
+ *
+ * The token (`keyGenStartedAt`) is generated in JS (millisecond precision) and must be passed
+ * unchanged to {@link setElectionKeys} / {@link clearKeyGenStartedAt} so their guarded updates
+ * can match it exactly.
  *
  * @param electionId The ID of the election to update.
- * @returns The updated election.
+ * @returns The updated election and the key generation token.
  */
 export const freezeElection = async (
   electionId: Selectable<DBElection>['id'],
-): Promise<SelectableElection> => {
+): Promise<{ election: SelectableElection; keyGenStartedAt: Date }> => {
+  const keyGenStartedAt = new Date();
+
   const election = await db
     .updateTable('election')
-    .set({ configFrozen: true })
+    .set({ configFrozen: true, keyGenStartedAt })
     .where('id', '=', electionId)
     .returningAll()
     .executeTakeFirstOrThrow();
 
-  return electionTransformer(election);
+  return { election: electionTransformer(election), keyGenStartedAt };
 };
 
 export const deleteElection = async (
@@ -231,8 +279,17 @@ export const isElectionFrozen = async (
   return result !== undefined;
 };
 
+const minutesToMilliseconds = 60 * 1000;
+
 /**
  * Checks if the election with the given ID is currently generating keys.
+ *
+ * An election only counts as generating keys while its key generation marker (`keyGenStartedAt`)
+ * is set and younger than the configured timeout (`KEY_GEN_TIMEOUT_MINUTES`, default 15 minutes).
+ * A missing marker (key generation failed or crashed before the marker existed) or an expired
+ * marker (backend died mid key generation) means the run is considered failed, so the election
+ * can be unfrozen again (see #242).
+ *
  * @param electionId The ID of the election to check.
  * @returns True if the election is generating keys, false otherwise.
  */
@@ -241,9 +298,17 @@ export const isElectionGeneratingKeys = async (
 ): Promise<boolean> => {
   const result = await db
     .selectFrom('election')
-    .select(['id', 'pubKey', 'configFrozen'])
+    .select(['id', 'pubKey', 'configFrozen', 'keyGenStartedAt'])
     .where('id', '=', electionId)
     .executeTakeFirstOrThrow();
 
-  return result.pubKey === null && result.configFrozen;
+  if (result.pubKey !== null || !result.configFrozen || result.keyGenStartedAt === null) {
+    return false;
+  }
+
+  const keyGenTimeoutMinutes = parseInt(process.env.KEY_GEN_TIMEOUT_MINUTES ?? '15', 10);
+
+  return (
+    Date.now() - result.keyGenStartedAt.getTime() < keyGenTimeoutMinutes * minutesToMilliseconds
+  );
 };

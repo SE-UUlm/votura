@@ -22,6 +22,12 @@ export const apiRoutes = {
           electionId: SelectableElection['id'],
           ballotPaperId: SelectableBallotPaper['id'],
         ): string => `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections`,
+        byId: (
+          electionId: SelectableElection['id'],
+          ballotPaperId: SelectableBallotPaper['id'],
+          ballotPaperSectionId: SelectableBallotPaperSection['id'],
+        ): string =>
+          `/elections/${electionId}/ballotPapers/${ballotPaperId}/ballotPaperSections/${ballotPaperSectionId}`,
         candidates: {
           base: (
             electionId: SelectableElection['id'],
@@ -43,11 +49,16 @@ export const apiRoutes = {
   voterGroups: {
     base: '/voterGroups',
     byId: (id: SelectableVoterGroup['id']): string => `/voterGroups/${id}`,
+    createVoterTokens: (id: SelectableVoterGroup['id']): string =>
+      `/voterGroups/${id}/createVoterTokens`,
   },
   users: {
     base: '/users',
+    count: '/users/count',
+    current: '/users',
     login: '/users/login',
     logout: '/users/logout',
     refreshTokens: '/users/refreshTokens',
+    changePassword: '/users/changePassword',
   },
 };

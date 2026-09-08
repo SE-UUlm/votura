@@ -6,11 +6,13 @@ import '@mantine/notifications/styles.css';
 import { isAxiosError } from 'axios';
 import { extend } from 'dayjs';
 import localizedFormat from 'dayjs/plugin/localizedFormat';
+import i18next from 'i18next';
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router';
 import { SWRConfig } from 'swr';
 import { browserRouter } from './browserRouter.ts';
+import './i18n';
 
 extend(localizedFormat);
 
@@ -21,7 +23,7 @@ createRoot(document.getElementById('root')!).render(
         onError: (err): void => {
           if (isAxiosError(err) && err.status !== 401) {
             notifications.show({
-              title: 'Error',
+              title: i18next.t('error', 'Error'),
               message: err.message,
               autoClose: 10000,
               color: 'red',

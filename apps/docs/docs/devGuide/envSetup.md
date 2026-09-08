@@ -79,7 +79,21 @@ You may change their values but `PEPPER` and `DATABASE_URL` should be the same f
 DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 BITS_PRIME_P=20
+KEY_GEN_TIMEOUT_MINUTES=15
+SMTP_HOST="localhost"
+SMTP_PORT="1025"
+SMTP_SECURE="false"
+MAIL_SENDER_NAME="Votura"
+MAIL_SENDER_EMAIL="no-reply@votura.org"
+FRONTEND_BASE_URL="http://localhost:5173"
 ```
+
+The `SMTP_*` and `MAIL_*` variables configure outgoing email (e.g. password reset emails).
+For local development they point at the [Mailpit](https://mailpit.axllent.org/) service that is
+started together with the database via `docker compose` (see the `db` package).
+You can view all emails sent during development in the Mailpit web UI at `http://localhost:8025`.
+`FRONTEND_BASE_URL` is used to build links (such as the password reset link) that point back to the
+frontend.
 
 **Frontend**:
 
@@ -201,7 +215,8 @@ npm install <package-name> -w <workspace-name>
 
 #### Building the project
 
-Try this in the root folder:
+Once the OpenAPI schema exists (see [Generate the OpenAPI schema](#generate-the-openapi-schema)),
+you can build everything including the documentation. Try this in the root folder:
 
 ```bash
 turbo build
@@ -297,12 +312,5 @@ Without proper formatting your PR will fail the pipeline.
 turbo start
 ```
 
-This command starts all apps.
-
-For normal operation of votura you should just use the following command in the `backend` and `frontend` directories.
-
-```bash
-npm run start
-```
-
-After running these commands you can view the frontend in your browser.
+This command starts all apps at once. To start only the backend and the frontend, see
+[Start the development servers](#start-the-development-servers) above.

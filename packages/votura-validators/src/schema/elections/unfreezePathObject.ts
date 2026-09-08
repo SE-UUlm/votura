@@ -37,7 +37,9 @@ export const unfreezePathObject: OpenAPIV3.PathItemObject = {
       '- Exception: If Election1 is public, only votes from VoterGroup1 will be deleted in Election2\n' +
       '- Votes from other voter groups in Election2 will remain safe\n' +
       '\n' +
-      'You cannot unfreeze an election while it is still creating its keys for encrypting votes.',
+      'You cannot unfreeze an election while it is still creating its keys for encrypting votes.\n' +
+      'If the key generation fails or does not finish within the configured timeout,\n' +
+      'the key generation is considered failed and unfreezing is possible again.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'unfreezeElectionById',
     responses: {
