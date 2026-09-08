@@ -99,6 +99,7 @@ export const userDetailsPathObject: OpenAPIV3.PathItemObject = {
       ...response401,
       ...response404,
       ...response406,
+      ...response409,
       ...response429,
       ...responseDefault,
     },

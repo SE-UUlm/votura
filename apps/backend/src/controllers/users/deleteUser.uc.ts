@@ -1,11 +1,13 @@
 import {
   type Response404,
   response404Object,
+  response409Object,
   type SelectableUser,
   type User,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
+import { getElections } from '../../services/elections.service.js';
 import { deleteUser as deletePersistentUser, findUserBy } from '../../services/users.service.js';
 
 export const deleteUser = async (
@@ -31,6 +33,16 @@ export const deleteUser = async (
       }),
     );
     return;
+  }
+
+  // Do not allow to delete account if it has elections
+  const userElections = await getElections(userToDelete.id);
+  if (userElections.length > 0) {
+    res.status(HttpStatusCode.conflict).json(
+      response409Object.parse({
+        message: 'The user that should be deleted still has elections linked to their account.',
+      }),
+    );
   }
 
   await deletePersistentUser(userToDelete.id);
