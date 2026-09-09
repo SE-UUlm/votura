@@ -205,7 +205,7 @@ export const MutateVoterGroupDrawer = ({
                     form.setFieldValue('numberOfVoters', Number(event.currentTarget.value))
                   }
                 />
-                <Divider label={'Ballot Papers'} mt={'md'} />
+                <Divider label={t('ballotPapers', 'Ballot Papers')} mt={'md'} />
                 {elections?.map((election) => (
                   <VoterGroupElectionSection
                     key={election.id}

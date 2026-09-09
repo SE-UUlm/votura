@@ -39,7 +39,9 @@ export const ElectionsSettingsMenu = ({
     <IconSnowflake size={14} />
   );
 
-  const toggleFreezeText = election.configFrozen ? 'Unfreeze config' : 'Freeze config';
+  const toggleFreezeText = election.configFrozen
+    ? t('unfreezeConfig', 'Unfreeze config')
+    : t('freezeConfig', 'Freeze config');
 
   return (
     <>
