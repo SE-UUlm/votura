@@ -106,7 +106,7 @@ export const VoterGroupsSettingsMenu = ({
         <Menu.Target>{targetElement}</Menu.Target>
         <Menu.Dropdown>
           <Menu.Item color="red" leftSection={<IconKey size={14} />} onClick={handleOpenConfirm}>
-            {t('generatedeleteVoterTokens', 'Generate/Delete voter tokens')}
+            {t('generateDeleteVoterTokens', 'Generate/Delete voter tokens')}
           </Menu.Item>
           <Menu.Item
             disabled={isMutating}

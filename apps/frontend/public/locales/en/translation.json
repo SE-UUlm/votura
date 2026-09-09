@@ -72,7 +72,7 @@
   "freezeConfig": "Freeze config",
   "freezingAnElectionLocksItsConfigurationNoFurtherChangesCanBeMade": "Freezing an election locks its configuration, no further changes can be made.",
   "frozen": "Frozen",
-  "generatedeleteVoterTokens": "Generate/Delete voter tokens",
+  "generateDeleteVoterTokens": "Generate/Delete voter tokens",
   "generatingNewVoterTokensWillInvalidateAllExistingTokensProceedOnlyIfYouWantToDownloadTheNewJsonFileNow": "Generating new voter tokens will invalidate all existing tokens. Proceed only if you want to download the new JSON file now.",
   "goToLogin": "Go to login",
   "goToVote": "Go to vote",
