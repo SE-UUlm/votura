@@ -25,7 +25,7 @@ export const DownloadVoterTokensWarningModal = ({
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title={'Warning'} centered>
+    <Modal opened={opened} onClose={handleClose} title={t('warning', 'Warning')} centered>
       <Group align="flex-start" gap={'md'}>
         <IconAlertTriangle size={24} color="red" />
         <Text fw={700}>
@@ -35,7 +35,7 @@ export const DownloadVoterTokensWarningModal = ({
           <Text size={'sm'} c={'dimmed'}>
             {t(
               'generatingNewVoterTokensWillInvalidateAllExistingTokensProceedOnlyIfYouWantToDownloadTheNewJsonFileNow',
-              'Generating new voter tokens will invalidate all existing tokens. Proceed only if you\n            want to download the new JSON file now.',
+              'Generating new voter tokens will invalidate all existing tokens. Proceed only if you want to download the new JSON file now.',
             )}
           </Text>
         </Stack>
