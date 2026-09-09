@@ -33,15 +33,15 @@ export const ElectionsSettingsMenu = ({
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
   const [toggleFreezeModalOpened, toggleFreezeModalActions] = useDisclosure(false);
 
-  const freezeIcon = election.configFrozen ? (
-    <IconSnowflakeOff size={14} />
-  ) : (
-    <IconSnowflake size={14} />
-  );
-
-  const toggleFreezeText = election.configFrozen
-    ? t('unfreezeConfig', 'Unfreeze config')
-    : t('freezeConfig', 'Freeze config');
+  let freezeIcon = null;
+  let toggleFreezeText = null;
+  if (election.configFrozen) {
+    toggleFreezeText = t('unfreezeConfig', 'Unfreeze config');
+    freezeIcon = <IconSnowflakeOff size={14} />;
+  } else {
+    toggleFreezeText = t('freezeConfig', 'Freeze config');
+    freezeIcon = <IconSnowflake size={14} />;
+  }
 
   return (
     <>

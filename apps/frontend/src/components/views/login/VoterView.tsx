@@ -28,7 +28,7 @@ export const VoterView = (): JSX.Element => {
     },
     validate: {
       votingToken: (value) => {
-        return value ? null : "${t('invalidVotingToken', 'Invalid voting Token')} .";
+        return value ? null : t('invalidVotingToken', 'Invalid voting Token');
       },
     },
   });
