@@ -115,5 +115,14 @@
   "status": "Status",
   "active": "Active",
   "inactive": "Inactive",
-  "createdAt": "Created at"
+  "createdAt": "Created at",
+  "electionAuthor": "Election author",
+  "changeElectionAuthor": "Change election author",
+  "changeElectionAuthorDescription": "Select a new author for this election. Only the author and the administrators are able to see and edit an election.",
+  "currentAuthor": "Current author",
+  "newAuthor": "New author",
+  "selectUser": "Select a user",
+  "electionAuthorChangedSuccessfully": "Election author was changed successfully.",
+  "failedToChangeElectionAuthor": "Failed to change election author.",
+  "electionIsFrozenCannotChangeAuthor": "The election configuration is frozen. The author cannot be changed while the configuration is frozen."
 }

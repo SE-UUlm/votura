@@ -77,20 +77,24 @@ const error403Response = (res: Response<Response403>, message: string): void => 
 };
 
 /**
- * Checks if the user is the owner of the election with the given ID.
- * If the user is not the owner, it sends a 403 Forbidden response.
- * If the user is the owner, it calls the next middleware function.
+ * Checks if the user is the owner of the election with the given ID or an administrator.
+ * If the user is not the owner (or administrator), it sends a 403 Forbidden response.
+ * If the user is the owner (or administrator), it calls the next middleware function.
  *
  * @param req The request object containing the election ID and user ID as path parameters.
  * @param res The response object to send errors to.
  * @param next The next middleware function to call if the user is the owner.
  */
-export async function checkUserOwnerOfElection(
+export async function checkUserCanSeeElection(
   req: Request<{ electionId: Election['id'] }>,
   res: Response<Response403, { user: SelectableUser }>,
   next: NextFunction,
 ): Promise<void> {
-  if (!(await isUserOwnerOfElection(req.params.electionId, res.locals.user.id))) {
+  const loggedInUser = res.locals.user;
+  if (
+    loggedInUser.role !== 'admin' &&
+    !(await isUserOwnerOfElection(req.params.electionId, loggedInUser.id))
+  ) {
     error403Response(res, 'You do not have the permission to access or modify this election.');
   } else {
     next();
@@ -316,5 +320,5 @@ export async function checkElectionIsValid(
 export const defaultElectionChecks = [
   checkElectionUuid,
   checkElectionExists,
-  checkUserOwnerOfElection,
+  checkUserCanSeeElection,
 ];
