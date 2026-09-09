@@ -104,6 +104,14 @@
     "taskkill",
     "userrole",
     "cimode",
-    "Lngs"
+    "Lngs",
+    "VITE",
+    "nginx",
+    "libc",
+    "addgroup",
+    "adduser",
+    "expressjs",
+    "healthcheck",
+    "isready"
   ]
 }
