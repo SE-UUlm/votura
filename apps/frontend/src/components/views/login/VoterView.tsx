@@ -28,7 +28,7 @@ export const VoterView = (): JSX.Element => {
     },
     validate: {
       votingToken: (value) => {
-        return value ? null : 'Invalid voting Token .';
+        return value ? null : "${t('invalidVotingToken', 'Invalid voting Token')} .";
       },
     },
   });
@@ -53,8 +53,8 @@ export const VoterView = (): JSX.Element => {
       const tokenValue = values.votingToken.trim();
       if (tokenValue === '' || tokenValue === 'undefined') {
         notifications.show({
-          title: 'Invalid Voting Token',
-          message: 'The returned voting token is invalid. Please try again.',
+          title: t('invalidVotingToken', 'Invalid Voting Token'),
+          message: t('theReturnedVotingTokenIsInvalidPleaseTryAgain', 'The returned voting token is invalid. Please try again.'),
           color: 'red',
           autoClose: 15000,
         });
@@ -68,8 +68,8 @@ export const VoterView = (): JSX.Element => {
       navigate('/votingHome');
     } catch (e: unknown) {
       notifications.show({
-        title: 'Invalid Voting Token',
-        message: 'The inserted voting token is invalid. Please try again.',
+        title: t('invalidVotingToken', 'Invalid Voting Token'),
+        message: t('theInsertedVotingTokenIsInvalidPleaseTryAgain', 'The inserted voting token is invalid. Please try again.'),
         color: 'red',
         autoClose: 15000,
       });
@@ -88,7 +88,7 @@ export const VoterView = (): JSX.Element => {
             <Stack>
               <TextInput
                 withAsterisk
-                label={'Please enter your voting token'}
+                label={t('pleaseEnterYourVotingToken', 'Please enter your voting token')}
                 placeholder={'voting Token'}
                 key={form.key('votingToken')}
                 {...form.getInputProps('votingToken')}

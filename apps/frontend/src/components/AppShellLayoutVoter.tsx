@@ -3,8 +3,10 @@ import type { JSX } from 'react';
 import { Outlet, useNavigate } from 'react-router';
 import { clearVoterLocalStorage } from '../swr/voterToken.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
+import { useTranslation  } from 'react-i18next';
 
 export const AppShellLayoutVoter = (): JSX.Element => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
 
   const onLogout = (): void => {
@@ -29,7 +31,7 @@ export const AppShellLayoutVoter = (): JSX.Element => {
           <Box>
             <Divider pb={'md'} />
             <Button variant="subtle" fullWidth onClick={onLogout}>
-              Logout
+              {t('logout', 'Logout')}
             </Button>
           </Box>
         </Stack>

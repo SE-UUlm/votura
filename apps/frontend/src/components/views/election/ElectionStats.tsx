@@ -16,7 +16,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
     <Grid>
       <Grid.Col span={6}>
         <ElectionStatField
-          title={'Description'}
+          title={t('description', 'Description')}
           content={
             <Text size={'sm'} lineClamp={3}>
               {election.description}
@@ -26,7 +26,7 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
       </Grid.Col>
       <Grid.Col span={3}>
         <ElectionStatField
-          title={'Frozen'}
+          title={t('frozen', 'Frozen')}
           content={<BooleanBadge isTrue={election.configFrozen} />}
         />
       </Grid.Col>

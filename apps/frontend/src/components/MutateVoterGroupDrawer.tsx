@@ -20,6 +20,7 @@ import type {
 import { type JSX, type ReactNode, useEffect } from 'react';
 import { useGetBallotPapers } from '../swr/ballotPapers/useGetBallotPapers';
 import { useGetElections } from '../swr/elections/useGetElections';
+import {useTranslation} from 'react-i18next'
 
 export interface MutateVoterGroupDrawerProps {
   voterGroup?: UpdateableVoterGroup;
@@ -47,6 +48,7 @@ const VoterGroupElectionSection = ({
   selectedBallotPapers,
   onBallotPaperToggle,
 }: VoterGroupElectionSectionProps): JSX.Element => {
+  const { t } = useTranslation();
   const {
     data: ballotPapers,
     isLoading: isBallotPapersLoading,
@@ -59,11 +61,11 @@ const VoterGroupElectionSection = ({
       <Stack ml={'md'} mt={'xs'}>
         {isBallotPapersLoading ? (
           <Text size={'sm'} c={'dimmed'}>
-            Loading ballot papers...
+            {t('loadingBallotPapers', 'Loading ballot papers...')}
           </Text>
         ) : ballotPapersError ? (
           <Text size={'sm'} c={'red.7'}>
-            The ballot papers could not be loaded. Please try again.
+            {t('theBallotPapersCouldNotBeLoadedPleaseTryAgain', 'The ballot papers could not be loaded. Please try again.')}
           </Text>
         ) : ballotPapers && ballotPapers.length > 0 ? (
           ballotPapers.map((ballotPaper) => (
@@ -76,7 +78,7 @@ const VoterGroupElectionSection = ({
           ))
         ) : (
           <Text size={'sm'} c={'dimmed'}>
-            No ballot papers found
+            {t('noBallotPapersFound', 'No ballot papers found')}
           </Text>
         )}
       </Stack>
@@ -93,6 +95,7 @@ export const MutateVoterGroupDrawer = ({
   title,
   isMutating,
 }: MutateVoterGroupDrawerProps): JSX.Element => {
+  const { t } = useTranslation();
   const form = useForm<MutateVoterGroupFormValues>({
     mode: 'controlled',
     initialValues: {
@@ -106,7 +109,7 @@ export const MutateVoterGroupDrawer = ({
       numberOfVoters: (value) =>
         typeof value === 'number' && value > 0
           ? null
-          : 'Number of voters must be greater than zero',
+          : t('numberOfVotersMustBeGreaterThanZero', 'Number of voters must be greater than zero'),
     },
     validateInputOnBlur: true,
   });
@@ -171,14 +174,14 @@ export const MutateVoterGroupDrawer = ({
               <Stack>
                 <TextInput
                   withAsterisk
-                  label={'Voter group name'}
-                  placeholder={'e.g. Student voters'}
+                  label={t('voterGroupName', 'Voter group name')}
+                  placeholder={t('egStudentVoters', 'e.g. Student voters')}
                   key={form.key('name')}
                   {...form.getInputProps('name')}
                 />
                 <Textarea
-                  label={'Voter group description'}
-                  placeholder={'e.g. All students from all departments'}
+                  label={t('voterGroupDescription', 'Voter group description')}
+                  placeholder={t('egAllStudentsFromAllDepartments', 'e.g. All students from all departments')}
                   autosize={true}
                   minRows={3}
                   maxRows={3}
@@ -187,7 +190,7 @@ export const MutateVoterGroupDrawer = ({
                 />
                 <TextInput
                   withAsterisk
-                  label={'Number of voters'}
+                  label={t('numberOfVoters', 'Number of voters')}
                   placeholder={'e.g. 123'}
                   key={form.key('numberOfVoters')}
                   type={'number'}
@@ -210,7 +213,7 @@ export const MutateVoterGroupDrawer = ({
           </Box>
           <Group justify="flex-end" m={'md'}>
             <Button variant="outline" onClick={onClose} disabled={isMutating}>
-              Cancel
+              {t('cancel', 'Cancel')}
             </Button>
             <Button variant="filled" onClick={onMutateTransform} loading={isMutating}>
               {mutateButtonText}

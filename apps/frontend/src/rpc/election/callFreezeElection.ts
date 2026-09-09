@@ -8,15 +8,17 @@ import {
 } from '../../utils/notifications.ts';
 import { rpcRoutes } from '../rpcRoutes.ts';
 import { type ApiErrorResponse, rpcViaHTTP } from '../rpcViaHTTP.ts';
+import { useTranslation } from 'react-i18next';
 
 export const callFreezeElection = async (
   electionId: SelectableElection['id'],
 ): Promise<NotificationData> => {
+  const { t } = useTranslation();
   const rpcResponse = await rpcViaHTTP(rpcRoutes.elections.freeze(electionId), 'PUT');
 
   if (rpcResponse === null) {
     return getRPCErrorConfig(
-      'An error has occurred whilst attempting to freeze the election. Please try again later.',
+      t('anErrorHasOccurredWhilstAttemptingToFreezeTheElectionPleaseTryAgainLater', 'An error has occurred whilst attempting to freeze the election. Please try again later.'),
     );
   }
 
@@ -33,7 +35,7 @@ export const callFreezeElection = async (
   const election = json as SelectableElection;
   if (!election.configFrozen) {
     return getRPCErrorConfig(
-      'An error has occurred whilst attempting to freeze the election. Please try again later.',
+      t('anErrorHasOccurredWhilstAttemptingToFreezeTheElectionPleaseTryAgainLater', 'An error has occurred whilst attempting to freeze the election. Please try again later.'),
     );
   }
 

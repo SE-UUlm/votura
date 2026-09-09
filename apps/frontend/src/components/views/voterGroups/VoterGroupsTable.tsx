@@ -12,6 +12,7 @@ import {
 import type { DeleteVoterGroupModalProps } from '../../DeleteVoterGroupModal.tsx';
 import type { MutateVoterGroupDrawerProps } from '../../MutateVoterGroupDrawer.tsx';
 import { VoterGroupsSettingsMenu } from '../../VoterGroupSettingsMenu.tsx';
+import { useTranslation } from 'react-i18next';
 
 export interface VoterGroupsTableProps {
   data: SelectableVoterGroup[];
@@ -77,14 +78,15 @@ const VoterGroupsTableRow = ({ voterGroup }: VoterGroupsTableRowProps): JSX.Elem
 };
 
 export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element => {
+  const { t } = useTranslation();
   return (
     <Table highlightOnHover={true}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Description</Table.Th>
-          <Table.Th>Ballot Papers</Table.Th>
-          <Table.Th>Voters</Table.Th>
+          <Table.Th>{t('name', 'Name')}</Table.Th>
+          <Table.Th>{t('description', 'Description')}</Table.Th>
+          <Table.Th>{t('ballotPapers', 'Ballot Papers')}</Table.Th>
+          <Table.Th>{t('voters', 'Voters')}</Table.Th>
           <Table.Th />
         </Table.Tr>
       </Table.Thead>

@@ -60,10 +60,10 @@ export const BallotPaperSectionSettingsMenu = ({
       />
       <MutateBallotPaperSectionDrawer
         ballotPaperSection={ballotPaperSection}
-        title={'Edit ballot paper section'}
+        title={t('editBallotPaperSection', 'Edit ballot paper section')}
         opened={mutateSectionContextOpened}
         onClose={mutateSectionContextActions.close}
-        mutateButtonText={'Save changes'}
+        mutateButtonText={t('saveChanges', 'Save changes')}
         onMutate={onMutate}
         isMutating={isMutating}
       />
@@ -96,17 +96,17 @@ export const BallotPaperSectionSettingsMenu = ({
           <Menu.Item
             leftSection={<IconEdit size={14} />}
             onClick={mutateSectionContextActions.open}
-            aria-label={'Edit section'}
+            aria-label={t('editSection', 'Edit section')}
           >
-            Edit section
+            {t('editSection', 'Edit section')}
           </Menu.Item>
           <Menu.Item
             color="red"
             leftSection={<IconTrash size={14} />}
             onClick={deleteContextActions.open}
-            aria-label={'Delete section'}
+            aria-label={t('deleteSection', 'Delete section')}
           >
-            Delete section
+            {t('deleteSection', 'Delete section')}
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
