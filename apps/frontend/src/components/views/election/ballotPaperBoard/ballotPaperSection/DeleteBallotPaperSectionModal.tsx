@@ -1,7 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Space, Text } from '@mantine/core';
 import type { SelectableBallotPaperSection } from '@repo/votura-validators';
 import type { JSX, MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 export interface DeleteBallotPaperSectionModalProps {
   ballotPaperSection: SelectableBallotPaperSection;
@@ -18,8 +18,17 @@ export const DeleteBallotPaperSectionModal = ({
 }: DeleteBallotPaperSectionModalProps): JSX.Element => {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={t('deletingBallotPaperSection', 'Deleting ballot paper section')}>
-      <Text>{t('youAreAboutToDeleteTheBallotPaperSection', 'You are about to delete the ballot paper section:')}</Text>
+    <Modal
+      opened={opened}
+      onClose={onClose}
+      title={t('deletingBallotPaperSection', 'Deleting ballot paper section')}
+    >
+      <Text>
+        {t(
+          'youAreAboutToDeleteTheBallotPaperSection',
+          'You are about to delete the ballot paper section:',
+        )}
+      </Text>
       <Text fw={700}>{ballotPaperSection.name}</Text>
       <Space h={'md'} />
       <Group justify="flex-end">

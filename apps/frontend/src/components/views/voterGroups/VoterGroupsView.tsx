@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconDownload, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateVoterGroup } from '../../../swr/voterGroups/useCreateVoterGroup.ts';
 import { useGetVoterGroups } from '../../../swr/voterGroups/useGetVoterGroups.ts';
 import { getAddSuccessVoterGroupConfig } from '../../../utils/notifications.ts';
@@ -13,7 +14,6 @@ import {
 } from '../../MutateVoterGroupDrawer.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { VoterGroupsTable } from './VoterGroupsTable.tsx';
-import { useTranslation } from 'react-i18next';
 
 export const VoterGroupsView = (): JSX.Element => {
   const { t } = useTranslation();

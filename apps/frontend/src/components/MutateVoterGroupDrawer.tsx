@@ -18,9 +18,9 @@ import type {
   UpdateableVoterGroup,
 } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useGetBallotPapers } from '../swr/ballotPapers/useGetBallotPapers';
 import { useGetElections } from '../swr/elections/useGetElections';
-import {useTranslation} from 'react-i18next'
 
 export interface MutateVoterGroupDrawerProps {
   voterGroup?: UpdateableVoterGroup;
@@ -65,7 +65,10 @@ const VoterGroupElectionSection = ({
           </Text>
         ) : ballotPapersError ? (
           <Text size={'sm'} c={'red.7'}>
-            {t('theBallotPapersCouldNotBeLoadedPleaseTryAgain', 'The ballot papers could not be loaded. Please try again.')}
+            {t(
+              'theBallotPapersCouldNotBeLoadedPleaseTryAgain',
+              'The ballot papers could not be loaded. Please try again.',
+            )}
           </Text>
         ) : ballotPapers && ballotPapers.length > 0 ? (
           ballotPapers.map((ballotPaper) => (
@@ -181,7 +184,10 @@ export const MutateVoterGroupDrawer = ({
                 />
                 <Textarea
                   label={t('voterGroupDescription', 'Voter group description')}
-                  placeholder={t('egAllStudentsFromAllDepartments', 'e.g. All students from all departments')}
+                  placeholder={t(
+                    'egAllStudentsFromAllDepartments',
+                    'e.g. All students from all departments',
+                  )}
                   autosize={true}
                   minRows={3}
                   maxRows={3}

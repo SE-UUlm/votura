@@ -1,5 +1,6 @@
 import type { NotificationData } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
+import { useTranslation } from 'react-i18next';
 import { mutate } from 'swr';
 import { apiRoutes } from '../../swr/apiRoutes.ts';
 import {
@@ -8,7 +9,6 @@ import {
 } from '../../utils/notifications.ts';
 import { rpcRoutes } from '../rpcRoutes.ts';
 import { type ApiErrorResponse, rpcViaHTTP } from '../rpcViaHTTP.ts';
-import { useTranslation } from 'react-i18next';
 
 export const callUnfreezeElection = async (
   electionId: SelectableElection['id'],
@@ -18,7 +18,10 @@ export const callUnfreezeElection = async (
 
   if (rpcResponse === null) {
     return getRPCErrorConfig(
-      t('anErrorHasOccurredWhilstAttemptingToUnfreezeTheElectionPleaseTryAgainLater', 'An error has occurred whilst attempting to unfreeze the election. Please try again later.'),
+      t(
+        'anErrorHasOccurredWhilstAttemptingToUnfreezeTheElectionPleaseTryAgainLater',
+        'An error has occurred whilst attempting to unfreeze the election. Please try again later.',
+      ),
     );
   }
 
@@ -35,7 +38,10 @@ export const callUnfreezeElection = async (
   const election = json as SelectableElection;
   if (election.configFrozen) {
     return getRPCErrorConfig(
-      t('anErrorHasOccurredWhilstAttemptingToUnfreezeTheElectionPleaseTryAgainLater', 'An error has occurred whilst attempting to unfreeze the election. Please try again later.'),
+      t(
+        'anErrorHasOccurredWhilstAttemptingToUnfreezeTheElectionPleaseTryAgainLater',
+        'An error has occurred whilst attempting to unfreeze the election. Please try again later.',
+      ),
     );
   }
 

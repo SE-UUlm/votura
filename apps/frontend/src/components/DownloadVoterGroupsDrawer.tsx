@@ -1,13 +1,13 @@
 import { Box, Button, Checkbox, Drawer, Group, type ModalProps, Stack, Text } from '@mantine/core';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   type DownloadedVoterGroupTokens,
   useDownloadVoterGroups,
 } from '../swr/voterGroups/useDownloadVoterGroups.ts';
 import { useGenerateVoterGroupTokens } from '../swr/voterGroups/useGenerateVoterTokens.ts';
 import { DownloadVoterTokensWarningModal } from './DownloadVoterTokensWarningModal.tsx';
-import { useTranslation } from 'react-i18next'
 
 interface DownloadableVoterGroupCheckboxProps {
   voterGroup: SelectableVoterGroup;

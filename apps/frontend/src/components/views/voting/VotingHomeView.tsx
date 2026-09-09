@@ -1,7 +1,7 @@
 import { Divider, Flex, Group, Space, Title } from '@mantine/core';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { HEADER_HEIGHT } from '../../utils.ts';
-import { useTranslation } from 'react-i18next'
 
 export const VotingHomeView = (): JSX.Element => {
   const { t } = useTranslation();

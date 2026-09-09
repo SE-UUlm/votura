@@ -3,6 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteVoterGroup } from '../../../swr/voterGroups/useDeleteVoterGroup.ts';
 import { useUpdateVoterGroup } from '../../../swr/voterGroups/useUpdateVoterGroup.ts';
 import {
@@ -12,7 +13,6 @@ import {
 import type { DeleteVoterGroupModalProps } from '../../DeleteVoterGroupModal.tsx';
 import type { MutateVoterGroupDrawerProps } from '../../MutateVoterGroupDrawer.tsx';
 import { VoterGroupsSettingsMenu } from '../../VoterGroupSettingsMenu.tsx';
-import { useTranslation } from 'react-i18next';
 
 export interface VoterGroupsTableProps {
   data: SelectableVoterGroup[];

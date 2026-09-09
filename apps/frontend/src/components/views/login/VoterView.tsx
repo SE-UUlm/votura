@@ -54,7 +54,10 @@ export const VoterView = (): JSX.Element => {
       if (tokenValue === '' || tokenValue === 'undefined') {
         notifications.show({
           title: t('invalidVotingToken', 'Invalid Voting Token'),
-          message: t('theReturnedVotingTokenIsInvalidPleaseTryAgain', 'The returned voting token is invalid. Please try again.'),
+          message: t(
+            'theReturnedVotingTokenIsInvalidPleaseTryAgain',
+            'The returned voting token is invalid. Please try again.',
+          ),
           color: 'red',
           autoClose: 15000,
         });
@@ -69,7 +72,10 @@ export const VoterView = (): JSX.Element => {
     } catch (e: unknown) {
       notifications.show({
         title: t('invalidVotingToken', 'Invalid Voting Token'),
-        message: t('theInsertedVotingTokenIsInvalidPleaseTryAgain', 'The inserted voting token is invalid. Please try again.'),
+        message: t(
+          'theInsertedVotingTokenIsInvalidPleaseTryAgain',
+          'The inserted voting token is invalid. Please try again.',
+        ),
         color: 'red',
         autoClose: 15000,
       });

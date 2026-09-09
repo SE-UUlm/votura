@@ -4,6 +4,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
 import { type JSX, type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
 import { downloadJson } from '../utils/downloadJson.ts';
 import { getRPCErrorConfig } from '../utils/notifications.ts';
@@ -16,7 +17,6 @@ import {
   MutateVoterGroupDrawer,
   type MutateVoterGroupDrawerProps,
 } from './MutateVoterGroupDrawer.tsx';
-import {useTranslation} from 'react-i18next';
 
 export interface VoterGroupsTableMenuProps {
   voterGroup: SelectableVoterGroup;

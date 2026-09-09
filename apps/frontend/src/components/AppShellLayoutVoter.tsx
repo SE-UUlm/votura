@@ -1,9 +1,9 @@
 import { AppShell, Box, Button, Divider, Space, Stack } from '@mantine/core';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
 import { clearVoterLocalStorage } from '../swr/voterToken.ts';
 import { NavbarHeader } from './navbar/NavbarHeader.tsx';
-import { useTranslation  } from 'react-i18next';
 
 export const AppShellLayoutVoter = (): JSX.Element => {
   const { t } = useTranslation();

@@ -1,7 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Stack, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import type { JSX, MouseEventHandler } from 'react';
-import { useTranslation } from 'react-i18next'
+import { useTranslation } from 'react-i18next';
 
 export interface DownloadVoterTokensWarningModalProps {
   opened: ModalProps['opened'];
@@ -28,10 +28,15 @@ export const DownloadVoterTokensWarningModal = ({
     <Modal opened={opened} onClose={handleClose} title={'Warning'} centered>
       <Group align="flex-start" gap={'md'}>
         <IconAlertTriangle size={24} color="red" />
-        <Text fw={700}>{t('thisWillGenerateNewVoterTokens', 'This will generate new voter tokens.')}</Text>
+        <Text fw={700}>
+          {t('thisWillGenerateNewVoterTokens', 'This will generate new voter tokens.')}
+        </Text>
         <Stack gap={4}>
           <Text size={'sm'} c={'dimmed'}>
-            {t('generatingNewVoterTokensWillInvalidateAllExistingTokensProceedOnlyIfYouWantToDownloadTheNewJsonFileNow', 'Generating new voter tokens will invalidate all existing tokens. Proceed only if you\n            want to download the new JSON file now.')}
+            {t(
+              'generatingNewVoterTokensWillInvalidateAllExistingTokensProceedOnlyIfYouWantToDownloadTheNewJsonFileNow',
+              'Generating new voter tokens will invalidate all existing tokens. Proceed only if you\n            want to download the new JSON file now.',
+            )}
           </Text>
         </Stack>
       </Group>
