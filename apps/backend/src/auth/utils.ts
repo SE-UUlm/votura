@@ -116,6 +116,7 @@ export const verifyVoterToken = async (token: string): Promise<VoterJwtPayload |
 
     // get voter id from the token payload
     const decodedPayload = jwt.decode(token);
+    // eslint-disable-next-line @typescript-eslint/unbound-method
     const parseResult = uuidObject.safeParse(decodedPayload?.sub);
 
     if (!parseResult.success) {
