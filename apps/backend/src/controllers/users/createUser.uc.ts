@@ -6,8 +6,8 @@ import {
   type Response400,
   type Response409,
 } from '@repo/votura-validators';
-import type { Request, Response } from 'express';
 import { randomInt } from 'crypto';
+import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { sendAccountCreationEmail } from '../../mail/mailer.js';
 import { createUser as createPersistentUser, findUserBy } from '../../services/users.service.js';
