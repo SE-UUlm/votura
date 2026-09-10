@@ -43,7 +43,7 @@ describe(`GET /users/{userId}`, () => {
     const parseResult = selectableUserObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
     if (parseResult.success) {
-      expect(parseResult.data.email).toBe(demoUser.email);
+      expect(parseResult.data.email).toBe(demoUser2.email);
     }
   });
 
