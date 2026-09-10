@@ -3,6 +3,7 @@ import type {
   SelectableBallotPaperSection,
   SelectableCandidate,
   SelectableElection,
+  SelectableUser,
   SelectableVoterGroup,
 } from '@repo/votura-validators';
 
@@ -53,9 +54,12 @@ export const apiRoutes = {
       `/voterGroups/${id}/createVoterTokens`,
   },
   users: {
-    base: '/users',
     count: '/users/count',
-    current: '/users',
+    all: '/users',
+    create: '/users',
+    byId: (id: SelectableUser['id']): string => `/users/${id}`,
+    editById: (id: SelectableUser['id']): string => `/users/${id}`,
+    deleteById: (id: SelectableUser['id']): string => `/users/${id}`,
     login: '/users/login',
     logout: '/users/logout',
     refreshTokens: '/users/refreshTokens',

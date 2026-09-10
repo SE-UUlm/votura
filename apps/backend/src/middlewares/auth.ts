@@ -1,4 +1,9 @@
-import { response401Object, response500Object } from '@repo/votura-validators';
+import {
+  response401Object,
+  response403Object,
+  response500Object,
+  type SelectableUser,
+} from '@repo/votura-validators';
 import type { NextFunction, Request, Response } from 'express';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { getBearerToken, verifyUserToken, verifyVoterToken } from '../auth/utils.js';
@@ -10,6 +15,7 @@ export enum UserAuthErrorMessages {
   invalidToken = 'Invalid access token.',
   blacklisted = 'Invalid access token. Token has been revoked.',
   userNotFound = 'User claimed by access token does not exist.',
+  noAdmin = 'User does not have access to this resource.',
   internal = 'Internal server error during authentication of user.',
 }
 
@@ -78,6 +84,28 @@ export const authenticateAccessToken = async (
       .status(HttpStatusCode.internalServerError)
       .json(response500Object.parse({ message: UserAuthErrorMessages.internal }));
   }
+};
+
+export const onlyAdmin = (req: Request, res: Response, next: NextFunction): void => {
+  // Check if user local exists
+  if (res.locals.user === null) {
+    res
+      .status(HttpStatusCode.unauthorized)
+      .json(response401Object.parse({ message: UserAuthErrorMessages.userNotFound }));
+    return;
+  }
+
+  const user = res.locals.user as SelectableUser;
+
+  // Check if user is an admin
+  if (user.role !== 'admin') {
+    res
+      .status(HttpStatusCode.forbidden)
+      .json(response403Object.parse({ message: UserAuthErrorMessages.noAdmin }));
+    return;
+  }
+
+  next();
 };
 
 export enum VoterAuthErrorMessages {
