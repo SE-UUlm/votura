@@ -18,6 +18,10 @@ For Windows users we recommend developing inside of WSL 2.
 A tutorial for setting it up can be found [here](https://learn.microsoft.com/en-us/windows/wsl/install).
 After the WSL has been installed, just install a Linux distribution you are comfortable with.
 
+If you deliberately want a native Windows setup without WSL, see the
+[Windows Setup (without WSL)](./windowsSetup.md) page for the additional steps and known
+problems.
+
 :::
 
 Before you can start developing with votura, you need to install the following:
@@ -76,7 +80,20 @@ DATABASE_URL="postgresql://votura:votura@localhost:5432/votura?schema=public"
 PEPPER="12345"
 BITS_PRIME_P=20
 KEY_GEN_TIMEOUT_MINUTES=15
+SMTP_HOST="localhost"
+SMTP_PORT="1025"
+SMTP_SECURE="false"
+MAIL_SENDER_NAME="Votura"
+MAIL_SENDER_EMAIL="no-reply@votura.org"
+FRONTEND_BASE_URL="http://localhost:5173"
 ```
+
+The `SMTP_*` and `MAIL_*` variables configure outgoing email (e.g. password reset emails).
+For local development they point at the [Mailpit](https://mailpit.axllent.org/) service that is
+started together with the database via `docker compose` (see the `db` package).
+You can view all emails sent during development in the Mailpit web UI at `http://localhost:8025`.
+`FRONTEND_BASE_URL` is used to build links (such as the password reset link) that point back to the
+frontend.
 
 **Frontend**:
 
@@ -103,7 +120,62 @@ PEPPER="12345"
 PEPPER="12345"
 ```
 
-Now you should be already ready to start developing with votura.
+### Build the internal packages
+
+Before you start an app for the first time, build the shared packages once. The apps import
+the compiled output (`dist/`) of the internal `@repo/*` packages, so they have to be built
+beforehand:
+
+```bash
+npx turbo build --filter=!@votura/docs
+```
+
+The `--filter=!@votura/docs` excludes the documentation build, which additionally requires a
+generated OpenAPI schema file that is not part of a fresh checkout (see the next step).
+
+### Generate the OpenAPI schema
+
+The documentation and the API pages are generated from
+`packages/votura-validators/generated/voturaApiSchema.json`, which is not committed to the
+repository. Generate it once (and again whenever the API definition changes):
+
+```bash
+npm run persist-schema -w @repo/votura-validators
+```
+
+For more details see the [This Project Documentation](./projectDocs.md) page.
+
+### Set up the database
+
+Start the PostgreSQL database (this uses Docker):
+
+```bash
+npm run postgres-up -w @repo/db
+```
+
+Then create the necessary tables by running the migrations:
+
+```bash
+npm run migrate -w @repo/db
+```
+
+:::info
+
+On native Windows (without WSL) the migration step can fail with
+`ERR_UNSUPPORTED_ESM_URL_SCHEME` or a `pg_cron` error. See the
+[Windows Setup (without WSL)](./windowsSetup.md) page for the explanation and the fix.
+
+:::
+
+### Start the development servers
+
+Now you are ready to start developing with votura. Start the backend (port `4000`) and the
+frontend (port `5173`) by running the following command in the `apps/backend` and
+`apps/frontend` directories respectively:
+
+```bash
+npm run start
+```
 
 For testing please see [the documentation page for testing](./testing.md)
 
@@ -143,7 +215,8 @@ npm install <package-name> -w <workspace-name>
 
 #### Building the project
 
-Try this in the root folder:
+Once the OpenAPI schema exists (see [Generate the OpenAPI schema](#generate-the-openapi-schema)),
+you can build everything including the documentation. Try this in the root folder:
 
 ```bash
 turbo build
@@ -239,12 +312,5 @@ Without proper formatting your PR will fail the pipeline.
 turbo start
 ```
 
-This command starts all apps.
-
-For normal operation of votura you should just use the following command in the `backend` and `frontend` directories.
-
-```bash
-npm run start
-```
-
-After running these commands you can view the frontend in your browser.
+This command starts all apps at once. To start only the backend and the frontend, see
+[Start the development servers](#start-the-development-servers) above.

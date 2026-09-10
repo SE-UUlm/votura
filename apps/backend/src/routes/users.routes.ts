@@ -1,6 +1,7 @@
 import { parameter } from '@repo/votura-validators';
 import { Router } from 'express';
 import { changePassword } from '../controllers/users/changePassword.uc.js';
+import { createUser } from '../controllers/users/createUser.uc.js';
 import { deleteUser } from '../controllers/users/deleteUser.uc.js';
 import { editUser } from '../controllers/users/editUser.uc.js';
 import { getUser } from '../controllers/users/getUser.uc.js';
@@ -9,11 +10,12 @@ import { getUsers } from '../controllers/users/getUsers.uc.js';
 import { login } from '../controllers/users/login.uc.js';
 import { logout } from '../controllers/users/logout.uc.js';
 import { refreshTokens } from '../controllers/users/refreshTokens.uc.js';
+import { requestPasswordReset } from '../controllers/users/requestPasswordReset.uc.js';
+import { resetPassword } from '../controllers/users/resetPassword.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
 import { acceptHeaderCheck } from '../middlewares/acceptHeaderCheck.js';
 import { authenticateAccessToken, onlyAdmin } from '../middlewares/auth.js';
 import { MimeType } from '../middlewares/utils.js';
-import { createUser } from '../services/users.service.js';
 
 export const usersRouter: Router = Router();
 
@@ -55,6 +57,18 @@ usersRouter.post(
   changePassword,
 );
 usersRouter.post(
+  '/requestPasswordReset',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  requestPasswordReset,
+);
+usersRouter.post(
+  '/resetPassword',
+  acceptHeaderCheck(MimeType.applicationJson),
+  acceptBodyCheck(MimeType.applicationJson),
+  resetPassword,
+);
+usersRouter.post(
   '/logout',
   acceptHeaderCheck(MimeType.applicationJson),
   authenticateAccessToken,
@@ -69,6 +83,7 @@ usersRouter.get(
 );
 usersRouter.post(
   `/:${parameter.userId}`,
+  acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   authenticateAccessToken,
   onlyAdmin,
