@@ -7,6 +7,7 @@ import {
   type Response409,
 } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
+import { randomInt } from 'crypto';
 import { HttpStatusCode } from '../../httpStatusCode.js';
 import { sendAccountCreationEmail } from '../../mail/mailer.js';
 import { createUser as createPersistentUser, findUserBy } from '../../services/users.service.js';
@@ -22,20 +23,20 @@ const generateRandomPassword = (): string => {
 
   // Guarantee at least one character from each category
   const chars = [
-    upper[Math.floor(Math.random() * upper.length)],
-    lower[Math.floor(Math.random() * lower.length)],
-    numbers[Math.floor(Math.random() * numbers.length)],
-    special[Math.floor(Math.random() * special.length)],
+    upper[randomInt(upper.length)],
+    lower[randomInt(lower.length)],
+    numbers[randomInt(numbers.length)],
+    special[randomInt(special.length)],
   ];
 
   // Add another 28 characters, so we get to a total length of 32 characters
   for (let i = 0; i < 28; i++) {
-    chars.push(all[Math.floor(Math.random() * all.length)]);
+    chars.push(all[randomInt(all.length)]);
   }
 
   // Shift characters randomly
   for (let i = chars.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
+    const j = randomInt(i + 1);
     [chars[i], chars[j]] = [chars[j], chars[i]];
   }
 
