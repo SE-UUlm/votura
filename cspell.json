@@ -104,6 +104,8 @@
     "taskkill",
     "userrole",
     "cimode",
-    "Lngs"
+    "Lngs",
+    "EFTYPE",
+    "psql"
   ]
 }
