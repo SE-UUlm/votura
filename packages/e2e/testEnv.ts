@@ -3,6 +3,7 @@ import { migrateToLatest } from '@repo/db/migrateToLatest';
 import { seed } from '@repo/db/seed';
 import type { DB } from '@repo/db/types';
 import { kyselyLogger, logger } from '@repo/logger';
+import { randomUUID } from 'crypto';
 import { Kysely, PostgresDialect } from 'kysely';
 import { type ChildProcess, spawn } from 'node:child_process';
 import path from 'path';
@@ -23,7 +24,7 @@ export const startTestEnv = async (): Promise<void> => {
    */
   logger.info('Start creating postgres container...');
   dbContainer = await genericContainer
-    .withName('e2e-test-db-' + Math.floor(Math.random() * 100000))
+    .withName(`e2e-test-db-${randomUUID()}`)
     .withEnvironment({
       // eslint-disable-next-line @typescript-eslint/naming-convention
       POSTGRES_DB: 'votura',
