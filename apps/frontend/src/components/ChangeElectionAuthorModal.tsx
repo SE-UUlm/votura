@@ -137,7 +137,7 @@ export const ChangeElectionAuthorModal = ({
             title={t('important', 'Important')}
           >
             {t(
-              'electionIsFrozenCannotCheangeAuthor',
+              'electionIsFrozenCannotChangeAuthor',
               'The election configuration is frozen. The author cannot be changed while the configuration is frozen.',
             )}
           </Alert>
