@@ -1,6 +1,7 @@
 import type { NotificationData } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { mutate } from 'swr';
+import i18n from '../../i18n.ts';
 import { apiRoutes } from '../../swr/apiRoutes.ts';
 import {
   getRPCErrorConfig,
@@ -8,7 +9,6 @@ import {
 } from '../../utils/notifications.ts';
 import { rpcRoutes } from '../rpcRoutes.ts';
 import { type ApiErrorResponse, rpcViaHTTP } from '../rpcViaHTTP.ts';
-import i18n from '../../i18n.ts';
 
 export const callUnfreezeElection = async (
   electionId: SelectableElection['id'],
