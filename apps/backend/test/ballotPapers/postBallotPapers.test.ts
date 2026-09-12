@@ -78,12 +78,22 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   });
   it('403: when user is not the owner of the election and not an admin', async () => {
     const res = await request(app)
-      .post(requestPath2)
+      .post(requestPath)
       .set('Authorization', `Bearer ${tokens2.accessToken}`)
       .send(demoBallotPaper);
     expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('200: administrators should be able to see elections of other users', async () => {
+    const res = await request(app)
+        .post(requestPath2)
+        .set('Authorization', `Bearer ${tokens.accessToken}`)
+        .send(demoBallotPaper);
+    expect(res.status).toBe(HttpStatusCode.created);
+    expect(res.type).toBe('application/json');
+    const parseResult = selectableBallotPaperObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
   it('404: when election uuid does not exist', async () => {
