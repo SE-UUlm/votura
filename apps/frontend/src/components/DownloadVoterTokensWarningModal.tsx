@@ -1,6 +1,7 @@
 import { Button, Group, Modal, type ModalProps, Stack, Text } from '@mantine/core';
 import { IconAlertTriangle } from '@tabler/icons-react';
 import type { JSX, MouseEventHandler } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface DownloadVoterTokensWarningModalProps {
   opened: ModalProps['opened'];
@@ -15,6 +16,7 @@ export const DownloadVoterTokensWarningModal = ({
   onConfirm,
   isLoading = false,
 }: DownloadVoterTokensWarningModalProps): JSX.Element => {
+  const { t } = useTranslation();
   const handleClose = (): void => {
     if (isLoading) {
       return;
@@ -23,23 +25,27 @@ export const DownloadVoterTokensWarningModal = ({
   };
 
   return (
-    <Modal opened={opened} onClose={handleClose} title={'Warning'} centered>
+    <Modal opened={opened} onClose={handleClose} title={t('warning', 'Warning')} centered>
       <Group align="flex-start" gap={'md'}>
         <IconAlertTriangle size={24} color="red" />
-        <Text fw={700}>This will generate new voter tokens.</Text>
+        <Text fw={700}>
+          {t('thisWillGenerateNewVoterTokens', 'This will generate new voter tokens.')}
+        </Text>
         <Stack gap={4}>
           <Text size={'sm'} c={'dimmed'}>
-            Generating new voter tokens will invalidate all existing tokens. Proceed only if you
-            want to download the new JSON file now.
+            {t(
+              'generatingNewVoterTokensWillInvalidateAllExistingTokensProceedOnlyIfYouWantToDownloadTheNewJsonFileNow',
+              'Generating new voter tokens will invalidate all existing tokens. Proceed only if you want to download the new JSON file now.',
+            )}
           </Text>
         </Stack>
       </Group>
       <Group justify="flex-end" mt={'lg'}>
         <Button variant="outline" onClick={handleClose} disabled={isLoading}>
-          No
+          {t('no', 'No')}
         </Button>
         <Button variant="filled" color="red" onClick={onConfirm} loading={isLoading}>
-          Yes, download
+          {t('yesDownload', 'Yes, download')}
         </Button>
       </Group>
     </Modal>

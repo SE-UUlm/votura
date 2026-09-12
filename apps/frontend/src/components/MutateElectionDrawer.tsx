@@ -124,7 +124,7 @@ export const MutateElectionDrawer = ({
               <Stack>
                 <TextInput
                   withAsterisk
-                  label={'Name'}
+                  label={t('name', 'Name')}
                   placeholder={t(
                     'egStudentCouncilElection2025',
                     'e.g. Student Council Election 2025',
@@ -133,7 +133,7 @@ export const MutateElectionDrawer = ({
                   {...form.getInputProps('name')}
                 />
                 <Textarea
-                  label={'Description'}
+                  label={t('description', 'Description')}
                   placeholder={t(
                     'egThisYearsElectionOnTheStudentCouncil',
                     'e.g. This years election on the student council ...',

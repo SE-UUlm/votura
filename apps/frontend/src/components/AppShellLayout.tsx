@@ -74,13 +74,13 @@ export const AppShellLayout = (): JSX.Element => {
             <Divider pb={'md'} />
             <RoutingNavbarLink
               to={'/elections'}
-              label={'Elections'}
+              label={t('elections', 'Elections')}
               icon={<IconNotes size={16} />}
             />
             <Space h={'xs'} />
             <RoutingNavbarLink
               to={'/voterGroups'}
-              label={'Voter Groups & Tokens'}
+              label={t('voterGroupsTokens', 'Voter Groups & Tokens')}
               icon={<IconUsersGroup size={16} />}
             />
           </Box>

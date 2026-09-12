@@ -1,6 +1,7 @@
 import { Box, Button, Checkbox, Drawer, Group, type ModalProps, Stack, Text } from '@mantine/core';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import {
   type DownloadedVoterGroupTokens,
   useDownloadVoterGroups,
@@ -70,6 +71,7 @@ export const DownloadVoterGroupsDrawer = ({
   onClose,
   title,
 }: DownloadVoterGroupsDrawerProps): JSX.Element => {
+  const { t } = useTranslation();
   const {
     selectedGroups,
     selectedGroupIds,
@@ -165,7 +167,7 @@ export const DownloadVoterGroupsDrawer = ({
                     ))
                   ) : (
                     <Text size={'sm'} c={'dimmed'}>
-                      No voter groups available
+                      {t('noVoterGroupsAvailable', 'No voter groups available')}
                     </Text>
                   )}
                 </Stack>
@@ -173,14 +175,14 @@ export const DownloadVoterGroupsDrawer = ({
             </Box>
             <Group justify="flex-end" m={'md'}>
               <Button variant="outline" onClick={handleClose} disabled={isDownloading}>
-                Cancel
+                {t('cancel', 'Cancel')}
               </Button>
               <Button
                 variant="filled"
                 onClick={handleOpenConfirm}
                 disabled={selectedGroups.length === 0 || isDownloading}
               >
-                Download Tokens
+                {t('downloadTokens', 'Download Tokens')}
               </Button>
             </Group>
           </Stack>
