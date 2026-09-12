@@ -19,7 +19,7 @@ export const ToggleFreezeElectionModal = ({
 }: ToggleFreezeElectionModalProps): JSX.Element => {
   const { t } = useTranslation();
   const action = election.configFrozen ? t('unfreeze', 'Unfreeze') : t('freeze', 'Freeze');
-  const titleText = action + t('electionConfig', ' election config');
+  const titleText = `${action} ${t('electionConfig', 'election config')}`;
   const redColor = 'var(--mantine-color-red-7)';
   const title = (
     <Group gap="xs">
@@ -55,7 +55,7 @@ export const ToggleFreezeElectionModal = ({
       </Text>
       <Space h={'md'} />
       <Text fs="italic" c={redColor}>
-        {t('important', 'Important') + ':'}
+        {`${t('important', 'Important')}:'`}
       </Text>
       <Text fs="italic" c={redColor}>
         {message}

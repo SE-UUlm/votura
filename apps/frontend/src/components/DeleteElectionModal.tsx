@@ -18,7 +18,7 @@ export const DeleteElectionModal = ({
 }: DeleteElectionModalProps): JSX.Element => {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={'Deleting election'}>
+    <Modal opened={opened} onClose={onClose} title={t('deletingElection', 'Deleting election')}>
       <Text>{t('youAreAboutToDeleteTheElection', 'You are about to delete the election:')}</Text>
       <Text fw={700}>{election.name}</Text>
       <Space h={'md'} />
