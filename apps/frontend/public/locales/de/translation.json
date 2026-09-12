@@ -116,5 +116,14 @@
   "status": "Status",
   "active": "Aktiv",
   "inactive": "Inaktiv",
-  "createdAt": "Erstellt am"
+  "createdAt": "Erstellt am",
+  "electionAuthor": "Ersteller der Wahl",
+  "changeElectionAuthor": "Ersteller der Wahl ändern",
+  "changeElectionAuthorDescription": "Wählen Sie einen neuen Ersteller für diese Wahl. Nur der Ersteller und die Administratoren können eine Wahl sehen und bearbeiten.",
+  "currentAuthor": "Aktueller Ersteller",
+  "newAuthor": "Neuer Ersteller",
+  "selectUser": "Benutzer auswählen",
+  "electionAuthorChangedSuccessfully": "Der Ersteller der Wahl wurde erfolgreich geändert.",
+  "failedToChangeElectionAuthor": "Ersteller der Wahl konnte nicht geändert werden.",
+  "electionIsFrozenCannotChangeAuthor": "Die Wahlkonfiguration ist gesperrt. Der Ersteller der Wahl kann nicht geändert werden, solange die Konfiguration gesperrt ist."
 }
