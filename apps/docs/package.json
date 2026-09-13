@@ -38,7 +38,7 @@
     "@repo/eslint-config": "*",
     "@repo/votura-validators": "*",
     "eslint": "^9.25.1",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.6",
     "typescript": "^5.8.2"
   },
   "browserslist": {

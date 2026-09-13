@@ -26,7 +26,7 @@
     "@votura/backend": "*",
     "@votura/frontend": "*",
     "eslint": "^9.25.1",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.6",
     "typescript": "^5.8.2",
     "typescript-eslint": "^8.31.0",
     "wait-on": "^9.0.1"
