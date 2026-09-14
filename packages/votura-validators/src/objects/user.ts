@@ -87,6 +87,10 @@ export const selectableUserObject = userObject.pick({
 export type SelectableUser = z.infer<typeof selectableUserObject>;
 
 export const selectableUserObjectSchema = z.toJSONSchema(selectableUserObject, toJsonSchemaParams);
+export const selectableUsersObjectSchema = z.toJSONSchema(
+  selectableUserObject.array(),
+  toJsonSchemaParams,
+);
 
 export const authenticatableUserObject = userObject.pick({ email: true, password: true });
 
@@ -96,6 +100,14 @@ export const authenticatableUserObjectSchema = z.toJSONSchema(
   authenticatableUserObject,
   toJsonSchemaParams,
 );
+
+export const createUserDataObject = userObject.pick({ email: true, role: true });
+export type CreateUserData = z.infer<typeof createUserDataObject>;
+export const createUserDataObjectSchema = z.toJSONSchema(createUserDataObject, toJsonSchemaParams);
+
+export const editUserDataObject = userObject.pick({ role: true, active: true });
+export type EditUserData = z.infer<typeof editUserDataObject>;
+export const editUserDataObjectSchema = z.toJSONSchema(editUserDataObject, toJsonSchemaParams);
 
 export const apiTokenUserObject = userObject.pick({
   refreshToken: true,
@@ -169,5 +181,25 @@ export type ChangePasswordUser = z.infer<typeof changePasswordUserObject>;
 
 export const changePasswordUserObjectSchema = z.toJSONSchema(
   changePasswordUserObject,
+  toJsonSchemaParams,
+);
+
+export const setInitialPasswordDataObject = z
+  .object({
+    userId: userObject.shape.id,
+    currentPassword: z.string().min(1).max(127).register(voturaMetadataRegistry, {
+      description: 'The one-time password that was assigned to the user.',
+      example: 'MyP@ssw0rd!1!',
+    }),
+    newPassword: userObject.shape.password,
+    newPasswordVerification: userObject.shape.password,
+  })
+  .refine((data) => data.newPassword === data.newPasswordVerification, {
+    message: 'The new passwords do not match.',
+    path: ['newPasswordVerification'],
+  });
+export type SetInitialPasswordData = z.infer<typeof setInitialPasswordDataObject>;
+export const setInitialPasswordDataObjectSchema = z.toJSONSchema(
+  setInitialPasswordDataObject,
   toJsonSchemaParams,
 );

@@ -40,6 +40,38 @@ const getSender = (): string => {
 };
 
 /**
+ * Sends an account creation email containing a link to set the initial password to a newly created user.
+ * @param email The recipient's email address
+ * @param userId The user's UUID
+ * @param password The user's current password which has to be present in the link
+ */
+export const sendAccountCreationEmail = async (
+  email: string,
+  userId: string,
+  password: string,
+): Promise<void> => {
+  const setInitialPasswordLink = `${process.env.FRONTEND_BASE_URL ?? 'http://localhost:5173'}/set-password?userId=${encodeURIComponent(userId)}&otp=${encodeURIComponent(password)}`;
+  const subject = 'Your votura account';
+  const text =
+    'A new votura account was created with this email address.\n\n' +
+    `To verify your email address and to set an initial password, please open the following link: ${setInitialPasswordLink}\n\n` +
+    'If you did not request this account, you can ignore this email.';
+
+  try {
+    await getTransporter().sendMail({
+      from: getSender(),
+      to: email,
+      subject,
+      text,
+    });
+
+    logger.info({ event: 'sendAccountCreationEmail' }, 'Account creation mail sent');
+  } catch (e) {
+    logger.error({ e }, 'Failed to send account creation mail');
+  }
+};
+
+/**
  * Sends a password reset email containing the raw reset token and a link to the
  * frontend reset page. Errors are logged but not rethrown, so that the caller
  * can keep its response behaviour (e.g. always returning 204) regardless of
