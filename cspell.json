@@ -105,6 +105,8 @@
     "userrole",
     "cimode",
     "Lngs",
+    "EFTYPE",
+    "psql",
     "VITE",
     "nginx",
     "libc",

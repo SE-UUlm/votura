@@ -3,6 +3,10 @@ name: Testing
 on:
   workflow_dispatch:
   push:
+    # The merge queue pushes its candidate to a gh-readonly-queue branch, which
+    # would otherwise run this workflow a second time on the same commit.
+    branches-ignore:
+      - 'gh-readonly-queue/**'
   merge_group:
 
 jobs:

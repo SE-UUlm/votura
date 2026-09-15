@@ -20,6 +20,7 @@ import { insertableUserObject } from '@repo/votura-validators';
 import { IconBug } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
+import { getUserIdFromAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useChangePassword } from '../../../swr/useChangePassword.ts';
 import { useGetUser } from '../../../swr/useGetUser.ts';
 import { Avatar } from '../../Avatar.tsx';
@@ -27,7 +28,17 @@ import { HEADER_HEIGHT } from '../../utils.ts';
 
 export const AccountView = (): JSX.Element => {
   const { t } = useTranslation();
-  const { data, isLoading, error } = useGetUser();
+
+  const userId = getUserIdFromAuthLocalStorage();
+  if (!userId) {
+    return (
+      <ThemeIcon size="xl" color="red">
+        <IconBug style={{ width: '70%', height: '70%' }} />
+      </ThemeIcon>
+    );
+  }
+
+  const { data, isLoading, error } = useGetUser(userId);
   const { trigger: triggerChangePassword, isMutating } = useChangePassword();
   const form = useForm({
     mode: 'uncontrolled',
