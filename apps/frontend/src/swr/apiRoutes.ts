@@ -64,5 +64,7 @@ export const apiRoutes = {
     logout: '/users/logout',
     refreshTokens: '/users/refreshTokens',
     changePassword: '/users/changePassword',
+    requestPasswordReset: '/users/requestPasswordReset',
+    resetPassword: '/users/resetPassword',
   },
 };
