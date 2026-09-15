@@ -6,12 +6,14 @@ import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 
 interface ResetPasswordFormProps {
+  isSubmitting: boolean;
+  onSubmit: (values: PasswordResetUser) => Promise<void>;
+
   /** Token from the link in the email, empty when it has to be pasted by hand. */
   initialToken: string;
-  isSubmitting: boolean;
+
   /** Set when the backend rejected the token, shown below the token field. */
   tokenError: string | null;
-  onSubmit: (values: PasswordResetUser) => Promise<void>;
 }
 
 const validateToken = (value: string): string | null => {
