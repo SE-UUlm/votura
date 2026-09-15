@@ -109,5 +109,21 @@
   "newPassword": "New password",
   "repeatNewPassword": "Repeat new password",
   "currentPasswordIsRequired": "Current password is required.",
-  "passwordChangedSuccessfully": "Password changed successfully."
+  "passwordChangedSuccessfully": "Password changed successfully.",
+  "enterYourEmailAddressAndWeWillSendYouAPasswordResetLink": "Enter your email address and we will send you a password reset link.",
+  "sendPasswordResetLink": "Send password reset link",
+  "ifAnAccountExistsForThisEmailAddressWeHaveSentAPasswordResetLinkToIt": "If an account exists for this email address, we have sent a password reset link to it.",
+  "theLinkAndTheTokenAreValidForOneHour": "The link and the token are valid for one hour.",
+  "iAlreadyHaveAToken": "I already have a token",
+  "pasteTheTokenFromTheEmailOrUseTheLinkWeSentYou": "Paste the token from the email or use the link we sent you.",
+  "passwordResetToken": "Password reset token",
+  "pasteTheTokenFromTheEmailHere": "Paste the token from the email here.",
+  "invalidPasswordResetToken": "Invalid password reset token.",
+  "setNewPassword": "Set new password",
+  "passwordResetSuccessfullyPleaseLoginWithYourNewPassword": "Password reset successfully. Please login with your new password.",
+  "couldNotResetPassword": "Could not reset password",
+  "theTokenIsInvalidOrHasExpiredPleaseRequestANewOne": "The token is invalid or has expired. Please request a new one.",
+  "noTokenAnymore": "No token anymore?",
+  "requestANewToken": "Request a new token",
+  "forgotYourCurrentPassword": "Forgot your current password?"
 }
