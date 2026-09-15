@@ -180,3 +180,26 @@ export const getDeleteSuccessBallotPaperSectionConfig = (
     message: `The ballot paper section "${name}" has been deleted.`,
   };
 };
+
+export const getPasswordResetSuccessConfig = (): NotificationData => {
+  return {
+    title: i18next.t('success', 'Success'),
+    message: i18next.t(
+      'passwordResetSuccessfullyPleaseLoginWithYourNewPassword',
+      'Password reset successfully. Please login with your new password.',
+    ),
+    color: 'green',
+  };
+};
+
+export const getInvalidPasswordResetTokenConfig = (): NotificationData => {
+  return {
+    title: i18next.t('couldNotResetPassword', 'Could not reset password'),
+    message: i18next.t(
+      'theTokenIsInvalidOrHasExpiredPleaseRequestANewOne',
+      'The token is invalid or has expired. Please request a new one.',
+    ),
+    color: 'yellow',
+    autoClose: 15000,
+  };
+};

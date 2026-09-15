@@ -3,7 +3,6 @@ import {
   Button,
   Center,
   Container,
-  Group,
   Stack,
   Text,
   TextInput,
@@ -12,13 +11,13 @@ import {
 import { useForm } from '@mantine/form';
 import { useToggle } from '@mantine/hooks';
 import { requestPasswordResetUserObject } from '@repo/votura-validators';
-import { IconInfoCircle } from '@tabler/icons-react';
 import { type JSX, useState } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { useRequestPasswordReset } from '../../../swr/useRequestPasswordReset.ts';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { LoginHeader } from './LoginHeader.tsx';
+import { PasswordResetRequested } from './PasswordResetRequested.tsx';
 
 export const ForgotPasswordView = (): JSX.Element => {
   const { t } = useTranslation();
@@ -60,49 +59,7 @@ export const ForgotPasswordView = (): JSX.Element => {
         <Stack w={400}>
           <Title>Votura</Title>
           {hasRequested ? (
-            <Stack>
-              <Box
-                px={'sm'}
-                py={'xs'}
-                bg={'blue.0'}
-                style={{
-                  borderLeft: '4px solid var(--mantine-color-blue-6)',
-                  borderRadius: '4px',
-                }}
-              >
-                <Group align="flex-start" gap="xs" wrap="nowrap">
-                  <IconInfoCircle
-                    size={36}
-                    stroke={2}
-                    style={{ color: 'var(--mantine-color-blue-8)' }}
-                  />
-                  <Stack gap={2}>
-                    <Text size={'sm'} fw={700}>
-                      {t(
-                        'ifAnAccountExistsForThisEmailAddressWeHaveSentAPasswordResetLinkToIt',
-                        'If an account exists for this email address, we have sent a password reset link to it.',
-                      )}
-                    </Text>
-                    <Text size={'sm'}>
-                      {t(
-                        'theLinkAndTheTokenAreValidForOneHour',
-                        'The link and the token are valid for one hour.',
-                      )}
-                    </Text>
-                  </Stack>
-                </Group>
-              </Box>
-              <Button fullWidth onClick={(): void | Promise<void> => navigate('/resetPassword')}>
-                {t('iAlreadyHaveAToken', 'I already have a token')}
-              </Button>
-              <Button
-                fullWidth
-                variant="subtle"
-                onClick={(): void | Promise<void> => navigate('/login')}
-              >
-                {t('goToLogin', 'Go to login')}
-              </Button>
-            </Stack>
+            <PasswordResetRequested />
           ) : (
             <Stack>
               <Text size={'sm'} c={'dimmed'}>
