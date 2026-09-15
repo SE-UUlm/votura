@@ -13,7 +13,10 @@ const RESET_PASSWORD_PATH = '/resetPassword';
 
 const EMAIL_LABEL = 'Email';
 const TOKEN_LABEL = 'Password reset token';
-const NEW_PASSWORD_LABEL = 'New password';
+// Mantine renders the asterisk of a required field inside the label, so the
+// label text is "New password *" and getByLabel compares the label text.
+// Anchored at the start so that it does not also match "Repeat new password".
+const NEW_PASSWORD_LABEL = /^New password/;
 const REPEAT_PASSWORD_LABEL = 'Repeat new password';
 const SEND_LINK_BUTTON = 'Send password reset link';
 const SET_PASSWORD_BUTTON = 'Set new password';
@@ -73,7 +76,7 @@ test('should prefill the token from the query parameter', async ({ page }) => {
 test('should reject a malformed token', async ({ page }) => {
   await page.goto(RESET_PASSWORD_PATH);
   await page.getByLabel(TOKEN_LABEL).fill('abc');
-  await page.getByLabel(NEW_PASSWORD_LABEL, { exact: true }).fill(NEW_PASSWORD);
+  await page.getByLabel(NEW_PASSWORD_LABEL).fill(NEW_PASSWORD);
   await page.getByLabel(REPEAT_PASSWORD_LABEL).fill(NEW_PASSWORD);
   await page.getByRole('button', { name: SET_PASSWORD_BUTTON }).click();
 
@@ -83,7 +86,7 @@ test('should reject a malformed token', async ({ page }) => {
 
 test('should reject a password that does not meet the requirements', async ({ page }) => {
   await page.goto(`${RESET_PASSWORD_PATH}?token=${UNKNOWN_TOKEN}`);
-  await page.getByLabel(NEW_PASSWORD_LABEL, { exact: true }).fill('1234');
+  await page.getByLabel(NEW_PASSWORD_LABEL).fill('1234');
   await page.getByLabel(REPEAT_PASSWORD_LABEL).fill('1234');
   await page.getByRole('button', { name: SET_PASSWORD_BUTTON }).click();
 
@@ -92,7 +95,7 @@ test('should reject a password that does not meet the requirements', async ({ pa
 
 test('should reject mismatched passwords', async ({ page }) => {
   await page.goto(`${RESET_PASSWORD_PATH}?token=${UNKNOWN_TOKEN}`);
-  await page.getByLabel(NEW_PASSWORD_LABEL, { exact: true }).fill(NEW_PASSWORD);
+  await page.getByLabel(NEW_PASSWORD_LABEL).fill(NEW_PASSWORD);
   await page.getByLabel(REPEAT_PASSWORD_LABEL).fill('HelloVotura3!');
   await page.getByRole('button', { name: SET_PASSWORD_BUTTON }).click();
 
@@ -101,7 +104,7 @@ test('should reject mismatched passwords', async ({ page }) => {
 
 test('should reject an invalid or expired token', async ({ page }) => {
   await page.goto(`${RESET_PASSWORD_PATH}?token=${UNKNOWN_TOKEN}`);
-  await page.getByLabel(NEW_PASSWORD_LABEL, { exact: true }).fill(NEW_PASSWORD);
+  await page.getByLabel(NEW_PASSWORD_LABEL).fill(NEW_PASSWORD);
   await page.getByLabel(REPEAT_PASSWORD_LABEL).fill(NEW_PASSWORD);
   await page.getByRole('button', { name: SET_PASSWORD_BUTTON }).click();
 
