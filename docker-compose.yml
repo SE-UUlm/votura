@@ -4,6 +4,7 @@
 # docker-compose up
 #
 # or for a one-liner: PEPPER='your_pepper_value' docker-compose up
+# or under windows: $env:PEPPER="your_pepper_value'; docker-compose up
 
 services:
   postgres:
