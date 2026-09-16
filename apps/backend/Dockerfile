@@ -30,13 +30,14 @@ RUN addgroup --system --gid 1001 nodejs \
 
 # Nur das Nötigste aus der installer-Stage übernehmen
 COPY --from=installer --chown=expressjs:nodejs /app .
+COPY --chown=expressjs:nodejs apps/backend/docker-entrypoint.mjs /usr/local/bin/votura-entrypoint.mjs
+RUN mkdir -p /app/logs /app/packages/db/logs /app/apps/backend/logs \
+    && chown -R expressjs:nodejs /app/logs /app/packages/db/logs /app/apps/backend/logs
 
 USER expressjs
-
-WORKDIR /app/apps/backend
 
 EXPOSE 4000
 ENV NODE_ENV=production
 ENV PORT=4000
 
-CMD ["node", "dist/main.js"]
+ENTRYPOINT ["node", "/usr/local/bin/votura-entrypoint.mjs"]
