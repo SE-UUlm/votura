@@ -1,5 +1,6 @@
+import { sha256 } from '@noble/hashes/sha2.js';
+import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
-import { createHash } from 'crypto';
 
 export const getBitsOfBigInt = (x: bigint): number => {
   // https://stackoverflow.com/questions/54758130/how-to-obtain-the-amount-of-bits-of-a-bigint
@@ -9,11 +10,12 @@ export const getBitsOfBigInt = (x: bigint): number => {
 
 export const getFiatShamirChallenge = (partsToHash: string[], primeQ: bigint): bigint => {
   const stringToHash = partsToHash.join(',');
-  const hash = createHash('sha256');
-  hash.update(stringToHash, 'utf8');
-  const hashHex = hash.digest('hex');
 
-  return BigInt('0x' + hashHex) % primeQ;
+  const hashBytes = sha256(utf8ToBytes(stringToHash));
+
+  const hashHex = bytesToHex(hashBytes);
+
+  return BigInt(`0x${hashHex}`) % primeQ;
 };
 
 export const getCofactor = (p: bigint, q: bigint): bigint => {
