@@ -76,13 +76,13 @@ export const MutateCandidateDrawer = ({
               <Stack>
                 <TextInput
                   withAsterisk
-                  label={'Name'}
+                  label={t('name', 'Name')}
                   placeholder={t('egJohnDoe', 'e.g. John Doe')}
                   key={form.key('title')}
                   {...form.getInputProps('title')}
                 />
                 <Textarea
-                  label={'Description'}
+                  label={t('description', 'Description')}
                   placeholder={t('egJohnDoeIsMemberOfThe', 'e.g. John Doe is member of the ...')}
                   autosize={true}
                   minRows={4}

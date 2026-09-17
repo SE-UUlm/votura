@@ -46,7 +46,7 @@ export const ElectionsView = (): JSX.Element => {
     <>
       <MutateElectionDrawer
         opened={mutateModalOpened}
-        title={'New Election'}
+        title={t('newElection', 'New Election')}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
         mutateButtonText={t('createNewElection', 'Create new election')}
