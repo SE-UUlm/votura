@@ -15,6 +15,17 @@ import type { Selectable } from 'kysely';
 import type { AccessTokenPayload } from '../auth/types.js';
 import { generateUserTokens, getTokenExpiration, hashRefreshToken } from '../auth/utils.js';
 
+const dbUserToSelectableUser = (user: Selectable<DBUser>): SelectableUser => {
+  return {
+    id: user.id,
+    createdAt: user.createdAt.toISOString(),
+    modifiedAt: user.modifiedAt.toISOString(),
+    email: user.email,
+    role: user.role,
+    active: user.active,
+  };
+};
+
 export async function findDBUserBy(
   criteria: Partial<Pick<User, 'id' | 'email'>>,
 ): Promise<Selectable<DBUser> | null> {
@@ -48,15 +59,7 @@ export async function findUserBy(
     return null;
   }
 
-  // Convert DBUser to SelectableUser
-  return {
-    id: user.id,
-    createdAt: user.createdAt.toISOString(),
-    modifiedAt: user.modifiedAt.toISOString(),
-    email: user.email,
-    role: user.role,
-    active: user.active,
-  };
+  return dbUserToSelectableUser(user);
 }
 
 export async function createUser(insertableUser: InsertableUser): Promise<void> {
@@ -215,6 +218,11 @@ export const userCount = async (): Promise<number> => {
     .executeTakeFirst();
 
   return Number(userCountResponse?.count ?? 0);
+};
+
+export const getAllUsers = async (): Promise<SelectableUser[]> => {
+  const allDbUsers = await db.selectFrom('user').selectAll().execute();
+  return allDbUsers.map(dbUserToSelectableUser);
 };
 
 export const editUser = async (user: SelectableUser, editUserData: EditUserData): Promise<void> => {

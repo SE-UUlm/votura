@@ -87,6 +87,10 @@ export const selectableUserObject = userObject.pick({
 export type SelectableUser = z.infer<typeof selectableUserObject>;
 
 export const selectableUserObjectSchema = z.toJSONSchema(selectableUserObject, toJsonSchemaParams);
+export const selectableUsersObjectSchema = z.toJSONSchema(
+  selectableUserObject.array(),
+  toJsonSchemaParams,
+);
 
 export const authenticatableUserObject = userObject.pick({ email: true, password: true });
 

@@ -15,7 +15,7 @@ jobs:
     runs-on:
       labels: ubuntu-latest
     container:
-      image: mcr.microsoft.com/playwright:v1.56.0-noble
+      image: mcr.microsoft.com/playwright:v1.63.0-noble
       env:
         DEBIAN_FRONTEND: noninteractive
         PLAYWRIGHT_BROWSERS_PATH: /ms-playwright
@@ -59,6 +59,10 @@ jobs:
         run: |
           cd packages/e2e
           echo "PEPPER=\"3107ee33f20c08c08e902974f845e1347d01ebf14aae9369c8700bf51688d107\"" > .env
+      - name: Build votura-validators
+        run: |
+          cd packages/votura-validators
+          npm run build
       - name: Check types
         run: npm run check-types
       - name: Check formats
@@ -74,10 +78,6 @@ jobs:
       - name: Build votura-crypto
         run: |
           cd packages/votura-crypto
-          npm run build
-      - name: Build votura-validators
-        run: |
-          cd packages/votura-validators
           npm run build
       - name: Build packages/votura-ballot-box
         run: |

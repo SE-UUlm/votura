@@ -4,6 +4,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconEdit, IconKey, IconTrash } from '@tabler/icons-react';
 import { type JSX, type ReactNode, useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateVoterTokens } from '../swr/voterGroups/useCreateVoterTokens.ts';
 import { downloadJson } from '../utils/downloadJson.ts';
 import { getRPCErrorConfig } from '../utils/notifications.ts';
@@ -32,6 +33,7 @@ export const VoterGroupsSettingsMenu = ({
   onMutate,
   isMutating,
 }: VoterGroupsTableMenuProps): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger } = useCreateVoterTokens({ voterGroupId: voterGroup.id });
   const [deleteModalOpened, deleteModalActions] = useDisclosure(false);
   const [mutateModalOpened, mutateModalActions] = useDisclosure(false);
@@ -94,31 +96,31 @@ export const VoterGroupsSettingsMenu = ({
       <MutateVoterGroupDrawer
         voterGroup={voterGroup}
         opened={mutateModalOpened}
-        title={'Edit Voter Group'}
+        title={t('editVoterGroup', 'Edit Voter Group')}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
-        mutateButtonText={'Save changes'}
+        mutateButtonText={t('saveChanges', 'Save changes')}
         isMutating={isMutating}
       />
       <Menu position="bottom-end" offset={0}>
         <Menu.Target>{targetElement}</Menu.Target>
         <Menu.Dropdown>
           <Menu.Item color="red" leftSection={<IconKey size={14} />} onClick={handleOpenConfirm}>
-            Generate/Delete voter tokens
+            {t('generateDeleteVoterTokens', 'Generate/Delete voter tokens')}
           </Menu.Item>
           <Menu.Item
             disabled={isMutating}
             leftSection={<IconEdit size={14} />}
             onClick={mutateModalActions.open}
           >
-            Edit voter group
+            {t('editVoterGroup', 'Edit voter group')}
           </Menu.Item>
           <Menu.Item
             color="red"
             leftSection={<IconTrash size={14} />}
             onClick={deleteModalActions.open}
           >
-            Delete voter group
+            {t('deleteVoterGroup', 'Delete voter group')}
           </Menu.Item>
         </Menu.Dropdown>
       </Menu>
