@@ -33,7 +33,7 @@ services:
       dockerfile: apps/frontend/Dockerfile
     restart: always
     environment:
-      BACKEND_BASE_URL: https://votura.jens-ostertag.de/api
+      BACKEND_BASE_URL: http://localhost:4000
     ports:
       - '8080:80'
 
