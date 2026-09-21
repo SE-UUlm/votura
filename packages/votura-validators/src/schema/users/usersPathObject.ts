@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { authenticatableUserObjectSchema, selectableUserObjectSchema } from '../../objects/user.js';
+import { createUserDataObjectSchema, selectableUsersObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -29,7 +29,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: authenticatableUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: createUserDataObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -55,7 +55,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
     security: [
       { [SecuritySchemaName.voturaBackendAuth]: [], [SecuritySchemaName.voturaOnlyAdmin]: [] },
     ],
-    operationId: 'getUser',
+    operationId: 'getUsers',
     responses: {
       // eslint-disable-next-line @typescript-eslint/naming-convention
       200: {
@@ -64,7 +64,7 @@ export const usersPathObject: OpenAPIV3.PathItemObject = {
         content: {
           // eslint-disable-next-line @typescript-eslint/naming-convention
           'application/json': {
-            schema: selectableUserObjectSchema as OpenAPIV3.SchemaObject,
+            schema: selectableUsersObjectSchema as OpenAPIV3.SchemaObject,
           },
         },
       },
