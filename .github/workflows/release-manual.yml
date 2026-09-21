@@ -30,7 +30,7 @@ jobs:
           file: packages/db/dockerfile
           push: true
           tags: |
-            ghcr.io/votura/votura-database:dev-latest
+            ghcr.io/se-uulm/votura-database:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Build and push backend image
@@ -39,7 +39,7 @@ jobs:
           context: apps/backend
           push: true
           tags: |
-            ghcr.io/votura/votura-backend:dev-latest
+            ghcr.io/se-uulm/votura-backend:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
       - name: Build and push frontend image
@@ -48,7 +48,7 @@ jobs:
           context: packages/frontend
           push: true
           tags: |
-            ghcr.io/votura/votura-frontend:dev-latest
+            ghcr.io/se-uulm/votura-frontend:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
