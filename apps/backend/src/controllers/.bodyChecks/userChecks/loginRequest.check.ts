@@ -108,11 +108,10 @@ export const validateLoginRequest = async (
     return handleFailedLogin(ipAddress, userId);
   }
 
-  // TODO: Uncomment when user verification is implemented (see issue #125)
-  // Check if user is verified
-  //if (!user.verified) {
-  //  return loginError.UserNotVerified; // User not verified
-  //}
+  // Check whether user is verified
+  if (!user.verified) {
+    return handleFailedLogin(ipAddress, userId);
+  }
 
   return user.id; // Return user ID if validation is successful
 };
