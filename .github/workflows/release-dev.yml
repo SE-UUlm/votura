@@ -6,9 +6,6 @@ permissions:
 
 on:
   push:
-    branches:
-      - main
-      - develop
   workflow_dispatch:
 
 jobs:
@@ -54,4 +51,3 @@ jobs:
             ghcr.io/se-uulm/votura-frontend:dev-latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
-
