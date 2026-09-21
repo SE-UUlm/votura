@@ -122,7 +122,7 @@
   "theBallotPaperNameHasBeenDeleted": "Der Stimmzettel „{{name}}“ wurde gelöscht.",
   "theBallotPapersCouldNotBeLoadedPleaseTryAgain": "Die Stimmzettel konnten nicht geladen werden. Bitte versuchen Sie es erneut.",
   "theBallotPaperSectionNameHasBeenCreated": "Der Stimmzettelabschnitt „{{name}}“ wurde erstellt.",
-  "theCandidateTitleHasBeenCreated": "Die kandidierende Person „{title}}“ wurde angelegt.",
+  "theCandidateTitleHasBeenCreated": "Die kandidierende Person „{{title}}“ wurde angelegt.",
   "theChangesToTheBallotPaperNameHaveBeenSaved": "Die Änderungen am Stimmzettel „{{name}}“ wurden gespeichert.",
   "theChangesToTheElectionNameHaveBeenSaved": "Die Änderungen an der Wahl „{{name}}“ wurden gespeichert.",
   "theElectionNameHasBeenCreated": "Die Wahl „{{name}}“ wurde angelegt.",
