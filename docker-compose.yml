@@ -4,7 +4,7 @@
 # docker-compose up
 #
 # or for a one-liner: PEPPER='your_pepper_value' docker-compose up
-# or under windows: $env:PEPPER="your_pepper_value'; docker-compose up
+# or under windows: $env:PEPPER="your_pepper_value"; docker-compose up
 
 services:
   postgres:
@@ -31,9 +31,9 @@ services:
     build:
       context: .
       dockerfile: apps/frontend/Dockerfile
-      args:
-        VITE_API_BASE_URL: http://localhost:4000
     restart: always
+    environment:
+      BACKEND_BASE_URL: https://votura.jens-ostertag.de/api
     ports:
       - '8080:80'
 

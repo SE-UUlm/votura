@@ -1,7 +1,8 @@
 import type { SelectableElection } from '@repo/votura-validators';
+import { backendBaseUrl } from '../runtimeConfig.js';
 
 export const rpcRoutes = {
-  base: import.meta.env.VITE_API_BASE_URL as string,
+  base: backendBaseUrl,
   elections: {
     freezable: (id: SelectableElection['id']): string => `/elections/${id}/freezable`,
     freeze: (id: SelectableElection['id']): string => `/elections/${id}/freeze`,

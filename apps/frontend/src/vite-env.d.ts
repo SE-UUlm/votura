@@ -2,6 +2,7 @@
 
 interface ImportMetaEnv {
   readonly viteAppTitle: string;
+  readonly BACKEND_BASE_URL?: string;
 }
 
 interface ImportMeta {
