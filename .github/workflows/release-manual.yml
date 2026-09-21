@@ -45,7 +45,7 @@ jobs:
       - name: Build and push frontend image
         uses: docker/build-push-action@v7
         with:
-          file: packages/frontend/Dockerfile
+          file: apps/frontend/Dockerfile
           push: true
           tags: |
             ghcr.io/se-uulm/votura-frontend:dev-latest
