@@ -1,4 +1,3 @@
-import type { Userrole } from '@repo/db/types';
 import {
   createUserDataObject,
   response409Object,
@@ -69,7 +68,7 @@ export const createUser = async (req: Request, res: CreateUserResponse): Promise
   await createPersistentUser({
     email: data.email,
     password: password,
-    role: data.role as Userrole,
+    role: data.role,
     active: true,
   });
   const createdUser = await findUserBy({ email: data.email });

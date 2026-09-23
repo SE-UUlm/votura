@@ -3,6 +3,7 @@ import { useDisclosure } from '@mantine/hooks';
 import { notifications } from '@mantine/notifications';
 import { IconBug, IconDownload, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useCreateVoterGroup } from '../../../swr/voterGroups/useCreateVoterGroup.ts';
 import { useGetVoterGroups } from '../../../swr/voterGroups/useGetVoterGroups.ts';
 import { getAddSuccessVoterGroupConfig } from '../../../utils/notifications.ts';
@@ -15,6 +16,7 @@ import { HEADER_HEIGHT } from '../../utils.ts';
 import { VoterGroupsTable } from './VoterGroupsTable.tsx';
 
 export const VoterGroupsView = (): JSX.Element => {
+  const { t } = useTranslation();
   const { trigger, isMutating } = useCreateVoterGroup();
   const { data, isLoading, error } = useGetVoterGroups();
 
@@ -43,21 +45,21 @@ export const VoterGroupsView = (): JSX.Element => {
     <>
       <DownloadVoterGroupsDrawer
         opened={downloadModalOpened}
-        title={'Download Voter Groups'}
+        title={t('downloadVoterGroups', 'Download Voter Groups')}
         onClose={downloadModalActions.close}
         voterGroups={data}
       />
       <MutateVoterGroupDrawer
         opened={mutateModalOpened}
-        title={'New Voter Group'}
+        title={t('newVoterGroup', 'New Voter Group')}
         onMutate={onMutate}
         onClose={mutateModalActions.close}
-        mutateButtonText={'Create new voter group'}
+        mutateButtonText={t('createNewVoterGroup', 'Create new voter group')}
         isMutating={isMutating}
       />
       <Flex direction={'column'} maw={'100%'} px={'md'} flex={1}>
         <Group justify="space-between" h={HEADER_HEIGHT}>
-          <Title order={1}>Voter Groups</Title>
+          <Title order={1}>{t('voterGroups', 'Voter Groups')}</Title>
           <Group gap={'sm'}>
             <Button
               leftSection={<IconDownload size={16} />}
@@ -65,7 +67,7 @@ export const VoterGroupsView = (): JSX.Element => {
               variant="light"
               onClick={downloadModalActions.open}
             >
-              Download Token Groups
+              {t('downloadTokenGroups', 'Download Token Groups')}
             </Button>
             <Button
               leftSection={<IconPlus size={16} />}
@@ -73,7 +75,7 @@ export const VoterGroupsView = (): JSX.Element => {
               variant="light"
               onClick={mutateModalActions.open}
             >
-              New Voter Group
+              {t('newVoterGroup', 'New Voter Group')}
             </Button>
           </Group>
         </Group>
