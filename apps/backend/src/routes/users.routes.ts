@@ -90,6 +90,7 @@ usersRouter.get(
 );
 usersRouter.post(
   `/:${parameter.userId}`,
+  acceptHeaderCheck(MimeType.applicationJson),
   acceptBodyCheck(MimeType.applicationJson),
   authenticateAccessToken,
   onlyAdmin,

@@ -143,14 +143,14 @@ export const LoginView = (): JSX.Element => {
             <Stack>
               <TextInput
                 withAsterisk
-                label={'Email'}
+                label={t('email', 'Email')}
                 placeholder={'user@votura.org'}
                 key={form.key('email')}
                 {...form.getInputProps('email')}
               />
               <PasswordInput
                 withAsterisk
-                label={'Password'}
+                label={t('password', 'Password')}
                 placeholder={t('mySecurePassword', 'My secure password...')}
                 key={form.key('password')}
                 {...form.getInputProps('password')}

@@ -2,6 +2,7 @@ import { genericContainer } from '@repo/db/genericContainer';
 import { migrateToLatest } from '@repo/db/migrateToLatest';
 import type { DB } from '@repo/db/types';
 import { kyselyLogger } from '@repo/logger';
+import { randomUUID } from 'crypto';
 import { Kysely, PostgresDialect } from 'kysely';
 import path from 'path';
 import { Pool } from 'pg';
@@ -13,7 +14,7 @@ const DIRNAME = path.dirname(FILENAME);
 
 // Now configure and start the container
 const container = await genericContainer
-  .withName('backend-test-db-' + Math.floor(Math.random() * 100000))
+  .withName(`backend-test-db-${randomUUID()}`)
   .withEnvironment({
     // eslint-disable-next-line @typescript-eslint/naming-convention
     POSTGRES_DB: 'votura',

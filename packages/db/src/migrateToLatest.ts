@@ -52,7 +52,10 @@ export const migrateToLatest = async (db: Kysely<any>, migrationFolder: string):
     // Log under the `err` key so pino's standard error serializer emits the
     // message and stack; a plain `{ error }` serializes an Error to `{}`.
     logger.error({ err: error }, 'Migration failed.');
-    process.exit(1);
+    // Throw instead of exiting the process: callers such as the vitest setup run
+    // inside a worker that would otherwise die without reporting the cause.
+    // The CLI entry point in migrate.ts catches this and exits itself.
+    throw error instanceof Error ? error : new Error(String(error));
   }
 
   await db.destroy();

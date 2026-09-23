@@ -43,6 +43,7 @@ export const deleteUser = async (
         message: 'The user that should be deleted still has elections linked to their account.',
       }),
     );
+    return;
   }
 
   await deletePersistentUser(userToDelete.id);

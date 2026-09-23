@@ -142,7 +142,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/users`]: usersPathObject,
     [`/users/{${parameter.userId}}`]: userDetailsPathObject,
     [`/users/count`]: userCountPathObject,
-    ['/users/setInitialPassword']: setInitialPasswordPathObject,
+    [`/users/setInitialPassword`]: setInitialPasswordPathObject,
     [`/users/login`]: loginPathObject,
     [`/users/changePassword`]: changePasswordPathObject,
     [`/users/refreshTokens`]: refreshTokensPathObject,
