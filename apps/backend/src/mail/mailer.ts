@@ -66,7 +66,7 @@ export const sendAccountCreationEmail = async (
     });
 
     logger.info({ event: 'sendAccountCreationEmail' }, 'Account creation mail sent');
-  } catch (e) {
+  } catch (e: unknown) {
     logger.error({ e }, 'Failed to send account creation mail');
   }
 };
