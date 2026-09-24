@@ -98,7 +98,7 @@ frontend.
 **Frontend**:
 
 ```
-VITE_API_BASE_URL="http://localhost:4000"
+BACKEND_BASE_URL="http://localhost:4000"
 ```
 
 **db**:

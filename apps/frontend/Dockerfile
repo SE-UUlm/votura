@@ -16,14 +16,14 @@ RUN npm ci
 
 COPY --from=pruner /app/out/full/ .
 
-ARG VITE_API_BASE_URL
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL
-
 RUN npx turbo run build --filter=@votura/frontend...
 
 # --- Stage 3: Runtime ---
 FROM nginx:alpine
 COPY --from=installer /app/apps/frontend/dist /usr/share/nginx/html
 COPY apps/frontend/nginx.conf /etc/nginx/conf.d/default.conf
+COPY apps/frontend/docker-entrypoint.sh /usr/local/bin/frontend-entrypoint.sh
+RUN chmod +x /usr/local/bin/frontend-entrypoint.sh
 EXPOSE 80
+ENTRYPOINT ["/usr/local/bin/frontend-entrypoint.sh"]
 CMD ["nginx", "-g", "daemon off;"]
