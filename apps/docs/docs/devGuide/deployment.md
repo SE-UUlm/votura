@@ -12,7 +12,7 @@ toc_max_heading_level: 3
 
 The following diagram provides an overview of the current deployment under `votura.informatik.uni-ulm.de`:
 
-![Deployment overview](../../../static/drawio/voturaDeployment.svg)
+![Deployment overview](../../static/drawio/voturaDeployment.svg)
 
 ## Deployment Server
 
