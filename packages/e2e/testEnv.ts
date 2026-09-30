@@ -18,11 +18,16 @@ let backendProcess: ChildProcess | null = null;
 const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
+const e2eLog = (message: string): void => {
+  process.stderr.write(`[e2e] ${message} ${new Date().toISOString()}\n`);
+};
+
 export const startTestEnv = async (): Promise<void> => {
-  console.log(`[e2e] environment setup started at ${new Date().toISOString()}`);
+  e2eLog('environment setup started');
   /**
    * Postgres container setup
    */
+  e2eLog('starting postgres container');
   logger.info('Start creating postgres container...');
   dbContainer = await genericContainer
     .withName(`e2e-test-db-${randomUUID()}`)
@@ -36,9 +41,11 @@ export const startTestEnv = async (): Promise<void> => {
     })
     .withExposedPorts(5432)
     .start();
+  e2eLog('postgres container started');
   const dbConnectionUri = `postgresql://test:test@${dbContainer.getHost()}:${dbContainer.getMappedPort(5432)}/votura`;
   logger.info({ dbConnectionUri }, 'Postgres container is listening.');
 
+  e2eLog('starting postgres migration');
   logger.info('Start postgres migration...');
   const migrationClient = new Kysely<DB>({
     dialect: new PostgresDialect({
@@ -51,8 +58,10 @@ export const startTestEnv = async (): Promise<void> => {
   const migrationPath = path.join(DIRNAME, '../db/src/migrations');
   await migrateToLatest(migrationClient, migrationPath);
   await migrationClient.destroy();
+  e2eLog('postgres migration completed');
   logger.info('Migration completed.');
 
+  e2eLog('starting database seed');
   logger.info('Start running seed...');
   const seedingClient = new Kysely<DB>({
     dialect: new PostgresDialect({
@@ -64,6 +73,7 @@ export const startTestEnv = async (): Promise<void> => {
   });
   await seed(seedingClient);
   await seedingClient.destroy();
+  e2eLog('database seed completed');
   logger.info('Seeding completed.');
 
   /**
@@ -84,20 +94,22 @@ export const startTestEnv = async (): Promise<void> => {
     stdio: 'inherit',
     shell: isWindows,
   });
+  e2eLog(`backend process started with PID ${backendProcess.pid ?? 'unknown'}`);
   logger.info('Waiting for a heartbeat from the backend...');
+  e2eLog('waiting for backend heartbeat');
   await waitOn({
     resources: ['http://localhost:4000/heartbeat'],
     delay: 1000,
     timeout: 30000,
   });
   logger.info('The backend is listening.');
-  console.log(`[e2e] environment setup completed at ${new Date().toISOString()}`);
+  e2eLog('backend heartbeat received; environment setup completed');
 };
 
 export const stopTestEnv = async (): Promise<void> => {
-  console.log(`[e2e] environment teardown started at ${new Date().toISOString()}`);
+  e2eLog('environment teardown started');
   if (backendProcess?.pid != null) {
-    console.log(`[e2e] stopping backend process ${backendProcess.pid}`);
+    e2eLog(`stopping backend process ${backendProcess.pid}`);
     if (process.platform === 'win32') {
       await new Promise<void>((resolve) => {
         const killer = spawn('taskkill', ['/pid', String(backendProcess?.pid), '/T', '/F']);
@@ -109,12 +121,14 @@ export const stopTestEnv = async (): Promise<void> => {
     } else {
       backendProcess.kill();
     }
+    e2eLog('backend process terminated');
   }
 
-  console.log('[e2e] stopping postgres container');
+  e2eLog('stopping postgres container');
   await dbContainer?.stop();
+  e2eLog('postgres container stopped');
 
   backendProcess = null;
   dbContainer = null;
-  console.log(`[e2e] environment teardown completed at ${new Date().toISOString()}`);
+  e2eLog('environment teardown completed');
 };
