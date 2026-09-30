@@ -93,7 +93,13 @@ jobs:
           npm run build
       - name: Run tests
         run: |
+          echo "before npm run test: $(date --iso-8601=seconds)"
+          set +e
           npm run test
+          status=$?
+          set -e
+          echo "after npm run test: $(date --iso-8601=seconds), exit code: $status"
+          exit "$status"
       - name: Teamscale Upload
         uses: cqse/teamscale-upload-action@v2.10.0
         with:
