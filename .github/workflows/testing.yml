@@ -103,7 +103,7 @@ jobs:
           ) &
           watchdog_pid=$!
           set +e
-          npm run test
+          npm run test -- --log-order=stream --output-logs=full --ui=stream
           status=$?
           set -e
           kill "$watchdog_pid" 2>/dev/null || true
