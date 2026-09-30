@@ -94,10 +94,20 @@ jobs:
       - name: Run tests
         run: |
           echo "before npm run test: $(date --iso-8601=seconds)"
+          (
+            while true; do
+              echo "[test-watchdog] $(date --iso-8601=seconds)"
+              ps -eo pid,ppid,stat,etime,cmd --forest
+              sleep 30
+            done
+          ) &
+          watchdog_pid=$!
           set +e
           npm run test
           status=$?
           set -e
+          kill "$watchdog_pid" 2>/dev/null || true
+          wait "$watchdog_pid" 2>/dev/null || true
           echo "after npm run test: $(date --iso-8601=seconds), exit code: $status"
           exit "$status"
       - name: Teamscale Upload
