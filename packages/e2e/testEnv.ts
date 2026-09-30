@@ -19,6 +19,7 @@ const FILENAME = fileURLToPath(import.meta.url);
 const DIRNAME = path.dirname(FILENAME);
 
 export const startTestEnv = async (): Promise<void> => {
+  console.log(`[e2e] environment setup started at ${new Date().toISOString()}`);
   /**
    * Postgres container setup
    */
@@ -49,6 +50,7 @@ export const startTestEnv = async (): Promise<void> => {
   });
   const migrationPath = path.join(DIRNAME, '../db/src/migrations');
   await migrateToLatest(migrationClient, migrationPath);
+  await migrationClient.destroy();
   logger.info('Migration completed.');
 
   logger.info('Start running seed...');
@@ -61,6 +63,7 @@ export const startTestEnv = async (): Promise<void> => {
     log: kyselyLogger,
   });
   await seed(seedingClient);
+  await seedingClient.destroy();
   logger.info('Seeding completed.');
 
   /**
@@ -88,10 +91,13 @@ export const startTestEnv = async (): Promise<void> => {
     timeout: 30000,
   });
   logger.info('The backend is listening.');
+  console.log(`[e2e] environment setup completed at ${new Date().toISOString()}`);
 };
 
 export const stopTestEnv = async (): Promise<void> => {
+  console.log(`[e2e] environment teardown started at ${new Date().toISOString()}`);
   if (backendProcess?.pid != null) {
+    console.log(`[e2e] stopping backend process ${backendProcess.pid}`);
     if (process.platform === 'win32') {
       await new Promise<void>((resolve) => {
         const killer = spawn('taskkill', ['/pid', String(backendProcess?.pid), '/T', '/F']);
@@ -105,8 +111,10 @@ export const stopTestEnv = async (): Promise<void> => {
     }
   }
 
+  console.log('[e2e] stopping postgres container');
   await dbContainer?.stop();
 
   backendProcess = null;
   dbContainer = null;
+  console.log(`[e2e] environment teardown completed at ${new Date().toISOString()}`);
 };

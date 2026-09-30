@@ -17,7 +17,7 @@ export default defineConfig({
   forbidOnly: !(process.env.CI == null),
   retries: process.env.CI != null ? 2 : 0,
   workers: process.env.CI != null ? 1 : availableParallelism(),
-  reporter: 'html',
+  reporter: [['list', { printSteps: true }], ['html']],
   webServer: [
     {
       command: 'npm run build-and-preview',
