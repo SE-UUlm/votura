@@ -49,6 +49,15 @@ const client = new Kysely<DB>({
   log: kyselyLogger,
 });
 
+const heartbeat = setInterval(() => {
+  console.log(
+    `[backend-test] still running; active resources: ${process
+      .getActiveResourcesInfo()
+      .join(', ')}`,
+  );
+}, 30000);
+heartbeat.unref();
+
 vi.mock('@repo/db', () => {
   return {
     db: client,
