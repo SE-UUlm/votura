@@ -52,6 +52,7 @@ The frontend container runs an nginx web server to serve the static files for th
 
 Since the votura application consists of multiple containers, a reverse proxy is required to route requests to the correct container based on specific rules.
 For the preview deployment, the rules are relatively simple:
+
 - Requests to `votura.informatik.uni-ulm.de` with the path prefix `/api/` are routed to the `votura-backend` container. However, the `/api/` prefix is stripped from the request before it is forwarded to the backend.
 - All other requests to `votura.informatik.uni-ulm.de` are routed to the `votura-frontend` container.
 
