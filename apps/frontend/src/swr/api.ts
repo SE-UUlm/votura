@@ -1,7 +1,7 @@
 import { apiTokenUserObject } from '@repo/votura-validators';
 import axios, { type AxiosRequestConfig } from 'axios';
-import * as axiosAuthRefreshModule from 'axios-auth-refresh';
 import type axiosAuthRefresh from 'axios-auth-refresh';
+import * as axiosAuthRefreshModule from 'axios-auth-refresh';
 import { browserRouter } from '../browserRouter.ts';
 import { apiRoutes } from './apiRoutes.ts';
 import { clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage } from './authTokens.ts';
