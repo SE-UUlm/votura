@@ -8,7 +8,7 @@
     "check-types": "tsc --noEmit",
     "install-browsers": "npx playwright install --with-deps",
     "lint": "eslint",
-    "test": "node ./runTests.mjs"
+    "test": "playwright test"
   },
   "dependencies": {
     "dotenv": "^17.2.0"
