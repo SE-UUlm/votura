@@ -1,9 +1,17 @@
 import { apiTokenUserObject } from '@repo/votura-validators';
 import axios, { type AxiosRequestConfig } from 'axios';
-import createAuthRefreshInterceptor from 'axios-auth-refresh';
+import * as axiosAuthRefreshModule from 'axios-auth-refresh';
+import type axiosAuthRefresh from 'axios-auth-refresh';
 import { browserRouter } from '../browserRouter.ts';
 import { apiRoutes } from './apiRoutes.ts';
 import { clearAuthLocalStorage, getAuthLocalStorage, setAuthLocalStorage } from './authTokens.ts';
+
+type AuthRefreshInterceptor = typeof axiosAuthRefresh;
+type AuthRefreshExport = AuthRefreshInterceptor | { default: AuthRefreshInterceptor };
+
+const authRefreshExport = axiosAuthRefreshModule.default as AuthRefreshExport;
+const createAuthRefreshInterceptor =
+  typeof authRefreshExport === 'function' ? authRefreshExport : authRefreshExport.default;
 
 interface FailedRequest {
   response: {

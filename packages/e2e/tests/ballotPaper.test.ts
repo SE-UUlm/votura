@@ -41,7 +41,7 @@ test.describe('Ballot Paper', () => {
 
   test('should update a ballot paper', async ({ page }) => {
     await page.getByRole('button', { name: 'Election 1 Settings' }).click();
-    await page.getByRole('button', { name: 'Settings' }).nth(0).click();
+    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('menuitem', { name: 'Edit' }).click();
     await page.getByRole('textbox', { name: 'Description' }).fill('This is ballot paper two');
     const saveButton = page.getByRole('button', { name: 'Save changes' });
@@ -52,10 +52,10 @@ test.describe('Ballot Paper', () => {
 
   test('should delete a ballot paper', async ({ page }) => {
     await page.getByRole('button', { name: 'Election 1 Settings' }).click();
-    await page.getByRole('button', { name: 'Settings' }).nth(0).click();
+    await page.getByRole('button', { name: 'Settings' }).nth(1).click();
     await page.getByRole('menuitem', { name: 'Delete' }).click();
     await page.getByRole('button', { name: 'Delete' }).click();
     await page.waitForTimeout(1000);
-    await expect(page.getByText(ballotPaper.name, { exact: true })).not.toBeVisible();
+    await expect(page.getByText('Ballot Paper 1', { exact: true })).not.toBeVisible();
   });
 });
