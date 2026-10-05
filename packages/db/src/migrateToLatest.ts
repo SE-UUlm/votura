@@ -16,7 +16,9 @@ import { pathToFileURL } from 'url';
 const createWindowsSafeMigrationProvider = (migrationFolder: string): MigrationProvider => ({
   async getMigrations(): Promise<Record<string, Migration>> {
     const files = await readdir(migrationFolder);
-    const migrationFiles = files.filter((file) => file.endsWith('.ts') || file.endsWith('.js'));
+    const migrationFiles = files.filter(
+      (file) => (file.endsWith('.ts') || file.endsWith('.js')) && !file.endsWith('.d.ts'),
+    );
 
     const entries = await Promise.all(
       migrationFiles.map(async (file): Promise<[string, Migration]> => {

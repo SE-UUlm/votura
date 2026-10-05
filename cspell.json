@@ -106,6 +106,15 @@
     "cimode",
     "Lngs",
     "EFTYPE",
-    "psql"
+    "psql",
+    "VITE",
+    "nginx",
+    "libc",
+    "addgroup",
+    "adduser",
+    "expressjs",
+    "healthcheck",
+    "isready",
+    "informatik"
   ]
 }
