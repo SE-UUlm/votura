@@ -217,7 +217,7 @@ real package directories:
 | Path                 | Variables                                |
 | -------------------- | ---------------------------------------- |
 | `apps/backend/.env`  | `DATABASE_URL`, `PEPPER`, `BITS_PRIME_P` |
-| `apps/frontend/.env` | `VITE_API_BASE_URL`                      |
+| `apps/frontend/.env` | `BACKEND_BASE_URL`                       |
 | `packages/db/.env`   | `DATABASE_URL`, `PEPPER`                 |
 | `packages/e2e/.env`  | `PEPPER`                                 |
 | `packages/hash/.env` | `PEPPER`                                 |

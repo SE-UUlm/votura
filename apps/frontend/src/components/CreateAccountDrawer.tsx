@@ -11,6 +11,7 @@ import {
 import { isEmail, isNotEmpty, useForm } from '@mantine/form';
 import type { CreateUserData } from '@repo/votura-validators';
 import { type JSX, type ReactNode, useEffect } from 'react';
+import { useTranslation } from 'react-i18next';
 
 export interface CreateAccountDrawerProps {
   opened: ModalProps['opened'];
@@ -33,6 +34,8 @@ export const CreateAccountDrawer = ({
   title,
   isMutating,
 }: CreateAccountDrawerProps): JSX.Element => {
+  const { t } = useTranslation();
+
   const form = useForm<CreateAccountFormValues>({
     mode: 'controlled',
     initialValues: {
@@ -41,8 +44,8 @@ export const CreateAccountDrawer = ({
     },
     validate: {
       email:
-        isNotEmpty('Email has to be a valid email address') &&
-        isEmail('Email has to be a valid email address'),
+        isNotEmpty(t('Email has to be a valid email address')) &&
+        isEmail(t('Email has to be a valid email address')),
     },
     validateInputOnBlur: true,
   });
@@ -84,13 +87,13 @@ export const CreateAccountDrawer = ({
               <Stack>
                 <TextInput
                   withAsterisk
-                  label={'Email'}
+                  label={t('email', 'Email')}
                   placeholder={'user@votura.org'}
                   key={form.key('email')}
                   {...form.getInputProps('email')}
                 />
                 <Checkbox
-                  label={'Administrator'}
+                  label={t('Administrator')}
                   key={form.key('admin')}
                   {...form.getInputProps('admin', { type: 'checkbox' })}
                 />

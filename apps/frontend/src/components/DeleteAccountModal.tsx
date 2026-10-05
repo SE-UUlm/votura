@@ -18,7 +18,7 @@ export const DeleteAccountModal = ({
 }: DeleteAccountModalProps): JSX.Element => {
   const { t } = useTranslation();
   return (
-    <Modal opened={opened} onClose={onClose} title={'Deleting account'}>
+    <Modal opened={opened} onClose={onClose} title={t('deleteAccount', 'Delete account')}>
       <Text>{t('youAreAboutToDeleteTheAccount', 'You are about to delete the account:')}</Text>
       <Text fw={700}>{user.email}</Text>
       <Space h={'md'} />

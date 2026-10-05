@@ -43,7 +43,7 @@ export const AccountsView = (): JSX.Element => {
     );
   }
 
-  const sortedUsers = data.sort((a, b) => {
+  const sortedUsers = [...data].sort((a, b) => {
     const aCreated = a.createdAt;
     const bCreated = b.createdAt;
     if (aCreated < bCreated) {
