@@ -7,6 +7,11 @@ export const getElection = async (
   req: Request<{ electionId: Election['id'] }>,
   res: Response<SelectableElection, { user: SelectableUser }>,
 ): Promise<void> => {
-  const election = await getPersistentElection(req.params.electionId, res.locals.user.id);
+  const loggedInUser = res.locals.user;
+  const election = await getPersistentElection(
+    req.params.electionId,
+    loggedInUser.id,
+    loggedInUser.role === 'admin',
+  );
   res.status(HttpStatusCode.ok).json(election);
 };

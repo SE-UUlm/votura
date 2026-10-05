@@ -36,6 +36,7 @@ interface VoterElectionRow {
   electionPrimeP: Selectable<DBElection>['primeP'];
   electionPrimeQ: Selectable<DBElection>['primeQ'];
   electionGenerator: Selectable<DBElection>['generator'];
+  electionElectionCreatorId: Selectable<DBElection>['electionCreatorId'];
   ballotPaperId: Selectable<DBBallotPaper>['id'];
   ballotPaperName: DBBallotPaper['name'];
   ballotPaperDescription: DBBallotPaper['description'];
@@ -74,6 +75,7 @@ async function getVoterElectionData(
       'e.primeP as electionPrimeP',
       'e.primeQ as electionPrimeQ',
       'e.generator as electionGenerator',
+      'e.electionCreatorId as electionElectionCreatorId',
       'bp.id as ballotPaperId',
       'bp.name as ballotPaperName',
       'bp.description as ballotPaperDescription',
@@ -111,6 +113,7 @@ function createElectionFromRow(row: VoterElectionRow): SelectableVotingElection 
     primeP: row.electionPrimeP ?? undefined,
     primeQ: row.electionPrimeQ ?? undefined,
     generator: row.electionGenerator ?? undefined,
+    electionCreatorId: row.electionElectionCreatorId ?? undefined,
     ballotPaper: {
       id: row.ballotPaperId,
       name: row.ballotPaperName,

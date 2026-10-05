@@ -26,6 +26,7 @@ const electionTransformer = (election: Selectable<DBElection>): SelectableElecti
     ...spreadableOptional(election, 'primeP'),
     ...spreadableOptional(election, 'primeQ'),
     ...spreadableOptional(election, 'generator'),
+    electionCreatorId: election.electionCreatorId,
   };
 };
 
@@ -57,16 +58,24 @@ export const getElections = async (
   return elections.map((kyselyElection) => electionTransformer(kyselyElection));
 };
 
+export const getAllElections = async (): Promise<SelectableElection[]> => {
+  const elections = await db.selectFrom('election').selectAll().execute();
+
+  return elections.map((kyselyElection) => electionTransformer(kyselyElection));
+};
+
 export const getElection = async (
   electionId: Selectable<DBElection>['id'],
   userId: Selectable<DBUser>['id'],
+  bypassElectionAuthorCheck = false,
 ): Promise<SelectableElection> => {
-  const election = await db
-    .selectFrom('election')
-    .where('id', '=', electionId)
-    .where('electionCreatorId', '=', userId)
-    .selectAll()
-    .executeTakeFirstOrThrow();
+  let query = db.selectFrom('election').where('id', '=', electionId);
+
+  if (!bypassElectionAuthorCheck) {
+    query = query.where('electionCreatorId', '=', userId);
+  }
+
+  const election = await query.selectAll().executeTakeFirstOrThrow();
 
   return electionTransformer(election);
 };
@@ -75,9 +84,14 @@ export const updateElection = async (
   updateableElection: UpdateableElection,
   electionId: Selectable<DBElection>['id'],
 ): Promise<SelectableElection> => {
+  const { electionCreatorId, ...otherFields } = updateableElection;
+  const updateFields: UpdateableElection = { ...otherFields };
+  if (electionCreatorId !== undefined) {
+    updateFields.electionCreatorId = electionCreatorId;
+  }
   const election = await db
     .updateTable('election')
-    .set({ ...updateableElection })
+    .set(updateFields)
     .where('id', '=', electionId)
     .returningAll()
     .executeTakeFirstOrThrow();

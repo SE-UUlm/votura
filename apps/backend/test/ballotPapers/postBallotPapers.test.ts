@@ -21,6 +21,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
   let requestPath = '';
   let requestPath2 = '';
   let tokens: ApiTokenUser = { accessToken: '', refreshToken: '' };
+  let tokens2: ApiTokenUser = { accessToken: '', refreshToken: '' };
 
   beforeAll(async () => {
     await createUser(demoUser);
@@ -38,6 +39,7 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
     requestPath2 = `/elections/${election2.id}/ballotPapers`;
 
     tokens = generateUserTokens(user.id);
+    tokens2 = generateUserTokens(user2.id);
   });
 
   it('200: should create an election when authorized and body is valid', async () => {
@@ -74,14 +76,24 @@ describe(`POST /elections/:${parameter.electionId}/ballotPapers`, () => {
     const parseResult = response400Object.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
-  it('403: when user is not the owner of the election', async () => {
+  it('403: when user is not the owner of the election and not an admin', async () => {
     const res = await request(app)
-      .post(requestPath2)
-      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .post(requestPath)
+      .set('Authorization', `Bearer ${tokens2.accessToken}`)
       .send(demoBallotPaper);
     expect(res.status).toBe(HttpStatusCode.forbidden);
     expect(res.type).toBe('application/json');
     const parseResult = response403Object.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+  });
+  it('200: administrators should be able to see elections of other users', async () => {
+    const res = await request(app)
+      .post(requestPath2)
+      .set('Authorization', `Bearer ${tokens.accessToken}`)
+      .send(demoBallotPaper);
+    expect(res.status).toBe(HttpStatusCode.created);
+    expect(res.type).toBe('application/json');
+    const parseResult = selectableBallotPaperObject.safeParse(res.body);
     expect(parseResult.success).toBe(true);
   });
   it('404: when election uuid does not exist', async () => {
