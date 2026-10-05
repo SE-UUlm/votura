@@ -44,8 +44,8 @@ export const CreateAccountDrawer = ({
     },
     validate: {
       email:
-        isNotEmpty(t('Email has to be a valid email address')) &&
-        isEmail(t('Email has to be a valid email address')),
+        isNotEmpty(t('emailHasToBeAValidEmailAddress', 'Email has to be a valid email address')) &&
+        isEmail(t('emailHasToBeAValidEmailAddress', 'Email has to be a valid email address')),
     },
     validateInputOnBlur: true,
   });
