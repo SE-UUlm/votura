@@ -7,6 +7,32 @@ updates:
     directory: '/'
     schedule:
       interval: 'weekly'
+    groups:
+      vite-vitest:
+        patterns:
+          - 'vite'
+          - '@vitejs/*'
+          - 'vitest'
+          - '@vitest/*'
+      mantine:
+        patterns:
+          - '@mantine/*'
+      docusaurus:
+        patterns:
+          - '@docusaurus/*'
+      react:
+        patterns:
+          - 'react'
+          - 'react-dom'
+          - '@types/react'
+          - '@types/react-dom'
+      lint-format:
+        patterns:
+          - 'eslint*'
+          - '@eslint/*'
+          - 'typescript-eslint*'
+          - '@typescript-eslint/*'
+          - 'prettier*'
   - package-ecosystem: 'github-actions'
     directory: '/'
     schedule:

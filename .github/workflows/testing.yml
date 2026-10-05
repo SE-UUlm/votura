@@ -93,7 +93,7 @@ jobs:
           npm run build
       - name: Run tests
         run: |
-          npm run test
+          npm run test -- --log-order=stream --output-logs=full --ui=stream
       - name: Teamscale Upload
         uses: cqse/teamscale-upload-action@v2.10.0
         with:
