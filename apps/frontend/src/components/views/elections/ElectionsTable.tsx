@@ -32,94 +32,98 @@ const TableText = ({ children }: PropsWithChildren): JSX.Element => (
   </Text>
 );
 
-export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
-  const { t } = useTranslation();
+interface ElectionRowProps {
+  election: SelectableElection;
+}
+
+const ElectionRow = ({ election }: ElectionRowProps): JSX.Element => {
   const navigate = useNavigate();
+  const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
+  const { trigger: deleteTrigger } = useDeleteElection({ electionId: election.id });
 
-  const rows = data.map((election) => {
-    const { trigger: updateTrigger, isMutating } = useUpdateElection(election.id);
-    const { trigger: deleteTrigger } = useDeleteElection({ electionId: election.id });
+  const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
+    await updateTrigger(mutatedElection);
+    notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
+  };
 
-    const onMutate: MutateElectionModalProps['onMutate'] = async (mutatedElection) => {
-      await updateTrigger(mutatedElection);
-      notifications.show(getMutateSuccessElectionConfig(mutatedElection?.name ?? election.name));
-    };
+  const onDelete: DeleteElectionModalProps['onDelete'] = async () => {
+    await deleteTrigger();
+    notifications.show(getDeleteSuccessElectionConfig(election.name));
+  };
 
-    const onDelete: DeleteElectionModalProps['onDelete'] = async () => {
-      await deleteTrigger();
-      notifications.show(getDeleteSuccessElectionConfig(election.name));
-    };
-
-    const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
-      if (election.configFrozen) {
-        notifications.show(await callUnfreezeElection(election.id));
-      } else {
-        const freezable = await callGetElectionFreezable(election.id);
-        if (!freezable) {
-          notifications.show(getElectionNotFreezableConfig(election.name));
-          return;
-        }
-
-        notifications.show(await callFreezeElection(election.id));
-      }
-    };
-
-    const navigateToElectionSettings = (e: ReactMouseEvent<HTMLTableRowElement>) => {
-      const target = e.target as HTMLElement;
-
-      // Do not redirect if the click target is the context menu / three dots icon,
-      // or one of the dropdown menu options.
-      if (
-        target.closest('button') ||
-        target.closest('[role="menuitem"]') ||
-        target.closest('.mantine-Menu-dropdown')
-      ) {
+  const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
+    if (election.configFrozen) {
+      notifications.show(await callUnfreezeElection(election.id));
+    } else {
+      const freezable = await callGetElectionFreezable(election.id);
+      if (!freezable) {
+        notifications.show(getElectionNotFreezableConfig(election.name));
         return;
       }
 
-      navigate(`/elections/${election.id}`);
-    };
+      notifications.show(await callFreezeElection(election.id));
+    }
+  };
 
-    return (
-      <Table.Tr
-        key={election.id}
-        onClick={navigateToElectionSettings}
-        style={{ cursor: 'pointer' }}
-        aria-label={election.name + ' ' + 'Settings'}
-        role="button"
-        tabIndex={0}
-      >
-        <Table.Td>
-          <TableText>{election.name}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <TableText>{election.description}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <TableText>{dayjs(election.modifiedAt).format('lll')}</TableText>
-        </Table.Td>
-        <Table.Td>
-          <BooleanBadge isTrue={election.configFrozen} />
-        </Table.Td>
-        <Table.Td>
-          <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
-            <ElectionsSettingsMenu
-              election={election}
-              targetElement={
-                <ActionIcon variant="subtle" aria-label="Settings">
-                  <IconDots size={14} />
-                </ActionIcon>
-              }
-              onDelete={onDelete}
-              onMutate={onMutate}
-              onToggleFreeze={onToggleFreeze}
-              isMutating={isMutating}
-            />
-          </Group>
-        </Table.Td>
-      </Table.Tr>
-    );
-  });
+  const navigateToElectionSettings = (e: ReactMouseEvent<HTMLTableRowElement>) => {
+    const target = e.target as HTMLElement;
+
+    // Do not redirect if the click target is the context menu / three dots icon,
+    // or one of the dropdown menu options.
+    if (
+      target.closest('button') ||
+      target.closest('[role="menuitem"]') ||
+      target.closest('.mantine-Menu-dropdown')
+    ) {
+      return;
+    }
+
+    navigate(`/elections/${election.id}`);
+  };
+
+  return (
+    <Table.Tr
+      key={election.id}
+      onClick={navigateToElectionSettings}
+      style={{ cursor: 'pointer' }}
+      aria-label={election.name + ' ' + 'Settings'}
+      role="button"
+      tabIndex={0}
+    >
+      <Table.Td>
+        <TableText>{election.name}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{election.description}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <TableText>{dayjs(election.modifiedAt).format('lll')}</TableText>
+      </Table.Td>
+      <Table.Td>
+        <BooleanBadge isTrue={election.configFrozen} />
+      </Table.Td>
+      <Table.Td>
+        <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
+          <ElectionsSettingsMenu
+            election={election}
+            targetElement={
+              <ActionIcon variant="subtle" aria-label="Settings">
+                <IconDots size={14} />
+              </ActionIcon>
+            }
+            onDelete={onDelete}
+            onMutate={onMutate}
+            onToggleFreeze={onToggleFreeze}
+            isMutating={isMutating}
+          />
+        </Group>
+      </Table.Td>
+    </Table.Tr>
+  );
+};
+
+export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
+  const { t } = useTranslation();
 
   return (
     <Table highlightOnHover={true}>
@@ -132,7 +136,11 @@ export const ElectionsTable = ({ data }: ElectionsTableProps): JSX.Element => {
           <Table.Th />
         </Table.Tr>
       </Table.Thead>
-      <Table.Tbody>{rows}</Table.Tbody>
+      <Table.Tbody>
+        {data.map((election) => (
+          <ElectionRow key={election.id} election={election} />
+        ))}
+      </Table.Tbody>
     </Table>
   );
 };

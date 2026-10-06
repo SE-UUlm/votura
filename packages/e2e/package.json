@@ -14,7 +14,7 @@
     "dotenv": "^17.2.0"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.3.0",
+    "@eslint/compat": "^2.1.1",
     "@playwright/test": "^1.53.2",
     "@repo/db": "*",
     "@repo/eslint-config": "*",
@@ -25,10 +25,10 @@
     "@types/wait-on": "^5.3.4",
     "@votura/backend": "*",
     "@votura/frontend": "*",
-    "eslint": "^9.25.1",
-    "prettier": "^3.5.3",
+    "eslint": "^10.11.0",
+    "prettier": "^3.9.9",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.31.0",
-    "wait-on": "^9.0.1"
+    "typescript-eslint": "^8.71.0",
+    "wait-on": "^9.5.1"
   }
 }

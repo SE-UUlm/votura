@@ -90,13 +90,13 @@ export const MutateBallotPaperSectionDrawer = ({
               <Stack>
                 <TextInput
                   withAsterisk
-                  label={'Name'}
+                  label={t('name', 'Name')}
                   placeholder={t('egComputerScienceDepartment', 'e.g. Computer Science Department')}
                   key={form.key('name')}
                   {...form.getInputProps('name')}
                 />
                 <Textarea
-                  label={'Description'}
+                  label={t('description', 'Description')}
                   placeholder={t(
                     'egTheBallotPaperSectionForStudentsOfTheComputerScienceStudentCouncil',
                     'e.g. The ballot paper section for students of the computer science student council ...',
@@ -109,7 +109,7 @@ export const MutateBallotPaperSectionDrawer = ({
                 />
                 <NumberInput
                   withAsterisk
-                  label={'Maximum votes'}
+                  label={t('maximumVotes', 'Maximum votes')}
                   key={form.key('maxVotes')}
                   {...form.getInputProps('maxVotes')}
                   {...(maxVotesMinimum ? { min: maxVotesMinimum } : undefined)}

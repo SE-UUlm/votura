@@ -1,5 +1,5 @@
 import type { OpenAPIV3 } from 'openapi-types';
-import { authenticatableUserObjectSchema, selectableUserObjectSchema } from '../../objects/user.js';
+import { editUserDataObjectSchema, selectableUserObjectSchema } from '../../objects/user.js';
 import {
   response400,
   response401,
@@ -32,7 +32,7 @@ export const userDetailsPathObject: OpenAPIV3.PathItemObject = {
       content: {
         // eslint-disable-next-line @typescript-eslint/naming-convention
         'application/json': {
-          schema: authenticatableUserObjectSchema as OpenAPIV3.SchemaObject,
+          schema: editUserDataObjectSchema as OpenAPIV3.SchemaObject,
         },
       },
     },
@@ -44,6 +44,7 @@ export const userDetailsPathObject: OpenAPIV3.PathItemObject = {
       },
       ...response400,
       ...response403,
+      ...response404,
       ...response406,
       ...response409,
       ...response415,

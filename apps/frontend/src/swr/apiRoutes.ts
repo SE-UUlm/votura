@@ -6,9 +6,10 @@ import type {
   SelectableUser,
   SelectableVoterGroup,
 } from '@repo/votura-validators';
+import { backendBaseUrl } from '../runtimeConfig.js';
 
 export const apiRoutes = {
-  base: import.meta.env.VITE_API_BASE_URL as string,
+  base: backendBaseUrl,
   elections: {
     base: '/elections',
     byId: (id: SelectableElection['id']): string => `/elections/${id}`,

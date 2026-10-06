@@ -8,6 +8,7 @@ export const seed = async (db: Kysely<DB>): Promise<void> => {
     .values({
       email: 'user@votura.org',
       passwordHash: await hashPassword('HelloVotura1!', getPepper()),
+      verified: true,
     })
     .returningAll()
     .executeTakeFirstOrThrow();

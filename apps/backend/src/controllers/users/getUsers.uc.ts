@@ -1,6 +1,8 @@
+import type { SelectableUser } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
+import { getAllUsers } from '../../services/users.service.js';
 
-export const getUsers = (_req: Request, res: Response<void>): void => {
-  // TODO #503: https://github.com/SE-UUlm/votura/issues/503
-  res.sendStatus(501);
+export const getUsers = async (_req: Request, res: Response<SelectableUser[]>): Promise<void> => {
+  const users = await getAllUsers();
+  res.status(200).json(users);
 };

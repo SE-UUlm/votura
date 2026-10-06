@@ -115,7 +115,7 @@ export const verifyVoterToken = async (token: string): Promise<VoterJwtPayload |
     };
 
     // get voter id from the token payload
-    const decodedPayload = jwt.decode(token);
+    const decodedPayload = jwt.decode(token, { json: true });
     const parseResult = uuidObject.safeParse(decodedPayload?.sub);
 
     if (!parseResult.success) {

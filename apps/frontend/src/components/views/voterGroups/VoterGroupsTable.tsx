@@ -3,6 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableVoterGroup } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import type { JSX, PropsWithChildren } from 'react';
+import { useTranslation } from 'react-i18next';
 import { useDeleteVoterGroup } from '../../../swr/voterGroups/useDeleteVoterGroup.ts';
 import { useUpdateVoterGroup } from '../../../swr/voterGroups/useUpdateVoterGroup.ts';
 import {
@@ -77,14 +78,15 @@ const VoterGroupsTableRow = ({ voterGroup }: VoterGroupsTableRowProps): JSX.Elem
 };
 
 export const VoterGroupsTable = ({ data }: VoterGroupsTableProps): JSX.Element => {
+  const { t } = useTranslation();
   return (
     <Table highlightOnHover={true}>
       <Table.Thead>
         <Table.Tr>
-          <Table.Th>Name</Table.Th>
-          <Table.Th>Description</Table.Th>
-          <Table.Th>Ballot Papers</Table.Th>
-          <Table.Th>Voters</Table.Th>
+          <Table.Th>{t('name', 'Name')}</Table.Th>
+          <Table.Th>{t('description', 'Description')}</Table.Th>
+          <Table.Th>{t('ballotPapers', 'Ballot Papers')}</Table.Th>
+          <Table.Th>{t('voters', 'Voters')}</Table.Th>
           <Table.Th />
         </Table.Tr>
       </Table.Thead>

@@ -9,7 +9,7 @@ import {
   Stack,
   ThemeIcon,
 } from '@mantine/core';
-import { IconBug, IconLogout, IconNotes, IconUsersGroup } from '@tabler/icons-react';
+import { IconBug, IconLogout, IconNotes, IconUsers, IconUsersGroup } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Outlet, useNavigate } from 'react-router';
@@ -74,17 +74,27 @@ export const AppShellLayout = (): JSX.Element => {
             <Divider pb={'md'} />
             <RoutingNavbarLink
               to={'/elections'}
-              label={'Elections'}
+              label={t('elections', 'Elections')}
               icon={<IconNotes size={16} />}
             />
             <Space h={'xs'} />
             <RoutingNavbarLink
               to={'/voterGroups'}
-              label={'Voter Groups & Tokens'}
+              label={t('voterGroupsTokens', 'Voter Groups & Tokens')}
               icon={<IconUsersGroup size={16} />}
             />
           </Box>
           <Box>
+            {accountDetails?.role === 'admin' ? (
+              <>
+                <RoutingNavbarLink
+                  to={'/accounts'}
+                  label={t('accounts', 'Accounts')}
+                  icon={<IconUsers size={16} />}
+                />
+                <Space h={'md'} />
+              </>
+            ) : null}
             <Divider pb={'md'} />
             <Flex justify={'space-between'} align={'center'} gap={'sm'}>
               {accountSection}

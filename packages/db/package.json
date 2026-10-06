@@ -3,6 +3,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
+    "build": "tsc -p tsconfig.build.json && mkdir -p dist/types && cp src/types/db.d.ts dist/types/db.d.ts",
     "format": "prettier --write .",
     "check-format": "prettier --check .",
     "postgres-up": "docker compose up -d",
@@ -20,23 +21,35 @@
     "pg": "^8.16.0"
   },
   "devDependencies": {
-    "@eslint/compat": "^1.3.0",
+    "@eslint/compat": "^2.1.1",
     "@repo/eslint-config": "*",
     "@repo/typescript-config": "*",
     "@testcontainers/postgresql": "^12.0.0",
     "@tsconfig/node22": "^22.0.1",
     "@types/pg": "^8.15.4",
-    "eslint": "^9.25.1",
+    "eslint": "^10.11.0",
     "kysely-codegen": "^0.20.0",
-    "prettier": "^3.5.3",
+    "prettier": "^3.9.9",
     "typescript": "^5.8.2",
-    "typescript-eslint": "^8.31.0"
+    "typescript-eslint": "^8.71.0"
   },
   "exports": {
-    ".": "./src/main.ts",
+    ".": {
+      "types": "./dist/main.d.ts",
+      "default": "./dist/main.js"
+    },
     "./types": "./src/types/db.d.ts",
-    "./migrateToLatest": "./src/migrateToLatest.ts",
-    "./genericContainer": "./src/genericContainer.ts",
-    "./seed": "./src/seed.ts"
+    "./migrateToLatest": {
+      "types": "./dist/migrateToLatest.d.ts",
+      "default": "./dist/migrateToLatest.js"
+    },
+    "./genericContainer": {
+      "types": "./dist/genericContainer.d.ts",
+      "default": "./dist/genericContainer.js"
+    },
+    "./seed": {
+      "types": "./dist/seed.d.ts",
+      "default": "./dist/seed.js"
+    }
   }
 }
