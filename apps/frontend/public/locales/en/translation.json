@@ -201,5 +201,6 @@
   "voteSuccessfullyCast": "We have received your vote for {{electionName}}.",
   "standardElection": "the Election",
   "backToHomePage": "Back to home page",
-  "votingFailedDescription": "Your vote could not be submitted. Please try again."
+  "votingFailedDescription": "Your vote could not be submitted. Please try again.",
+  "allowRevote": "Allow revote"
 }

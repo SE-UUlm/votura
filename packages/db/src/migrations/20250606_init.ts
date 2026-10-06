@@ -96,6 +96,9 @@ async function createElectionTable(db: Kysely<any>): Promise<void> {
     .addColumn(ElectionColumnName.allowInvalidVotes, 'boolean', (col) =>
       col.notNull().defaultTo(false),
     )
+    .addColumn(ElectionColumnName.allowRevote, 'boolean', (col) =>
+      col.notNull().defaultTo(true),
+    )
     .addColumn(ElectionColumnName.private, 'boolean', (col) => col.notNull().defaultTo(true))
     .addColumn(ElectionColumnName.pubKey, sql`numeric`)
     .addColumn(ElectionColumnName.privKey, sql`numeric`)

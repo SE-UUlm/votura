@@ -31,6 +31,7 @@ interface VoterElectionRow {
   electionVotingStartAt: Selectable<DBElection>['votingStartAt'];
   electionVotingEndAt: Selectable<DBElection>['votingEndAt'];
   electionAllowInvalidVotes: Selectable<DBElection>['allowInvalidVotes'];
+  electionAllowRevote: Selectable<DBElection>['allowRevote'];
   electionConfigFrozen: Selectable<DBElection>['configFrozen'];
   electionPubKey: Selectable<DBElection>['pubKey'];
   electionPrimeP: Selectable<DBElection>['primeP'];
@@ -69,6 +70,7 @@ async function getVoterElectionData(
       'e.votingStartAt as electionVotingStartAt',
       'e.votingEndAt as electionVotingEndAt',
       'e.allowInvalidVotes as electionAllowInvalidVotes',
+      'e.allowRevote as electionAllowRevote',
       'e.configFrozen as electionConfigFrozen',
       'e.pubKey as electionPubKey',
       'e.primeP as electionPrimeP',
@@ -106,6 +108,7 @@ function createElectionFromRow(row: VoterElectionRow): SelectableVotingElection 
     votingStartAt: row.electionVotingStartAt.toISOString(),
     votingEndAt: row.electionVotingEndAt.toISOString(),
     allowInvalidVotes: row.electionAllowInvalidVotes,
+    allowRevote: row.electionAllowRevote,
     configFrozen: row.electionConfigFrozen,
     pubKey: row.electionPubKey ?? undefined,
     primeP: row.electionPrimeP ?? undefined,

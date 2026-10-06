@@ -164,7 +164,7 @@ export const VotingElectionView = (): JSX.Element => {
 
       {/* Election information */}
       <Grid>
-        <Grid.Col span={{ base: 12, md: 8 }}>
+        <Grid.Col span={{ base: 12, md: 6 }}>
           <Stack gap="xs">
             <Title order={3}>{t('description', 'Description')}</Title>
 
@@ -187,18 +187,32 @@ export const VotingElectionView = (): JSX.Element => {
           </Stack>
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, md: 4 }}>
-          <Stack gap="xs">
-            <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Grid>
+            <Grid.Col span={6}>
+              <Stack gap="xs">
+                <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
 
-            <Text>{selectedElection.private ? t('Yes', 'Yes') : t('No', 'No')}</Text>
+                <Text>{selectedElection.private ? t('Yes', 'Yes') : t('No', 'No')}</Text>
 
-            <Title order={3} mt="xs">
-              {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
-            </Title>
+                <Title order={3} mt="xs">
+                  {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
+                </Title>
 
-            <Text>{selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}</Text>
-          </Stack>
+                <Text>
+                  {selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}
+                </Text>
+              </Stack>
+            </Grid.Col>
+
+            <Grid.Col span={6}>
+              <Stack gap="xs">
+                <Title order={3}>{t('allowRevote', 'Allow Revote')}</Title>
+
+                <Text>{selectedElection.allowRevote ? t('Yes', 'Yes') : t('No', 'No')}</Text>
+              </Stack>
+            </Grid.Col>
+          </Grid>
         </Grid.Col>
       </Grid>
       <Space h="md" />

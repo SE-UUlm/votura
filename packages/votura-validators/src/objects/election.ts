@@ -39,6 +39,10 @@ export const electionObject = z.object({
     description:
       'Define if a voter is allowed to submit a invalid Vote. There will always a warning message shown to the voter that his vote will be invalid.',
   }),
+  allowRevote: z.boolean().default(true).register(voturaMetadataRegistry, {
+    description:
+      'Define if a voter is allowed to submit a new vote after he has already submitted a valid vote. If `allowRevote` is set to `true`, the voter can submit a new vote and the old vote will be invalidated. If `allowRevote` is set to `false`, the voter can only submit one valid vote.',
+  }),
   pubKey: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'The public key to encrypt the vote of the voter. `pubKeyVotes = generator ^ privKeyVotes mod primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
@@ -68,6 +72,7 @@ export const insertableElectionObject = electionObject
     votingStartAt: true,
     votingEndAt: true,
     allowInvalidVotes: true,
+    allowRevote: true,
   })
   .refine(votingTimelineRefinement, {
     error: votingTimelineRefinementMessage,
@@ -91,6 +96,7 @@ export const selectableElectionObject = electionObject.pick({
   votingStartAt: true,
   votingEndAt: true,
   allowInvalidVotes: true,
+  allowRevote: true,
   configFrozen: true,
   pubKey: true,
   primeP: true,
@@ -112,6 +118,7 @@ export const updateableElectionObject = electionObject
     votingStartAt: true,
     votingEndAt: true,
     allowInvalidVotes: true,
+    allowRevote: true,
     private: true,
   })
   .refine(votingTimelineRefinement, {

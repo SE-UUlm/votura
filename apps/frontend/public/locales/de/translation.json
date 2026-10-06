@@ -201,5 +201,6 @@
   "voteSuccessfullyCast": "Wir haben deine Stimme für {{electionName}} erhalten.",
   "standardElection": "die Wahl",
   "backToHomePage": "Zurück zur Startseite",
-  "votingFailedDescription": "Deine Stimme konnte nicht abgegeben werden. Bitte versuche es erneut."
+  "votingFailedDescription": "Deine Stimme konnte nicht abgegeben werden. Bitte versuche es erneut.",
+  "allowRevote": "Erneute Abstimmung zulassen"
 }
