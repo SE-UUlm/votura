@@ -1,7 +1,7 @@
 import type { RequestPasswordResetUser } from '@repo/votura-validators';
 import useSWRMutation, { type SWRMutationResponse } from 'swr/mutation';
 import { apiRoutes } from './apiRoutes.ts';
-import { publicPosterFactory } from './publicPosterFactory.ts';
+import { posterFactory } from './posterFactory.ts';
 
 export const useRequestPasswordReset = (): SWRMutationResponse<
   void,
@@ -9,5 +9,5 @@ export const useRequestPasswordReset = (): SWRMutationResponse<
   string,
   RequestPasswordResetUser
 > => {
-  return useSWRMutation(apiRoutes.users.requestPasswordReset, publicPosterFactory());
+  return useSWRMutation(apiRoutes.users.requestPasswordReset, posterFactory());
 };
