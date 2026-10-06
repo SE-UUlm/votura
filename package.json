@@ -70,7 +70,6 @@
   },
   "overrides": {
     "tinypool": "^2.1.2",
-    "js-yaml": "^4.3.2",
     "serialize-javascript": "^7.0.5",
     "faker": "^10.5.0"
   },
