@@ -20,7 +20,7 @@ export const app = express();
 
 const apiLimiter = rateLimit({
   windowMs: 60 * 1000,
-  limit: 3,
+  limit: 120,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
 });
