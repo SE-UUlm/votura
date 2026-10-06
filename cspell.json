@@ -115,6 +115,7 @@
     "expressjs",
     "healthcheck",
     "isready",
-    "informatik"
+    "informatik",
+    "revote"
   ]
 }

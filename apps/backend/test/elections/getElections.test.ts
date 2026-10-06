@@ -39,6 +39,7 @@ describe('GET /elections', () => {
         votingStartAt: '2024-07-29T15:51:28.071Z',
         votingEndAt: '2024-07-30T15:51:28.071Z',
         allowInvalidVotes: false,
+        allowRevote: false,
       },
       user?.id,
     );

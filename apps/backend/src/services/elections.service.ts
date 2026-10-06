@@ -21,6 +21,7 @@ const electionTransformer = (election: Selectable<DBElection>): SelectableElecti
     votingStartAt: election.votingStartAt.toISOString(),
     votingEndAt: election.votingEndAt.toISOString(),
     allowInvalidVotes: election.allowInvalidVotes,
+    allowRevote: election.allowRevote,
     configFrozen: election.configFrozen,
     ...spreadableOptional(election, 'pubKey'),
     ...spreadableOptional(election, 'primeP'),
