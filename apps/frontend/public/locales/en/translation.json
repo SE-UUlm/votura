@@ -139,6 +139,7 @@
   "theInsertedVotingTokenIsInvalidPleaseTryAgain": "The inserted voting token is invalid. Please try again.",
   "theReturnedVotingTokenIsInvalidPleaseTryAgain": "The returned voting token is invalid. Please try again.",
   "thisWillGenerateNewVoterTokens": "This will generate new voter tokens.",
+  "tooManyRequestsPleaseTryAgainLater": "Too many requests. Please try again later.",
   "unfreeze": "Unfreeze",
   "unfreezeConfig": "Unfreeze config",
   "unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted": "Unfreezing an election allows configuration changes again, but all previously issued voter tokens become invalid, and any votes that have already been cast will be reset and no longer counted.",
