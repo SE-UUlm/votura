@@ -56,7 +56,7 @@ export const updateCandidateInBallotPaperSection = async (
     validationResult;
 
   // Proceed with adding / removing the candidate to / from the ballot paper section
-  let result: SelectableBallotPaperSection | null = null;
+  let result: SelectableBallotPaperSection | null;
   if (
     updateableBallotPaperSectionCandidate.operation === updateableCandidateOperationOptions.remove
   ) {

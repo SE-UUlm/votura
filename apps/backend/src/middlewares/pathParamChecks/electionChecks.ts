@@ -294,7 +294,7 @@ export async function checkElectionIsValid(
   const result = await isElectionValidCore(req.params.electionId);
 
   if (!result.isValid) {
-    let errorMessage = '';
+    let errorMessage;
 
     if (result.context !== undefined) {
       // Error requires an ID context
