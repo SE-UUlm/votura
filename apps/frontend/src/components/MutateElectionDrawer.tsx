@@ -27,7 +27,7 @@ export interface MutateElectionModalProps {
 
 export interface MutateElectionFormValues extends Pick<
   SelectableElection,
-  'name' | 'description' | 'allowInvalidVotes'
+  'name' | 'description' | 'allowInvalidVotes' | 'allowRevote'
 > {
   startDateTime: string;
   endDateTime: string | null;
@@ -73,6 +73,7 @@ export const MutateElectionDrawer = ({
         name: election.name,
         ...(election.description !== undefined ? { description: election.description } : undefined),
         allowInvalidVotes: election.allowInvalidVotes,
+        allowRevote: election.allowRevote,
         startDateTime: election.votingStartAt,
         endDateTime: election.votingEndAt,
       });
@@ -103,6 +104,7 @@ export const MutateElectionDrawer = ({
       name: formValues.name,
       ...(formValues.description ? { description: formValues.description } : undefined),
       allowInvalidVotes: formValues.allowInvalidVotes,
+      allowRevote: formValues.allowRevote,
       votingStartAt: new Date(formValues.startDateTime).toISOString(),
       votingEndAt: formValues.endDateTime ? new Date(formValues.endDateTime).toISOString() : '',
       private: true,
@@ -168,6 +170,11 @@ export const MutateElectionDrawer = ({
                   label={t('allowInvalidVotes', 'Allow invalid votes')}
                   key={form.key('allowInvalidVotes')}
                   {...form.getInputProps('allowInvalidVotes', { type: 'checkbox' })}
+                />
+                <Switch
+                  label={t('allowRevote', 'Allow revote')}
+                  key={form.key('allowRevote')}
+                  {...form.getInputProps('allowRevote', { type: 'checkbox' })}
                 />
               </Stack>
             </Drawer.Body>
