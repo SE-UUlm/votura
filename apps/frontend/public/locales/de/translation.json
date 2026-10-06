@@ -113,16 +113,10 @@
   "enterYourEmailAddressAndWeWillSendYouAPasswordResetLink": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen des Passworts.",
   "sendPasswordResetLink": "Link zum Zurücksetzen senden",
   "ifAnAccountExistsForThisEmailAddressWeHaveSentAPasswordResetLinkToIt": "Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir einen Link zum Zurücksetzen des Passworts an diese Adresse gesendet.",
-  "pasteTheTokenFromTheEmailOrUseTheLinkWeSentYou": "Fügen Sie das Token aus der E-Mail ein oder verwenden Sie den Link, den wir Ihnen gesendet haben.",
-  "passwordResetToken": "Token zum Zurücksetzen des Passworts",
-  "pasteTheTokenFromTheEmailHere": "Fügen Sie hier das Token aus der E-Mail ein.",
-  "invalidPasswordResetToken": "Ungültiges Token zum Zurücksetzen des Passworts.",
   "setNewPassword": "Neues Passwort festlegen",
   "passwordResetSuccessfullyPleaseLoginWithYourNewPassword": "Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie sich mit Ihrem neuen Passwort an.",
-  "couldNotResetPassword": "Passwort konnte nicht zurückgesetzt werden",
-  "theTokenIsInvalidOrHasExpiredPleaseRequestANewOne": "Das Token ist ungültig oder abgelaufen. Bitte fordern Sie ein neues an.",
-  "noTokenAnymore": "Kein Token mehr?",
-  "requestANewToken": "Neues Token anfordern",
   "forgotYourCurrentPassword": "Aktuelles Passwort vergessen?",
-  "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig."
+  "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig.",
+  "thisPasswordResetLinkIsInvalidOrHasExpired": "Dieser Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
+  "requestANewLink": "Neuen Link anfordern"
 }

@@ -191,15 +191,3 @@ export const getPasswordResetSuccessConfig = (): NotificationData => {
     color: 'green',
   };
 };
-
-export const getInvalidPasswordResetTokenConfig = (): NotificationData => {
-  return {
-    title: i18next.t('couldNotResetPassword', 'Could not reset password'),
-    message: i18next.t(
-      'theTokenIsInvalidOrHasExpiredPleaseRequestANewOne',
-      'The token is invalid or has expired. Please request a new one.',
-    ),
-    color: 'yellow',
-    autoClose: 15000,
-  };
-};
