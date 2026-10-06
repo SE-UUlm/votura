@@ -139,6 +139,7 @@
   "theInsertedVotingTokenIsInvalidPleaseTryAgain": "Das eingegebene Wahl-Token ist ungültig. Bitte versuchen Sie es erneut.",
   "theReturnedVotingTokenIsInvalidPleaseTryAgain": "Das zurückgesendete Wahl-Token ist ungültig. Bitte versuchen Sie es erneut.",
   "thisWillGenerateNewVoterTokens": "Dadurch werden neue Wahl-Tokens generiert.",
+  "tooManyRequestsPleaseTryAgainLater": "Zu viele Anfragen. Bitte versuchen Sie es später erneut.",
   "unfreeze": "Freigeben",
   "unfreezeConfig": "Konfiguration freigeben",
   "unfreezingAnElectionAllowsConfigurationChangesAgainButAllPreviouslyIssuedVoterTokensBecomeInvalidAndAnyVotesThatHaveAlreadyBeenCastWillBeResetAndNoLongerCounted": "Durch das Aufheben der Sperre einer Wahl sind Konfigurationsänderungen wieder möglich, jedoch werden alle zuvor ausgegebenen Wahl-Tokens ungültig, und bereits abgegebene Stimmen werden zurückgesetzt und nicht mehr gezählt.",

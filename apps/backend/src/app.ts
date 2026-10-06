@@ -3,6 +3,7 @@ import { response400Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
+import rateLimit from 'express-rate-limit';
 import helmet from 'helmet';
 import { setUsersJWTKeyPair } from './auth/generateJWTKeyPair.js';
 import { HttpStatusCode } from './httpStatusCode.js';
@@ -17,8 +18,16 @@ setUsersJWTKeyPair();
 
 export const app = express();
 
+const apiLimiter = rateLimit({
+  windowMs: 2 * 60 * 1000,
+  limit: 300,
+  standardHeaders: 'draft-8',
+  legacyHeaders: false,
+});
+
 app.use(helmet());
 app.use(cors());
+app.use(apiLimiter);
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json()); // parse JSON bodies
 app.use(httpLogger);
