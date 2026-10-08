@@ -88,8 +88,7 @@ export const sendPasswordResetEmail = async (email: string, rawToken: string): P
   const text =
     'You (or someone else) requested a password reset for your votura account.\n\n' +
     `Use the following link to reset your password:\n${resetLink}\n\n` +
-    `If the link does not work, use this token in the password reset form:\n${rawToken}\n\n` +
-    'This token is valid for one hour. If you did not request a password reset, you can ignore this email.';
+    'This link is valid for one hour. If you did not request a password reset, you can ignore this email.';
 
   try {
     await getTransporter().sendMail({
