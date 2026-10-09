@@ -31,7 +31,7 @@ export const useGetVoterElections: ParametrizedApiHook<
 
   const shouldFetch = !skipFetchByOption && tokenFromStorage !== null;
 
-  let key: VoterElectionsKey | null = null;
+  let key: VoterElectionsKey | null;
   if (shouldFetch) {
     key = {
       url: '/voting/getElections',

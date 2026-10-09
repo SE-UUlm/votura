@@ -209,5 +209,14 @@
   "voteSuccessfullyCast": "We have received your vote for {{electionName}}.",
   "standardElection": "the Election",
   "backToHomePage": "Back to home page",
-  "votingFailedDescription": "Your vote could not be submitted. Please try again."
+  "votingFailedDescription": "Your vote could not be submitted. Please try again.",
+  "enterYourEmailAddressAndWeWillSendYouAPasswordResetLink": "Enter your email address and we will send you a password reset link.",
+  "sendPasswordResetLink": "Send password reset link",
+  "ifAnAccountExistsForThisEmailAddressWeHaveSentAPasswordResetLinkToIt": "If an account exists for this email address, we have sent a password reset link to it.",
+  "setNewPassword": "Set new password",
+  "passwordResetSuccessfullyPleaseLoginWithYourNewPassword": "Password reset successfully. Please login with your new password.",
+  "forgotYourCurrentPassword": "Forgot your current password?",
+  "theLinkIsValidForOneHour": "The link is valid for one hour.",
+  "thisPasswordResetLinkIsInvalidOrHasExpired": "This password reset link is invalid or has expired.",
+  "requestANewLink": "Request a new link"
 }

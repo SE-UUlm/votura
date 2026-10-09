@@ -89,7 +89,7 @@ export class BallotPaperSectionDecryption {
       throw new Error('Lookup table not initialized. Call calculateLookupTable() first.');
     }
 
-    let orderedCandidateIds: string[] = [];
+    let orderedCandidateIds: string[];
     try {
       orderedCandidateIds = extractCandidateIds(section);
     } catch {
@@ -101,7 +101,7 @@ export class BallotPaperSectionDecryption {
       return SectionDecryptionError.verificationFailed;
     }
 
-    let orderedVoteCounts: number[] = [];
+    let orderedVoteCounts: number[];
     try {
       orderedVoteCounts = this.decryptAndConvertVotes(orderedCiphertexts);
     } catch {
