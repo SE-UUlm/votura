@@ -55,7 +55,7 @@ export const CandidateRow = ({
       <MutateCandidateDrawer
         opened={mutateCandidateContextOpen}
         onClose={mutateCandidateActions.close}
-        mutateButtonText={t('saveChanged', 'Save changed')}
+        mutateButtonText={t('saveChanges', 'Save changes')}
         onMutate={onCandidateMutate}
         title={t('editCandidate', 'Edit candidate')}
         isMutating={isMutatingUpdateCandidate}
