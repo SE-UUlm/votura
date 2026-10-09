@@ -59,14 +59,10 @@ export const EditAccountDrawer = ({
       return;
     }
 
-    if (user) {
-      form.setInitialValues({
-        admin: user.role === 'admin',
-        active: user.active,
-      });
-    } else {
-      form.reset();
-    }
+    form.setValues({
+      admin: user.role === 'admin',
+      active: user.active,
+    });
   }, [opened]);
 
   const onMutateTransform = async (): Promise<void> => {
