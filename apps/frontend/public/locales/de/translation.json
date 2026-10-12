@@ -204,9 +204,9 @@
   "castVote": "Abstimmung absenden",
   "votingNotPossible": "Abstimmung nicht möglich",
   "votingNotPossibleDescription": "Die Abstimmung für {{electionName}} hat möglicherweise noch nicht begonnen.",
-  "invalidVotingTokenDescription": "Der eingegebene Abstimmungstoken ist ungültig. Bitte versuche es erneut.",
-  "enterVotingToken": "Bitte geben Sie Ihren Abstimmungstoken ein",
-  "votingTokenSpace": "Abstimmungstoken",
+  "invalidVotingTokenDescription": "Der eingegebene Wahl-Token ist ungültig. Bitte versuche es erneut.",
+  "enterVotingToken": "Bitte geben Sie Ihren Wahl-Token ein",
+  "votingTokenSpace": "Wahl-Token",
   "voteSuccessfullyCast": "Wir haben deine Stimme für {{electionName}} erhalten.",
   "standardElection": "die Wahl",
   "backToHomePage": "Zurück zur Startseite",
@@ -219,5 +219,10 @@
   "forgotYourCurrentPassword": "Aktuelles Passwort vergessen?",
   "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig.",
   "thisPasswordResetLinkIsInvalidOrHasExpired": "Dieser Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
-  "requestANewLink": "Neuen Link anfordern"
+  "requestANewLink": "Neuen Link anfordern",
+  "validateMyVote": "Meine Wahl validieren",
+  "pleaseEnterYourVoteCipherText": "Bitte geben Sie Ihr Wahl-Chiffre ein",
+  "checkMyVote": "Überprüfe meine Stimme",
+  "invalidCipherText": "Ungültiger Chiffretext",
+  "cipherText": "Chiffretext"
 }

@@ -177,7 +177,7 @@ export async function getSelectableVotingElectionForVoter(
 }
 
 /**
- * Checks wether the voter with the given voterId is allowed to vote on the given ballot paper.
+ * Checks whether the voter with the given voterId is allowed to vote on the given ballot paper.
  * This is the case if the ballot paper exists, is assigned to the voter and the voter has not voted yet.
  * Before allowing a vote, one should also check if the election the ballot paper belongs to is votable (has started and not ended).
  *

@@ -44,7 +44,7 @@ export class BallotPaperSectionEncryption {
   /**
    * Encrypts a single ballot paper section and returns the encryption as EncryptedSection.
    * Expects that the ballot paper the section stems from has been validated using the zod plainBallotPaper schema.
-   * Additionally returns an array of AuditableVotes needed for the auditing process.
+   * Additionally, returns an array of AuditableVotes needed for the auditing process.
    * @param section The ballot paper section to encrypt
    * @param sectionId The ID of the section being processed
    * @returns Encryption of a single ballot paper section, and all AuditableVotes for every vote
