@@ -1,24 +1,35 @@
+import axios, { AxiosError } from 'axios';
+import i18next from 'i18next';
 import { api } from './api.ts';
 import { getAuthLocalStorage } from './authTokens.ts';
-import { request } from './requester.ts';
+import { hasMessage } from './hasMessage.ts';
 
 export const deleter = async (url: string): Promise<null> => {
-  await request(
-    () => {
-      const authTokens = getAuthLocalStorage();
+  try {
+    const authTokens = getAuthLocalStorage();
 
-      return api.delete(url, {
-        headers: {
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          Accept: 'application/json',
-          // eslint-disable-next-line @typescript-eslint/naming-convention
-          ...(authTokens ? { Authorization: `Bearer ${authTokens.accessToken}` } : {}),
-        },
-      });
-    },
-    'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
-    'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
-  );
+    await api.delete(url, {
+      headers: {
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        Accept: 'application/json',
+        // eslint-disable-next-line @typescript-eslint/naming-convention
+        ...(authTokens ? { Authorization: `Bearer ${authTokens.accessToken}` } : {}),
+      },
+    });
 
-  return null;
+    return null;
+  } catch (error: unknown) {
+    if (axios.isAxiosError(error)) {
+      const errorMessage =
+        error.response?.data !== undefined && hasMessage(error.response.data)
+          ? error.response.data.message
+          : i18next.t(
+              'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+              'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
+            );
+      throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
+    }
+
+    throw error;
+  }
 };

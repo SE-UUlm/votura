@@ -31,12 +31,7 @@ createRoot(document.getElementById('root')!).render(
           }
         },
         onErrorRetry: (error, _key, config, revalidate, { retryCount }): void => {
-          const skippedErrors = [400, 401, 402, 403, 405, 406, 407, 411, 413, 415, 429];
-          if (
-            isAxiosError(error) &&
-            typeof error.response?.status === 'number' &&
-            skippedErrors.includes(error.response?.status)
-          ) {
+          if (isAxiosError(error) && error.response?.status === 429) {
             return;
           }
 
