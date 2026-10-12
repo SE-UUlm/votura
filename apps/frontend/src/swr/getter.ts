@@ -20,16 +20,18 @@ export const getter = async (url: string): Promise<unknown> => {
     return response.data;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data !== undefined && hasMessage(error.response.data)
-          ? error.response.data.message
-          : i18next.t(
-              'weEncounteredAnUnexpectedErrorWhileFetchingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
-              'We encountered an unexpected error while fetching a resource. Please try again later or get in contact with us.',
-            );
+      let errorMessage;
+      if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+        errorMessage = error.response.data.message;
+      } else {
+        errorMessage = i18next.t(
+          'weEncounteredAnUnexpectedErrorWhileFetchingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+          'We encountered an unexpected error while fetching a resource. Please try again later or get in contact with us.',
+        );
+      }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
+    } else {
+      throw error;
     }
-
-    throw error;
   }
 };

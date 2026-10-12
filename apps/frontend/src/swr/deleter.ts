@@ -20,16 +20,18 @@ export const deleter = async (url: string): Promise<null> => {
     return null;
   } catch (error: unknown) {
     if (axios.isAxiosError(error)) {
-      const errorMessage =
-        error.response?.data !== undefined && hasMessage(error.response.data)
-          ? error.response.data.message
-          : i18next.t(
-              'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
-              'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
-            );
+      let errorMessage;
+      if (error.response?.data !== undefined && hasMessage(error.response.data)) {
+        errorMessage = error.response.data.message;
+      } else {
+        errorMessage = i18next.t(
+          'weEncounteredAnUnexpectedErrorWhileDeletingAResourcePleaseTryAgainLaterOrGetInContactWithUs',
+          'We encountered an unexpected error while deleting a resource. Please try again later or get in contact with us.',
+        );
+      }
       throw new AxiosError(errorMessage, error.code, error.config, error.request, error.response);
+    } else {
+      throw error;
     }
-
-    throw error;
   }
 };
