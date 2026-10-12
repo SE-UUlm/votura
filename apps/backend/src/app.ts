@@ -1,5 +1,5 @@
 import { httpLogger, logger } from '@repo/logger';
-import { response400Object, response500Object } from '@repo/votura-validators';
+import { response400Object, response429Object, response500Object } from '@repo/votura-validators';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { type NextFunction, type Request, type Response } from 'express';
@@ -20,9 +20,12 @@ export const app = express();
 
 const apiLimiter = rateLimit({
   windowMs: 2 * 60 * 1000,
-  limit: 300,
+  limit: 3,
   standardHeaders: 'draft-8',
   legacyHeaders: false,
+  handler: (_req, res) => {
+    res.status(HttpStatusCode.tooManyRequests).json(response429Object.parse({}));
+  },
 });
 
 app.use(helmet());
