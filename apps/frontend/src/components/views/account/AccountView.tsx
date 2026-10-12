@@ -1,4 +1,5 @@
 import {
+  Anchor,
   Badge,
   Box,
   Button,
@@ -20,6 +21,7 @@ import { insertableUserObject } from '@repo/votura-validators';
 import { IconBug } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router';
 import { getUserIdFromAuthLocalStorage } from '../../../swr/authTokens.ts';
 import { useChangePassword } from '../../../swr/useChangePassword.ts';
 import { useGetUser } from '../../../swr/useGetUser.ts';
@@ -40,6 +42,7 @@ export const AccountView = (): JSX.Element => {
 
   const { data, isLoading, error } = useGetUser(userId);
   const { trigger: triggerChangePassword, isMutating } = useChangePassword();
+  const navigate = useNavigate();
   const form = useForm({
     mode: 'uncontrolled',
     initialValues: {
@@ -175,6 +178,21 @@ export const AccountView = (): JSX.Element => {
               <Button type={'submit'} loading={isMutating}>
                 {t('changePassword', 'Change password')}
               </Button>
+              <Divider />
+              <Group justify="space-between">
+                <Text size={'sm'}>
+                  {t('forgotYourCurrentPassword', 'Forgot your current password?')}
+                </Text>
+                <Anchor
+                  component={'button'}
+                  type={'button'}
+                  variant="transparent"
+                  size={'sm'}
+                  onClick={(): void | Promise<void> => navigate('/forgotPassword')}
+                >
+                  {t('resetPassword', 'Reset password')}
+                </Anchor>
+              </Group>
             </Stack>
           </Box>
         </Flex>

@@ -180,3 +180,14 @@ export const getDeleteSuccessBallotPaperSectionConfig = (
     message: `The ballot paper section "${name}" has been deleted.`,
   };
 };
+
+export const getPasswordResetSuccessConfig = (): NotificationData => {
+  return {
+    title: i18next.t('success', 'Success'),
+    message: i18next.t(
+      'passwordResetSuccessfullyPleaseLoginWithYourNewPassword',
+      'Password reset successfully. Please login with your new password.',
+    ),
+    color: 'green',
+  };
+};
