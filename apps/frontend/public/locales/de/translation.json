@@ -204,5 +204,14 @@
   "voteSuccessfullyCast": "Wir haben deine Stimme für {{electionName}} erhalten.",
   "standardElection": "die Wahl",
   "backToHomePage": "Zurück zur Startseite",
-  "votingFailedDescription": "Deine Stimme konnte nicht abgegeben werden. Bitte versuche es erneut."
+  "votingFailedDescription": "Deine Stimme konnte nicht abgegeben werden. Bitte versuche es erneut.",
+  "enterYourEmailAddressAndWeWillSendYouAPasswordResetLink": "Geben Sie Ihre E-Mail-Adresse ein und wir senden Ihnen einen Link zum Zurücksetzen des Passworts.",
+  "sendPasswordResetLink": "Link zum Zurücksetzen senden",
+  "ifAnAccountExistsForThisEmailAddressWeHaveSentAPasswordResetLinkToIt": "Falls ein Konto mit dieser E-Mail-Adresse existiert, haben wir einen Link zum Zurücksetzen des Passworts an diese Adresse gesendet.",
+  "setNewPassword": "Neues Passwort festlegen",
+  "passwordResetSuccessfullyPleaseLoginWithYourNewPassword": "Passwort wurde erfolgreich zurückgesetzt. Bitte melden Sie sich mit Ihrem neuen Passwort an.",
+  "forgotYourCurrentPassword": "Aktuelles Passwort vergessen?",
+  "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig.",
+  "thisPasswordResetLinkIsInvalidOrHasExpired": "Dieser Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
+  "requestANewLink": "Neuen Link anfordern"
 }
