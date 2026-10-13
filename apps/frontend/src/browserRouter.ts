@@ -18,6 +18,7 @@ import { VotingElectionView } from './components/views/voting/VotingElectionView
 import { VotingHomeView } from './components/views/voting/VotingHomeView.tsx';
 import { VotingSubmitView } from './components/views/voting/VotingSubmitView.tsx';
 import { VotingSuccessView } from './components/views/voting/VotingSuccessView.tsx';
+import { VoteValidationView } from './components/views/login/VoteValidationView.tsx';
 
 export const browserRouter = createBrowserRouter([
   {
@@ -28,6 +29,11 @@ export const browserRouter = createBrowserRouter([
     path: '/vote',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: VoterView,
+  },
+  {
+    path: '/validate',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: VoteValidationView,
   },
   {
     path: '/login',
