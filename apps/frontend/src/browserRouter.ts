@@ -18,7 +18,7 @@ import { VotingElectionView } from './components/views/voting/VotingElectionView
 import { VotingHomeView } from './components/views/voting/VotingHomeView.tsx';
 import { VotingSubmitView } from './components/views/voting/VotingSubmitView.tsx';
 import { VotingSuccessView } from './components/views/voting/VotingSuccessView.tsx';
-import { VoteValidationView } from './components/views/login/VoteValidationView.tsx';
+import { VoteValidationView } from './components/views/voteValidation/VoteValidationView.tsx';
 
 export const browserRouter = createBrowserRouter([
   {
