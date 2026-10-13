@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "This workspace contains the frontend for votura.",
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
