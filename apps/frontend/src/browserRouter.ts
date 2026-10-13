@@ -9,7 +9,9 @@ import { AccountView } from './components/views/account/AccountView.tsx';
 import { AccountsView } from './components/views/accounts/AccountsView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
+import { ForgotPasswordView } from './components/views/login/ForgotPasswordView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
+import { ResetPasswordView } from './components/views/login/ResetPasswordView.tsx';
 import { SetPasswordView } from './components/views/login/SetPasswordView.tsx';
 import { VoterView } from './components/views/login/VoterView.tsx';
 import { VoterGroupsView } from './components/views/voterGroups/VoterGroupsView.tsx';
@@ -37,6 +39,16 @@ export const browserRouter = createBrowserRouter([
     path: '/set-password',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: SetPasswordView,
+  },
+  {
+    path: '/forgotPassword',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: ForgotPasswordView,
+  },
+  {
+    path: '/resetPassword',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: ResetPasswordView,
   },
   {
     // eslint-disable-next-line @typescript-eslint/naming-convention

@@ -8,7 +8,7 @@ test('should redirect to login when not logged in', async ({ page }) => {
 test('should reject unknown credentials', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Email').fill('user@votura.org');
-  await page.getByLabel('Password').fill('1234');
+  await page.getByRole('textbox', { name: 'Password' }).fill('1234');
   await page.getByRole('button', { name: 'Login' }).click();
 
   await expect(page.getByRole('alert')).toBeVisible();
@@ -27,7 +27,7 @@ test('should reject invalid email format', async ({ page }) => {
 test('should login', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Email').fill('user@votura.org');
-  await page.getByLabel('Password').fill('HelloVotura1!');
+  await page.getByRole('textbox', { name: 'Password' }).fill('HelloVotura1!');
   await page.getByRole('button', { name: 'Login' }).click();
 
   await expect(page).toHaveURL('/elections');
@@ -49,7 +49,7 @@ test('should login', async ({ page }) => {
 test('should logout', async ({ page }) => {
   await page.goto('/login');
   await page.getByLabel('Email').fill('user@votura.org');
-  await page.getByLabel('Password').fill('HelloVotura1!');
+  await page.getByRole('textbox', { name: 'Password' }).fill('HelloVotura1!');
   await page.getByRole('button', { name: 'Login' }).click();
   await expect(page).toHaveURL('/elections');
   await page.getByRole('button', { name: 'Logout' }).click();

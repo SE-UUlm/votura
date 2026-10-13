@@ -108,6 +108,7 @@ export const useDownloadVoterGroups = (
     }
 
     if (downloadError !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       handleDownloadFailed();
       return;
     }
