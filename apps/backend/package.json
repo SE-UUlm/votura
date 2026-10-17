@@ -1,46 +1,8 @@
 {
   "name": "@votura/backend",
   "version": "0.0.0",
+  "type": "module",
   "description": "This workspace contains the backend for votura.",
-  "keywords": [
-    "voting"
-  ],
-  "homepage": "https://se-uulm.github.io/votura/",
-  "bugs": {
-    "url": "https://github.com/SE-UUlm/votura/issues"
-  },
-  "contributors": [
-    {
-      "name": "Thorben Carl",
-      "email": "thorben.carl@uni-ulm.decom",
-      "url": "https://github.com/ThorbenCarl"
-    },
-    {
-      "name": "Sören S. Hoffmann",
-      "email": "soeren.hoffmann@uni-ulm.decom",
-      "url": "https://github.com/shoffma"
-    },
-    {
-      "name": "Johannes Kortmann",
-      "email": "Johannes.kortmann@uni-ulm.decom",
-      "url": "https://github.com/JKortmann"
-    },
-    {
-      "name": "David Sievers",
-      "email": "david.sievers@uni-ulm.decom",
-      "url": "https://github.com/dsiev"
-    },
-    {
-      "name": "Alexander Raschke",
-      "email": "alexander.raschke@uni-ulm.de",
-      "url": "https://github.com/araschke"
-    }
-  ],
-  "license": "MIT",
-  "author": {
-    "name": "University of Ulm",
-    "url": "https://www.uni-ulm.de"
-  },
   "scripts": {
     "format": "prettier --write .",
     "check-format": "prettier --check .",
@@ -50,7 +12,6 @@
     "start": "tsx src/main.ts",
     "lint": "eslint"
   },
-  "type": "module",
   "devDependencies": {
     "@eslint/compat": "^2.1.1",
     "@repo/eslint-config": "*",
@@ -67,9 +28,9 @@
     "@types/supertest": "^7.2.1",
     "@vitest/coverage-v8": "^5.0.2",
     "@vitest/ui": "^5.0.2",
-    "eslint": "^10.11.0",
+    "eslint": "^10.12.0",
     "lodash": "^4.18.1",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "supertest": "^7.2.2",
     "tsx": "^4.19.4",
     "typescript": "^5.8.2",
@@ -85,6 +46,7 @@
     "cors": "^2.8.5",
     "dotenv": "^17.2.0",
     "express": "^5.1.0",
+    "express-rate-limit": "^8.7.1",
     "helmet": "^8.1.0",
     "jsonwebtoken": "^9.0.2",
     "kysely": "^0.28.2",

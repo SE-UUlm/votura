@@ -36,6 +36,26 @@
       "url": "https://github.com/dsiev"
     },
     {
+      "name": "Jens Ostertag",
+      "email": "jens.ostertag@uni-ulm.de",
+      "url": "https://github.com/JensOstertag"
+    },
+    {
+      "name": "Phuong Thi Huynh",
+      "email": "phuong-1.nguyen@uni-ulm.de",
+      "url": "https://github.com/twnxthi"
+    },
+    {
+      "name": "Jonas Lilienbecker",
+      "email": "jonas.lilienbecker@uni-ulm.de",
+      "url": "https://github.com/joggerbra"
+    },
+    {
+      "name": "Pascal Schenk",
+      "email": "pascal.schenk@uni-ulm.de",
+      "url": "https://github.com/pasionline"
+    },
+    {
       "name": "Alexander Raschke",
       "email": "alexander.raschke@uni-ulm.de",
       "url": "https://github.com/araschke"
@@ -61,8 +81,8 @@
     "@cspell/dict-de-de": "^4.1.2",
     "@eslint/compat": "^2.1.1",
     "cspell": "^10.3.6",
-    "eslint": "^10.11.0",
-    "prettier": "^3.9.9",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
     "prettier-plugin-organize-imports": "^4.3.0",
     "turbo": "^2.10.7",
     "typescript": "^5.8.2",

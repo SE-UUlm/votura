@@ -3,6 +3,7 @@
   "private": true,
   "version": "0.0.0",
   "type": "module",
+  "description": "This workspace contains the frontend for votura.",
   "scripts": {
     "start": "vite",
     "build": "tsc -b && vite build",
@@ -14,11 +15,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@mantine/core": "^9.6.3",
-    "@mantine/dates": "^9.6.3",
-    "@mantine/form": "^9.6.3",
-    "@mantine/hooks": "^9.6.3",
-    "@mantine/notifications": "^9.6.3",
+    "@mantine/core": "^9.7.1",
+    "@mantine/dates": "^9.7.1",
+    "@mantine/form": "^9.7.1",
+    "@mantine/hooks": "^9.7.1",
+    "@mantine/notifications": "^9.7.1",
     "@repo/votura-ballot-box": "*",
     "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
@@ -31,7 +32,7 @@
     "i18next-http-backend": "^4.0.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-i18next": "^17.0.8",
+    "react-i18next": "^17.0.16",
     "react-router": "^8.3.0",
     "swr": "^2.3.3",
     "zod": "^4.5.4"
@@ -40,16 +41,16 @@
     "@eslint/compat": "^2.1.1",
     "@types/react": "^19.1.2",
     "@types/react-dom": "^19.1.2",
-    "@vitejs/plugin-react": "^6.1.1",
+    "@vitejs/plugin-react": "^6.1.2",
     "baseline-browser-mapping": "^2.11.13",
-    "eslint": "^10.11.0",
+    "eslint": "^10.12.0",
     "eslint-plugin-react-hooks": "^7.1.1",
     "eslint-plugin-react-refresh": "^0.5.7",
     "postcss": "^8.5.23",
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
-    "prettier": "^3.9.9",
+    "prettier": "^3.9.10",
     "typescript": "^5.8.2",
-    "vite": "^8.3.1"
+    "vite": "^8.3.4"
   }
 }

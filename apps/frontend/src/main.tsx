@@ -30,6 +30,19 @@ createRoot(document.getElementById('root')!).render(
             });
           }
         },
+        onErrorRetry: (error, _key, config, revalidate, { retryCount }): void => {
+          if (isAxiosError(error) && error.response?.status === 429) {
+            return;
+          }
+
+          if (retryCount >= 3) {
+            return;
+          }
+
+          window.setTimeout(() => {
+            void revalidate({ retryCount: retryCount + 1 });
+          }, config.errorRetryInterval);
+        },
       }}
     >
       <MantineProvider>
