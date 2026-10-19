@@ -4,17 +4,17 @@ import { notifications } from '@mantine/notifications';
 import { passwordResetUserObject } from '@repo/votura-validators';
 import { type JSX, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { useNavigate } from 'react-router';
+import { useNavigate, useSearchParams } from 'react-router';
 import { useSetPassword } from '../../../swr/useSetPassword.ts';
 
 export const SetPasswordView = (): JSX.Element => {
   const { t } = useTranslation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
   // Get userId and otp from GET parameters
-  const parameters = new URLSearchParams(window.location.search);
-  const userId = parameters.get('userId');
-  const otp = parameters.get('otp');
+  const userId = searchParams.get('userId');
+  const otp = searchParams.get('otp');
 
   useEffect(() => {
     if (userId === null || otp === null) {
