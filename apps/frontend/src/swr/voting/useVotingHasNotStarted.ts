@@ -18,8 +18,10 @@ export const useVotingHasNotStarted = (votingStartAt?: string): boolean => {
       const delay = votingStart - Date.now();
 
       if (delay <= 0) {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHasNotStarted(false);
       } else {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setHasNotStarted(true);
 
         timeout = window.setTimeout((): void => {

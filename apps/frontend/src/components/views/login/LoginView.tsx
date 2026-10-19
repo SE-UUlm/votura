@@ -172,7 +172,13 @@ export const LoginView = (): JSX.Element => {
           <Divider />
           <Group justify="space-between">
             <Text size={'sm'}>{t('cantLoginAnymore', "Can't login anymore?")}</Text>
-            <Anchor component={'button'} variant="transparent" size={'sm'}>
+            <Anchor
+              component={'button'}
+              type={'button'}
+              variant="transparent"
+              size={'sm'}
+              onClick={(): void | Promise<void> => navigate('/forgotPassword')}
+            >
               {t('resetPassword', 'Reset password')}
             </Anchor>
           </Group>

@@ -36,6 +36,26 @@
       "url": "https://github.com/dsiev"
     },
     {
+      "name": "Jens Ostertag",
+      "email": "jens.ostertag@uni-ulm.de",
+      "url": "https://github.com/JensOstertag"
+    },
+    {
+      "name": "Phuong Thi Huynh",
+      "email": "phuong-1.nguyen@uni-ulm.de",
+      "url": "https://github.com/twnxthi"
+    },
+    {
+      "name": "Jonas Lilienbecker",
+      "email": "jonas.lilienbecker@uni-ulm.de",
+      "url": "https://github.com/joggerbra"
+    },
+    {
+      "name": "Pascal Schenk",
+      "email": "pascal.schenk@uni-ulm.de",
+      "url": "https://github.com/pasionline"
+    },
+    {
       "name": "Alexander Raschke",
       "email": "alexander.raschke@uni-ulm.de",
       "url": "https://github.com/araschke"
@@ -59,14 +79,20 @@
   },
   "devDependencies": {
     "@cspell/dict-de-de": "^4.1.2",
-    "@eslint/compat": "^1.3.0",
+    "@eslint/compat": "^2.1.1",
+    "@types/node": "^26.6.5",
     "cspell": "^10.3.6",
-    "eslint": "^9.25.1",
-    "prettier": "^3.5.3",
+    "eslint": "^10.12.0",
+    "prettier": "^3.9.10",
     "prettier-plugin-organize-imports": "^4.3.0",
     "turbo": "^2.10.7",
     "typescript": "^5.8.2",
     "vitest": "^5.0.3"
+  },
+  "overrides": {
+    "tinypool": "^2.1.2",
+    "serialize-javascript": "^7.0.5",
+    "faker": "^10.5.0"
   },
   "packageManager": "npm@11.3.0",
   "engines": {
