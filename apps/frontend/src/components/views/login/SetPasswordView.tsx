@@ -1,6 +1,7 @@
 import { Box, Button, Center, Container, PasswordInput, Stack, Title } from '@mantine/core';
 import { useForm } from '@mantine/form';
 import { notifications } from '@mantine/notifications';
+import { passwordResetUserObject } from '@repo/votura-validators';
 import { type JSX, useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -28,6 +29,23 @@ export const SetPasswordView = (): JSX.Element => {
     initialValues: {
       newPassword: '',
       newPasswordVerification: '',
+    },
+    validate: {
+      newPassword: (value) => {
+        const parsed = passwordResetUserObject.shape.password.safeParse(value);
+        if (!parsed.success) {
+          return t('passwordDoesNotMeetRequirements', 'Password does not meet requirements.');
+        }
+
+        return null;
+      },
+      newPasswordVerification: (value, values) => {
+        if (value !== values.newPassword) {
+          return t('passwordsDoNotMatch', 'Passwords do not match.');
+        }
+
+        return null;
+      },
     },
   });
 
