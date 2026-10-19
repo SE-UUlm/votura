@@ -18,9 +18,9 @@ export const SetPasswordView = (): JSX.Element => {
 
   useEffect(() => {
     if (userId === null || otp === null) {
-      navigate('/login');
+      navigate('/login', { replace: true });
     }
-  });
+  }, [navigate, otp, userId]);
 
   const { trigger, isMutating } = useSetPassword();
 
