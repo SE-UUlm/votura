@@ -12,7 +12,7 @@ export const getElections = async (
 ): Promise<void> => {
   const loggedInUser = res.locals.user;
 
-  let elections = [];
+  let elections;
   if (loggedInUser.role === 'admin') {
     elections = await getAllElections();
   } else {
