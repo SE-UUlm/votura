@@ -17,6 +17,7 @@ export const useUpdateElection = (
     {
       onSuccess: () => {
         void mutate(apiRoutes.elections.base);
+        void mutate(apiRoutes.elections.byId(electionId));
       },
     },
   );
