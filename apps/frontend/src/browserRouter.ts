@@ -146,4 +146,8 @@ export const browserRouter = createBrowserRouter([
       },
     ],
   },
+  {
+    path: '*',
+    loader: (): Response => redirect('/'),
+  },
 ]);
