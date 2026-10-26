@@ -73,7 +73,10 @@ export const VoteValidationView = (): JSX.Element => {
 
       if (typeof response.data?.isValid !== 'boolean') {
         throw new Error(
-          t('invalidVoteValidationResponse', 'The validation service returned an invalid response.'),
+          t(
+            'invalidVoteValidationResponse',
+            'The validation service returned an invalid response.',
+          ),
         );
       }
 
@@ -89,7 +92,10 @@ export const VoteValidationView = (): JSX.Element => {
       if (axios.isAxiosError<{ message?: string }>(error)) {
         setValidationMessage(
           error.response?.data?.message ??
-            t('voteValidationRequestFailed', 'Could not complete vote validation. Please try again.'),
+            t(
+              'voteValidationRequestFailed',
+              'Could not complete vote validation. Please try again.',
+            ),
         );
       } else if (error instanceof Error) {
         setValidationMessage(error.message);
@@ -140,6 +146,7 @@ export const VoteValidationView = (): JSX.Element => {
           </Box>
         </Stack>
       </Center>
+
       <Modal
         opened={validationModalOpened}
         onClose={(): void => {
