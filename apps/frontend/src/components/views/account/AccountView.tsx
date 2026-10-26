@@ -164,6 +164,10 @@ export const AccountView = (): JSX.Element => {
               <PasswordInput
                 withAsterisk
                 label={t('newPassword', 'New password')}
+                description={t(
+                  'passwordRequirements',
+                  'At least 12 characters with an uppercase letter, a lowercase letter, a number and one of #?!@$%^&*-',
+                )}
                 placeholder={t('newPassword', 'New password')}
                 key={form.key('newPassword')}
                 {...form.getInputProps('newPassword')}
