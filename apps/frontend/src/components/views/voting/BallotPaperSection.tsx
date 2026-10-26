@@ -2,7 +2,7 @@ import { Grid, Paper, Space, Stack, Text, Title } from '@mantine/core';
 import type { SelectableVotingElection } from '@repo/votura-validators';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
-import type { Votes } from '../../../utils/createPlainFilledBallotPaper.ts';
+import type { CheckboxSelections, Votes } from '../../../utils/createPlainFilledBallotPaper.ts';
 import { CandidateVoteRow } from './CandidateVoteRow.tsx';
 
 type BallotPaper = SelectableVotingElection['ballotPaper'];
@@ -14,7 +14,13 @@ interface BallotPaperSectionProps {
   votes: Votes;
   totalVotes: number;
   votingHasNotStarted: boolean;
-  onVoteChange: (sectionId: string, candidateId: string, change: number) => void;
+  checkboxSelections: CheckboxSelections;
+  onCheckboxChange: (
+    sectionId: string,
+    candidateId: string,
+    index: number,
+    checked: boolean,
+  ) => void;
 }
 
 export const BallotPaperSection = ({
@@ -23,7 +29,8 @@ export const BallotPaperSection = ({
   votes,
   totalVotes,
   votingHasNotStarted,
-  onVoteChange,
+  checkboxSelections,
+  onCheckboxChange,
 }: BallotPaperSectionProps): JSX.Element => {
   const { t } = useTranslation();
 
@@ -68,7 +75,8 @@ export const BallotPaperSection = ({
             sectionVotes={sectionVotes}
             totalVotes={totalVotes}
             votingHasNotStarted={votingHasNotStarted}
-            onVoteChange={onVoteChange}
+            selectedCheckboxes={checkboxSelections[section.id]?.[candidate.id] ?? []}
+            onCheckboxChange={onCheckboxChange}
           />
         ))}
       </Stack>
