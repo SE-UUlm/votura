@@ -219,5 +219,6 @@
   "forgotYourCurrentPassword": "Aktuelles Passwort vergessen?",
   "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig.",
   "thisPasswordResetLinkIsInvalidOrHasExpired": "Dieser Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
-  "requestANewLink": "Neuen Link anfordern"
+  "requestANewLink": "Neuen Link anfordern",
+  "allowRevote": "Erneute Abstimmung zulassen"
 }

@@ -31,6 +31,7 @@ interface VoterElectionRow {
   electionVotingStartAt: Selectable<DBElection>['votingStartAt'];
   electionVotingEndAt: Selectable<DBElection>['votingEndAt'];
   electionAllowInvalidVotes: Selectable<DBElection>['allowInvalidVotes'];
+  electionAllowRevote: Selectable<DBElection>['allowRevote'];
   electionConfigFrozen: Selectable<DBElection>['configFrozen'];
   electionPubKey: Selectable<DBElection>['pubKey'];
   electionPrimeP: Selectable<DBElection>['primeP'];
@@ -69,6 +70,7 @@ async function getVoterElectionData(
       'e.votingStartAt as electionVotingStartAt',
       'e.votingEndAt as electionVotingEndAt',
       'e.allowInvalidVotes as electionAllowInvalidVotes',
+      'e.allowRevote as electionAllowRevote',
       'e.configFrozen as electionConfigFrozen',
       'e.pubKey as electionPubKey',
       'e.primeP as electionPrimeP',
@@ -89,7 +91,7 @@ async function getVoterElectionData(
       'c.description as candidateDescription',
     ])
     .where('vr.voterId', '=', voterId)
-    .where('vr.voted', '=', false)
+    .where((eb) => eb.or([eb('vr.voted', '=', false), eb('e.allowRevote', '=', true)]))
     .orderBy('e.id')
     .orderBy('bp.id')
     .orderBy('bps.id')
@@ -106,6 +108,7 @@ function createElectionFromRow(row: VoterElectionRow): SelectableVotingElection 
     votingStartAt: row.electionVotingStartAt.toISOString(),
     votingEndAt: row.electionVotingEndAt.toISOString(),
     allowInvalidVotes: row.electionAllowInvalidVotes,
+    allowRevote: row.electionAllowRevote,
     configFrozen: row.electionConfigFrozen,
     pubKey: row.electionPubKey ?? undefined,
     primeP: row.electionPrimeP ?? undefined,
@@ -190,11 +193,13 @@ export async function checkVoterMayVoteOnBallotPaper(
   ballotPaperId: Selectable<DBBallotPaper>['id'],
 ): Promise<boolean> {
   const registerId = await db
-    .selectFrom('voterRegister')
-    .where('voterId', '=', voterId)
-    .where('ballotPaperId', '=', ballotPaperId)
-    .where('voted', '=', false)
-    .select('id')
+    .selectFrom('voterRegister as vr')
+    .innerJoin('ballotPaper as bp', 'vr.ballotPaperId', 'bp.id')
+    .innerJoin('election as e', 'bp.electionId', 'e.id')
+    .where('vr.voterId', '=', voterId)
+    .where('vr.ballotPaperId', '=', ballotPaperId)
+    .where((eb) => eb.or([eb('vr.voted', '=', false), eb('e.allowRevote', '=', true)]))
+    .select('vr.id')
     .executeTakeFirst();
 
   return registerId !== undefined;
