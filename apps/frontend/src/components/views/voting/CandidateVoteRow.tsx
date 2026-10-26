@@ -1,6 +1,5 @@
-import { ActionIcon, Group, Text } from '@mantine/core';
+import { Checkbox, Group, Text } from '@mantine/core';
 import type { SelectableVotingElection } from '@repo/votura-validators';
-import { IconMinus, IconPlus } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import type { Votes } from '../../../utils/createPlainFilledBallotPaper.ts';
 
@@ -16,7 +15,13 @@ interface CandidateVoteRowProps {
   sectionVotes: number;
   totalVotes: number;
   votingHasNotStarted: boolean;
-  onVoteChange: (sectionId: string, candidateId: string, change: number) => void;
+  selectedCheckboxes: boolean[];
+  onCheckboxChange: (
+    sectionId: string,
+    candidateId: string,
+    index: number,
+    checked: boolean,
+  ) => void;
 }
 
 export const CandidateVoteRow = ({
@@ -27,7 +32,8 @@ export const CandidateVoteRow = ({
   sectionVotes,
   totalVotes,
   votingHasNotStarted,
-  onVoteChange,
+  selectedCheckboxes,
+  onCheckboxChange,
 }: CandidateVoteRowProps): JSX.Element => {
   const candidateVotes = votes[section.id]?.[candidate.id] ?? 0;
 
@@ -43,38 +49,24 @@ export const CandidateVoteRow = ({
     sectionVotes < section.maxVotes &&
     totalVotes < ballotPaper.maxVotes;
 
-  const canDecrease = candidateVotes > 0;
-
   return (
     <Group gap="md">
-      <Group gap={4}>
-        <ActionIcon
-          variant="outline"
-          size="sm"
-          onClick={(): void => {
-            onVoteChange(section.id, candidate.id, -1);
-          }}
-          disabled={!canDecrease}
-        >
-          <IconMinus size={16} />
-        </ActionIcon>
+      <Group gap="xs">
+        {Array.from({ length: section.maxVotesPerCandidate }, (_, index) => {
+          const isChecked = selectedCheckboxes[index] ?? false;
 
-        <Text w={24} ta="center" fw={600}>
-          {candidateVotes}
-        </Text>
-
-        <ActionIcon
-          variant="outline"
-          size="sm"
-          onClick={(): void => {
-            onVoteChange(section.id, candidate.id, 1);
-          }}
-          disabled={!canIncrease}
-        >
-          <IconPlus size={16} />
-        </ActionIcon>
+          return (
+            <Checkbox
+              key={index}
+              checked={isChecked}
+              disabled={isChecked ? votingHasNotStarted : !canIncrease}
+              onChange={(event) => {
+                onCheckboxChange(section.id, candidate.id, index, event.currentTarget.checked);
+              }}
+            />
+          );
+        })}
       </Group>
-
       <Text fw={700}>{candidate.title}</Text>
       <Text>{candidate.description}</Text>
     </Group>
