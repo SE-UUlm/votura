@@ -1,4 +1,4 @@
-import { Grid, Loader, NavLink, Text, ThemeIcon } from '@mantine/core';
+import { Box, Grid, Loader, NavLink, Text, ThemeIcon } from '@mantine/core';
 import { useDisclosure } from '@mantine/hooks';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconBug } from '@tabler/icons-react';
@@ -104,10 +104,12 @@ export const ElectionStats = ({ election }: ElectionStatsProps): JSX.Element => 
                   onClick={authorModalActions.open}
                   label={electionAuthor?.email ?? election.electionCreatorId}
                   leftSection={
-                    <Avatar
-                      userId={electionAuthor?.id ?? election.electionCreatorId}
-                      email={electionAuthor?.email ?? ''}
-                    />
+                    <Box w={38} h={38} style={{ flexShrink: 0 }}>
+                      <Avatar
+                        userId={electionAuthor?.id ?? election.electionCreatorId}
+                        email={electionAuthor?.email ?? ''}
+                      />
+                    </Box>
                   }
                   styles={{
                     root: {
