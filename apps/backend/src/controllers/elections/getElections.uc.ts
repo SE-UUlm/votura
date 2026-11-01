@@ -12,12 +12,10 @@ export const getElections = async (
 ): Promise<void> => {
   const loggedInUser = res.locals.user;
 
-  let elections;
-  if (loggedInUser.role === 'admin') {
-    elections = await getAllElections();
-  } else {
-    elections = await getPersistentElections(loggedInUser.id);
-  }
+  const elections =
+    loggedInUser.role === 'admin'
+      ? await getAllElections()
+      : await getPersistentElections(loggedInUser.id);
 
   res.status(HttpStatusCode.ok).json(elections);
 };
