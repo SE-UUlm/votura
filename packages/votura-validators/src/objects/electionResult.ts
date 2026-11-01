@@ -53,31 +53,42 @@ export const selectableElectionResultObject = z.object({
           description: 'The number of ballots cast on this ballot paper.',
           example: 42,
         }),
-        invalidCount: z.int32().min(0).register(voturaMetadataRegistry, {
-          description: 'The number of invalid ballots cast on this ballot paper.',
-          example: 2,
-        }),
+        invalidCount: z
+          .int32()
+          .min(0)
+          .register(voturaMetadataRegistry, {
+            description:
+              'The number of invalid ballots cast on this ballot paper. ' +
+              'An invalid ballot is invalid in every vote of every section, so this is the decrypted `invalidCiphertext` of a section divided by its `maxVotes`.',
+            example: 2,
+          }),
         ballotPaperSections: z
           .array(
-            selectableBallotPaperSectionObject.pick({ id: true, name: true }).extend({
-              noVoteCount: z.int32().min(0).register(voturaMetadataRegistry, {
-                description: 'The number of abstentions in this ballot paper section.',
-                example: 3,
-              }),
-              candidates: z
-                .array(
-                  selectableCandidateObject.pick({ id: true, title: true }).extend({
-                    count: z.int32().min(0).register(voturaMetadataRegistry, {
-                      description:
-                        'The number of votes for this candidate in this ballot paper section.',
-                      example: 37,
+            selectableBallotPaperSectionObject
+              .pick({ id: true, name: true, maxVotes: true })
+              .extend({
+                noVoteCount: z.int32().min(0).register(voturaMetadataRegistry, {
+                  description: 'The number of abstentions in this ballot paper section.',
+                  example: 3,
+                }),
+                noVoteCiphertext: aggregatedCiphertextObject,
+                noVoteProof: decryptionProofObject,
+                invalidCiphertext: aggregatedCiphertextObject,
+                invalidProof: decryptionProofObject,
+                candidates: z
+                  .array(
+                    selectableCandidateObject.pick({ id: true, title: true }).extend({
+                      count: z.int32().min(0).register(voturaMetadataRegistry, {
+                        description:
+                          'The number of votes for this candidate in this ballot paper section.',
+                        example: 37,
+                      }),
+                      ciphertext: aggregatedCiphertextObject,
+                      proof: decryptionProofObject,
                     }),
-                    ciphertext: aggregatedCiphertextObject,
-                    proof: decryptionProofObject,
-                  }),
-                )
-                .min(1),
-            }),
+                  )
+                  .min(1),
+              }),
           )
           .min(1),
       }),

@@ -2,17 +2,19 @@ import { describe, expect, it } from 'vitest';
 import { selectableElectionResultObject } from '../../src/objects/electionResult.js';
 
 describe('Election result tests', () => {
+  const demoCiphertext = { alpha: '12345', beta: '67890' };
+  const demoProof = {
+    commitment1: '1345789',
+    commitment2: '9072314',
+    challenge: '76687914',
+    response: '2013945',
+  };
   const demoCandidate = {
     id: 'f792d5ca-65aa-4167-8f83-06e909051005',
     title: 'Option A',
     count: 3,
-    ciphertext: { alpha: '12345', beta: '67890' },
-    proof: {
-      commitment1: '1345789',
-      commitment2: '9072314',
-      challenge: '76687914',
-      response: '2013945',
-    },
+    ciphertext: demoCiphertext,
+    proof: demoProof,
   };
   const demoElectionResult = {
     electionId: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
@@ -31,7 +33,12 @@ describe('Election result tests', () => {
           {
             id: '123e4567-e89b-42d3-a456-426614174000',
             name: 'My ballot paper section',
+            maxVotes: 1,
             noVoteCount: 1,
+            noVoteCiphertext: demoCiphertext,
+            noVoteProof: demoProof,
+            invalidCiphertext: demoCiphertext,
+            invalidProof: demoProof,
             candidates: [demoCandidate],
           },
         ],
