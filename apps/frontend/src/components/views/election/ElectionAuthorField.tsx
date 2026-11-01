@@ -13,48 +13,57 @@ export interface ElectionAuthorFieldProps {
   election: SelectableElection;
 }
 
-export const ElectionAuthorField = ({ election }: ElectionAuthorFieldProps): JSX.Element => {
-  const { t } = useTranslation();
+const ElectionAuthor = ({ election }: ElectionAuthorFieldProps): JSX.Element => {
   const [authorModalOpened, authorModalActions] = useDisclosure(false);
   const { data: electionAuthor, isLoading, error } = useGetUser(election.electionCreatorId);
 
-  let content: JSX.Element;
   if (error) {
-    content = (
+    return (
       <ThemeIcon size="xl" color="red">
         <IconBug style={{ width: '70%', height: '70%' }} />
       </ThemeIcon>
     );
-  } else if (isLoading || electionAuthor === undefined) {
-    content = <Loader />;
-  } else {
-    content = (
-      <>
-        <ChangeElectionAuthorModal
-          election={election}
-          opened={authorModalOpened}
-          onClose={authorModalActions.close}
-          currentAuthor={electionAuthor}
-        />
-        <NavLink
-          variant="light"
-          onClick={authorModalActions.open}
-          label={electionAuthor.email}
-          leftSection={
-            <Box w={38} h={38} style={{ flexShrink: 0 }}>
-              <Avatar userId={electionAuthor.id} email={electionAuthor.email} />
-            </Box>
-          }
-          styles={{
-            root: {
-              borderRadius: 'var(--mantine-radius-sm)',
-              padding: '4px 8px',
-            },
-          }}
-        />
-      </>
-    );
   }
 
-  return <ElectionStatField title={t('electionAuthor', 'Election author')} content={content} />;
+  if (isLoading || electionAuthor === undefined) {
+    return <Loader />;
+  }
+
+  return (
+    <>
+      <ChangeElectionAuthorModal
+        election={election}
+        opened={authorModalOpened}
+        onClose={authorModalActions.close}
+        currentAuthor={electionAuthor}
+      />
+      <NavLink
+        variant="light"
+        onClick={authorModalActions.open}
+        label={electionAuthor.email}
+        leftSection={
+          <Box w={38} h={38} style={{ flexShrink: 0 }}>
+            <Avatar userId={electionAuthor.id} email={electionAuthor.email} />
+          </Box>
+        }
+        styles={{
+          root: {
+            borderRadius: 'var(--mantine-radius-sm)',
+            padding: '4px 8px',
+          },
+        }}
+      />
+    </>
+  );
+};
+
+export const ElectionAuthorField = ({ election }: ElectionAuthorFieldProps): JSX.Element => {
+  const { t } = useTranslation();
+
+  return (
+    <ElectionStatField
+      title={t('electionAuthor', 'Election author')}
+      content={<ElectionAuthor election={election} />}
+    />
+  );
 };
