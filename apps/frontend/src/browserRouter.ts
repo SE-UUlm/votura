@@ -19,11 +19,23 @@ import { VotingElectionView } from './components/views/voting/VotingElectionView
 import { VotingHomeView } from './components/views/voting/VotingHomeView.tsx';
 import { VotingSubmitView } from './components/views/voting/VotingSubmitView.tsx';
 import { VotingSuccessView } from './components/views/voting/VotingSuccessView.tsx';
+import { getAuthLocalStorage } from './swr/authTokens.ts';
+import { getVoterLocalStorage } from './swr/voterToken.ts';
 
 export const browserRouter = createBrowserRouter([
   {
     path: '/',
-    loader: (): Response => redirect('/elections'),
+    loader: (): Response => {
+      // Both tokens can be stored when an election editor votes in the same browser. The voter
+      // session is the more recent and shorter one, so it wins. /elections stays reachable directly.
+      if (getVoterLocalStorage() !== null) {
+        return redirect('/votingHome');
+      }
+      if (getAuthLocalStorage() !== null) {
+        return redirect('/elections');
+      }
+      return redirect('/login');
+    },
   },
   {
     path: '/vote',
