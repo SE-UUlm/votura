@@ -26,6 +26,9 @@ const electionTransformer = (election: Selectable<DBElection>): SelectableElecti
     ...spreadableOptional(election, 'primeP'),
     ...spreadableOptional(election, 'primeQ'),
     ...spreadableOptional(election, 'generator'),
+    ...(election.resultsPublishedAt !== null && {
+      resultsPublishedAt: election.resultsPublishedAt.toISOString(),
+    }),
   };
 };
 
