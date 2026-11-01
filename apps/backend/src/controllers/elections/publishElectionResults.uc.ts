@@ -28,7 +28,7 @@ type SectionVotes = EncryptedFilledBallotPaper['sections'][string]['votes'];
 const emptyCiphertext: Ciphertext = [1n, 1n];
 
 /**
- * Aggregates all votes of a section homomorphically and decrypts the aggregated votes.
+ * Aggregates all votes of a section (without decrypting them) and decrypts the aggregated votes.
  * @returns The aggregated ciphertext and the decrypted count, in the order of the given options.
  */
 const tallySectionVotes = (
