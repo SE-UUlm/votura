@@ -11,6 +11,7 @@ import { electionsPathObject } from './elections/electionsPathObject.js';
 import { freezablePathObject } from './elections/freezablePathObject.js';
 import { freezePathObject } from './elections/freezePathObject.js';
 import { publishResultsPathObject } from './elections/publishResultsPathObject.js';
+import { resultsPathObject } from './elections/resultsPathObject.js';
 import { unfreezePathObject } from './elections/unfreezePathObject.js';
 import { parameter } from './globals/parameter.js';
 import { SecuritySchemaName } from './globals/securitySchemaName.js';
@@ -156,6 +157,7 @@ export const voturaOpenApiSchema: OpenAPIV3.Document = {
     [`/voterGroups/{${parameter.voterGroupId}}/createVoterTokens`]: createVoterTokensPathObject,
     [`/voting/getElections`]: votingElectionsPathObject,
     [`/voting/castVote`]: castVotePathObject,
+    [`/results/{${parameter.electionId}}`]: resultsPathObject,
     [`/heartbeat`]: heartbeatPathObject,
   },
 };
