@@ -175,8 +175,8 @@ const MAX_BITS_PRIME_P_WITHOUT_WORKERS = 128;
 
 export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
   const useWorkers = bitsPrimeP > MAX_BITS_PRIME_P_WITHOUT_WORKERS;
-  const getPrimeP = async (): Promise<bigint> =>
-    useWorkers ? prime(bitsPrimeP) : primeSync(bitsPrimeP);
+  const getPrimeP = (): Promise<bigint> =>
+    useWorkers ? prime(bitsPrimeP) : Promise.resolve(primeSync(bitsPrimeP));
   const getPrimeQ = (p: bigint): bigint => modMultiply([modAdd([p, -1n], p), modInv(2n, p)], p);
 
   let primeP = await getPrimeP();
