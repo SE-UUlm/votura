@@ -86,6 +86,7 @@ electionsRouter.put(
   acceptHeaderCheck(MimeType.applicationJson),
   ...defaultElectionChecks,
   checkElectionNotGenerateKeys,
+  checkElectionResultsNotPublished,
   unfreezeElection,
 );
 electionsRouter.put(
