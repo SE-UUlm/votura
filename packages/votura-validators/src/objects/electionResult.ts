@@ -8,11 +8,11 @@ import { electionObject } from './election.js';
 
 const aggregatedCiphertextObject = z.object({
   alpha: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
-    description: 'First part of the homomorphically aggregated ciphertext.',
+    description: 'First part of the aggregated ciphertext.',
     example: '12345',
   }),
   beta: z.string().regex(/^\d+$/).register(voturaMetadataRegistry, {
-    description: 'Second part of the homomorphically aggregated ciphertext.',
+    description: 'Second part of the aggregated ciphertext.',
     example: '67890',
   }),
 });
