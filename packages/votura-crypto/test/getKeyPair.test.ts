@@ -15,6 +15,8 @@ vi.mock('bigint-crypto-utils', async (importOriginal) => {
   };
 });
 
+// (29 - 1) / 2 = 14 is not prime, so getKeyPair has to retry.
+const UNSAFE_PRIME_P = 29n;
 const SAFE_PRIME_P = 23n;
 const PRIME_Q = 11n;
 
@@ -35,10 +37,11 @@ describe('getKeyPair', () => {
   });
 
   test('generates large keys with worker threads', async () => {
-    vi.mocked(prime).mockResolvedValueOnce(SAFE_PRIME_P);
+    vi.mocked(prime).mockResolvedValueOnce(UNSAFE_PRIME_P).mockResolvedValueOnce(SAFE_PRIME_P);
 
     const { publicKey } = await getKeyPair(2048);
 
+    expect(vi.mocked(prime)).toHaveBeenCalledTimes(2);
     expect(vi.mocked(prime)).toHaveBeenCalledWith(2048);
     expect(vi.mocked(isProbablyPrime)).toHaveBeenCalledWith(PRIME_Q, 16, false);
     expect(publicKey.getPrimeP()).toBe(SAFE_PRIME_P);
