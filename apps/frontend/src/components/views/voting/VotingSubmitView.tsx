@@ -2,8 +2,9 @@ import { Button, Center, Container, Flex, Stack, Text, Textarea } from '@mantine
 import { notifications } from '@mantine/notifications';
 import type { EncryptedFilledBallotPaper, Response400, Response403 } from '@repo/votura-validators';
 import { IconArrowLeft, IconDownload, IconSend } from '@tabler/icons-react';
+import { generateValidationCiphertext } from '@votura/votura-crypto/utils';
 import axios from 'axios';
-import { type JSX, useState } from 'react';
+import { useEffect, useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useLocation, useNavigate } from 'react-router';
 import { apiRoutes } from '../../../swr/apiRoutes.ts';
@@ -20,6 +21,7 @@ export const VotingSubmitView = (): JSX.Element => {
   const state = location.state as VotingSubmitLocationState | null;
   const navigate = useNavigate();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [ciphertext, setCiphertext] = useState<string>('');
 
   if (!state) {
     return <Navigate to="/votingHome" replace />;
@@ -27,26 +29,38 @@ export const VotingSubmitView = (): JSX.Element => {
 
   const { encryptedFilledBallotPaper, electionName } = state;
 
-  //download ciphertext plus ZK-Proof, convert to readable ciphertext after it exists
-  const ciphertext = JSON.stringify(encryptedFilledBallotPaper, null, 2);
+  // Generate the ciphertext for the filled ballot paper when the component mounts
+  useEffect(() => {
+    let isMounted = true;
+
+    generateValidationCiphertext(encryptedFilledBallotPaper).then((generatedCiphertext) => {
+      if (isMounted) {
+        setCiphertext(generatedCiphertext);
+      }
+    });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [encryptedFilledBallotPaper]);
 
   const handleDownloadCiphertext = (): void => {
     const blob = new Blob([ciphertext], {
-      type: 'application/json',
+      type: 'text/plain;charset=utf-8',
     });
 
     const url = URL.createObjectURL(blob);
 
     const anchor = document.createElement('a');
     anchor.href = url;
-    anchor.download = 'encrypted-vote.json';
+    anchor.download = `ciphertext-${electionName}-${ciphertext.slice(0, 8)}.txt`;
     anchor.click();
 
     URL.revokeObjectURL(url);
   };
 
   const handleCastVote = async (): Promise<void> => {
-    if (isSubmitting) {
+    if (isSubmitting || !ciphertext) {
       return;
     }
     setIsSubmitting(true);
@@ -57,9 +71,10 @@ export const VotingSubmitView = (): JSX.Element => {
           Authorization: `Bearer ${getVoterLocalStorage()}`,
         },
       });
+
       navigate('/voting/success', {
         replace: true,
-        state: { electionName },
+        state: { electionName, ciphertext },
       });
     } catch (error: unknown) {
       let message = t(
@@ -112,12 +127,26 @@ export const VotingSubmitView = (): JSX.Element => {
               {t('saveCiphertextDescription', 'Please save your ciphertext for later checking:')}
             </Text>
 
-            <Textarea value={ciphertext} readOnly autosize minRows={10} maxRows={10} />
+            <Textarea
+              value={ciphertext}
+              readOnly
+              autosize
+              minRows={2}
+              maxRows={3}
+              styles={{
+                input: {
+                  fontFamily: 'monospace',
+                  fontWeight: 'bold',
+                  letterSpacing: '0.5px',
+                },
+              }}
+            />
 
             <Button
               fullWidth
               onClick={handleDownloadCiphertext}
               leftSection={<IconDownload size={18} />}
+              disabled={!ciphertext}
             >
               {t('downloadCiphertext', 'Download ciphertext')}
             </Button>
@@ -127,8 +156,8 @@ export const VotingSubmitView = (): JSX.Element => {
               variant="outline"
               onClick={handleCastVote}
               rightSection={<IconSend size={18} />}
-              loading={isSubmitting}
-              disabled={isSubmitting}
+              loading={isSubmitting || !ciphertext}
+              disabled={isSubmitting || !ciphertext}
             >
               {t('castVote', 'Send Vote')}
             </Button>

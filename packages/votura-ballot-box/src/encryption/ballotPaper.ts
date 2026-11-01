@@ -12,7 +12,7 @@ export class BallotPaperEncryption {
   /**
    * Encrypts the vote of a complete ballot paper, section by section, and returns the encrypted vote as EncryptedFilledBallotPaper.
    * Expects that the ballot paper has been validated using the zod plainBallotPaper schema.
-   * Additionally returns an array of AuditableVotes needed for the auditing process.
+   * Additionally, returns an array of AuditableVotes needed for the auditing process.
    * @param plainFilledBallotPaper The ballot paper to encrypt
    * @returns Encryption of a complete ballot paper, and all AuditableVotes for every vote
    */

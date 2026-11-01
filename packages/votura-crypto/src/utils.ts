@@ -1,6 +1,7 @@
 import { sha256 } from '@noble/hashes/sha2.js';
 import { bytesToHex, utf8ToBytes } from '@noble/hashes/utils.js';
 import { modAdd, modPow, randBetween } from 'bigint-crypto-utils';
+import canonicalize from 'canonicalize';
 
 export const getBitsOfBigInt = (x: bigint): number => {
   // https://stackoverflow.com/questions/54758130/how-to-obtain-the-amount-of-bits-of-a-bigint
@@ -46,3 +47,26 @@ export const getGeneratorForPrimes = (primeP: bigint, primeQ: bigint): bigint =>
 
   return g;
 };
+
+/**
+ * Generates a Belenios Smart Ballot Tracker-like ciphertext for vote validation.
+ * Accepts any type (extends object).
+ */
+export async function generateValidationCiphertext<T extends object>(
+  encryptedFilledBallotPaper: T,
+): Promise<string> {
+  const canonicalString = canonicalize(encryptedFilledBallotPaper);
+  if (canonicalString === undefined) {
+    throw new Error('Failed to canonicalize ballot object.');
+  }
+  const bytes = new TextEncoder().encode(canonicalString);
+  const hashBuffer = await crypto.subtle.digest('SHA-256', bytes);
+
+  let binary = '';
+  const hashArray = new Uint8Array(hashBuffer);
+  for (const element of hashArray) {
+    binary += String.fromCharCode(element);
+  }
+
+  return btoa(binary).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+}

@@ -61,7 +61,7 @@ export const VoteValidationView = (): JSX.Element => {
         `${apiRoutes.base}/voting/validateVote`,
         {
           votingToken: values.votingToken.trim(),
-          cipherText: values.cipherText,
+          cipherText: values.cipherText.trim(),
         },
         {
           headers: {
