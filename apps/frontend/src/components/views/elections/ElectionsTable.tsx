@@ -3,7 +3,7 @@ import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
 import { IconDots } from '@tabler/icons-react';
 import dayjs from 'dayjs';
-import type { JSX, PropsWithChildren, MouseEvent as ReactMouseEvent } from 'react';
+import type { JSX, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
@@ -65,19 +65,7 @@ const ElectionRow = ({ election }: ElectionRowProps): JSX.Element => {
     }
   };
 
-  const navigateToElectionSettings = (e: ReactMouseEvent<HTMLTableRowElement>) => {
-    const target = e.target as HTMLElement;
-
-    // Do not redirect if the click target is the context menu / three dots icon,
-    // or one of the dropdown menu options.
-    if (
-      target.closest('button') ||
-      target.closest('[role="menuitem"]') ||
-      target.closest('.mantine-Menu-dropdown')
-    ) {
-      return;
-    }
-
+  const navigateToElectionSettings = () => {
     navigate(`/elections/${election.id}`);
   };
 
@@ -102,7 +90,7 @@ const ElectionRow = ({ election }: ElectionRowProps): JSX.Element => {
       <Table.Td>
         <BooleanBadge isTrue={election.configFrozen} />
       </Table.Td>
-      <Table.Td>
+      <Table.Td onClick={(event) => event.stopPropagation()}>
         <Group justify="flex-end" gap={'xs'} wrap={'nowrap'}>
           <ElectionsSettingsMenu
             election={election}
