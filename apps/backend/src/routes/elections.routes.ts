@@ -22,6 +22,7 @@ import { freezeElection } from '../controllers/elections/freezeElection.uc.js';
 import { getElection } from '../controllers/elections/getElection.uc.js';
 import { getElections } from '../controllers/elections/getElections.uc.js';
 import { getFreezableElection } from '../controllers/elections/getFreezableElection.uc.js';
+import { publishElectionResults } from '../controllers/elections/publishElectionResults.uc.js';
 import { unfreezeElection } from '../controllers/elections/unfreezeElection.uc.js';
 import { updateElection } from '../controllers/elections/updateElection.uc.js';
 import { acceptBodyCheck } from '../middlewares/acceptBodyCheck.js';
@@ -30,9 +31,12 @@ import { defaultBallotPaperChecks } from '../middlewares/pathParamChecks/ballotP
 import { defaultBallotPaperSectionChecks } from '../middlewares/pathParamChecks/ballotPaperSectionChecks.js';
 import { defaultCandidateChecks } from '../middlewares/pathParamChecks/candidateChecks.js';
 import {
+  checkElectionFrozen,
   checkElectionIsValid,
   checkElectionNotFrozen,
   checkElectionNotGenerateKeys,
+  checkElectionResultsNotPublished,
+  checkVotingEndInPast,
   checkVotingStartInFuture,
   defaultElectionChecks,
 } from '../middlewares/pathParamChecks/electionChecks.js';
@@ -83,6 +87,16 @@ electionsRouter.put(
   ...defaultElectionChecks,
   checkElectionNotGenerateKeys,
   unfreezeElection,
+);
+electionsRouter.put(
+  `/:${parameter.electionId}/publishResults`,
+  acceptHeaderCheck(MimeType.applicationJson),
+  ...defaultElectionChecks,
+  checkElectionFrozen,
+  checkElectionNotGenerateKeys,
+  checkVotingEndInPast,
+  checkElectionResultsNotPublished,
+  publishElectionResults,
 );
 electionsRouter.delete(
   `/:${parameter.electionId}`,
