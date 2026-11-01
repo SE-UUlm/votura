@@ -44,6 +44,10 @@ export const electionObject = z.object({
       'The public key to encrypt the vote of the voter. `pubKeyVotes = generator ^ privKeyVotes mod primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
   privKey: z.string().regex(/^\d+$/).optional(),
+  resultsPublishedAt: z.iso.datetime().optional().register(voturaMetadataRegistry, {
+    description:
+      'The date when the results of the election were published. If the results are not published yet, the value will be `null`.',
+  }),
   primeP: z.string().regex(/^\d+$/).optional().register(voturaMetadataRegistry, {
     description:
       'A large prime number that defines the group. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
@@ -96,6 +100,7 @@ export const selectableElectionObject = electionObject.pick({
   primeP: true,
   primeQ: true,
   generator: true,
+  resultsPublishedAt: true,
 });
 
 export type SelectableElection = z.infer<typeof selectableElectionObject>;
