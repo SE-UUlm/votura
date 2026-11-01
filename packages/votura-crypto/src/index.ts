@@ -5,6 +5,7 @@ import {
   modMultiply,
   modPow,
   prime,
+  primeSync,
   randBetween,
 } from 'bigint-crypto-utils';
 import { getFiatShamirChallenge, getGeneratorForPrimes } from './utils.js';
@@ -162,17 +163,25 @@ export class KeyPair {
   }
 }
 
+/**
+ * Up to this size of p the key pair is generated on the calling thread.
+ * In Node, prime() and isProbablyPrime() of bigint-crypto-utils start new worker threads on every
+ * call. Finding a safe prime takes a random number of attempts, so for small keys the thread
+ * startup dominates: with workers getKeyPair(20) took up to 7 s and getKeyPair(128) up to 42 s,
+ * without them up to 0.1 s and 4 s. Sizes this small are only used by tests, real keys
+ * (2048 bits) keep the workers so the backend event loop stays free.
+ */
+const MAX_BITS_PRIME_P_WITHOUT_WORKERS = 128;
+
 export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
-  let primeP = await prime(bitsPrimeP);
-  let probablePrimeQ = modMultiply([modAdd([primeP, -1n], primeP), modInv(2n, primeP)], primeP);
+  const useWorkers = bitsPrimeP > MAX_BITS_PRIME_P_WITHOUT_WORKERS;
+  let primeP: bigint;
+  let probablePrimeQ: bigint;
 
-  let result = await isProbablyPrime(probablePrimeQ);
-
-  while (!result) {
-    primeP = await prime(bitsPrimeP);
+  do {
+    primeP = useWorkers ? await prime(bitsPrimeP) : primeSync(bitsPrimeP);
     probablePrimeQ = modMultiply([modAdd([primeP, -1n], primeP), modInv(2n, primeP)], primeP);
-    result = await isProbablyPrime(probablePrimeQ);
-  }
+  } while (!(await isProbablyPrime(probablePrimeQ, 16, !useWorkers)));
 
   const generator = getGeneratorForPrimes(primeP, probablePrimeQ);
   const privateKey = randBetween(modAdd([probablePrimeQ, -1n], probablePrimeQ), 1n);
