@@ -112,6 +112,10 @@ export const ResetPasswordView = (): JSX.Element => {
                 <PasswordInput
                   withAsterisk
                   label={t('newPassword', 'New password')}
+                  description={t(
+                    'passwordRequirements',
+                    'At least 12 characters with an uppercase letter, a lowercase letter, a number and one of #?!@$%^&*-',
+                  )}
                   placeholder={t('mySecurePassword', 'My secure password...')}
                   key={form.key('password')}
                   {...form.getInputProps('password')}
