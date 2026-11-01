@@ -175,13 +175,17 @@ const MAX_BITS_PRIME_P_WITHOUT_WORKERS = 128;
 
 export const getKeyPair = async (bitsPrimeP = 2048): Promise<KeyPair> => {
   const useWorkers = bitsPrimeP > MAX_BITS_PRIME_P_WITHOUT_WORKERS;
-  let primeP: bigint;
-  let probablePrimeQ: bigint;
+  const getPrimeP = async (): Promise<bigint> =>
+    useWorkers ? prime(bitsPrimeP) : primeSync(bitsPrimeP);
+  const getPrimeQ = (p: bigint): bigint => modMultiply([modAdd([p, -1n], p), modInv(2n, p)], p);
 
-  do {
-    primeP = useWorkers ? await prime(bitsPrimeP) : primeSync(bitsPrimeP);
-    probablePrimeQ = modMultiply([modAdd([primeP, -1n], primeP), modInv(2n, primeP)], primeP);
-  } while (!(await isProbablyPrime(probablePrimeQ, 16, !useWorkers)));
+  let primeP = await getPrimeP();
+  let probablePrimeQ = getPrimeQ(primeP);
+
+  while (!(await isProbablyPrime(probablePrimeQ, 16, !useWorkers))) {
+    primeP = await getPrimeP();
+    probablePrimeQ = getPrimeQ(primeP);
+  }
 
   const generator = getGeneratorForPrimes(primeP, probablePrimeQ);
   const privateKey = randBetween(modAdd([probablePrimeQ, -1n], probablePrimeQ), 1n);

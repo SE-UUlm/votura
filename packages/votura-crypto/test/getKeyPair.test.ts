@@ -1,11 +1,13 @@
-import type * as bigintCryptoUtils from 'bigint-crypto-utils';
 import { isProbablyPrime, prime } from 'bigint-crypto-utils';
 import { afterEach, describe, expect, test, vi } from 'vitest';
 import { getKeyPair } from '../src/index.js';
 
 // Spies only, except for the large key test, which fixes prime() instead of searching a 2048 bit prime.
 vi.mock('bigint-crypto-utils', async (importOriginal) => {
-  const original = await importOriginal<typeof bigintCryptoUtils>();
+  const original = await importOriginal<{
+    prime: typeof prime;
+    isProbablyPrime: typeof isProbablyPrime;
+  }>();
   return {
     ...original,
     prime: vi.fn(original.prime),
