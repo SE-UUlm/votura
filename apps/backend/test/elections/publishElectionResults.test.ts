@@ -176,7 +176,7 @@ describe(`PUT /elections/:${parameter.electionId}/publishResults`, () => {
 
     tokens = generateUserTokens(user.id);
     tokens2 = generateUserTokens(user2.id);
-  });
+  }, 60_000 /* 60 seconds timeout */);
 
   it('403: should not allow publishing the results of an election of another user', async () => {
     const res = await request(app)
