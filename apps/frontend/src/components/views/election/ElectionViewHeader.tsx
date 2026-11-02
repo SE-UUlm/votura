@@ -7,6 +7,7 @@ import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
 import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
 import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
+import { callPublishElectionResults } from '../../../rpc/election/callPublishElectionResults.ts';
 import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
@@ -17,6 +18,7 @@ import {
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
+import type { PublishElectionResultsModalProps } from '../../PublishElectionResultsModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 
@@ -73,6 +75,10 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
     }
   };
 
+  const onPublishResults: PublishElectionResultsModalProps['onPublishResults'] = async () => {
+    notifications.show(await callPublishElectionResults(election.id));
+  };
+
   return (
     <>
       <Group justify="space-between" h={HEADER_HEIGHT}>
@@ -98,6 +104,7 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
           onDelete={onDelete}
           onMutate={onMutate}
           onToggleFreeze={onToggleFreeze}
+          onPublishResults={onPublishResults}
           isMutating={isMutating}
         />
       </Group>

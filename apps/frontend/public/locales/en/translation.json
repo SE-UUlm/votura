@@ -239,5 +239,6 @@
   "publishElectionResults": "Publish election results",
   "youAreAboutToPublishTheResultsOfTheElection": "You are about to publish the results of the election:",
   "theResultsBecomePublicAndFinalTheElectionCanNotBeUnfrozenAnymore": "The results become public and final. The election can not be unfrozen anymore.",
-  "publish": "Publish"
+  "publish": "Publish",
+  "publishResults": "Publish results"
 }
