@@ -62,6 +62,19 @@ export const getToggleFreezeSuccessElectionConfig = (
   };
 };
 
+export const getPublishResultsSuccessElectionConfig = (
+  name: SelectableElection['name'],
+): NotificationData => {
+  return {
+    title: i18next.t('success', 'Success'),
+    message: i18next.t(
+      'theResultsOfTheElectionNameHaveBeenPublished',
+      'The results of the election "{{name}}" have been published.',
+      { name },
+    ),
+  };
+};
+
 export const getAddSuccessElectionConfig = (name: SelectableElection['name']): NotificationData => {
   return {
     title: i18next.t('success', 'Success'),
