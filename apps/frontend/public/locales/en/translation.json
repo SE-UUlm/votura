@@ -233,5 +233,7 @@
   "downloadBallotBox": "Download ballot box",
   "publishedAt": "Published at",
   "resultsNotPublished": "Results not published",
-  "theResultsOfThisElectionAreNotPublishedYet": "The results of this election are not published yet."
+  "theResultsOfThisElectionAreNotPublishedYet": "The results of this election are not published yet.",
+  "theResultsOfTheElectionNameHaveBeenPublished": "The results of the election \"{{name}}\" have been published.",
+  "anErrorHasOccurredWhilstAttemptingToPublishTheResultsPleaseTryAgainLater": "An error has occurred whilst attempting to publish the results. Please try again later."
 }

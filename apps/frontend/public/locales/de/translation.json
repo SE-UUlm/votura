@@ -233,5 +233,7 @@
   "downloadBallotBox": "Wahlurne herunterladen",
   "publishedAt": "Veröffentlicht am",
   "resultsNotPublished": "Ergebnis nicht veröffentlicht",
-  "theResultsOfThisElectionAreNotPublishedYet": "Das Ergebnis dieser Wahl ist noch nicht veröffentlicht."
+  "theResultsOfThisElectionAreNotPublishedYet": "Das Ergebnis dieser Wahl ist noch nicht veröffentlicht.",
+  "theResultsOfTheElectionNameHaveBeenPublished": "Das Ergebnis der Wahl \"{{name}}\" wurde veröffentlicht.",
+  "anErrorHasOccurredWhilstAttemptingToPublishTheResultsPleaseTryAgainLater": "Beim Versuch, das Ergebnis zu veröffentlichen, ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut."
 }
