@@ -227,7 +227,6 @@
   "abstentionsNumber": "Abstentions: {{number}}",
   "ballotsCast": "Ballots cast",
   "invalidBallots": "Invalid ballots",
-  "totalOnThisBallotPaper": "Total on this ballot paper",
   "electionResults": "Election results",
   "downloadResults": "Download results",
   "availableOnceVoturaPublishesTheBallotBox": "Available once votura publishes the ballot box",

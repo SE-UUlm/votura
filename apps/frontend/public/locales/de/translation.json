@@ -227,7 +227,6 @@
   "abstentionsNumber": "Enthaltungen: {{number}}",
   "ballotsCast": "Abgegebene Stimmzettel",
   "invalidBallots": "Ungültige Stimmzettel",
-  "totalOnThisBallotPaper": "Gesamt auf diesem Stimmzettel",
   "electionResults": "Wahlergebnis",
   "downloadResults": "Ergebnis herunterladen",
   "availableOnceVoturaPublishesTheBallotBox": "Verfügbar, sobald votura die Wahlurne veröffentlicht",

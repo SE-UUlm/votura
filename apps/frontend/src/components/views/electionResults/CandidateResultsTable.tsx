@@ -11,7 +11,7 @@ export interface CandidateResult {
 export interface CandidateResultsTableProps {
   title: string;
   candidates: CandidateResult[];
-  noVoteCount?: number;
+  noVoteCount: number;
 }
 
 export const CandidateResultsTable = ({
@@ -61,14 +61,10 @@ export const CandidateResultsTable = ({
           })}
         </Table.Tbody>
       </Table>
-      {noVoteCount !== undefined && (
-        <>
-          <Divider my="sm" />
-          <Text size="sm" c="dimmed">
-            {t('abstentionsNumber', 'Abstentions: {{number}}', { number: noVoteCount })}
-          </Text>
-        </>
-      )}
+      <Divider my="sm" />
+      <Text size="sm" c="dimmed">
+        {t('abstentionsNumber', 'Abstentions: {{number}}', { number: noVoteCount })}
+      </Text>
     </Paper>
   );
 };
