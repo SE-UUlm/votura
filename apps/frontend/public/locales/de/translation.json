@@ -220,5 +220,19 @@
   "theLinkIsValidForOneHour": "Der Link ist eine Stunde lang gültig.",
   "thisPasswordResetLinkIsInvalidOrHasExpired": "Dieser Link zum Zurücksetzen des Passworts ist ungültig oder abgelaufen.",
   "requestANewLink": "Neuen Link anfordern",
-  "passwordRequirements": "Mindestens 12 Zeichen mit Groß- und Kleinbuchstaben, einer Zahl und einem der Zeichen #?!@$%^&*-"
+  "passwordRequirements": "Mindestens 12 Zeichen mit Groß- und Kleinbuchstaben, einer Zahl und einem der Zeichen #?!@$%^&*-",
+  "candidate": "Kandidat",
+  "votes": "Stimmen",
+  "share": "Anteil",
+  "abstentionsNumber": "Enthaltungen: {{number}}",
+  "ballotsCast": "Abgegebene Stimmzettel",
+  "invalidBallots": "Ungültige Stimmzettel",
+  "totalOnThisBallotPaper": "Gesamt auf diesem Stimmzettel",
+  "electionResults": "Wahlergebnis",
+  "downloadResults": "Ergebnis herunterladen",
+  "availableOnceVoturaPublishesTheBallotBox": "Verfügbar, sobald votura die Wahlurne veröffentlicht",
+  "downloadBallotBox": "Wahlurne herunterladen",
+  "publishedAt": "Veröffentlicht am",
+  "resultsNotPublished": "Ergebnis nicht veröffentlicht",
+  "theResultsOfThisElectionAreNotPublishedYet": "Das Ergebnis dieser Wahl ist noch nicht veröffentlicht."
 }
