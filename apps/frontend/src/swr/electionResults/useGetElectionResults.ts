@@ -19,25 +19,30 @@ export const useGetElectionResults: ParametrizedApiHook<
   const skipFetchByOption = options?.skipFetch ?? false;
   const shouldFetch = !skipFetchByOption && electionId !== undefined;
 
-  return useSWR(shouldFetch ? apiRoutes.results.byId(electionId) : null, async (url: string) => {
-    // The results are public, so no authorization header is sent (see the voting hooks)
-    const instance = axios.create({
-      baseURL: apiRoutes.base,
-    });
+  return useSWR(
+    shouldFetch ? apiRoutes.results.byId(electionId) : null,
+    async (url: string) => {
+      // The results are public, so no authorization header is sent (see the voting hooks)
+      const instance = axios.create({
+        baseURL: apiRoutes.base,
+      });
 
-    const response = await instance.get(url, {
-      headers: {
-        // eslint-disable-next-line @typescript-eslint/naming-convention
-        Accept: 'application/json',
-      },
-    });
+      const response = await instance.get(url, {
+        headers: {
+          // eslint-disable-next-line @typescript-eslint/naming-convention
+          Accept: 'application/json',
+        },
+      });
 
-    const parsed = await selectableElectionResultObject.safeParseAsync(response.data);
+      const parsed = await selectableElectionResultObject.safeParseAsync(response.data);
 
-    if (!parsed.success) {
-      throw new TypeError('Parsing failed');
-    }
+      if (!parsed.success) {
+        throw new TypeError('Parsing failed');
+      }
 
-    return parsed.data;
-  });
+      return parsed.data;
+    },
+    // The view shows errors itself, e.g. unpublished results, so no error notification is needed
+    { onError: (): void => undefined },
+  );
 };
