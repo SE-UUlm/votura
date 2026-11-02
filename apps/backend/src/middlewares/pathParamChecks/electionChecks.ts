@@ -17,7 +17,9 @@ import { getBallotPapers } from '../../services/ballotPapers.service.js';
 import { getBallotPaperSections } from '../../services/ballotPaperSections.service.js';
 import { getCandidates } from '../../services/candidates.service.js';
 import {
+  areElectionResultsPublished,
   checkElectionExists as checkElectionExistsService,
+  getElectionVotingEnd,
   getElectionVotingStart,
   isElectionFrozen,
   isElectionGeneratingKeys,
@@ -170,6 +172,75 @@ export async function checkVotingStartInFuture(
       'The voting start date is in the past. ' +
         'You are only allowed to do this action if the voting start date is in the future.',
     );
+  } else {
+    next();
+  }
+}
+
+/**
+ * Checks if the election with the given ID is frozen.
+ * If the election is not frozen, it sends a 403 Forbidden response.
+ * If the election is frozen, it calls the next middleware function.
+ *
+ * @param req The request object containing the election ID as a path parameter.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the election is frozen.
+ */
+export async function checkElectionFrozen(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  if (!(await isElectionFrozen(req.params.electionId))) {
+    error403Response(res, 'The election is not frozen.');
+  } else {
+    next();
+  }
+}
+
+/**
+ * Checks if the voting end date of the election with the given ID is in the past.
+ * If the voting end date is in the future, it sends a 403 Forbidden response.
+ * If the voting end date is in the past, it calls the next middleware function.
+ *
+ * @param req The request object containing the election ID as a path parameter.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the voting has ended.
+ */
+export async function checkVotingEndInPast(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  const votingEnd = await getElectionVotingEnd(req.params.electionId);
+
+  if (votingEnd > new Date()) {
+    error403Response(
+      res,
+      'The voting end date is in the future. ' +
+        'You are only allowed to do this action if the voting end date is in the past.',
+    );
+  } else {
+    next();
+  }
+}
+
+/**
+ * Checks if the results of the election with the given ID are published.
+ * If the results are published, it sends a 403 Forbidden response.
+ * If the results are not published, it calls the next middleware function.
+ *
+ * @param req The request object containing the election ID as a path parameter.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the results are not published.
+ */
+export async function checkElectionResultsNotPublished(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response403>,
+  next: NextFunction,
+): Promise<void> {
+  if (await areElectionResultsPublished(req.params.electionId)) {
+    error403Response(res, 'The results of the election are published and cannot be modified.');
   } else {
     next();
   }

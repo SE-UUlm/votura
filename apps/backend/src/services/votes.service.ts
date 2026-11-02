@@ -1,5 +1,9 @@
 import { db } from '@repo/db';
-import type { BallotPaper as DBBallotPaper, Voter as DBVoter } from '@repo/db/types';
+import type {
+  BallotPaper as DBBallotPaper,
+  Election as DBElection,
+  Voter as DBVoter,
+} from '@repo/db/types';
 import type { EncryptedFilledBallotPaper } from '@repo/votura-validators';
 import type { Selectable } from 'kysely';
 
@@ -47,4 +51,22 @@ export async function persistVote(
   });
 
   return;
+}
+
+/**
+ * Gets all filled ballot papers that were cast in the given election.
+ * @param electionId The ID of the election
+ * @returns The encrypted filled ballot papers of the election
+ */
+export async function getEncryptedFilledBallotPapers(
+  electionId: Selectable<DBElection>['id'],
+): Promise<EncryptedFilledBallotPaper[]> {
+  const votes = await db
+    .selectFrom('vote')
+    .select('encryptedFilledBallotPaper')
+    .where('electionId', '=', electionId)
+    .execute();
+
+  // The filled ballot papers were validated before they were persisted
+  return votes.map((vote) => vote.encryptedFilledBallotPaper as EncryptedFilledBallotPaper);
 }

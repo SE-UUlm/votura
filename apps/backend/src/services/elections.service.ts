@@ -3,6 +3,7 @@ import type { Election as DBElection, User as DBUser } from '@repo/db/types';
 import type {
   InsertableElection,
   SelectableElection,
+  SelectableElectionResult,
   UpdateableElection,
 } from '@repo/votura-validators';
 import type { KeyPair } from '@votura/votura-crypto/index';
@@ -26,6 +27,9 @@ const electionTransformer = (election: Selectable<DBElection>): SelectableElecti
     ...spreadableOptional(election, 'primeP'),
     ...spreadableOptional(election, 'primeQ'),
     ...spreadableOptional(election, 'generator'),
+    ...(election.resultsPublishedAt !== null && {
+      resultsPublishedAt: election.resultsPublishedAt.toISOString(),
+    }),
   };
 };
 
@@ -235,6 +239,24 @@ export const getElectionVotingStart = async (
   return result.votingStartAt;
 };
 
+/**
+ * Gets the voting end date of the election with the given ID.
+ * Expects that the election exists.
+ * @param electionId The ID of the election to check.
+ * @returns The voting end date of the election.
+ */
+export const getElectionVotingEnd = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<Date> => {
+  const result = await db
+    .selectFrom('election')
+    .select('votingEndAt')
+    .where('id', '=', electionId)
+    .executeTakeFirstOrThrow();
+
+  return result.votingEndAt;
+};
+
 export const checkElectionExists = async (
   electionId: Selectable<DBElection>['id'],
 ): Promise<boolean> => {
@@ -311,4 +333,42 @@ export const isElectionGeneratingKeys = async (
   return (
     Date.now() - result.keyGenStartedAt.getTime() < keyGenTimeoutMinutes * minutesToMilliseconds
   );
+};
+
+/**
+ * Checks if the results of the election with the given ID are published.
+ * @param electionId The ID of the election to check.
+ * @returns True if the results are published, false otherwise.
+ */
+export const areElectionResultsPublished = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<boolean> => {
+  const result = await db
+    .selectFrom('election')
+    .select('id')
+    .where('id', '=', electionId)
+    .where('resultsPublishedAt', 'is not', null)
+    .executeTakeFirst();
+
+  return result !== undefined;
+};
+
+/**
+ * Persists the results of an election and marks them as published.
+ * The update only applies if the results are not published yet, so they can only be published once.
+ * @param electionResult The results to persist.
+ * @returns The persisted results.
+ */
+export const setElectionResults = async (
+  electionResult: SelectableElectionResult,
+): Promise<SelectableElectionResult> => {
+  const election = await db
+    .updateTable('election')
+    .set({ results: electionResult, resultsPublishedAt: new Date(electionResult.publishedAt) })
+    .where('id', '=', electionResult.electionId)
+    .where('resultsPublishedAt', 'is', null)
+    .returning('results')
+    .executeTakeFirstOrThrow();
+
+  return election.results as SelectableElectionResult;
 };
