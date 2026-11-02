@@ -6,6 +6,7 @@ import {
   type SelectableBallotPaper,
   type SelectableBallotPaperSection,
   type SelectableElectionResult,
+  type SelectableUser,
 } from '@repo/votura-validators';
 import { PrivateKey, Tallying, type Ciphertext } from '@votura/votura-crypto/index';
 import type { Request, Response } from 'express';
@@ -16,8 +17,9 @@ import {
 } from '../../services/ballotPapers.service.js';
 import { getBallotPaperSections } from '../../services/ballotPaperSections.service.js';
 import { getCandidates } from '../../services/candidates.service.js';
-import { setElectionResults } from '../../services/elections.service.js';
+import { getElection, setElectionResults } from '../../services/elections.service.js';
 import { getEncryptedFilledBallotPapers } from '../../services/votes.service.js';
+import { spreadableOptional } from '../../utils.js';
 
 type BallotPaperResult = SelectableElectionResult['ballotPapers'][number];
 type SectionResult = BallotPaperResult['ballotPaperSections'][number];
@@ -159,6 +161,7 @@ const tallyBallotPaper = async (
   return {
     id: ballotPaper.id,
     name: ballotPaper.name,
+    ...spreadableOptional(ballotPaper, 'description'),
     ballotsCast: ballotPaperVotes.length,
     invalidCount,
     ballotPaperSections: sections.map(({ sectionResult }) => sectionResult),
@@ -167,9 +170,10 @@ const tallyBallotPaper = async (
 
 export const publishElectionResults = async (
   req: Request<{ electionId: Election['id'] }>,
-  res: Response<SelectableElectionResult>,
+  res: Response<SelectableElectionResult, { user: SelectableUser }>,
 ): Promise<void> => {
   const electionId = req.params.electionId;
+  const election = await getElection(electionId, res.locals.user.id);
   const ballotPapers = await getBallotPapers(electionId);
   const filledBallotPapers = await getEncryptedFilledBallotPapers(electionId);
   const candidateTitles = new Map(
@@ -189,6 +193,10 @@ export const publishElectionResults = async (
   );
 
   const electionResult = await setElectionResults({
+    name: election.name,
+    ...spreadableOptional(election, 'description'),
+    votingStartAt: election.votingStartAt,
+    votingEndAt: election.votingEndAt,
     electionId,
     publishedAt: new Date().toISOString(),
     pubKey,

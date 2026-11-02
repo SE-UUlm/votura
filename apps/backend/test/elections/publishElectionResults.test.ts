@@ -202,6 +202,7 @@ describe(`PUT /elections/:${parameter.electionId}/publishResults`, () => {
     const ballotPaperResult = result.ballotPapers[0];
     const sectionResult = ballotPaperResult?.ballotPaperSections[0];
     expect(result.electionId).toBe(election?.id);
+    expect(result.name).toBe(invalidAllowedElection.name);
     expect(ballotPaperResult?.ballotsCast).toBe(3);
     expect(ballotPaperResult?.invalidCount).toBe(1);
     expect(sectionResult?.id).toBe(section?.id);
