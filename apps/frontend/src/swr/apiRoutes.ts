@@ -48,6 +48,9 @@ export const apiRoutes = {
       ): string => `/elections/${electionId}/candidates/${candidateId}`,
     },
   },
+  results: {
+    byId: (id: SelectableElection['id']): string => `/results/${id}`,
+  },
   voterGroups: {
     base: '/voterGroups',
     byId: (id: SelectableVoterGroup['id']): string => `/voterGroups/${id}`,
