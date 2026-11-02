@@ -111,6 +111,7 @@ describe(`PUT /elections/:${parameter.electionId}/publishResults`, () => {
   let election: SelectableElection | null = null;
   let notFrozenElection: SelectableElection | null = null;
   let votingNotEndedElection: SelectableElection | null = null;
+  let noVotesElection: SelectableElection | null = null;
   let section: SelectableBallotPaperSection | null = null;
   let candidate1: SelectableCandidate | null = null;
   let candidate2: SelectableCandidate | null = null;
@@ -173,6 +174,17 @@ describe(`PUT /elections/:${parameter.electionId}/publishResults`, () => {
     const notEndedBallotPaper = await createBallotPaper(demoBallotPaper, votingNotEndedElection.id);
     await createBallotPaperSection(demoBallotPaperSection, notEndedBallotPaper.id);
     await freezeElectionWithKeys(votingNotEndedElection.id);
+
+    noVotesElection = await createElection(demoElection, user.id);
+    const noVotesBallotPaper = await createBallotPaper(demoBallotPaper, noVotesElection.id);
+    const noVotesSection = await createBallotPaperSection(
+      demoBallotPaperSection,
+      noVotesBallotPaper.id,
+    );
+    const noVotesCandidate = await createCandidate(demoCandidate, noVotesElection.id);
+    await addCandidateToBallotPaperSection(noVotesSection.id, noVotesCandidate.id);
+    await freezeElectionWithKeys(noVotesElection.id);
+    await endVoting(noVotesElection.id);
 
     tokens = generateUserTokens(user.id);
     tokens2 = generateUserTokens(user2.id);
@@ -247,6 +259,28 @@ describe(`PUT /elections/:${parameter.electionId}/publishResults`, () => {
       .set('Authorization', `Bearer ${tokens.accessToken}`);
     const electionParseResult = selectableElectionObject.safeParse(electionRes.body);
     expect(electionParseResult.data?.resultsPublishedAt).toBe(result.publishedAt);
+  });
+  it('200: should publish the results of an election without votes', async () => {
+    const res = await request(app)
+      .put(`/elections/${noVotesElection?.id}/publishResults`)
+      .set('Authorization', `Bearer ${tokens.accessToken}`);
+    expect(res.status).toBe(HttpStatusCode.ok);
+    const parseResult = selectableElectionResultObject.safeParse(res.body);
+    expect(parseResult.success).toBe(true);
+    if (!parseResult.success) {
+      throw new Error('Failed to parse election result');
+    }
+
+    const result = parseResult.data;
+    const ballotPaperResult = result.ballotPapers[0];
+    const candidateResult = ballotPaperResult?.ballotPaperSections[0]?.candidates[0];
+    expect(ballotPaperResult?.ballotsCast).toBe(0);
+    expect(ballotPaperResult?.invalidCount).toBe(0);
+    expect(candidateResult?.count).toBe(0);
+    if (candidateResult === undefined) {
+      throw new Error('Missing candidate result');
+    }
+    expect(verifyCount(result, 0, candidateResult.ciphertext, candidateResult.proof)).toBe(true);
   });
   it('403: should not allow publishing the results a second time', async () => {
     const res = await request(app)
