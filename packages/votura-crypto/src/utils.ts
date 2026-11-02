@@ -49,7 +49,7 @@ export const getGeneratorForPrimes = (primeP: bigint, primeQ: bigint): bigint =>
 };
 
 /**
- * Generates a Belenios Smart Ballot Tracker-like ciphertext for vote validation.
+ * Hashing function for the vote validation ciphertext.
  * Accepts any type (extends object).
  */
 export async function generateValidationCiphertext<T extends object>(
