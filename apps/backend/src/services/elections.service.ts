@@ -372,3 +372,22 @@ export const setElectionResults = async (
 
   return election.results as SelectableElectionResult;
 };
+
+/**
+ * Gets the published results of the election with the given ID.
+ * Expects that the results of the election are published.
+ * @param electionId The ID of the election.
+ * @returns The published results of the election.
+ */
+export const getElectionResults = async (
+  electionId: Selectable<DBElection>['id'],
+): Promise<SelectableElectionResult> => {
+  const election = await db
+    .selectFrom('election')
+    .select('results')
+    .where('id', '=', electionId)
+    .where('resultsPublishedAt', 'is not', null)
+    .executeTakeFirstOrThrow();
+
+  return election.results as SelectableElectionResult;
+};
