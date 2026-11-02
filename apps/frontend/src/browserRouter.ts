@@ -8,6 +8,7 @@ import { VoterAuthedRouterOutlet } from './components/VoterAuthedRouterOutlet.ts
 import { AccountView } from './components/views/account/AccountView.tsx';
 import { AccountsView } from './components/views/accounts/AccountsView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
+import { ElectionResultsView } from './components/views/electionResults/ElectionResultsView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
 import { ForgotPasswordView } from './components/views/login/ForgotPasswordView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
@@ -49,6 +50,11 @@ export const browserRouter = createBrowserRouter([
     path: '/resetPassword',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: ResetPasswordView,
+  },
+  {
+    path: `/results/:${parameter.electionId}`,
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: ElectionResultsView,
   },
   {
     // eslint-disable-next-line @typescript-eslint/naming-convention
