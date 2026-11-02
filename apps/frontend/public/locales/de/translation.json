@@ -240,5 +240,7 @@
   "youAreAboutToPublishTheResultsOfTheElection": "Sie sind dabei, das Ergebnis dieser Wahl zu veröffentlichen:",
   "theResultsBecomePublicAndFinalTheElectionCanNotBeUnfrozenAnymore": "Das Ergebnis wird öffentlich und endgültig. Die Wahl kann danach nicht mehr freigegeben werden.",
   "publish": "Veröffentlichen",
-  "publishResults": "Ergebnis veröffentlichen"
+  "publishResults": "Ergebnis veröffentlichen",
+  "resultsPublished": "Ergebnis veröffentlicht",
+  "publicResults": "Öffentliches Ergebnis"
 }

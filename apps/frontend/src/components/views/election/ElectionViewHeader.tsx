@@ -1,7 +1,7 @@
-import { ActionIcon, Button, Group, Title } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
-import { IconArrowLeft, IconDots } from '@tabler/icons-react';
+import { IconArrowLeft, IconDots, IconWorld } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
@@ -25,6 +25,26 @@ import { HEADER_HEIGHT } from '../../utils.ts';
 export interface ElectionViewHeaderProps {
   election: SelectableElection;
 }
+
+const ResultsPublishedInfo = ({ election }: ElectionViewHeaderProps): JSX.Element => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <Badge color="green">{t('resultsPublished', 'Results published')}</Badge>
+      <Button
+        leftSection={<IconWorld size={16} />}
+        variant="outline"
+        onClick={(): void => {
+          navigate(`/results/${election.id}`);
+        }}
+      >
+        {t('publicResults', 'Public results')}
+      </Button>
+    </>
+  );
+};
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
   const { t } = useTranslation();
@@ -94,19 +114,24 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
           </Button>
           <Title order={3}>{election.name}</Title>
         </Group>
-        <ElectionsSettingsMenu
-          election={election}
-          targetElement={
-            <ActionIcon size="lg" variant="light" aria-label="Settings">
-              <IconDots size={16} />
-            </ActionIcon>
-          }
-          onDelete={onDelete}
-          onMutate={onMutate}
-          onToggleFreeze={onToggleFreeze}
-          onPublishResults={onPublishResults}
-          isMutating={isMutating}
-        />
+        <Group>
+          {election.resultsPublishedAt !== undefined && (
+            <ResultsPublishedInfo election={election} />
+          )}
+          <ElectionsSettingsMenu
+            election={election}
+            targetElement={
+              <ActionIcon size="lg" variant="light" aria-label="Settings">
+                <IconDots size={16} />
+              </ActionIcon>
+            }
+            onDelete={onDelete}
+            onMutate={onMutate}
+            onToggleFreeze={onToggleFreeze}
+            onPublishResults={onPublishResults}
+            isMutating={isMutating}
+          />
+        </Group>
       </Group>
     </>
   );
