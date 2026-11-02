@@ -17,6 +17,9 @@ describe('Election result tests', () => {
     proof: demoProof,
   };
   const demoElectionResult = {
+    name: 'My election',
+    votingStartAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
+    votingEndAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
     electionId: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
     publishedAt: new Date().toISOString(),
     pubKey: '11',

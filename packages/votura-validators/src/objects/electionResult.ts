@@ -37,6 +37,8 @@ const decryptionProofObject = z.object({
 });
 
 export const selectableElectionResultObject = z.object({
+  ...electionObject.pick({ name: true, description: true, votingStartAt: true, votingEndAt: true })
+    .shape,
   electionId: electionObject.shape.id.register(voturaMetadataRegistry, {
     description: 'The ID of the election to which this result belongs.',
     example: '4ef40d09-abe9-4c3f-8176-764eb0e5e70d',
@@ -48,7 +50,7 @@ export const selectableElectionResultObject = z.object({
   ...electionObject.pick({ pubKey: true, primeP: true, primeQ: true, generator: true }).shape,
   ballotPapers: z
     .array(
-      selectableBallotPaperObject.pick({ id: true, name: true }).extend({
+      selectableBallotPaperObject.pick({ id: true, name: true, description: true }).extend({
         ballotsCast: z.int32().min(0).register(voturaMetadataRegistry, {
           description: 'The number of ballots cast on this ballot paper.',
           example: 42,
