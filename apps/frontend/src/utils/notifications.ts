@@ -191,3 +191,22 @@ export const getPasswordResetSuccessConfig = (): NotificationData => {
     color: 'green',
   };
 };
+
+export const getChangeElectionAuthorSuccessConfig = (): NotificationData => {
+  return {
+    title: i18next.t('success', 'Success'),
+    message: i18next.t(
+      'electionAuthorChangedSuccessfully',
+      'Election author was changed successfully.',
+    ),
+    color: 'green',
+  };
+};
+
+export const getChangeElectionAuthorErrorConfig = (): NotificationData => {
+  return {
+    title: i18next.t('error', 'Error'),
+    message: i18next.t('failedToChangeElectionAuthor', 'Failed to change election creator.'),
+    color: 'red',
+  };
+};
