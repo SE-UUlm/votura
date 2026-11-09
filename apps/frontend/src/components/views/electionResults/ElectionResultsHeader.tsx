@@ -82,7 +82,9 @@ export const ElectionResultsHeader = ({
               variant="outline"
               leftSection={<IconDownload size={16} />}
               data-disabled
-              onClick={(event) => event.preventDefault()}
+              onClick={(event): void => {
+                event.preventDefault();
+              }}
             >
               {t('downloadBallotBox', 'Download ballot box')}
             </Button>
