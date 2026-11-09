@@ -15,11 +15,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@mantine/core": "^9.7.1",
-    "@mantine/dates": "^9.7.1",
-    "@mantine/form": "^9.7.1",
-    "@mantine/hooks": "^9.7.1",
-    "@mantine/notifications": "^9.7.1",
+    "@mantine/core": "^9.7.4",
+    "@mantine/dates": "^9.7.4",
+    "@mantine/form": "^9.7.4",
+    "@mantine/hooks": "^9.7.4",
+    "@mantine/notifications": "^9.7.4",
     "@repo/votura-ballot-box": "*",
     "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
@@ -27,7 +27,7 @@
     "axios": "^1.18.1",
     "axios-auth-refresh": "^3.3.6",
     "dayjs": "^1.11.13",
-    "i18next": "^26.3.1",
+    "i18next": "^26.5.12",
     "i18next-browser-languagedetector": "^8.2.1",
     "i18next-http-backend": "^4.0.0",
     "react": "^19.3.1",
@@ -51,6 +51,6 @@
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.9.10",
     "typescript": "^5.8.2",
-    "vite": "^8.3.4"
+    "vite": "^8.3.5"
   }
 }

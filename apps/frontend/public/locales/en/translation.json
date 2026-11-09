@@ -220,6 +220,8 @@
   "theLinkIsValidForOneHour": "The link is valid for one hour.",
   "thisPasswordResetLinkIsInvalidOrHasExpired": "This password reset link is invalid or has expired.",
   "requestANewLink": "Request a new link",
+  "passwordRequirements": "At least 12 characters with an uppercase letter, a lowercase letter, a number and one of #?!@$%^&*-",
+  "allowRevote": "Allow revote",
   "validateMyVote": "Validate my Vote",
   "pleaseEnterYourVoteCipherText": "Please enter your vote cipher text",
   "checkMyVote": "Check my Vote",

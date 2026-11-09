@@ -5,6 +5,7 @@ const election: InsertableElection = {
   name: 'Test Election',
   private: true,
   allowInvalidVotes: false,
+  allowRevote: true,
   description: 'My test election',
   votingStartAt: '2025-07-22T13:21:13.087Z',
   votingEndAt: '2025-07-25T13:21:13.087Z',
