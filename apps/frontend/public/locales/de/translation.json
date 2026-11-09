@@ -224,5 +224,6 @@
   "somethingWentWrong": "Etwas ist schiefgelaufen",
   "anUnexpectedErrorHasOccurredPleaseTryAgainLater": "Ein unerwarteter Fehler ist aufgetreten. Bitte versuchen Sie es später erneut.",
   "pageNotFound": "Seite nicht gefunden",
-  "thePageYouAreLookingForDoesNotExist": "Die gesuchte Seite existiert nicht."
+  "thePageYouAreLookingForDoesNotExist": "Die gesuchte Seite existiert nicht.",
+  "allowRevote": "Erneute Abstimmung zulassen"
 }

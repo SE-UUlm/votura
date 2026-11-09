@@ -224,5 +224,6 @@
   "somethingWentWrong": "Something went wrong",
   "anUnexpectedErrorHasOccurredPleaseTryAgainLater": "An unexpected error has occurred. Please try again later.",
   "pageNotFound": "Page not found",
-  "thePageYouAreLookingForDoesNotExist": "The page you are looking for does not exist."
+  "thePageYouAreLookingForDoesNotExist": "The page you are looking for does not exist.",
+  "allowRevote": "Allow revote"
 }
