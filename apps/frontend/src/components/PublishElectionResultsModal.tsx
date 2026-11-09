@@ -56,7 +56,7 @@ export const PublishElectionResultsModal = ({
         </Button>
         <Button
           variant="filled"
-          onClick={(e) => {
+          onClick={(e): void => {
             onPublishResults(e);
             onClose();
           }}
