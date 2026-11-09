@@ -1,28 +1,47 @@
-import { ActionIcon, Button, Group, Title } from '@mantine/core';
+import { ActionIcon, Badge, Button, Group, Title } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
 import type { SelectableElection } from '@repo/votura-validators';
-import { IconArrowLeft, IconDots } from '@tabler/icons-react';
+import { IconArrowLeft, IconDots, IconWorld } from '@tabler/icons-react';
 import type { JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
-import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
-import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
+import { callPublishElectionResults } from '../../../rpc/election/callPublishElectionResults.ts';
+import { callToggleElectionFreeze } from '../../../rpc/election/callToggleElectionFreeze.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
-  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
+import type { PublishElectionResultsModalProps } from '../../PublishElectionResultsModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 import { HEADER_HEIGHT } from '../../utils.ts';
 
 export interface ElectionViewHeaderProps {
   election: SelectableElection;
 }
+
+const ResultsPublishedInfo = ({ election }: ElectionViewHeaderProps): JSX.Element => {
+  const { t } = useTranslation();
+  const navigate = useNavigate();
+
+  return (
+    <>
+      <Badge color="green">{t('resultsPublished', 'Results published')}</Badge>
+      <Button
+        leftSection={<IconWorld size={16} />}
+        variant="outline"
+        onClick={(): void => {
+          navigate(`/results/${election.id}`);
+        }}
+      >
+        {t('publicResults', 'Public results')}
+      </Button>
+    </>
+  );
+};
 
 export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.Element => {
   const { t } = useTranslation();
@@ -60,17 +79,11 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
-    if (election.configFrozen) {
-      notifications.show(await callUnfreezeElection(election.id));
-    } else {
-      const freezable = await callGetElectionFreezable(election.id);
-      if (!freezable) {
-        notifications.show(getElectionNotFreezableConfig(election.name));
-        return;
-      }
+    notifications.show(await callToggleElectionFreeze(election));
+  };
 
-      notifications.show(await callFreezeElection(election.id));
-    }
+  const onPublishResults: PublishElectionResultsModalProps['onPublishResults'] = async () => {
+    notifications.show(await callPublishElectionResults(election.id));
   };
 
   return (
@@ -88,18 +101,24 @@ export const ElectionViewHeader = ({ election }: ElectionViewHeaderProps): JSX.E
           </Button>
           <Title order={3}>{election.name}</Title>
         </Group>
-        <ElectionsSettingsMenu
-          election={election}
-          targetElement={
-            <ActionIcon size="lg" variant="light" aria-label="Settings">
-              <IconDots size={16} />
-            </ActionIcon>
-          }
-          onDelete={onDelete}
-          onMutate={onMutate}
-          onToggleFreeze={onToggleFreeze}
-          isMutating={isMutating}
-        />
+        <Group>
+          {election.resultsPublishedAt !== undefined && (
+            <ResultsPublishedInfo election={election} />
+          )}
+          <ElectionsSettingsMenu
+            election={election}
+            targetElement={
+              <ActionIcon size="lg" variant="light" aria-label="Settings">
+                <IconDots size={16} />
+              </ActionIcon>
+            }
+            onDelete={onDelete}
+            onMutate={onMutate}
+            onToggleFreeze={onToggleFreeze}
+            onPublishResults={onPublishResults}
+            isMutating={isMutating}
+          />
+        </Group>
       </Group>
     </>
   );

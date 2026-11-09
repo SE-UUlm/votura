@@ -233,5 +233,14 @@
   "downloadBallotBox": "Wahlurne herunterladen",
   "publishedAt": "Veröffentlicht am",
   "resultsNotPublished": "Ergebnis nicht veröffentlicht",
-  "theResultsOfThisElectionAreNotPublishedYet": "Das Ergebnis dieser Wahl ist noch nicht veröffentlicht."
+  "theResultsOfThisElectionAreNotPublishedYet": "Das Ergebnis dieser Wahl ist noch nicht veröffentlicht.",
+  "theResultsOfTheElectionNameHaveBeenPublished": "Das Ergebnis der Wahl \"{{name}}\" wurde veröffentlicht.",
+  "anErrorHasOccurredWhilstAttemptingToPublishTheResultsPleaseTryAgainLater": "Beim Versuch, das Ergebnis zu veröffentlichen, ist ein Fehler aufgetreten. Bitte versuchen Sie es später erneut.",
+  "publishElectionResults": "Wahlergebnis veröffentlichen",
+  "youAreAboutToPublishTheResultsOfTheElection": "Sie sind dabei, das Ergebnis dieser Wahl zu veröffentlichen:",
+  "theResultsBecomePublicAndFinalTheElectionCanNotBeUnfrozenAnymore": "Das Ergebnis wird öffentlich und endgültig. Die Wahl kann danach nicht mehr freigegeben werden.",
+  "publish": "Veröffentlichen",
+  "publishResults": "Ergebnis veröffentlichen",
+  "resultsPublished": "Ergebnis veröffentlicht",
+  "publicResults": "Öffentliches Ergebnis"
 }

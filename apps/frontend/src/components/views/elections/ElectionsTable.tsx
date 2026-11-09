@@ -6,20 +6,19 @@ import dayjs from 'dayjs';
 import type { JSX, PropsWithChildren } from 'react';
 import { useTranslation } from 'react-i18next';
 import { useNavigate } from 'react-router';
-import { callFreezeElection } from '../../../rpc/election/callFreezeElection.ts';
-import { callGetElectionFreezable } from '../../../rpc/election/callGetElectionFreezable.ts';
-import { callUnfreezeElection } from '../../../rpc/election/callUnfreezeElection.ts';
+import { callPublishElectionResults } from '../../../rpc/election/callPublishElectionResults.ts';
+import { callToggleElectionFreeze } from '../../../rpc/election/callToggleElectionFreeze.ts';
 import { useDeleteElection } from '../../../swr/elections/useDeleteElection.ts';
 import { useUpdateElection } from '../../../swr/elections/useUpdateElection.ts';
 import {
   getDeleteSuccessElectionConfig,
-  getElectionNotFreezableConfig,
   getMutateSuccessElectionConfig,
 } from '../../../utils/notifications.ts';
 import { BooleanBadge } from '../../BooleanBadge.tsx';
 import type { DeleteElectionModalProps } from '../../DeleteElectionModal.tsx';
 import { ElectionsSettingsMenu } from '../../ElectionSettingsMenu.tsx';
 import type { MutateElectionModalProps } from '../../MutateElectionDrawer.tsx';
+import type { PublishElectionResultsModalProps } from '../../PublishElectionResultsModal.tsx';
 import type { ToggleFreezeElectionModalProps } from '../../ToggleFreezeElectionModal.tsx';
 
 export interface ElectionsTableProps {
@@ -52,17 +51,11 @@ const ElectionRow = ({ election }: ElectionRowProps): JSX.Element => {
   };
 
   const onToggleFreeze: ToggleFreezeElectionModalProps['onToggleFreeze'] = async () => {
-    if (election.configFrozen) {
-      notifications.show(await callUnfreezeElection(election.id));
-    } else {
-      const freezable = await callGetElectionFreezable(election.id);
-      if (!freezable) {
-        notifications.show(getElectionNotFreezableConfig(election.name));
-        return;
-      }
+    notifications.show(await callToggleElectionFreeze(election));
+  };
 
-      notifications.show(await callFreezeElection(election.id));
-    }
+  const onPublishResults: PublishElectionResultsModalProps['onPublishResults'] = async () => {
+    notifications.show(await callPublishElectionResults(election.id));
   };
 
   const navigateToElectionSettings = () => {
@@ -102,6 +95,7 @@ const ElectionRow = ({ election }: ElectionRowProps): JSX.Element => {
             onDelete={onDelete}
             onMutate={onMutate}
             onToggleFreeze={onToggleFreeze}
+            onPublishResults={onPublishResults}
             isMutating={isMutating}
           />
         </Group>

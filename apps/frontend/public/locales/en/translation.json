@@ -233,5 +233,14 @@
   "downloadBallotBox": "Download ballot box",
   "publishedAt": "Published at",
   "resultsNotPublished": "Results not published",
-  "theResultsOfThisElectionAreNotPublishedYet": "The results of this election are not published yet."
+  "theResultsOfThisElectionAreNotPublishedYet": "The results of this election are not published yet.",
+  "theResultsOfTheElectionNameHaveBeenPublished": "The results of the election \"{{name}}\" have been published.",
+  "anErrorHasOccurredWhilstAttemptingToPublishTheResultsPleaseTryAgainLater": "An error has occurred whilst attempting to publish the results. Please try again later.",
+  "publishElectionResults": "Publish election results",
+  "youAreAboutToPublishTheResultsOfTheElection": "You are about to publish the results of the election:",
+  "theResultsBecomePublicAndFinalTheElectionCanNotBeUnfrozenAnymore": "The results become public and final. The election can not be unfrozen anymore.",
+  "publish": "Publish",
+  "publishResults": "Publish results",
+  "resultsPublished": "Results published",
+  "publicResults": "Public results"
 }

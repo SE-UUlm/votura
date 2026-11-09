@@ -7,5 +7,6 @@ export const rpcRoutes = {
     freezable: (id: SelectableElection['id']): string => `/elections/${id}/freezable`,
     freeze: (id: SelectableElection['id']): string => `/elections/${id}/freeze`,
     unfreeze: (id: SelectableElection['id']): string => `/elections/${id}/unfreeze`,
+    publishResults: (id: SelectableElection['id']): string => `/elections/${id}/publishResults`,
   },
 };
