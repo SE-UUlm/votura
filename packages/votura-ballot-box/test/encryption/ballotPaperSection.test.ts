@@ -115,6 +115,40 @@ describe('BallotPaperSectionEncryption tests', () => {
     }
   });
 
+  it('should throw if a vote has no chosen cell', () => {
+    const section = {
+      votes: [
+        {
+          [UUIDs.candidate1]: 0,
+          [UUIDs.candidate2]: 0,
+          noVote: 0,
+          invalid: 0,
+        },
+      ],
+    };
+
+    if (!encryption) {
+      throw new Error('Encryption is null.');
+    }
+    expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
+      'No randomness for chosen cell',
+    );
+  });
+
+  it('should throw if a vote has no data for a candidate', () => {
+    // a missing key is already rejected by extractCandidateIds, so the key exists with no value
+    const section = {
+      votes: [{ [UUIDs.candidate1]: 1, [UUIDs.candidate2]: undefined }],
+    } as unknown as PlainFilledBallotPaper['sections'][string];
+
+    if (!encryption) {
+      throw new Error('Encryption is null.');
+    }
+    expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
+      `Missing vote data for candidate ${UUIDs.candidate2}`,
+    );
+  });
+
   it('should not share randomness between the cells of a vote', () => {
     const candidates: string[] = [UUIDs.candidate1, UUIDs.candidate2, UUIDs.candidate3];
     const section = {
