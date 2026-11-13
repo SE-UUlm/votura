@@ -1,7 +1,28 @@
 import type { PlainFilledBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { BallotPaperSectionEncryption } from '../../src/encryption/ballotPaperSection.js';
+import {
+  BallotPaperSectionEncryption,
+  type EncryptedSection,
+} from '../../src/encryption/ballotPaperSection.js';
+
+function expectFreshRandomness(
+  vote: EncryptedSection['votes'][number],
+  chosenId: string | undefined,
+  randomness: bigint[],
+): void {
+  const cells = Object.values(vote);
+  expect(new Set(cells.map((cell) => cell.alpha)).size).toBeGreaterThan(1);
+
+  // with shared randomness all 0-cells have the same beta and the chosen cell stands out
+  const zeroBetas = Object.entries(vote)
+    .filter(([id]) => id !== chosenId)
+    .map(([, cell]) => cell.beta);
+  expect(new Set(zeroBetas).size).toBeGreaterThan(1);
+
+  expect(randomness).toHaveLength(cells.length);
+  expect(new Set(randomness).size).toBeGreaterThan(1);
+}
 
 describe('BallotPaperSectionEncryption tests', () => {
   enum UUIDs {
@@ -91,6 +112,66 @@ describe('BallotPaperSectionEncryption tests', () => {
         expect(value).toHaveProperty('response');
         expect(typeof value.response).toBe('string');
       }
+    }
+  });
+
+  it('should throw if a vote has no chosen cell', () => {
+    const section = {
+      votes: [
+        {
+          [UUIDs.candidate1]: 0,
+          [UUIDs.candidate2]: 0,
+          noVote: 0,
+          invalid: 0,
+        },
+      ],
+    };
+
+    if (!encryption) {
+      throw new Error('Encryption is null.');
+    }
+    expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
+      'No randomness for chosen cell',
+    );
+  });
+
+  it('should throw if a vote has no data for a candidate', () => {
+    // a missing key is already rejected by extractCandidateIds, so the key exists with no value
+    const section = {
+      votes: [{ [UUIDs.candidate1]: 1, [UUIDs.candidate2]: undefined }],
+    } as unknown as PlainFilledBallotPaper['sections'][string];
+
+    if (!encryption) {
+      throw new Error('Encryption is null.');
+    }
+    expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
+      `Missing vote data for candidate ${UUIDs.candidate2}`,
+    );
+  });
+
+  it('should not share randomness between the cells of a vote', () => {
+    const candidates: string[] = [UUIDs.candidate1, UUIDs.candidate2, UUIDs.candidate3];
+    const section = {
+      votes: Array.from({ length: 20 }, (_, i) => ({
+        [UUIDs.candidate1]: Number(i % 3 === 0),
+        [UUIDs.candidate2]: Number(i % 3 === 1),
+        [UUIDs.candidate3]: Number(i % 3 === 2),
+        noVote: 0,
+        invalid: 0,
+      })),
+    };
+
+    if (!encryption) {
+      throw new Error('Encryption is null.');
+    }
+    const [encryptedSection, auditableVotes] = encryption.encryptSection(section, UUIDs.section1);
+
+    for (const [index, vote] of encryptedSection.votes.entries()) {
+      expectFreshRandomness(
+        vote,
+        candidates.at(index % 3),
+        auditableVotes[index]?.randomness ?? [],
+      );
     }
   });
 });
