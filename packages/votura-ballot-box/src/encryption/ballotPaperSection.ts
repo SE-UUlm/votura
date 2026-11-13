@@ -24,6 +24,7 @@ export interface EncryptedSection {
 }
 export interface AuditableVote {
   ciphertexts: Ciphertext[];
+
   /** Randomness used for each cell, in the same order as `ciphertexts`. */
   randomness: bigint[];
 }
@@ -63,7 +64,7 @@ export class BallotPaperSectionEncryption {
         vote,
         orderedCandidateIds,
       );
-      const chosenRandomness = randomness[realIndex];
+      const chosenRandomness = randomness.find((_, index) => index === realIndex);
       if (chosenRandomness === undefined) {
         throw new Error(`No randomness for chosen cell at index ${realIndex}.`);
       }
