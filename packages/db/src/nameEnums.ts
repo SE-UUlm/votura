@@ -60,6 +60,8 @@ export enum ElectionColumnName {
   primeQ = 'primeQ',
   generator = 'generator',
   keyGenStartedAt = 'keyGenStartedAt',
+  resultsPublishedAt = 'resultsPublishedAt',
+  results = 'results',
   electionCreatorId = 'electionCreatorId',
 }
 

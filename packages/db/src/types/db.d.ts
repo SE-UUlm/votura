@@ -119,6 +119,8 @@ export interface Election {
   private: Generated<boolean>;
   privKey: Numeric | null;
   pubKey: Numeric | null;
+  results: Json | null;
+  resultsPublishedAt: Timestamp | null;
   votingEndAt: Timestamp;
   votingStartAt: Timestamp;
 }
