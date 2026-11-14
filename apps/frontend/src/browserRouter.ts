@@ -14,6 +14,7 @@ import { LoginView } from './components/views/login/LoginView.tsx';
 import { ResetPasswordView } from './components/views/login/ResetPasswordView.tsx';
 import { SetPasswordView } from './components/views/login/SetPasswordView.tsx';
 import { VoterView } from './components/views/login/VoterView.tsx';
+import { VoteValidationView } from './components/views/voteValidation/VoteValidationView.tsx';
 import { VoterGroupsView } from './components/views/voterGroups/VoterGroupsView.tsx';
 import { VotingElectionView } from './components/views/voting/VotingElectionView.tsx';
 import { VotingHomeView } from './components/views/voting/VotingHomeView.tsx';
@@ -29,6 +30,11 @@ export const browserRouter = createBrowserRouter([
     path: '/vote',
     // eslint-disable-next-line @typescript-eslint/naming-convention
     Component: VoterView,
+  },
+  {
+    path: '/validate',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: VoteValidationView,
   },
   {
     path: '/login',

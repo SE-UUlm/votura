@@ -46,7 +46,8 @@
   },
   "dependencies": {
     "@noble/hashes": "^2.4.0",
-    "bigint-crypto-utils": "^3.3.0"
+    "bigint-crypto-utils": "^3.3.0",
+    "canonicalize": "^5.1.0"
   },
   "packageManager": "npm@11.3.0",
   "engines": {

@@ -95,7 +95,7 @@ export const VoterView = (): JSX.Element => {
               <TextInput
                 withAsterisk
                 label={t('pleaseEnterYourVotingToken', 'Please enter your voting token')}
-                placeholder={'voting Token'}
+                placeholder={t('votingTokenSpace', 'Voting Token')}
                 key={form.key('votingToken')}
                 {...form.getInputProps('votingToken')}
               />
