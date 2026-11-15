@@ -24,6 +24,8 @@ function expectFreshRandomness(
   expect(new Set(randomness).size).toBeGreaterThan(1);
 }
 
+const ENCRYPTION_IS_NULL = 'Encryption is null.';
+
 describe('BallotPaperSectionEncryption tests', () => {
   enum UUIDs {
     ballotPaper = '2d38c96f-42ac-4c3f-9734-7193e9c64424',
@@ -128,7 +130,7 @@ describe('BallotPaperSectionEncryption tests', () => {
     };
 
     if (!encryption) {
-      throw new Error('Encryption is null.');
+      throw new Error(ENCRYPTION_IS_NULL);
     }
     expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
       'No randomness for chosen cell',
@@ -142,7 +144,7 @@ describe('BallotPaperSectionEncryption tests', () => {
     } as unknown as PlainFilledBallotPaper['sections'][string];
 
     if (!encryption) {
-      throw new Error('Encryption is null.');
+      throw new Error(ENCRYPTION_IS_NULL);
     }
     expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
       `Missing vote data for candidate ${UUIDs.candidate2}`,
@@ -162,7 +164,7 @@ describe('BallotPaperSectionEncryption tests', () => {
     };
 
     if (!encryption) {
-      throw new Error('Encryption is null.');
+      throw new Error(ENCRYPTION_IS_NULL);
     }
     const [encryptedSection, auditableVotes] = encryption.encryptSection(section, UUIDs.section1);
 
@@ -170,7 +172,7 @@ describe('BallotPaperSectionEncryption tests', () => {
       expectFreshRandomness(
         vote,
         candidates.at(index % 3),
-        auditableVotes[index]?.randomness ?? [],
+        auditableVotes.at(index)?.randomness ?? [],
       );
     }
   });
