@@ -15,11 +15,11 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "@mantine/core": "^9.7.4",
-    "@mantine/dates": "^9.7.4",
-    "@mantine/form": "^9.7.4",
+    "@mantine/core": "^9.8.0",
+    "@mantine/dates": "^9.8.0",
+    "@mantine/form": "^9.8.0",
     "@mantine/hooks": "^9.7.4",
-    "@mantine/notifications": "^9.7.4",
+    "@mantine/notifications": "^9.8.0",
     "@repo/votura-ballot-box": "*",
     "@repo/votura-validators": "*",
     "@tabler/icons-react": "^3.31.0",
