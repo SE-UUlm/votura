@@ -13,13 +13,17 @@ describe('BallotPaperSectionDecryption tests', () => {
     candidate2 = 'f792d5ca-65aa-4167-8f83-06e909051005',
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
-  const dummyVote = {
-    alpha: '5',
-    beta: '3',
+  const dummyProof = {
     commitment1: '7',
     commitment2: '11',
     challenge: '13',
     response: '17',
+  };
+  const dummyVote = {
+    alpha: '5',
+    beta: '3',
+    zeroProof: { ...dummyProof },
+    oneProof: { ...dummyProof },
   };
 
   const dummySection = {
@@ -37,6 +41,7 @@ describe('BallotPaperSectionDecryption tests', () => {
         invalid: { ...dummyVote },
       },
     ],
+    overallProofs: [{ ...dummyProof }, { ...dummyProof }],
   };
   let decryption: BallotPaperSectionDecryption | null = null;
   let keyPair: KeyPair | null = null;
@@ -49,6 +54,7 @@ describe('BallotPaperSectionDecryption tests', () => {
   it('should throw if lookup table not initialized', () => {
     const section = {
       votes: [],
+      overallProofs: [],
     };
 
     expect(() => decryption?.decryptSection(section, 'section-1')).toThrowError(
@@ -78,6 +84,7 @@ describe('BallotPaperSectionDecryption tests', () => {
           invalid: { ...dummyVote },
         },
       ],
+      overallProofs: [{ ...dummyProof }],
     };
 
     expect(() => {

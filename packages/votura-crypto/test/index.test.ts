@@ -3,11 +3,36 @@ import { describe, expect } from 'vitest';
 import {
   type Ciphertext,
   getKeyPair,
+  KeyPair,
+  type PublicKey,
   Tallying,
+  type VoteProof,
   ZeroKnowledgeProof,
   type ZKProof,
 } from '../src/index.js';
 import { voturaTest } from './voturaTest.js';
+
+/**
+ * Encrypts every vote count as its own cell, each with fresh randomness.
+ */
+function encryptCells(
+  publicKey: PublicKey,
+  voteCounts: bigint[],
+): { ciphertexts: Ciphertext[]; randomness: bigint[] } {
+  const ciphertexts: Ciphertext[] = [];
+  const randomness: bigint[] = [];
+  for (const voteCount of voteCounts) {
+    const encoded = modPow(publicKey.getGenerator(), voteCount, publicKey.getPrimeP());
+    const [ciphertext, cellRandomness] = publicKey.encrypt(encoded);
+    ciphertexts.push(ciphertext);
+    randomness.push(cellRandomness);
+  }
+  return { ciphertexts, randomness };
+}
+
+function withChangedOverallProof(voteProof: VoteProof, change: Partial<ZKProof>): VoteProof {
+  return { ...voteProof, overallProof: { ...voteProof.overallProof, ...change } };
+}
 
 voturaTest('getKeyPair', { timeout: 120000 }, async () => {
   const bitsPrimeP = 128;
@@ -239,68 +264,6 @@ describe('ZeroKnowledgeProof', () => {
     expect(proof).not.toEqual(proof2);
   });
 
-  voturaTest('createRealEncryptionProof', ({ keyPair, plaintext, randomness }) => {
-    const { publicKey } = keyPair;
-    const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
-    const realIndex = plaintexts.indexOf(plaintext);
-
-    const zkp = new ZeroKnowledgeProof(publicKey);
-    const simulatedZKPs: ZKProof[] = [];
-    for (let i = 0; i < plaintexts.length; i++) {
-      const plainT = plaintexts[i];
-      const cipherT = ciphertexts[i];
-      if (plainT !== undefined && cipherT !== undefined) {
-        // using bracket notation to access private method for testing purposes
-        // eslint-disable-next-line @typescript-eslint/dot-notation
-        const simulatedProof: ZKProof = zkp['createSimulatedEncryptionProof'](plainT, cipherT);
-        simulatedZKPs.push(simulatedProof);
-      }
-    }
-
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const proof: ZKProof = zkp['createRealEncryptionProof'](simulatedZKPs, realIndex, randomness);
-    // eslint-disable-next-line @typescript-eslint/dot-notation
-    const proof2: ZKProof = zkp['createRealEncryptionProof'](simulatedZKPs, realIndex, randomness);
-
-    expect(proof.commitment.length).toBe(2);
-    expect(typeof proof.challenge).toBe('bigint');
-    expect(typeof proof.response).toBe('bigint');
-
-    expect(proof.challenge >= 0n).toBe(true);
-    expect(proof.challenge < publicKey.getPrimeQ()).toBe(true);
-    expect(proof.response >= 0n).toBe(true);
-    expect(proof.response < publicKey.getPrimeQ()).toBe(true);
-
-    expect(proof).not.toEqual(proof2);
-  });
-
-  voturaTest('createDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
-    const { publicKey } = keyPair;
-    const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const ciphertexts: Ciphertext[] = plaintexts.map((p) => publicKey.encrypt(p, randomness)[0]);
-    const realIndex = plaintexts.indexOf(plaintext);
-
-    const zkp = new ZeroKnowledgeProof(publicKey);
-    const proofs = zkp.createDisjunctiveEncryptionProof(ciphertexts, realIndex, randomness);
-    const proofs2 = zkp.createDisjunctiveEncryptionProof(ciphertexts, realIndex, randomness);
-
-    expect(proofs.length).toBe(plaintexts.length);
-
-    proofs.forEach((proof) => {
-      expect(proof.commitment.length).toBe(2);
-      expect(typeof proof.challenge).toBe('bigint');
-      expect(typeof proof.response).toBe('bigint');
-
-      expect(proof.challenge >= 0n).toBe(true);
-      expect(proof.challenge < publicKey.getPrimeQ()).toBe(true);
-      expect(proof.response >= 0n).toBe(true);
-      expect(proof.response < publicKey.getPrimeQ()).toBe(true);
-    });
-
-    expect(proofs).not.toEqual(proofs2);
-  });
-
   voturaTest('verifyEncryptionProof', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;
     const zkp = new ZeroKnowledgeProof(publicKey);
@@ -357,62 +320,6 @@ describe('ZeroKnowledgeProof', () => {
     expect(isValid4).toBe(false);
   });
 
-  voturaTest('verifyDisjunctiveEncryptionProof', ({ keyPair, plaintext, randomness }) => {
-    const { publicKey } = keyPair;
-    const plaintexts = [plaintext, 123123123n, 456456456n, 789789789n];
-    const realIndex = plaintexts.indexOf(plaintext);
-    const encodedPlaintexts = plaintexts.map((_, i) =>
-      modPow(publicKey.getGenerator(), i === realIndex ? 1n : 0n, publicKey.getPrimeP()),
-    );
-    const ciphertexts: Ciphertext[] = encodedPlaintexts.map(
-      (ep) => publicKey.encrypt(ep, randomness)[0],
-    );
-
-    const zkp = new ZeroKnowledgeProof(publicKey);
-    const validProofs = zkp.createDisjunctiveEncryptionProof(ciphertexts, realIndex, randomness);
-
-    const isValid = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, validProofs);
-    expect(isValid).toBe(true);
-
-    const invalidProofs1: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment:
-        index === 0
-          ? [(proof.commitment[0] + 1n) % publicKey.getPrimeP(), proof.commitment[1]]
-          : [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: proof.response,
-    }));
-    const isValid1 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs1);
-    expect(isValid1).toBe(false);
-
-    const invalidProofs2: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment:
-        index === 1
-          ? [proof.commitment[0], (proof.commitment[1] + 1n) % publicKey.getPrimeP()]
-          : [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: proof.response,
-    }));
-    const isValid2 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs2);
-    expect(isValid2).toBe(false);
-
-    const invalidProofs3: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: [proof.commitment[0], proof.commitment[1]],
-      challenge: index === 2 ? (proof.challenge + 1n) % publicKey.getPrimeQ() : proof.challenge,
-      response: proof.response,
-    }));
-    const isValid3 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs3);
-    expect(isValid3).toBe(false);
-
-    const invalidProofs4: ZKProof[] = validProofs.map((proof, index) => ({
-      commitment: [proof.commitment[0], proof.commitment[1]],
-      challenge: proof.challenge,
-      response: index === 3 ? (proof.response + 1n) % publicKey.getPrimeQ() : proof.response,
-    }));
-    const isValid4 = zkp.verifyDisjunctiveEncryptionProof(ciphertexts, invalidProofs4);
-    expect(isValid4).toBe(false);
-  });
-
   voturaTest('verifyDecryptionProof', ({ keyPair, plaintext, ciphertext }) => {
     const { publicKey } = keyPair;
     const validProof = keyPair.privateKey.createDecryptionProof(ciphertext);
@@ -458,5 +365,137 @@ describe('ZeroKnowledgeProof', () => {
     };
     const isValid4 = zkp.verifyDecryptionProof(plaintext, ciphertext, invalidProof4);
     expect(isValid4).toBe(false);
+  });
+});
+
+describe('vote proofs', () => {
+  const VALID_VOTE = [0n, 0n, 1n, 0n];
+  const REAL_INDEX = 2;
+
+  voturaTest('accepts a valid vote for every position of the 1', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    for (const realIndex of [0, 1, 2, 3]) {
+      const voteCounts = [0, 1, 2, 3].map((index) => BigInt(Number(index === realIndex)));
+      const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, voteCounts);
+      const voteProof = zkp.createVoteProof(ciphertexts, realIndex, randomness);
+      expect(zkp.verifyVoteProof(ciphertexts, voteProof)).toBe(true);
+    }
+  });
+
+  voturaTest('rejects a vote with several 1s', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, [1n, 1n, 1n, 0n]);
+    const voteProof = zkp.createVoteProof(ciphertexts, 0, randomness);
+    expect(zkp.verifyVoteProof(ciphertexts, voteProof)).toBe(false);
+  });
+
+  voturaTest('rejects a vote without a 1', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, [0n, 0n, 0n, 0n]);
+    const voteProof = zkp.createVoteProof(ciphertexts, 0, randomness);
+    expect(zkp.verifyVoteProof(ciphertexts, voteProof)).toBe(false);
+  });
+
+  voturaTest('rejects cells other than 0 and 1 even if they add up to 1', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    // 2 + (q - 1) = 1 (mod q), so the overall proof alone would accept this vote
+    const minusOne = keyPair.publicKey.getPrimeQ() - 1n;
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, [2n, minusOne, 0n, 0n]);
+    const voteProof = zkp.createVoteProof(ciphertexts, 0, randomness);
+    expect(zkp.verifyVoteProof(ciphertexts, voteProof)).toBe(false);
+  });
+
+  voturaTest('rejects a changed cell proof', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    const voteProof = zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness);
+    const changedCellProofs = voteProof.cellProofs.map(
+      ([zeroProof, oneProof]): [ZKProof, ZKProof] => [
+        { ...zeroProof, challenge: (zeroProof.challenge + 1n) % keyPair.publicKey.getPrimeQ() },
+        oneProof,
+      ],
+    );
+    expect(zkp.verifyVoteProof(ciphertexts, { ...voteProof, cellProofs: changedCellProofs })).toBe(
+      false,
+    );
+  });
+
+  voturaTest('rejects a changed overall proof', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const primeQ = keyPair.publicKey.getPrimeQ();
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    const voteProof = zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness);
+    const { challenge, response } = voteProof.overallProof;
+
+    const changedChallenge = withChangedOverallProof(voteProof, {
+      challenge: (challenge + 1n) % primeQ,
+    });
+    expect(zkp.verifyVoteProof(ciphertexts, changedChallenge)).toBe(false);
+
+    const changedResponse = withChangedOverallProof(voteProof, {
+      response: (response + 1n) % primeQ,
+    });
+    expect(zkp.verifyVoteProof(ciphertexts, changedResponse)).toBe(false);
+  });
+
+  voturaTest('rejects the proof for other ciphertexts', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    const voteProof = zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness);
+    const otherCiphertexts = encryptCells(keyPair.publicKey, VALID_VOTE).ciphertexts;
+    expect(zkp.verifyVoteProof(otherCiphertexts, voteProof)).toBe(false);
+  });
+
+  voturaTest('rejects ciphertexts outside the group', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const primeP = keyPair.publicKey.getPrimeP();
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    const voteProof = zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness);
+    // p - alpha has order 2q, so it is not part of the subgroup of order q
+    const outsideGroup = ciphertexts.map(([alpha, beta]): Ciphertext => [primeP - alpha, beta]);
+    expect(zkp.verifyVoteProof(outsideGroup, voteProof)).toBe(false);
+  });
+
+  voturaTest('rejects a wrong number of cell proofs', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    const voteProof = zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness);
+    const missingCellProof = { ...voteProof, cellProofs: voteProof.cellProofs.slice(1) };
+    expect(zkp.verifyVoteProof(ciphertexts, missingCellProof)).toBe(false);
+    expect(zkp.verifyVoteProof([], { ...voteProof, cellProofs: [] })).toBe(false);
+  });
+
+  voturaTest('rejects the proof under another public key', ({ keyPair }) => {
+    const { publicKey } = keyPair;
+    const otherPrivateKey = 12345n;
+    const otherKeyPair = new KeyPair(
+      publicKey.getPrimeP(),
+      publicKey.getPrimeQ(),
+      publicKey.getGenerator(),
+      modPow(publicKey.getGenerator(), otherPrivateKey, publicKey.getPrimeP()),
+      otherPrivateKey,
+    );
+    const { ciphertexts, randomness } = encryptCells(publicKey, VALID_VOTE);
+    const voteProof = new ZeroKnowledgeProof(publicKey).createVoteProof(
+      ciphertexts,
+      REAL_INDEX,
+      randomness,
+    );
+    const otherZkp = new ZeroKnowledgeProof(otherKeyPair.publicKey);
+    expect(otherZkp.verifyVoteProof(ciphertexts, voteProof)).toBe(false);
+  });
+
+  voturaTest('throws for an invalid real index or missing randomness', ({ keyPair }) => {
+    const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
+    const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, VALID_VOTE);
+    expect(() => zkp.createVoteProof(ciphertexts, -1, randomness)).toThrow(
+      'realIndex is out of bounds',
+    );
+    expect(() => zkp.createVoteProof(ciphertexts, ciphertexts.length, randomness)).toThrow(
+      'realIndex is out of bounds',
+    );
+    expect(() => zkp.createVoteProof(ciphertexts, REAL_INDEX, randomness.slice(1))).toThrow(
+      'Missing randomness for cell 3',
+    );
   });
 });

@@ -28,7 +28,10 @@ export class BallotPaperEncryption {
         section,
         sectionId,
       );
-      encryptedSections[sectionId] = { votes: encryptedSection.votes };
+      encryptedSections[sectionId] = {
+        votes: encryptedSection.votes,
+        overallProofs: encryptedSection.overallProofs,
+      };
       allAuditableVotes.push(...auditableVotes);
     }
 

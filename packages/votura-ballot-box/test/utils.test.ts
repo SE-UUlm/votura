@@ -1,6 +1,6 @@
 import { encryptedFilledBallotPaperObject } from '@repo/votura-validators';
 import { describe, expect, it } from 'vitest';
-import { extractCandidateIds } from '../src/utils.js';
+import { deserializeProof, extractCandidateIds, serializeProof } from '../src/utils.js';
 
 describe('Votura Ballot Box utils tests', () => {
   enum UUIDs {
@@ -11,14 +11,19 @@ describe('Votura Ballot Box utils tests', () => {
     candidate2 = 'f792d5ca-65aa-4167-8f83-06e909051005',
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
-  const dummyVote = {
-    alpha: '5',
-    beta: '3',
+  const dummyProof = {
     commitment1: '7',
     commitment2: '11',
     challenge: '13',
     response: '17',
   };
+  const dummyVote = {
+    alpha: '5',
+    beta: '3',
+    zeroProof: { ...dummyProof },
+    oneProof: { ...dummyProof },
+  };
+  const dummyOverallProofs = [{ ...dummyProof }, { ...dummyProof }];
 
   const dummySection = {
     votes: [
@@ -35,11 +40,13 @@ describe('Votura Ballot Box utils tests', () => {
         invalid: { ...dummyVote },
       },
     ],
+    overallProofs: dummyOverallProofs,
   };
 
   it('should throw error if extracting candidate IDs from section with no votes', () => {
     const emptySection = {
       votes: [],
+      overallProofs: [],
     };
 
     expect(() => {
@@ -62,6 +69,7 @@ describe('Votura Ballot Box utils tests', () => {
           invalid: { ...dummyVote },
         },
       ],
+      overallProofs: dummyOverallProofs,
     };
 
     expect(() => {
@@ -85,6 +93,7 @@ describe('Votura Ballot Box utils tests', () => {
           invalid: { ...dummyVote },
         },
       ],
+      overallProofs: dummyOverallProofs,
     };
 
     expect(() => {
@@ -103,5 +112,11 @@ describe('Votura Ballot Box utils tests', () => {
 
     const candidateIds = extractCandidateIds(dummySection);
     expect(candidateIds).toEqual([UUIDs.candidate1, UUIDs.candidate2, 'invalid', 'noVote']); // manually ordered in alphabetical order
+  });
+
+  it('should convert proofs to strings and back without changing them', () => {
+    const proof = deserializeProof(dummyProof);
+    expect(proof).toEqual({ commitment: [7n, 11n], challenge: 13n, response: 17n });
+    expect(serializeProof(proof)).toEqual(dummyProof);
   });
 });

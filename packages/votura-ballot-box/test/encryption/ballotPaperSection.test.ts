@@ -1,4 +1,4 @@
-import type { PlainFilledBallotPaper } from '@repo/votura-validators';
+import type { EncryptedVoteProof, PlainFilledBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
 import {
@@ -22,6 +22,12 @@ function expectFreshRandomness(
 
   expect(randomness).toHaveLength(cells.length);
   expect(new Set(randomness).size).toBeGreaterThan(1);
+}
+
+function expectNumberStrings(proof: EncryptedVoteProof): void {
+  for (const part of [proof.commitment1, proof.commitment2, proof.challenge, proof.response]) {
+    expect(part).toMatch(/^\d+$/);
+  }
 }
 
 const ENCRYPTION_IS_NULL = 'Encryption is null.';
@@ -92,6 +98,8 @@ describe('BallotPaperSectionEncryption tests', () => {
     );
     expect(encryptedSection.sectionId).toBe(UUIDs.section1);
     expect(encryptedSection.votes).toHaveLength(4);
+    expect(encryptedSection.overallProofs).toHaveLength(4);
+    encryptedSection.overallProofs.forEach(expectNumberStrings);
 
     for (const vote of encryptedSection.votes) {
       expect(Object.keys(vote).sort((a, b) => a.localeCompare(b))).toEqual(
@@ -101,18 +109,10 @@ describe('BallotPaperSectionEncryption tests', () => {
       );
 
       for (const value of Object.values(vote)) {
-        expect(value).toHaveProperty('alpha');
-        expect(typeof value.alpha).toBe('string');
-        expect(value).toHaveProperty('beta');
-        expect(typeof value.beta).toBe('string');
-        expect(value).toHaveProperty('commitment1');
-        expect(typeof value.commitment1).toBe('string');
-        expect(value).toHaveProperty('commitment2');
-        expect(typeof value.commitment2).toBe('string');
-        expect(value).toHaveProperty('challenge');
-        expect(typeof value.challenge).toBe('string');
-        expect(value).toHaveProperty('response');
-        expect(typeof value.response).toBe('string');
+        expect(value.alpha).toMatch(/^\d+$/);
+        expect(value.beta).toMatch(/^\d+$/);
+        expectNumberStrings(value.zeroProof);
+        expectNumberStrings(value.oneProof);
       }
     }
   });
@@ -133,7 +133,7 @@ describe('BallotPaperSectionEncryption tests', () => {
       throw new Error(ENCRYPTION_IS_NULL);
     }
     expect(() => encryption?.encryptSection(section, UUIDs.section1)).toThrow(
-      'No randomness for chosen cell',
+      'realIndex is out of bounds',
     );
   });
 
