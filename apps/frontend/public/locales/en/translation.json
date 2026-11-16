@@ -221,5 +221,9 @@
   "thisPasswordResetLinkIsInvalidOrHasExpired": "This password reset link is invalid or has expired.",
   "requestANewLink": "Request a new link",
   "passwordRequirements": "At least 12 characters with an uppercase letter, a lowercase letter, a number and one of #?!@$%^&*-",
+  "somethingWentWrong": "Something went wrong",
+  "anUnexpectedErrorHasOccurredPleaseTryAgainLater": "An unexpected error has occurred. Please try again later.",
+  "pageNotFound": "Page not found",
+  "thePageYouAreLookingForDoesNotExist": "The page you are looking for does not exist.",
   "allowRevote": "Allow revote"
 }
