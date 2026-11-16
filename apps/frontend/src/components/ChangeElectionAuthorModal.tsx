@@ -133,6 +133,7 @@ const useAuthorSelection = (
         votingStartAt: election.votingStartAt,
         votingEndAt: election.votingEndAt,
         allowInvalidVotes: election.allowInvalidVotes,
+        allowRevote: election.allowRevote,
         private: election.private,
         electionCreatorId: selectedUserId,
       });
