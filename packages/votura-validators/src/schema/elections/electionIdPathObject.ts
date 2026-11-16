@@ -25,7 +25,7 @@ export const electionIdPathObject: OpenAPIV3.PathItemObject = {
     tags: [Tag.elections],
     summary: 'Update a specific election',
     description:
-      'Updates the configuration of the requested election with the provided information. The election can only be updated if the election is not frozen.',
+      'Updates the configuration of the requested election with the provided information. The election can only be updated if the election is not frozen. Only administrators are allowed to change `electionCreatorId`.',
     security: [{ [SecuritySchemaName.voturaBackendAuth]: [] }],
     operationId: 'updateElectionById',
     requestBody: {

@@ -1,13 +1,21 @@
 import type { SelectableElection, SelectableUser } from '@repo/votura-validators';
 import type { Request, Response } from 'express';
 import { HttpStatusCode } from '../../httpStatusCode.js';
-import { getElections as getPersistentElections } from '../../services/elections.service.js';
+import {
+  getAllElections,
+  getElections as getPersistentElections,
+} from '../../services/elections.service.js';
 
 export const getElections = async (
   _req: Request,
   res: Response<SelectableElection[], { user: SelectableUser }>,
 ): Promise<void> => {
-  const elections = await getPersistentElections(res.locals.user.id);
+  const loggedInUser = res.locals.user;
 
-  res.status(HttpStatusCode.ok).json(elections);
+  if (loggedInUser.role === 'admin') {
+    res.status(HttpStatusCode.ok).json(await getAllElections());
+    return;
+  }
+
+  res.status(HttpStatusCode.ok).json(await getPersistentElections(loggedInUser.id));
 };
