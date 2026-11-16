@@ -33,7 +33,6 @@ export const demoElection = insertableElectionObject.parse({
   votingStartAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   votingEndAt: new Date(Date.now() + 10 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
-  allowRevote: false,
 });
 export const demoElection2 = insertableElectionObject.parse({
   name: 'My test election 2',
@@ -42,7 +41,6 @@ export const demoElection2 = insertableElectionObject.parse({
   votingStartAt: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
   votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
-  allowRevote: false,
 });
 export const invalidAllowedElection = insertableElectionObject.parse({
   name: 'My test election with invalid votes allowed',
@@ -51,7 +49,6 @@ export const invalidAllowedElection = insertableElectionObject.parse({
   votingStartAt: new Date(Date.now() + 1 * 60 * 60 * 1000).toISOString(),
   votingEndAt: new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: true,
-  allowRevote: false,
 });
 export const brokenElection = {
   name: 'My broken election',
@@ -67,7 +64,6 @@ export const pastElection = insertableElectionObject.parse({
   votingStartAt: new Date(Date.now() - 2 * 60 * 60 * 1000).toISOString(),
   votingEndAt: new Date(Date.now() - 1 * 60 * 60 * 1000).toISOString(),
   allowInvalidVotes: false,
-  allowRevote: false,
 });
 
 /*
