@@ -47,13 +47,16 @@ export const logger = pino.pino(
 
 export const httpLogger = pinoHttp.pinoHttp({ logger, autoLogging: false });
 
+/**
+ * Logs database queries without their parameters.
+ * The parameters contain the election private key, ballots and voter IDs, so they must never reach the log files.
+ */
 export const kyselyLogger = (event: LogEvent): void => {
   if (event.level === 'error') {
     logger.error(
       {
         error: event.error,
         query: event.query.sql,
-        params: event.query.parameters,
         duration: event.queryDurationMillis,
       },
       'DB query execution failed',
@@ -64,7 +67,6 @@ export const kyselyLogger = (event: LogEvent): void => {
     logger.debug(
       {
         query: event.query.sql,
-        params: event.query.parameters,
         duration: event.queryDurationMillis,
       },
       'DB query successfully executed',
