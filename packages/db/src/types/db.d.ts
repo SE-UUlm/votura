@@ -104,6 +104,7 @@ export interface CronJobRunDetails {
 
 export interface Election {
   allowInvalidVotes: Generated<boolean>;
+  allowRevote: Generated<boolean>;
   configFrozen: Generated<boolean>;
   createdAt: Generated<Timestamp>;
   description: string | null;
