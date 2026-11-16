@@ -1,16 +1,17 @@
 import {
   filledBallotPaperDefaultVoteOption,
   type EncryptedFilledBallotPaper,
+  type EncryptedVoteProof,
 } from '@repo/votura-validators';
 import {
   Tallying,
   ZeroKnowledgeProof,
   type Ciphertext,
   type PrivateKey,
-  type ZKProof,
+  type ZeroOrOneProof,
 } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
-import { extractCandidateIds } from '../utils.js';
+import { deserializeProof, extractCandidateIds } from '../utils.js';
 
 export interface DecryptedSection {
   sectionId: string;
@@ -113,7 +114,7 @@ export class BallotPaperSectionDecryption {
 
   /**
    * Extracts and verifies ciphertexts from all votes for each candidate in the given ordering.
-   * Verification is done using the proofs for each ciphertext (commitments, challenge, response).
+   * Verification is done using the proofs of each cell and the overall proof of each vote.
    * Returns null if any verification fails.
    */
   private extractAndVerifyAllCiphertexts(
@@ -122,8 +123,16 @@ export class BallotPaperSectionDecryption {
   ): Ciphertext[][] | null {
     const allVoteCiphertexts: Ciphertext[][] = [];
 
-    for (const vote of section.votes) {
-      const voteCiphertexts = this.extractAndVerifyVoteCiphertexts(vote, candidateIds);
+    for (const [index, vote] of section.votes.entries()) {
+      const overallProof = section.overallProofs.find((_, i) => i === index);
+      if (overallProof === undefined) {
+        return null; // Every vote needs its overall proof
+      }
+      const voteCiphertexts = this.extractAndVerifyVoteCiphertexts(
+        vote,
+        candidateIds,
+        overallProof,
+      );
       if (voteCiphertexts === null) {
         return null; // Verification failed for this vote
       }
@@ -135,15 +144,16 @@ export class BallotPaperSectionDecryption {
 
   /**
    * Extracts and verifies ciphertexts from a single vote record in given candidate order.
-   * Verification is done using the proofs for each ciphertext (commitments, challenge, response).
+   * Verifies that every cell encrypts 0 or 1 and that all cells together encrypt exactly 1.
    * Returns null if any verification fails.
    */
   private extractAndVerifyVoteCiphertexts(
     vote: VoteRecord,
     candidateIds: string[],
+    overallProof: EncryptedVoteProof,
   ): Ciphertext[] | null {
     const ciphertexts: Ciphertext[] = [];
-    const zkProofs: ZKProof[] = [];
+    const cellProofs: ZeroOrOneProof[] = [];
 
     for (const candidateId of candidateIds) {
       const voteData = vote[candidateId];
@@ -152,21 +162,17 @@ export class BallotPaperSectionDecryption {
         throw new Error(`Missing vote data for candidate ${candidateId}`);
       }
 
-      const ciphertext: Ciphertext = [BigInt(voteData.alpha), BigInt(voteData.beta)];
-      const zkProof: ZKProof = {
-        commitment: [BigInt(voteData.commitment1), BigInt(voteData.commitment2)],
-        challenge: BigInt(voteData.challenge),
-        response: BigInt(voteData.response),
-      };
-      ciphertexts.push(ciphertext);
-      zkProofs.push(zkProof);
+      ciphertexts.push([BigInt(voteData.alpha), BigInt(voteData.beta)]);
+      cellProofs.push([deserializeProof(voteData.zeroProof), deserializeProof(voteData.oneProof)]);
     }
 
-    // Verify all ciphertexts for this vote
-    const allValid = this.zkp.verifyDisjunctiveEncryptionProof(ciphertexts, zkProofs);
+    const isValid = this.zkp.verifyVoteProof(ciphertexts, {
+      cellProofs,
+      overallProof: deserializeProof(overallProof),
+    });
 
     // If any proof is invalid, return null
-    return allValid ? ciphertexts : null;
+    return isValid ? ciphertexts : null;
   }
 
   /**

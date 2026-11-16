@@ -1,27 +1,19 @@
-import type { PlainFilledBallotPaper } from '@repo/votura-validators';
+import type { EncryptedFilledBallotPaper, PlainFilledBallotPaper } from '@repo/votura-validators';
 import {
   ZeroKnowledgeProof,
   type Ciphertext,
   type PublicKey,
-  type ZKProof,
+  type ZeroOrOneProof,
 } from '@votura/votura-crypto/index';
 import { modPow } from 'bigint-crypto-utils';
-import { extractCandidateIds } from '../utils.js';
+import { extractCandidateIds, serializeProof } from '../utils.js';
 
-export interface EncryptedSection {
+type EncryptedSectionVotes = EncryptedFilledBallotPaper['sections'][string];
+
+export interface EncryptedSection extends EncryptedSectionVotes {
   sectionId: string;
-  votes: Record<
-    string,
-    {
-      alpha: string;
-      beta: string;
-      commitment1: string;
-      commitment2: string;
-      challenge: string;
-      response: string;
-    }
-  >[];
 }
+
 export interface AuditableVote {
   ciphertexts: Ciphertext[];
 
@@ -45,6 +37,7 @@ export class BallotPaperSectionEncryption {
 
   /**
    * Encrypts a single ballot paper section and returns the encryption as EncryptedSection.
+   * Every vote gets a proof per cell that it encrypts 0 or 1 and an overall proof that it encrypts exactly one vote.
    * Expects that the ballot paper the section stems from has been validated using the zod plainBallotPaper schema.
    * Additionally returns an array of AuditableVotes needed for the auditing process.
    * @param section The ballot paper section to encrypt
@@ -56,6 +49,7 @@ export class BallotPaperSectionEncryption {
     sectionId: string,
   ): [EncryptedSection, AuditableVote[]] {
     const encryptedVotes: EncryptedSection['votes'] = [];
+    const overallProofs: EncryptedSection['overallProofs'] = [];
     const auditableVotes: AuditableVote[] = [];
 
     const orderedCandidateIds = extractCandidateIds(section);
@@ -64,27 +58,16 @@ export class BallotPaperSectionEncryption {
         vote,
         orderedCandidateIds,
       );
-      const chosenRandomness = randomness.find((_, index) => index === realIndex);
-      if (chosenRandomness === undefined) {
-        throw new Error(`No randomness for chosen cell at index ${realIndex}.`);
-      }
-      const zkProofs = this.zkProof.createDisjunctiveEncryptionProof(
-        ciphertexts,
-        realIndex,
-        chosenRandomness,
-      );
-      const encryptedVoteRecord = this.buildEncryptedVoteRecord(
-        orderedCandidateIds,
-        ciphertexts,
-        zkProofs,
-      );
-      const auditableVote = { ciphertexts: ciphertexts, randomness: randomness };
+      const voteProof = this.zkProof.createVoteProof(ciphertexts, realIndex, randomness);
 
-      encryptedVotes.push(encryptedVoteRecord);
-      auditableVotes.push(auditableVote);
+      encryptedVotes.push(
+        this.buildEncryptedVoteRecord(orderedCandidateIds, ciphertexts, voteProof.cellProofs),
+      );
+      overallProofs.push(serializeProof(voteProof.overallProof));
+      auditableVotes.push({ ciphertexts, randomness });
     }
 
-    return [{ sectionId, votes: encryptedVotes }, auditableVotes];
+    return [{ sectionId, votes: encryptedVotes, overallProofs }, auditableVotes];
   }
 
   /**
@@ -122,19 +105,19 @@ export class BallotPaperSectionEncryption {
   }
 
   /**
-   * Builds an encrypted vote record by mapping ciphertexts and zero-knowledge-proofs.
+   * Builds an encrypted vote record by mapping ciphertexts and the proofs of every cell.
    */
   private buildEncryptedVoteRecord(
     candidateIds: string[],
     ciphertexts: Ciphertext[],
-    zkProofs: ZKProof[],
+    cellProofs: ZeroOrOneProof[],
   ): EncryptedVote {
     const encryptedVoteRecord: EncryptedVote = {};
 
     for (let i = 0; i < candidateIds.length; i++) {
       const candidateId = candidateIds[i];
       const ciphertext = ciphertexts[i];
-      const zkProof = zkProofs[i];
+      const cellProof = cellProofs[i];
 
       if (candidateId === undefined) {
         // should never happen in normal operation, but typescript needs to know candidateId is defined
@@ -144,18 +127,17 @@ export class BallotPaperSectionEncryption {
         // should never happen in normal operation, but typescript needs to know ciphertext is defined
         throw new Error(`Ciphertext is undefined at index ${i}.`);
       }
-      if (zkProof === undefined) {
-        // should never happen in normal operation, but typescript needs to know zkProof is defined
+      if (cellProof === undefined) {
+        // should never happen in normal operation, but typescript needs to know cellProof is defined
         throw new Error(`Zero-knowledge-proof is undefined at index ${i}.`);
       }
 
+      const [zeroProof, oneProof] = cellProof;
       encryptedVoteRecord[candidateId] = {
         alpha: String(ciphertext[0]),
         beta: String(ciphertext[1]),
-        commitment1: String(zkProof.commitment[0]),
-        commitment2: String(zkProof.commitment[1]),
-        challenge: String(zkProof.challenge),
-        response: String(zkProof.response),
+        zeroProof: serializeProof(zeroProof),
+        oneProof: serializeProof(oneProof),
       };
     }
 

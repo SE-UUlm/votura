@@ -1,7 +1,10 @@
 import type { PlainFilledBallotPaper } from '@repo/votura-validators';
 import { getKeyPair, type KeyPair } from '@votura/votura-crypto/index';
 import { beforeAll, describe, expect, it } from 'vitest';
-import { BallotPaperSectionDecryption } from '../src/decryption/ballotPaperSection.js';
+import {
+  BallotPaperSectionDecryption,
+  SectionDecryptionError,
+} from '../src/decryption/ballotPaperSection.js';
 import { BallotPaperSectionEncryption } from '../src/encryption/ballotPaperSection.js';
 
 describe('Integration test: encrypt and decrypt a ballot paper section', () => {
@@ -89,5 +92,30 @@ describe('Integration test: encrypt and decrypt a ballot paper section', () => {
       noVoteCount: 1,
       invalidCount: 0,
     });
+  });
+
+  it('should reject a section with a vote for several candidates', () => {
+    // skips the zod validation of the plain ballot paper, like a manipulated client would
+    const section = {
+      votes: [
+        {
+          [UUIDs.candidate1]: 1,
+          [UUIDs.candidate2]: 1,
+          [UUIDs.candidate3]: 1,
+          noVote: 0,
+          invalid: 0,
+        },
+      ],
+    };
+
+    if (!encryption || !decryption) {
+      throw new Error('Encryption or decryption is null or undefined.');
+    }
+    const [encryptedSection] = encryption.encryptSection(section, UUIDs.section1);
+
+    decryption.calculateLookupTable(4);
+    expect(decryption.decryptSection(encryptedSection, UUIDs.section1)).toBe(
+      SectionDecryptionError.verificationFailed,
+    );
   });
 });
