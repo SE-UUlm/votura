@@ -349,83 +349,6 @@ export class ZeroKnowledgeProof {
     return this.verifyEncryptionProof(this.pk.getGenerator(), overall, overallProof);
   }
 
-  public createDisjunctiveEncryptionProof(
-    ciphertexts: Ciphertext[],
-    realIndex: number,
-    randomness: bigint,
-  ): ZKProof[] {
-    if (realIndex < 0 || realIndex >= ciphertexts.length) {
-      throw new Error('realIndex is out of bounds');
-    }
-
-    const disjunctiveZKPs: ZKProof[] = [];
-
-    ciphertexts.forEach((ciphertext, index) => {
-      const choice = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
-      if (index !== realIndex) {
-        const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
-        disjunctiveZKPs.push(simulatedProof);
-      }
-    });
-
-    const realProof = this.createRealEncryptionProof(disjunctiveZKPs, realIndex, randomness);
-    disjunctiveZKPs.splice(realIndex, 0, realProof);
-
-    return disjunctiveZKPs;
-  }
-
-  public verifyDisjunctiveEncryptionProof(ciphertexts: Ciphertext[], zkProofs: ZKProof[]): boolean {
-    if (ciphertexts.length !== zkProofs.length) {
-      console.warn(
-        `Bad number of proofs (expected ${ciphertexts.length}, found ${zkProofs.length})`,
-      );
-      return false;
-    }
-
-    const choice0 = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
-    const choice1 = this.pk.getGenerator(); // = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP());
-    for (let index = 0; index < ciphertexts.length; index++) {
-      const ciphertext = ciphertexts[index];
-      if (ciphertext === undefined) {
-        console.warn(`Invalid input: ciphertext[${index}] is undefined`);
-        return false;
-      }
-      const zkProof = zkProofs[index];
-      if (zkProof === undefined) {
-        console.warn(`Invalid input: zkProof[${index}] is undefined`);
-        return false;
-      }
-      const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
-      const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
-      if (!isValid0 && !isValid1) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions,@typescript-eslint/no-base-to-string
-        console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
-        return false;
-      }
-    }
-
-    const partsToHash: string[] = [];
-
-    zkProofs.forEach((proof) => {
-      partsToHash.push(proof.commitment[0].toString());
-      partsToHash.push(proof.commitment[1].toString());
-    });
-
-    const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
-
-    const actualChallenge = zkProofs.reduce(
-      (sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()),
-      0n,
-    );
-
-    if (expectedChallenge !== actualChallenge) {
-      console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
-      return false;
-    }
-
-    return true;
-  }
-
   public verifyDecryptionProof(
     plaintext: bigint,
     ciphertext: Ciphertext,
@@ -499,52 +422,6 @@ export class ZeroKnowledgeProof {
     return {
       commitment: [commitmentA, commitmentB],
       challenge: challenge,
-      response: response,
-    };
-  }
-
-  private createRealEncryptionProof(
-    simulatedZKPs: ZKProof[],
-    realIndex: number,
-    randomness: bigint,
-  ): ZKProof {
-    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
-
-    const commitmentA = modPow(this.pk.getGenerator(), w, this.pk.getPrimeP());
-    const commitmentB = modPow(this.pk.getPublicKey(), w, this.pk.getPrimeP());
-
-    const partsToHash: string[] = [];
-
-    for (let i = 0; i <= simulatedZKPs.length; i++) {
-      if (i === realIndex) {
-        partsToHash.push(commitmentA.toString());
-        partsToHash.push(commitmentB.toString());
-      }
-      if (i < simulatedZKPs.length) {
-        const proof = simulatedZKPs[i];
-        if (!proof) {
-          throw new Error(`Missing simulated proof at index ${i}`);
-        }
-        partsToHash.push(proof.commitment[0].toString());
-        partsToHash.push(proof.commitment[1].toString());
-      }
-    }
-
-    const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
-
-    const realChallenge = simulatedZKPs.reduce(
-      (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
-      disjunctiveChallenge,
-    );
-
-    const response = modAdd(
-      [w, modMultiply([randomness, realChallenge], this.pk.getPrimeQ())],
-      this.pk.getPrimeQ(),
-    );
-
-    return {
-      commitment: [commitmentA, commitmentB],
-      challenge: realChallenge,
       response: response,
     };
   }
