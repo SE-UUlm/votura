@@ -24,7 +24,9 @@ export interface EncryptedSection {
 }
 export interface AuditableVote {
   ciphertexts: Ciphertext[];
-  randomness: bigint;
+
+  /** Randomness used for each cell, in the same order as `ciphertexts`. */
+  randomness: bigint[];
 }
 
 type SectionVotes = PlainFilledBallotPaper['sections'][string];
@@ -62,10 +64,14 @@ export class BallotPaperSectionEncryption {
         vote,
         orderedCandidateIds,
       );
+      const chosenRandomness = randomness.find((_, index) => index === realIndex);
+      if (chosenRandomness === undefined) {
+        throw new Error(`No randomness for chosen cell at index ${realIndex}.`);
+      }
       const zkProofs = this.zkProof.createDisjunctiveEncryptionProof(
         ciphertexts,
         realIndex,
-        randomness,
+        chosenRandomness,
       );
       const encryptedVoteRecord = this.buildEncryptedVoteRecord(
         orderedCandidateIds,
@@ -83,14 +89,15 @@ export class BallotPaperSectionEncryption {
 
   /**
    * Extracts plaintexts from a single vote record in given candidate order.
-   * These plaintexts are instantly encoded and encrypted.
+   * These plaintexts are instantly encoded and encrypted, every cell with fresh randomness.
+   * Returns the ciphertexts, the index of the chosen cell and the randomness of every cell.
    */
   private extractAndEncryptVotes(
     vote: VoteRecord,
     candidateIds: string[],
-  ): [Ciphertext[], number, bigint] {
+  ): [Ciphertext[], number, bigint[]] {
     const ciphertexts: Ciphertext[] = [];
-    let voteRandomness = -1n;
+    const randomness: bigint[] = [];
 
     const realIndex = candidateIds.findIndex((id) => vote[id] === 1);
 
@@ -106,19 +113,12 @@ export class BallotPaperSectionEncryption {
         this.publicKey.getPrimeP(),
       );
 
-      if (voteRandomness === -1n) {
-        // generate new randomness with first encryption
-        const [ciphertext, randomness] = this.publicKey.encrypt(encodedPlaintext);
-        voteRandomness = randomness;
-        ciphertexts.push(ciphertext);
-      } else {
-        // use same randomness for the entire vote
-        const [ciphertext] = this.publicKey.encrypt(encodedPlaintext, voteRandomness);
-        ciphertexts.push(ciphertext);
-      }
+      const [ciphertext, cellRandomness] = this.publicKey.encrypt(encodedPlaintext);
+      ciphertexts.push(ciphertext);
+      randomness.push(cellRandomness);
     }
 
-    return [ciphertexts, realIndex, voteRandomness];
+    return [ciphertexts, realIndex, randomness];
   }
 
   /**
