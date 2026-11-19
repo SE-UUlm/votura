@@ -50,7 +50,7 @@
     "postcss-preset-mantine": "^1.17.0",
     "postcss-simple-vars": "^7.0.1",
     "prettier": "^3.9.10",
-    "typescript": "^5.8.2",
+    "typescript": "^7.0.2",
     "vite": "^8.3.5"
   }
 }
