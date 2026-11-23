@@ -28,12 +28,11 @@ export type ZeroOrOneProof = [ZKProof, ZKProof];
 
 /**
  * Proof that a vote is valid: every cell encrypts 0 or 1 and all cells together encrypt exactly 1.
+ * `cellProofs` holds one proof per cell, in the same order as the ciphertexts.
+ * `overallProof` proves that the product of all cells encrypts 1.
  */
 export interface VoteProof {
-  /** One proof per cell, in the same order as the ciphertexts. */
   cellProofs: ZeroOrOneProof[];
-
-  /** Proof that the product of all cells encrypts 1. */
   overallProof: ZKProof;
 }
 
@@ -518,7 +517,9 @@ export class ZeroKnowledgeProof {
     ]);
     const actualChallenge = modAdd([zeroProof.challenge, oneProof.challenge], this.pk.getPrimeQ());
     if (expectedChallenge !== actualChallenge) {
-      console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
+      console.warn(
+        `Bad challenge (expected: ${expectedChallenge.toString()}, found: ${actualChallenge.toString()})`,
+      );
       return false;
     }
 
@@ -530,7 +531,7 @@ export class ZeroKnowledgeProof {
    * Including the public key and the ciphertext binds the proof to the statement it proves.
    */
   private getChallenge(ciphertext: Ciphertext, commitments: bigint[]): bigint {
-    const parts = [
+    const parts: bigint[] = [
       this.pk.getPrimeP(),
       this.pk.getPrimeQ(),
       this.pk.getGenerator(),

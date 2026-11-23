@@ -30,6 +30,13 @@ function encryptCells(
   return { ciphertexts, randomness };
 }
 
+/**
+ * Vote counts of a valid vote with four cells and the 1 at the given index.
+ */
+function validVoteCounts(realIndex: number): bigint[] {
+  return [0, 1, 2, 3].map((index) => BigInt(Number(index === realIndex)));
+}
+
 function withChangedOverallProof(voteProof: VoteProof, change: Partial<ZKProof>): VoteProof {
   return { ...voteProof, overallProof: { ...voteProof.overallProof, ...change } };
 }
@@ -375,8 +382,10 @@ describe('vote proofs', () => {
   voturaTest('accepts a valid vote for every position of the 1', ({ keyPair }) => {
     const zkp = new ZeroKnowledgeProof(keyPair.publicKey);
     for (const realIndex of [0, 1, 2, 3]) {
-      const voteCounts = [0, 1, 2, 3].map((index) => BigInt(Number(index === realIndex)));
-      const { ciphertexts, randomness } = encryptCells(keyPair.publicKey, voteCounts);
+      const { ciphertexts, randomness } = encryptCells(
+        keyPair.publicKey,
+        validVoteCounts(realIndex),
+      );
       const voteProof = zkp.createVoteProof(ciphertexts, realIndex, randomness);
       expect(zkp.verifyVoteProof(ciphertexts, voteProof)).toBe(true);
     }
