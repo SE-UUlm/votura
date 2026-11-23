@@ -5,6 +5,7 @@ import {
   filledBallotPaperDefaultVoteOption,
   plainFilledBallotPaperObject,
   type EncryptedVote,
+  type EncryptedVoteProof,
   type PlainVote,
 } from '../../src/objects/filledBallotPaper.js';
 
@@ -18,13 +19,18 @@ describe('Filled Ballot Paper tests', () => {
     candidate3 = '1c0f870f-4c85-4cf0-9a00-078f3f93737c',
   }
 
-  const dummyEncryptedVote: EncryptedVote = {
-    alpha: '5',
-    beta: '3',
+  const dummyProof: EncryptedVoteProof = {
     commitment1: '7',
     commitment2: '11',
     challenge: '13',
     response: '17',
+  };
+
+  const dummyEncryptedVote: EncryptedVote = {
+    alpha: '5',
+    beta: '3',
+    zeroProof: { ...dummyProof },
+    oneProof: { ...dummyProof },
   };
 
   const dummyEncryptedVotes1: Record<string, EncryptedVote> = {
@@ -70,9 +76,11 @@ describe('Filled Ballot Paper tests', () => {
     sections: {
       [UUIDs.section1]: {
         votes: [dummyEncryptedVotes1],
+        overallProofs: [{ ...dummyProof }],
       },
       [UUIDs.section2]: {
         votes: [dummyEncryptedVotes2, dummyEncryptedVotes3],
+        overallProofs: [{ ...dummyProof }, { ...dummyProof }],
       },
     },
   };
@@ -210,6 +218,20 @@ describe('Filled Ballot Paper tests', () => {
         [UUIDs.section2]: {
           ...demoPlainFilledBallotPaperData.sections[UUIDs.section2],
           votes: [invalidVote],
+        },
+      },
+    });
+    expect(result.success).toBe(false);
+  });
+
+  it('Should throw error if the number of overall proofs differs from the number of votes', () => {
+    const result = encryptedFilledBallotPaperObject.safeParse({
+      ...demoEncryptedFilledBallotPaperData,
+      sections: {
+        ...demoEncryptedFilledBallotPaperData.sections,
+        [UUIDs.section2]: {
+          ...demoEncryptedFilledBallotPaperData.sections[UUIDs.section2],
+          overallProofs: [{ ...dummyProof }],
         },
       },
     });

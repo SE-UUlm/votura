@@ -20,6 +20,32 @@ export interface ZKProof {
   response: bigint;
 }
 
+/**
+ * Proof that a ciphertext encrypts 0 or 1.
+ * The first sub-proof is for 0, the second for 1. Only the sub-proof for the actual plaintext is real.
+ */
+export type ZeroOrOneProof = [ZKProof, ZKProof];
+
+/**
+ * Proof that a vote is valid: every cell encrypts 0 or 1 and all cells together encrypt exactly 1.
+ * `cellProofs` holds one proof per cell, in the same order as the ciphertexts.
+ * `overallProof` proves that the product of all cells encrypts 1.
+ */
+export interface VoteProof {
+  cellProofs: ZeroOrOneProof[];
+  overallProof: ZKProof;
+}
+
+/**
+ * Multiplies the given ciphertexts component-wise.
+ * The result encrypts the sum of the votes of all given ciphertexts.
+ */
+export const multiplyCiphertexts = (ciphertexts: Ciphertext[], primeP: bigint): Ciphertext =>
+  ciphertexts.reduce(
+    ([alpha, beta], [a, b]) => [modMultiply([alpha, a], primeP), modMultiply([beta, b], primeP)],
+    [1n, 1n],
+  );
+
 export class PublicKey {
   protected readonly primeP: bigint;
   protected readonly primeQ: bigint;
@@ -244,13 +270,7 @@ export class Tallying {
   }
 
   private aggregateCiphertexts(ciphertexts: Ciphertext[]): Ciphertext {
-    return ciphertexts.reduce(
-      ([alpha, beta], [a, b]) => [
-        modMultiply([alpha, a], this.pk.getPrimeP()),
-        modMultiply([beta, b], this.pk.getPrimeP()),
-      ],
-      [1n, 1n],
-    );
+    return multiplyCiphertexts(ciphertexts, this.pk.getPrimeP());
   }
 }
 
@@ -261,81 +281,71 @@ export class ZeroKnowledgeProof {
     this.pk = pk;
   }
 
-  public createDisjunctiveEncryptionProof(
+  /**
+   * Creates the proof that a vote is valid: every cell encrypts 0 or 1 and exactly one cell encrypts 1.
+   * @param ciphertexts The encrypted cells of the vote.
+   * @param realIndex The index of the cell that encrypts 1.
+   * @param randomness The randomness used for each cell, in the same order as `ciphertexts`.
+   * @returns One proof per cell and the proof that all cells together encrypt 1.
+   */
+  public createVoteProof(
     ciphertexts: Ciphertext[],
     realIndex: number,
-    randomness: bigint,
-  ): ZKProof[] {
+    randomness: bigint[],
+  ): VoteProof {
     if (realIndex < 0 || realIndex >= ciphertexts.length) {
       throw new Error('realIndex is out of bounds');
     }
 
-    const disjunctiveZKPs: ZKProof[] = [];
-
-    ciphertexts.forEach((ciphertext, index) => {
-      const choice = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
-      if (index !== realIndex) {
-        const simulatedProof = this.createSimulatedEncryptionProof(choice, ciphertext);
-        disjunctiveZKPs.push(simulatedProof);
+    const cellProofs: ZeroOrOneProof[] = [];
+    let overallRandomness = 0n;
+    for (const [index, ciphertext] of ciphertexts.entries()) {
+      const cellRandomness = randomness.find((_, i) => i === index);
+      if (cellRandomness === undefined) {
+        throw new Error(`Missing randomness for cell ${index}`);
       }
-    });
+      cellProofs.push(this.createZeroOrOneProof(ciphertext, index === realIndex, cellRandomness));
+      overallRandomness = modAdd([overallRandomness, cellRandomness], this.pk.getPrimeQ());
+    }
 
-    const realProof = this.createRealEncryptionProof(disjunctiveZKPs, realIndex, randomness);
-    disjunctiveZKPs.splice(realIndex, 0, realProof);
+    const overall = multiplyCiphertexts(ciphertexts, this.pk.getPrimeP());
+    const nonce = this.getRandomExponent();
+    const commitment = this.getRealCommitment(nonce);
+    const challenge = this.getChallenge(overall, commitment);
+    const overallProof = this.completeRealProof(commitment, nonce, overallRandomness, challenge);
 
-    return disjunctiveZKPs;
+    return { cellProofs, overallProof };
   }
 
-  public verifyDisjunctiveEncryptionProof(ciphertexts: Ciphertext[], zkProofs: ZKProof[]): boolean {
-    if (ciphertexts.length !== zkProofs.length) {
+  /**
+   * Verifies that a vote is valid: every cell encrypts 0 or 1 and all cells together encrypt exactly 1.
+   * @param ciphertexts The encrypted cells of the vote.
+   * @param voteProof The proof created by createVoteProof.
+   * @returns True if the proof is valid for the given ciphertexts.
+   */
+  public verifyVoteProof(ciphertexts: Ciphertext[], voteProof: VoteProof): boolean {
+    if (ciphertexts.length === 0 || ciphertexts.length !== voteProof.cellProofs.length) {
       console.warn(
-        `Bad number of proofs (expected ${ciphertexts.length}, found ${zkProofs.length})`,
+        `Bad number of cell proofs (expected ${ciphertexts.length}, found ${voteProof.cellProofs.length})`,
       );
       return false;
     }
 
-    const choice0 = 1n; // = modPow(this.pk.getGenerator(), 0n, this.pk.getPrimeP());
-    const choice1 = this.pk.getGenerator(); // = modPow(this.pk.getGenerator(), 1n, this.pk.getPrimeP());
-    for (let index = 0; index < ciphertexts.length; index++) {
-      const ciphertext = ciphertexts[index];
-      if (ciphertext === undefined) {
-        console.warn(`Invalid input: ciphertext[${index}] is undefined`);
-        return false;
-      }
-      const zkProof = zkProofs[index];
-      if (zkProof === undefined) {
-        console.warn(`Invalid input: zkProof[${index}] is undefined`);
-        return false;
-      }
-      const isValid0 = this.verifyEncryptionProof(choice0, ciphertext, zkProof);
-      const isValid1 = this.verifyEncryptionProof(choice1, ciphertext, zkProof);
-      if (!isValid0 && !isValid1) {
-        // eslint-disable-next-line @typescript-eslint/restrict-template-expressions,@typescript-eslint/no-base-to-string
-        console.warn(`Bad proof at index ${index}: ${ciphertext} with proof ${zkProof}`);
-        return false;
-      }
-    }
-
-    const partsToHash: string[] = [];
-
-    zkProofs.forEach((proof) => {
-      partsToHash.push(proof.commitment[0].toString());
-      partsToHash.push(proof.commitment[1].toString());
+    const allCellsValid = voteProof.cellProofs.every((cellProof, index) => {
+      const ciphertext = ciphertexts.find((_, i) => i === index);
+      return ciphertext !== undefined && this.verifyZeroOrOneProof(ciphertext, cellProof);
     });
-
-    const expectedChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
-
-    const actualChallenge = zkProofs.reduce(
-      (sum, proof) => modAdd([sum, proof.challenge], this.pk.getPrimeQ()),
-      0n,
-    );
-
-    if (expectedChallenge !== actualChallenge) {
-      console.warn(`Bad challenge (expected: ${expectedChallenge}, found: ${actualChallenge})`);
+    if (!allCellsValid) {
       return false;
     }
 
-    return true;
+    const overall = multiplyCiphertexts(ciphertexts, this.pk.getPrimeP());
+    const { overallProof } = voteProof;
+    if (overallProof.challenge !== this.getChallenge(overall, overallProof.commitment)) {
+      console.warn('Bad challenge in the overall proof');
+      return false;
+    }
+    return this.verifyEncryptionProof(this.pk.getGenerator(), overall, overallProof);
   }
 
   public verifyDecryptionProof(
@@ -415,52 +425,6 @@ export class ZeroKnowledgeProof {
     };
   }
 
-  private createRealEncryptionProof(
-    simulatedZKPs: ZKProof[],
-    realIndex: number,
-    randomness: bigint,
-  ): ZKProof {
-    const w = randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
-
-    const commitmentA = modPow(this.pk.getGenerator(), w, this.pk.getPrimeP());
-    const commitmentB = modPow(this.pk.getPublicKey(), w, this.pk.getPrimeP());
-
-    const partsToHash: string[] = [];
-
-    for (let i = 0; i <= simulatedZKPs.length; i++) {
-      if (i === realIndex) {
-        partsToHash.push(commitmentA.toString());
-        partsToHash.push(commitmentB.toString());
-      }
-      if (i < simulatedZKPs.length) {
-        const proof = simulatedZKPs[i];
-        if (!proof) {
-          throw new Error(`Missing simulated proof at index ${i}`);
-        }
-        partsToHash.push(proof.commitment[0].toString());
-        partsToHash.push(proof.commitment[1].toString());
-      }
-    }
-
-    const disjunctiveChallenge = getFiatShamirChallenge(partsToHash, this.pk.getPrimeQ());
-
-    const realChallenge = simulatedZKPs.reduce(
-      (sum, proof) => modAdd([sum, -proof.challenge], this.pk.getPrimeQ()),
-      disjunctiveChallenge,
-    );
-
-    const response = modAdd(
-      [w, modMultiply([randomness, realChallenge], this.pk.getPrimeQ())],
-      this.pk.getPrimeQ(),
-    );
-
-    return {
-      commitment: [commitmentA, commitmentB],
-      challenge: realChallenge,
-      response: response,
-    };
-  }
-
   private verifyEncryptionProof(
     plaintext: bigint,
     ciphertext: Ciphertext,
@@ -502,5 +466,114 @@ export class ZeroKnowledgeProof {
     }
 
     return true;
+  }
+
+  /**
+   * Creates the proof that the ciphertext encrypts 0 or 1.
+   * The sub-proof for the actual plaintext is real, the other one is simulated.
+   */
+  private createZeroOrOneProof(
+    ciphertext: Ciphertext,
+    isOne: boolean,
+    randomness: bigint,
+  ): ZeroOrOneProof {
+    const nonce = this.getRandomExponent();
+    const realCommitment = this.getRealCommitment(nonce);
+
+    if (isOne) {
+      const zeroProof = this.createSimulatedEncryptionProof(1n, ciphertext);
+      const challenge = this.getChallenge(ciphertext, [...zeroProof.commitment, ...realCommitment]);
+      const realChallenge = modAdd([challenge, -zeroProof.challenge], this.pk.getPrimeQ());
+      return [zeroProof, this.completeRealProof(realCommitment, nonce, randomness, realChallenge)];
+    }
+
+    const oneProof = this.createSimulatedEncryptionProof(this.pk.getGenerator(), ciphertext);
+    const challenge = this.getChallenge(ciphertext, [...realCommitment, ...oneProof.commitment]);
+    const realChallenge = modAdd([challenge, -oneProof.challenge], this.pk.getPrimeQ());
+    return [this.completeRealProof(realCommitment, nonce, randomness, realChallenge), oneProof];
+  }
+
+  /**
+   * Verifies that the ciphertext encrypts 0 or 1.
+   * Both sub-proofs must be valid and their challenges must add up to the Fiat-Shamir challenge.
+   */
+  private verifyZeroOrOneProof(ciphertext: Ciphertext, cellProof: ZeroOrOneProof): boolean {
+    if (!this.isGroupElement(ciphertext[0]) || !this.isGroupElement(ciphertext[1])) {
+      console.warn('Invalid ciphertext: alpha or beta not in the correct group!');
+      return false;
+    }
+
+    const [zeroProof, oneProof] = cellProof;
+    if (
+      !this.verifyEncryptionProof(1n, ciphertext, zeroProof) ||
+      !this.verifyEncryptionProof(this.pk.getGenerator(), ciphertext, oneProof)
+    ) {
+      return false;
+    }
+
+    const expectedChallenge = this.getChallenge(ciphertext, [
+      ...zeroProof.commitment,
+      ...oneProof.commitment,
+    ]);
+    const actualChallenge = modAdd([zeroProof.challenge, oneProof.challenge], this.pk.getPrimeQ());
+    if (expectedChallenge !== actualChallenge) {
+      console.warn(
+        `Bad challenge (expected: ${expectedChallenge.toString()}, found: ${actualChallenge.toString()})`,
+      );
+      return false;
+    }
+
+    return true;
+  }
+
+  /**
+   * Fiat-Shamir challenge over the public key, the ciphertext and the commitments.
+   * Including the public key and the ciphertext binds the proof to the statement it proves.
+   */
+  private getChallenge(ciphertext: Ciphertext, commitments: bigint[]): bigint {
+    const parts: bigint[] = [
+      this.pk.getPrimeP(),
+      this.pk.getPrimeQ(),
+      this.pk.getGenerator(),
+      this.pk.getPublicKey(),
+      ...ciphertext,
+      ...commitments,
+    ];
+    return getFiatShamirChallenge(
+      parts.map((part) => part.toString()),
+      this.pk.getPrimeQ(),
+    );
+  }
+
+  private getRandomExponent(): bigint {
+    return randBetween(modAdd([this.pk.getPrimeQ(), -1n], this.pk.getPrimeQ()), 1n);
+  }
+
+  private getRealCommitment(nonce: bigint): [bigint, bigint] {
+    return [
+      modPow(this.pk.getGenerator(), nonce, this.pk.getPrimeP()),
+      modPow(this.pk.getPublicKey(), nonce, this.pk.getPrimeP()),
+    ];
+  }
+
+  private completeRealProof(
+    commitment: [bigint, bigint],
+    nonce: bigint,
+    randomness: bigint,
+    challenge: bigint,
+  ): ZKProof {
+    const response = modAdd(
+      [nonce, modMultiply([randomness, challenge], this.pk.getPrimeQ())],
+      this.pk.getPrimeQ(),
+    );
+    return { commitment, challenge, response };
+  }
+
+  private isGroupElement(value: bigint): boolean {
+    return (
+      value > 0n &&
+      value < this.pk.getPrimeP() &&
+      modPow(value, this.pk.getPrimeQ(), this.pk.getPrimeP()) === 1n
+    );
   }
 }

@@ -37,37 +37,53 @@ At this point, an audit option is available to the voter. If this was done, the 
 
 #### Proof of correct encryption
 
-Next, a disjunctive zero-knowledge proof is performed. Its core idea is the creation of multiple parallel proofs. There is one real proof for the actual vote cast (`Enc(1)`), and there is one simulated proof for each option that was not chosen by the voter (`Enc(0)`). These proofs are indistinguishable from each other by a verifier, but together they show:
+Every vote, i.e. every column of the table in the data format section below, consists of one ciphertext per option. Exactly one of them encrypts `1`, all others encrypt `0`. Two kinds of zero-knowledge proofs show this without revealing which option was chosen.
 
-In an election with multiple options, exactly one option was selected, without revealing which one.
+First, a disjunctive proof is created for every ciphertext `(alpha, beta)` of the vote to show that it encrypts `0` or `1`. It consists of two sub-proofs, one for `m = g^0` and one for `m = g^1`. Only the sub-proof for the actual plaintext is real, the other one is simulated.
 
-Therefore, at first for the ciphertext `(alpha, beta)` of each unchosen option `m` an encryption proof is simulated as follows:
+The simulated sub-proof for the plaintext `m` that the ciphertext does not contain is calculated as follows:
 
 - `challenge` - randomly chosen number with `challenge < q`
 - `response` - randomly chosen number with `response < q`
 - `commitment = ( alpha^(-challenge) * g^response mod p, (beta / m)^(-challenge) * y^response mod p )`.
 
-Then, using a random value `w < q`, the real proof for the actual vote cast is calculated as follows:
+Then, using a random value `w < q`, the real sub-proof is calculated as follows:
 
 - `commitment = ( g^w mod p, y^w mod p )`
-- `challenge` - hash value over a list of all (simulated and real) commitments, reduced by subtracting all simulated challenges, modulo `q`
+- `challenge` - Fiat-Shamir hash over `p`, `q`, `g`, `y`, `alpha`, `beta` and the commitments of both sub-proofs, minus the challenge of the simulated sub-proof, modulo `q`
 - `response = w + randomness * challenge mod q`.
 
-The value of `randomness` has to be the randomness `r` that was used in the previous section to create the ciphertexts with El Gamal algorithm. In the end, every plaintext and randomness is now discarded.
+The value of `randomness` has to be the randomness `r` that was used in the previous section to create the ciphertext with El Gamal algorithm. A verifier cannot tell which sub-proof is the real one. As both challenges have to add up to the hash, only one of them can be chosen freely, so at least one of the two sub-proofs has to be real.
 
-Only the list of ciphertexts `[(alpha_1, beta_1), (alpha_2, beta_2), ..., (alpha_n, beta_n)]` and the corresponding list of their proofs `[proof_1, proof_2, ..., proof_n]` are left and sent to the server side.
+Second, an overall proof shows that the vote contains exactly one `1`. The product `(alpha_prod, beta_prod)` of all ciphertexts of the vote encrypts the sum of their plaintexts (see homomorphic vote tallying), so it has to encrypt `g^1`. With `R` being the sum of the randomness of all ciphertexts of the vote modulo `q` and a random value `w < q`, the overall proof is calculated as follows:
+
+- `commitment = ( g^w mod p, y^w mod p )`
+- `challenge` - Fiat-Shamir hash over `p`, `q`, `g`, `y`, `alpha_prod`, `beta_prod` and the commitment, modulo `q`
+- `response = w + R * challenge mod q`.
+
+The hashes include the public key and the ciphertexts, so every proof is bound to the election and to the ciphertexts it was created for. In the end, every plaintext and randomness is now discarded.
+
+Only the ciphertexts, the two sub-proofs of every ciphertext and the overall proof of every vote are left and sent to the server side.
 
 #### Verification of encryption proof
 
-On the server side, at first it is checked if the incoming proofs are valid. Therefore, the following statements have to be true for every ciphertext `(alpha, beta)` and its proof `{commitment, challenge, response}`, with `commitment` consisting of `(A, B)`:
+On the server side, at first it is checked if the incoming proofs are valid. A (sub-)proof `{commitment, challenge, response}` with `commitment` consisting of `(A, B)` is valid for a ciphertext `(alpha, beta)` and a plaintext `m` if the following statements are true:
 
 - `A^q = 1 mod p` and `B^q = 1 mod p` (`A` and `B` in the correct group)
 - `g^response = A * alpha^challenge mod p`
 - `y^response = B * (beta/m)^challenge mod p`.
 
-Note that the plaintext `m` does not need to be decrypted from its ciphertext `(alpha, beta)`. The server already knows every possible option the voter can chose (`Enc(0)` or `Enc(1)`). With one of these possible options the last statement must hold.
+For every ciphertext `(alpha, beta)` of a vote, it is checked that:
 
-If all statements above hold for every ciphertext and its proof, then all the ciphertexts will be placed in the "ballot box".
+- `alpha^q = 1 mod p` and `beta^q = 1 mod p` (`alpha` and `beta` in the correct group)
+- the sub-proof for `m = g^0` and the sub-proof for `m = g^1` are both valid
+- the challenges of both sub-proofs add up to the Fiat-Shamir hash modulo `q`.
+
+For the product `(alpha_prod, beta_prod)` of all ciphertexts of the vote, the overall proof has to be valid for `m = g^1` and its challenge has to equal the Fiat-Shamir hash.
+
+Note that the plaintexts do not need to be decrypted from the ciphertexts. The server only checks the proofs against the two possible plaintexts `g^0` and `g^1`.
+
+If all statements above hold for every vote, then all the ciphertexts will be placed in the "ballot box".
 
 #### Generalization for multi-section elections
 
@@ -82,7 +98,7 @@ In order to preserve the semantic meaning of the encrypted votes and allow for c
 - An implicit `no option`-choice, which absorbs any unused votes if the voter selects fewer than the maximum allowed number of options.
 - An implicit `invalid`-choice, which replaces all actual votes in the case where the voter's input is flagged as invalid through client-side validation and the voter confirms submission regardless (see following section).
 
-Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by a disjunctive zero-knowledge proof as described in the proof of correct encryption-section earlier. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
+Each of these encrypted votes - whether for a selected option or one of the implicit options - is accompanied by the zero-knowledge proofs described in the proof of correct encryption-section earlier. This ensures that, for each section, the encrypted ballots contain exactly the allowed number of selections, without revealing which options were chosen or how many valid selections were made.
 
 This generalization maintains the privacy, integrity, and verifiability guarantees of the voting process, even in complex multi-section elections with variable numbers of allowable votes.
 
@@ -108,91 +124,43 @@ To make explaining the format easier, the following example is given:
     "sectionId": {
       "votes": [
         {
-          "Candidate1Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "Candidate2Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "Candidate3Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "noVote": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "invalid": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          }
+          "Candidate1Id": "<cell>",
+          "Candidate2Id": "<cell>",
+          "Candidate3Id": "<cell>",
+          "noVote": "<cell>",
+          "invalid": "<cell>"
         },
         {
-          "Candidate1Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "Candidate2Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "Candidate3Id": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "noVote": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          },
-          "invalid": {
-            "alpha": 32345,
-            "beta": 2345,
-            "commitment1": 235,
-            "commitment2": 123,
-            "challenge": 2345,
-            "response": 234567
-          }
+          "Candidate1Id": "<cell>",
+          "Candidate2Id": "<cell>",
+          "Candidate3Id": "<cell>",
+          "noVote": "<cell>",
+          "invalid": "<cell>"
         }
-      ]
+      ],
+      "overallProofs": ["<proof>", "<proof>"]
     }
+  }
+}
+```
+
+Every `<cell>` stands for the ciphertext of one option and its two sub-proofs, every `<proof>` for the overall proof of the vote at the same index:
+
+```json
+{
+  "alpha": "32345",
+  "beta": "2345",
+  "zeroProof": {
+    "commitment1": "235",
+    "commitment2": "123",
+    "challenge": "2345",
+    "response": "234567"
+  },
+  "oneProof": {
+    "commitment1": "1543",
+    "commitment2": "876",
+    "challenge": "9876",
+    "response": "45678"
   }
 }
 ```
@@ -203,6 +171,7 @@ In reality they are up to 2048 bits long.
 
 The above JSON Object represents a ballot paper with one ballot paper section, in which a voter may cast up to two votes.
 Each JSON Object in the `votes`-array corresponds to one of these votes or one column in the previously shown table.
+The `overallProofs`-array contains the overall proof of each of these votes, in the same order.
 This format allows us to send all necessary data in a vote to the backend in one go, while having it all encrypted using El Gamal.
 
 #### Client- and server-side ballot validation
