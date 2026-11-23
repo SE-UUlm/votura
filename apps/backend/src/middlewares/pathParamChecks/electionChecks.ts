@@ -74,6 +74,30 @@ export async function checkElectionExists(
   }
 }
 
+/**
+ * Checks if the results of the election with the given ID are published.
+ * If they are not published, it sends a 404 Not Found response, otherwise it calls the next middleware function.
+ *
+ * @param req The request object containing the election ID as a path parameter.
+ * @param res The response object to send errors to.
+ * @param next The next middleware function to call if the results are published.
+ */
+export async function checkElectionResultsPublished(
+  req: Request<{ electionId: Election['id'] }>,
+  res: Response<Response404>,
+  next: NextFunction,
+): Promise<void> {
+  if (!(await areElectionResultsPublished(req.params.electionId))) {
+    res.status(HttpStatusCode.notFound).json(
+      response404Object.parse({
+        message: 'The results of the provided election are not published!',
+      }),
+    );
+  } else {
+    next();
+  }
+}
+
 const error403Response = (res: Response<Response403>, message: string): void => {
   res.status(HttpStatusCode.forbidden).json(response403Object.parse({ message }));
 };
