@@ -17,7 +17,7 @@ import { BallotPaperEncryption } from '@repo/votura-ballot-box';
 import { parameter } from '@repo/votura-validators';
 import { IconBug, IconSend } from '@tabler/icons-react';
 import { PublicKey } from '@votura/votura-crypto/index';
-import { type JSX, useState } from 'react';
+import { useState, type JSX } from 'react';
 import { useTranslation } from 'react-i18next';
 import { Navigate, useNavigate, useParams } from 'react-router';
 import { getVoterLocalStorage } from '../../../swr/voterToken.ts';
@@ -25,7 +25,8 @@ import { useGetVoterElections } from '../../../swr/voting/useGetVoterElections.t
 import { useVotingHasNotStarted } from '../../../swr/voting/useVotingHasNotStarted.ts';
 import {
   createPlainFilledBallotPaper,
-  type Votes,
+  createVotesFromCheckboxes,
+  type CheckboxSelections,
 } from '../../../utils/createPlainFilledBallotPaper.ts';
 import { HEADER_HEIGHT } from '../../utils.ts';
 import { BallotPaperSection } from './BallotPaperSection.tsx';
@@ -39,7 +40,8 @@ export const VotingElectionView = (): JSX.Element => {
   const navigate = useNavigate();
   const voterToken = getVoterLocalStorage();
   const params = useParams<VotingElectionViewRouteParams>();
-  const [votes, setVotes] = useState<Votes>({});
+  const [checkboxSelections, setCheckboxSelections] = useState<CheckboxSelections>({});
+  const votes = createVotesFromCheckboxes(checkboxSelections);
   const {
     data: voterElections,
     isLoading: isVoterElectionsLoading,
@@ -88,14 +90,26 @@ export const VotingElectionView = (): JSX.Element => {
       minute: '2-digit',
     });
 
-  const handleVoteChange = (sectionId: string, candidateId: string, change: number): void => {
-    setVotes((currentVotes) => ({
-      ...currentVotes,
-      [sectionId]: {
-        ...currentVotes[sectionId],
-        [candidateId]: (currentVotes[sectionId]?.[candidateId] ?? 0) + change,
-      },
-    }));
+  const handleCheckboxChange = (
+    sectionId: string,
+    candidateId: string,
+    index: number,
+    checked: boolean,
+  ): void => {
+    setCheckboxSelections((currentSelections) => {
+      const currentCandidateSelections = currentSelections[sectionId]?.[candidateId] ?? [];
+
+      const updatedCandidateSelections = [...currentCandidateSelections];
+      updatedCandidateSelections[index] = checked;
+
+      return {
+        ...currentSelections,
+        [sectionId]: {
+          ...currentSelections[sectionId],
+          [candidateId]: updatedCandidateSelections,
+        },
+      };
+    });
   };
 
   const handleSubmitVote = (): void => {
@@ -164,7 +178,7 @@ export const VotingElectionView = (): JSX.Element => {
 
       {/* Election information */}
       <Grid>
-        <Grid.Col span={{ base: 12, md: 8 }}>
+        <Grid.Col span={{ base: 12, md: 6 }}>
           <Stack gap="xs">
             <Title order={3}>{t('description', 'Description')}</Title>
 
@@ -187,18 +201,30 @@ export const VotingElectionView = (): JSX.Element => {
           </Stack>
         </Grid.Col>
 
-        <Grid.Col span={{ base: 12, md: 4 }}>
-          <Stack gap="xs">
-            <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
+        <Grid.Col span={{ base: 12, md: 6 }}>
+          <Grid>
+            <Grid.Col span={6}>
+              <Stack gap="xs">
+                <Title order={3}>{t('privateVotes', 'Private Votes')}</Title>
 
-            <Text>{selectedElection.private ? t('Yes', 'Yes') : t('No', 'No')}</Text>
+                <Text>{selectedElection.private ? t('Yes', 'Yes') : t('No', 'No')}</Text>
 
-            <Title order={3} mt="xs">
-              {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
-            </Title>
+                <Title order={3} mt="xs">
+                  {t('invalidVotesAllowed', 'Invalid Votes Allowed')}
+                </Title>
 
-            <Text>{selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}</Text>
-          </Stack>
+                <Text>{selectedElection.allowInvalidVotes ? t('Yes', 'Yes') : t('No', 'No')}</Text>
+              </Stack>
+            </Grid.Col>
+
+            <Grid.Col span={6}>
+              <Stack gap="xs">
+                <Title order={3}>{t('allowRevote', 'Allow Revote')}</Title>
+
+                <Text>{selectedElection.allowRevote ? t('Yes', 'Yes') : t('No', 'No')}</Text>
+              </Stack>
+            </Grid.Col>
+          </Grid>
         </Grid.Col>
       </Grid>
       <Space h="md" />
@@ -243,7 +269,8 @@ export const VotingElectionView = (): JSX.Element => {
               votes={votes}
               totalVotes={totalVotes}
               votingHasNotStarted={votingHasNotStarted}
-              onVoteChange={handleVoteChange}
+              checkboxSelections={checkboxSelections}
+              onCheckboxChange={handleCheckboxChange}
             />
           ))}
         </Stack>

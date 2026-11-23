@@ -1,5 +1,5 @@
 import { parameter } from '@repo/votura-validators';
-import { createBrowserRouter, redirect } from 'react-router';
+import { createBrowserRouter, redirect, type RouteObject } from 'react-router';
 import { AdminRouterOutlet } from './components/AdminRouterOutlet.tsx';
 import { AppShellLayout } from './components/AppShellLayout.tsx';
 import { AppShellLayoutVoter } from './components/AppShellLayoutVoter.tsx';
@@ -9,6 +9,8 @@ import { AccountView } from './components/views/account/AccountView.tsx';
 import { AccountsView } from './components/views/accounts/AccountsView.tsx';
 import { ElectionView } from './components/views/election/ElectionView.tsx';
 import { ElectionsView } from './components/views/elections/ElectionsView.tsx';
+import { ErrorView } from './components/views/error/ErrorView.tsx';
+import { NotFoundView } from './components/views/error/NotFoundView.tsx';
 import { ForgotPasswordView } from './components/views/login/ForgotPasswordView.tsx';
 import { LoginView } from './components/views/login/LoginView.tsx';
 import { ResetPasswordView } from './components/views/login/ResetPasswordView.tsx';
@@ -22,7 +24,7 @@ import { VotingSuccessView } from './components/views/voting/VotingSuccessView.t
 import { getAuthLocalStorage } from './swr/authTokens.ts';
 import { getVoterLocalStorage } from './swr/voterToken.ts';
 
-export const browserRouter = createBrowserRouter([
+const routes: RouteObject[] = [
   {
     path: '/',
     loader: (): Response => {
@@ -157,5 +159,20 @@ export const browserRouter = createBrowserRouter([
         ],
       },
     ],
+  },
+  {
+    path: '*',
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    Component: NotFoundView,
+  },
+];
+
+export const browserRouter = createBrowserRouter([
+  {
+    // Pathless root route, so errors thrown in any route land here instead of
+    // the default error page of react-router, which shows the stack trace.
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    ErrorBoundary: ErrorView,
+    children: routes,
   },
 ]);

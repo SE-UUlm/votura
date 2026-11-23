@@ -6,6 +6,22 @@ import {
 
 export type Votes = Record<string, Record<string, number>>;
 
+export type CheckboxSelections = Record<string, Record<string, boolean[]>>;
+
+export const createVotesFromCheckboxes = (selections: CheckboxSelections): Votes => {
+  const votes: Votes = {};
+
+  for (const [sectionId, candidates] of Object.entries(selections)) {
+    votes[sectionId] = {};
+
+    for (const [candidateId, checkboxes] of Object.entries(candidates)) {
+      votes[sectionId][candidateId] = checkboxes.filter(Boolean).length;
+    }
+  }
+
+  return votes;
+};
+
 const createVote = (
   candidateIds: string[],
   selectedCandidateId?: string,

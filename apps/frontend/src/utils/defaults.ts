@@ -8,6 +8,7 @@ export const getDefaultElection = (partial: Partial<SelectableElection>): Update
     votingEndAt: new Date().toISOString(),
     configFrozen: false,
     allowInvalidVotes: false,
+    allowRevote: false,
     private: true,
     ...partial,
   };
