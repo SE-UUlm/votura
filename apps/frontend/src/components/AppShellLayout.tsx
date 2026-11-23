@@ -50,7 +50,11 @@ export const AppShellLayout = (): JSX.Element => {
       <RoutingNavbarLink
         to={'/account'}
         label={accountDetails?.email}
-        icon={<Avatar userId={accountDetails?.id ?? ''} email={accountDetails?.email ?? ''} />}
+        icon={
+          <Box w={38} h={38} style={{ flexShrink: 0 }}>
+            <Avatar userId={accountDetails?.id ?? ''} email={accountDetails?.email ?? ''} />
+          </Box>
+        }
       />
     );
   }

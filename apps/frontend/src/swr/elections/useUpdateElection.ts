@@ -16,7 +16,12 @@ export const useUpdateElection = (
     putterFactory(selectableElectionObject),
     {
       onSuccess: () => {
-        void mutate(apiRoutes.elections.base);
+        Promise.all([
+          mutate(apiRoutes.elections.base),
+          mutate(apiRoutes.elections.byId(electionId)),
+        ]).catch((error) => {
+          console.error('Failed to mutate elections', error);
+        });
       },
     },
   );

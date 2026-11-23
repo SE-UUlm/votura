@@ -6,7 +6,11 @@ import { selectableCandidateObject } from './candidate.js';
 import { selectableElectionObject } from './election.js';
 
 export const selectableVotingElectionObject = z.object({
-  ...selectableElectionObject.omit({ createdAt: true, modifiedAt: true }).shape,
+  ...selectableElectionObject.omit({
+    createdAt: true,
+    modifiedAt: true,
+    electionCreatorId: true,
+  }).shape,
   ballotPaper: selectableBallotPaperObject
     .omit({
       createdAt: true,

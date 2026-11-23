@@ -1,6 +1,7 @@
 import { z } from 'zod/v4';
 import { toJsonSchemaParams } from '../parserParams.js';
 import { voturaMetadataRegistry } from '../voturaMetadateRegistry.js';
+import { uuidObject } from './identifiableObject.js';
 import { identifiableTimestampedObject } from './identifiableTimestampedObject.js';
 
 const votingTimelineRefinement = (data: { votingStartAt: string; votingEndAt: string }): boolean =>
@@ -60,6 +61,10 @@ export const electionObject = z.object({
     description:
       'The generator of the multiplicative group modulo `primeP`. This key will only be generated if the election configuration is frozen. If `configFrozen` is set to `false`, the key will be `null`.',
   }),
+  electionCreatorId: uuidObject.register(voturaMetadataRegistry, {
+    description: 'The unique identifier of the user who created this election.',
+    example: '123e4567-e89b-12d3-a456-426614174000',
+  }),
 });
 
 export type Election = z.infer<typeof electionObject>;
@@ -90,6 +95,7 @@ export const selectableElectionObject = electionObject.pick({
   id: true,
   createdAt: true,
   modifiedAt: true,
+  electionCreatorId: true,
   name: true,
   description: true,
   private: true,
@@ -120,6 +126,9 @@ export const updateableElectionObject = electionObject
     allowInvalidVotes: true,
     allowRevote: true,
     private: true,
+  })
+  .extend({
+    electionCreatorId: uuidObject.optional(),
   })
   .refine(votingTimelineRefinement, {
     error: votingTimelineRefinementMessage,
